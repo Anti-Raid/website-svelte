@@ -1,9 +1,11 @@
 <script>
 	import '../app.css';
-	import Header from '../components/Header.svelte';
+	import Header from "../components/Header.svelte";
+
+	export let data;
 </script>
 
-<Header />
+<Header user={data.user || null} />
 
 <div class="m-4">
 	<slot />
