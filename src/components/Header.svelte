@@ -1,9 +1,10 @@
 <script lang="ts">
-	export let user;
+	export let user: any;
 
 	user = JSON.parse(user);
-	
-	import Notification from './Notification.svelte';
+
+	import Update from './Update.svelte';
+	import Swal from 'sweetalert2';
 
 	const navigation = [
 		{ name: 'Home', href: '/', current: true },
@@ -15,6 +16,15 @@
 		{ name: 'Profile', href: '/profile' },
 		{ name: 'Logout', href: '/logout' }
 	];
+
+	const error = (title: string, description: string, time: number) => {
+		Swal.fire({
+			title: title,
+			text: description,
+			timer: time,
+			timerProgressBar: true
+		});
+	};
 
 	const classNames = (...classes) => {
 		return classes.filter(Boolean).join(' ');
@@ -63,7 +73,7 @@
 	};
 </script>
 
-<Notification
+<Update
 	short="This site is experimental."
 	long="This website is experimental, and may have issues."
 />
