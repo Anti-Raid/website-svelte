@@ -1,9 +1,7 @@
 <script lang="ts">
-    import Logo from "$lib/assets/logo.webp";
-
     export let Title: string;
     export let Description: string;
-    export let Image: string = Logo;
+    export let Image: string = "";
 </script>
 
 <svelte:head>
