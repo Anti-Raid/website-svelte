@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let user: any;
 
-	user = JSON.parse(user);
+	user = user;
 
 	import Update from './Update.svelte';
 	import Swal from 'sweetalert2';
@@ -17,7 +17,7 @@
 		{ name: 'Logout', href: '/logout' }
 	];
 
-	const error = (title: string, description: string, time: number) => {
+	const Alert = (title: string, description: string, time: number) => {
 		Swal.fire({
 			title: title,
 			text: description,
@@ -32,15 +32,15 @@
 
 	const loginDiscord = async () => {
 		const data = await fetch('https://api.antiraid.xyz/auth/login').catch((error) => {
-			error('Error:', error, 4000);
+			Alert('Error:', error, 4000);
 		});
 
 		if (data.status === 200) {
 			const json = await data.json();
 
-			if (json.error) error('Error:', json.error, 4000);
+			if (json.error) Alert('Error:', json.error, 4000);
 			else window.location.href = json.url;
-		} else error('Error:', `It seems that our servers is having issues at this time!`, 2000);
+		} else Alert('Error:', `It seems that our servers is having issues at this time!`, 2000);
 	};
 
 	const openProfileMenu = () => {
@@ -183,7 +183,7 @@
 									<span class="sr-only">Open user menu</span>
 									<img
 										class="h-8 w-8 rounded-full"
-										src="https://cdn.discordapp.com/avatars/{user.id}/{user.avatar}"
+										src="https://cdn.discordapp.com/avatars/{user.id}/{user.discordUser.avatar}"
 										alt=""
 									/>
 								</button>

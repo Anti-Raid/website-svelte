@@ -2,12 +2,12 @@ import { error, redirect } from '@sveltejs/kit';
 
 /** @type {import('./$types').RequestHandler} */
 export async function GET({ request, setHeaders, url }) {
-	const auth = url.searchParams.get('data') || null;
+	const token = url.searchParams.get('token') || null;
 
-	if (!auth) throw error(400, 'No authentication token was passed with this request.');
+	if (!token) throw error(400, 'No authentication token was passed with this request.');
 
 	setHeaders({
-		'Set-Cookie': `auth=${auth}; Path=/; Secure;`
+		'Set-Cookie': `token=${token}; Path=/; Secure;`
 	});
 
 	throw redirect(307, '/');
