@@ -6,6 +6,7 @@
 
 <svelte:head>
     <title>{Title}</title>
+    <meta property="og:title" content={Title} />
     <meta property="og:site_name" content="AntiRaid" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://antiraid.xyz" />
