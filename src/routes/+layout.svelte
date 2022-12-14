@@ -12,9 +12,9 @@
 
 <Nightmare
     Title="Home"
-    Description="Nightmare"
+    Description="This website is extremely experimental, and should not be used by the public at this time."
 />
 
-<div class="m-4">
+<div class="bg-gray-600 m-4">
 	<slot />
 </div>
