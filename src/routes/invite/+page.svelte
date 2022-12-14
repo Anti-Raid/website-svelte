@@ -1,21 +1,20 @@
 <script>
+    import Card from "../../components/Card.svelte";
     export let data;
 </script>
 
-<div class="servers">
-    {#each data.user.guilds as guild}
-        {#if guild.owner === true}
-            <div class="guild">
-                <h1>{guild.name} ({guild.id})</h1>
-            </div>
-        {:else if guild.permissions["Administrator"] === true}
-            <div class="guild">
-                <h1>{guild.name} ({guild.id})</h1>
-            </div>
-        {:else if guild.permissions["ManageGuild"] === true}
-            <div class="guild">
-                <h1>{guild.name} ({guild.id})</h1>
-            </div>
-        {/if}
-    {/each}
-</div>
+{#if data.user}
+    <div class="servers">
+        {#each data.user.guilds as guild}
+            {#if guild.owner === true}
+                <Card name="guild" title={guild.name} description="You are the owner of this server, you should have enough permissions to invite us into your server!" image="https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png" button={null} />
+            {:else if guild.permissions["Administrator"] === true}
+                <Card name="guild" title={guild.name} description="You have enough permissions to invite us to this server!" image="https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png" button={null} />
+            {:else if guild.permissions["ManageGuild"] === true}
+                <Card name="guild" title={guild.name} description="You have enough permissions to invite us to this server!" image="https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png" button={null} />
+            {:else}
+                <Card name="guild" title={guild.name} description="You do not have enough permissions to invite us to this server!" image="https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png" button={null} />
+            {/if}
+        {/each}
+    </div>
+{/if}
