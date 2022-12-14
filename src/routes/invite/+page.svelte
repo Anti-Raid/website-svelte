@@ -17,4 +17,7 @@
             {/if}
         {/each}
     </div>
+
+    {:else}
+       <h2>You are not logged in. Please login to view this page.</h2>
 {/if}
