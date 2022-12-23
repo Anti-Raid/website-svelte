@@ -25,7 +25,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@sveltejs/adapter-next": "next",
+		"@sveltejs/adapter-auto": "next",
 		"cookie": "^0.5.0",
 		"sweetalert2": "^11.4.29"
 	}
