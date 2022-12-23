@@ -15,8 +15,6 @@
     Description="This website is extremely experimental, and should not be used by the public at this time."
 />
 
-<div class="bg-gray-600">
-        <div class="m-4">
-	     <slot />
-        </div>
+<div class="m-4">
+	<slot />
 </div>
