@@ -1,9 +1,14 @@
-<script>
-	export let name;
-	export let title;
-	export let description;
-	export let image;
-	export let button;
+<script lang="ts">
+    interface ButtonType {
+        name: String,
+        click: () => void
+    };
+
+	export let name: string;
+	export let title: string;
+	export let description: string;
+	export let image: string;
+	export let button: ButtonType;
 </script>
 
 <div
@@ -11,7 +16,12 @@
 	class="p-6 max-w-sm bg-white rounded-md border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
 >
 	<h5 class="mb-2 text-2xl font-bold tracking-light text-gray-900 dark:text-white">{title}</h5>
-	<img class="align-right" src={image} height="100px" width="100px" alt="Image" />
+	
+    {#if image}
+        <!-- svelte-ignore a11y-img-redundant-alt -->
+        <img class="align-right" src={image} height="100px" width="100px" alt="Card Image" />
+    {/if}
+
 	<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{description}</p>
 
 	{#if button}
