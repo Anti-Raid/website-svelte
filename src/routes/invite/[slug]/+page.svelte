@@ -3,4 +3,5 @@
   export let data;
 </script>
 
-<h2 class="text-white">{JSON.stringify(data)}</h2>
+<h2 class="text-white">User ID: {data.user.id}</h2>
+<h2 class="text-white">Guild ID (Slug): {data.slug}</h2>
