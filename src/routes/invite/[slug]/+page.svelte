@@ -2,6 +2,8 @@
   /** @type {import('./$types').PageData} */
   export let data;
   
+  import Card from '../../../components/Card.svelte';
+
   const CheckPerm = (permissions, owner) => {
     if (permissions["Administrator"] || permissions["ManageGuild"] || owner === true) return true;
     else return false;
