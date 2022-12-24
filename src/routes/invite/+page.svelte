@@ -6,7 +6,7 @@
         return {
             name: "Invite",
             click: () => {
-                window.location.href = "/bruh"
+                window.location.href = `/invite/${id}`;
             }
         }
     }
@@ -43,7 +43,7 @@
 				<Card
 					name="guild"
 					title={guild.name}
-					description="You do not have enough permissions to invite us to this server!"
+					description="You do NOT have enough permissions to invite us to this server!"
 					image="https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png"
 					button={null}
 				/>
@@ -51,5 +51,5 @@
 		{/each}
 	</div>
 {:else}
-	<h2>You are not logged in. Please login to view this page.</h2>
+	<h2 class="text-white">You are not logged in. Please login to view this page.</h2>
 {/if}
