@@ -7,7 +7,7 @@
     else return false;
   };
 
-  export let guild = data.user.guilds.find((r) => { if (r.id === data.guild_id && CheckPerm(r.permissions, r.owner) === true) return true; else return false });
+  export let guild = data.user.guilds.find((r) => r.id === data.slug && CheckPerm(r.permissions, r.owner) === true);
 </script>
 
 {#if data.user}
