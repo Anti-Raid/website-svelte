@@ -3,6 +3,6 @@ import { error } from '@sveltejs/kit';
 /** @type {import('./$types').PageLoad} */
 export function load({ params }) {
   return {
-    guild_id: params.slug
+    slug: params.slug
   }
 }
