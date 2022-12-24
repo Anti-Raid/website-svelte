@@ -3,7 +3,7 @@
   export let data;
   
   const CheckPerm = (permissions, owner) => {
-    if (permissions.contains("Administrator") || permissions.contains("ManageGuild") || owner === true) return true;
+    if (permissions.includes("Administrator") || permissions.includes("ManageGuild") || owner === true) return true;
     else return false;
   };
 
