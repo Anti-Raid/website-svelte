@@ -12,7 +12,13 @@
 
 {#if data.user}
    {#if guild}
-      <h1 class="text-white">You have permissions to invite us to this guild.</h1>
+      <Card
+         name="guild"
+	 title={guild.name}
+	 description="Let's get you started!"
+	 image="https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png"
+	 button={null}
+      />
    {:else}
       <h1 class="text-white">You don't have permissions to invite us to this guild.</h1>
    {/if}
