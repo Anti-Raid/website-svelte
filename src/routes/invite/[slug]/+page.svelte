@@ -3,4 +3,4 @@
   export let data;
 </script>
 
-<h2>{JSON.stringify(data)}</h2>
+<h2 class="text-white">{JSON.stringify(data)}</h2>
