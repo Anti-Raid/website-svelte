@@ -28,7 +28,7 @@
 					</li>
 					
                     <li>
-						<a rel="noopener noreferrer" href="/about">About Us</a>
+						<a rel="noopener noreferrer" href="/about">Learn More</a>
 					</li>
 
                     <li>
