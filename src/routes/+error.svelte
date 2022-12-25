@@ -1,9 +1,11 @@
 <script>
 	import { page } from '$app/stores';
 
-        export let subText;
+        let subText = "Unknown Error!";
 
         if ($page.status === 400) subText = "But dont worry, you can find plenty of other things on our homepage.";
+
+        export subText;
 </script>
 
 <section class="flex items-center h-full p-16 dark:bg-gray-900 dark:text-gray-100">
