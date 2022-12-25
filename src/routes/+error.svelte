@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 
         let subText = "Unknown Error!";
-        if ($page.status === 400) subText = "But dont worry, you can find plenty of other things on our homepage.";
+        if (page.status === 400) subText = "But dont worry, you can find plenty of other things on our homepage.";
 
         export let longError = subText;
 </script>
