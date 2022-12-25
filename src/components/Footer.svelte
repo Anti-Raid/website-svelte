@@ -28,6 +28,10 @@
 					</li>
 					
                     <li>
+						<a rel="noopener noreferrer" href="/about">About Us</a>
+					</li>
+
+                    <li>
 						<a rel="noopener noreferrer" href="/faq">FAQ</a>
 					</li>
 				</ul>
@@ -63,7 +67,7 @@
 				</ul>
 			</div>
 
-			<div class="space-y-3">
+			<!--<div class="space-y-3">
 				<div class="uppercase dark:dark:text-gray-50">Social media</div>
 				<div class="flex justify-start space-x-3">
 					<a rel="noopener noreferrer" href="#" title="Facebook" class="flex items-center p-1">
@@ -103,7 +107,7 @@
 					</a>
 				</div>
 			</div>
-		</div>
+		</div>-->
 	</div>
 
 	<div class="py-6 text-sm text-center dark:dark:text-gray-400">
