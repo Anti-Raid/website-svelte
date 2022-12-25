@@ -17,8 +17,6 @@
 
 <div class="m-4">
 	<slot />
-
-	<div class="m-4">
-		<Footer />
-	</div>
 </div>
+
+<Footer />

@@ -1,4 +1,4 @@
-<footer class="px-4 divide-y bg-slate-900 text-white">
+<footer class="px-4 divide-y bg-slate-900 text-white h-screen">
 	<div
 		class="container flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0"
 	>
