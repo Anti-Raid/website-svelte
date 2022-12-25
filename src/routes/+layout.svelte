@@ -15,7 +15,7 @@
 	Description="This website is extremely experimental, and should not be used by the public at this time."
 />
 
-<div class="m-4">
+<div class="m-4 flex flex-col min-h-screen">
 	<slot />
 </div>
 
