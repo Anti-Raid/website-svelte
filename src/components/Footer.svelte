@@ -3,16 +3,22 @@
 		class="container flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0"
 	>
 		<div class="lg:w-1/3">
-			<a rel="noopener noreferrer" href="#" class="flex justify-center space-x-3 lg:justify-start">
-				<div
-					class="flex items-center justify-center w-12 h-12 rounded-full dark:dark:bg-violet-400"
-				>
-					<img class="flex-shrink-0 w-5 h-5 rounded-full text-white" src="/logo.webp" alt="Our Logo">
+			<a
+				rel="noopener noreferrer"
+				href="/about"
+				class="flex justify-center space-x-3 lg:justify-start"
+			>
+				<div class="flex items-center justify-center w-12 h-12 rounded-full">
+					<img
+						class="flex-shrink-0 w-12 h-12 rounded-full text-white"
+						src="/logo.webp"
+						alt="Our Logo"
+					/>
 				</div>
 				<span class="self-center text-2xl font-semibold">AntiRaid</span>
 			</a>
 		</div>
-        
+
 		<div class="grid grid-cols-2 text-sm gap-x-3 gap-y-8 lg:w-2/3 sm:grid-cols-4">
 			<div class="space-y-3">
 				<h3 class="tracking-wide uppercase dark:dark:text-gray-50">Product</h3>
@@ -31,6 +37,7 @@
 					</li>
 				</ul>
 			</div>
+
 			<div class="space-y-3">
 				<h3 class="tracking-wide uppercase dark:dark:text-gray-50">Company</h3>
 				<ul class="space-y-1">
@@ -42,6 +49,7 @@
 					</li>
 				</ul>
 			</div>
+
 			<div class="space-y-3">
 				<h3 class="uppercase dark:dark:text-gray-50">Developers</h3>
 				<ul class="space-y-1">
@@ -56,6 +64,7 @@
 					</li>
 				</ul>
 			</div>
+
 			<div class="space-y-3">
 				<div class="uppercase dark:dark:text-gray-50">Social media</div>
 				<div class="flex justify-start space-x-3">
@@ -98,7 +107,8 @@
 			</div>
 		</div>
 	</div>
+
 	<div class="py-6 text-sm text-center dark:dark:text-gray-400">
-		© 1968 Company Co. All rights reserved.
+		© 2022 AntiRaid. All rights reserved.
 	</div>
 </footer>
