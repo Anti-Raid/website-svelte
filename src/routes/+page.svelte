@@ -37,7 +37,7 @@
 
 <div class="py-12">
 	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-		<div class="lg:text-center">
+		<div class="lg:text-center" id="features">
 			<h2 class="text-lg font-semibold text-indigo-600">Features</h2>
 			<p class="mt-4 max-w-2xl text-xl text-white lg:mx-auto">What features does AntiRaid offer?</p>
 		</div>

@@ -1,4 +1,4 @@
-<footer class="bg-slate-900 text-white">
+<footer class="px-4 divide-y bg-slate-900 text-white">
 	<div
 		class="container flex flex-col justify-between py-10 mx-auto space-y-8 lg:flex-row lg:space-y-0"
 	>
@@ -24,16 +24,11 @@
 				<h3 class="tracking-wide uppercase dark:dark:text-gray-50">Product</h3>
 				<ul class="space-y-1">
 					<li>
-						<a rel="noopener noreferrer" href="#">Features</a>
+						<a rel="noopener noreferrer" href="/#features">Features</a>
 					</li>
-					<li>
-						<a rel="noopener noreferrer" href="#">Integrations</a>
-					</li>
-					<li>
-						<a rel="noopener noreferrer" href="#">Pricing</a>
-					</li>
-					<li>
-						<a rel="noopener noreferrer" href="#">FAQ</a>
+					
+                    <li>
+						<a rel="noopener noreferrer" href="/faq">FAQ</a>
 					</li>
 				</ul>
 			</div>
@@ -41,11 +36,16 @@
 			<div class="space-y-3">
 				<h3 class="tracking-wide uppercase dark:dark:text-gray-50">Company</h3>
 				<ul class="space-y-1">
+                    <li>
+                        <a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs/use%20license">Use License</a>
+                    </li>
+
 					<li>
-						<a rel="noopener noreferrer" href="#">Privacy</a>
+						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs/privacy%20policy">Privacy Policy</a>
 					</li>
+
 					<li>
-						<a rel="noopener noreferrer" href="#">Terms of Service</a>
+						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs/terms%20of%20service">Terms of Service</a>
 					</li>
 				</ul>
 			</div>
@@ -54,13 +54,11 @@
 				<h3 class="uppercase dark:dark:text-gray-50">Developers</h3>
 				<ul class="space-y-1">
 					<li>
-						<a rel="noopener noreferrer" href="#">Public API</a>
+						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/">Public API</a>
 					</li>
-					<li>
-						<a rel="noopener noreferrer" href="#">Documentation</a>
-					</li>
-					<li>
-						<a rel="noopener noreferrer" href="#">Guides</a>
+					
+                    <li>
+						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs">Documentation</a>
 					</li>
 				</ul>
 			</div>
