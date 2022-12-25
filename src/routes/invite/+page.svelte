@@ -2,14 +2,14 @@
 	import Card from '../../components/Card.svelte';
 	export let data;
 
-    const Invite = (id: string) => {
-        return {
-            name: "Invite",
-            click: () => {
-                window.location.href = `/invite/${id}`;
-            }
-        }
-    }
+	const Invite = (id: string) => {
+		return {
+			name: 'Invite',
+			click: () => {
+				window.location.href = `/invite/${id}`;
+			}
+		};
+	};
 </script>
 
 {#if data.user}

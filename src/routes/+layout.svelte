@@ -2,7 +2,7 @@
 	import '../app.css';
 	import 'sweetalert2/dist/sweetalert2.min.css';
 	import Header from '../components/Header.svelte';
-        import Footer from '../components/Footer.svelte';
+	import Footer from '../components/Footer.svelte';
 	import Nightmare from '../components/Nightmare.svelte';
 
 	export let data;
@@ -18,7 +18,7 @@
 <div class="m-4">
 	<slot />
 
-        <div class="m-4">
-          <Footer />
-        </div>
+	<div class="m-4">
+		<Footer />
+	</div>
 </div>
