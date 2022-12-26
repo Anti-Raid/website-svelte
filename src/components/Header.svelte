@@ -158,6 +158,9 @@
 						<button
 							type="button"
 							class="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+							id="notifications-button"
+							aria-expanded="false"
+							aria-haspopup="true"
 							on:click={openNotificationPanel}
 						>
 							<span class="sr-only">View notifications</span>
@@ -218,15 +221,11 @@
 								class="absolute right-0 z-10 mt-2 w-48 origin-top-right invisible"
 								role="menu"
 								aria-orientation="vertical"
-								aria-labelledby="user-notifications-button"
+								aria-labelledby="notifications-button"
 								tabindex="-1"
-								id="open_notifications"
+								id="open-notifications"
 							>
-								{#each profileNavigation as item}
-									<a href={item.href} class="block px-4 py-2 text-sm text-gray-700">
-										{item.name}
-									</a>
-								{/each}
+								<h2>Notifications</h2>
 							</div>
 						{:else}
 							<button
