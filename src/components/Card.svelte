@@ -19,7 +19,7 @@
 
 	{#if image}
 		<!-- svelte-ignore a11y-img-redundant-alt -->
-		<img class="h-20 rounded-half relative right-0" src={image} height="80px" width="80px" alt="Card Image" />
+		<img class="h-20 rounded-half" src={image} height="80px" width="80px" alt="Card Image" />
 	{/if}
 
 	<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{description}</p>
