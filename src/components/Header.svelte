@@ -5,6 +5,8 @@
 	import Update from './Update.svelte';
 	import Swal from 'sweetalert2';
 
+    export const notifications = user.notifications.filter((i: any) => i.read === false);
+
 	const navigation = [
 		{ name: 'Home', href: '/', current: true },
 		{ name: 'Invite', href: '/invite', current: false },
@@ -215,6 +217,13 @@
 								id="open-notifications"
 							>
 								<h2>Notifications</h2>
+                                <button>Mark all as Read!</button>
+
+                                {#if notifications.length === 0}
+                                    <h2>There are no notifications to show!</h2>
+                                {:else}
+                                    <h2>There are some notifications to show!</h2>
+                                {/if}
 							</div>
 
 							<div
