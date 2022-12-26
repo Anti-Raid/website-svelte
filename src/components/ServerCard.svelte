@@ -20,7 +20,7 @@
            <h2 class="ml-2 text-2xl font-bold tracking-light text-gray-900 dark:text-white">{title}</h2>
         </div>
 
-	<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{description}</p>
+	<p class="mt-3 mb-4 font-normal text-gray-700 dark:text-gray-400">{description}</p>
 
 	{#if button}
 		<button
