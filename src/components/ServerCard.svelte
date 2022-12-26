@@ -15,7 +15,10 @@
 	id={name}
 	class="p-6 max-w-sm bg-white rounded-md border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
 >
-	<img class="h-8 rounded-full" src={image} height="32px" width="32px" alt="Card Image" /> <span class="mr-2 text-2xl font-bold tracking-light text-gray-900 dark:text-white">{title}</span>
+	<div class="flex">
+           <img class="h-8 rounded-full" src={image} height="32px" width="32px" alt="Card Image" />
+           <h2 class="mr-2 text-2xl font-bold tracking-light text-gray-900 dark:text-white">{title}</h2>
+        </div>
 
 	<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{description}</p>
 
