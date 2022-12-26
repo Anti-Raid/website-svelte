@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Card from '../../components/Card.svelte';
+	import ServerCard from '../../components/ServerCard.svelte';
 	import Nightmare from '../../components/Nightmare.svelte';
 
 	export let data: any;
@@ -20,7 +20,7 @@
 	<div class="servers">
 		{#each data.user.guilds as guild}
 			{#if guild.owner === true}
-				<Card
+				<ServerCard
 					name="guild"
 					title={guild.name}
 					description="You are the owner of this server, you should have enough permissions to invite us into your server!"
@@ -28,7 +28,7 @@
 					button={Invite(guild.id)}
 				/>
 			{:else if guild.permissions['Administrator'] === true}
-				<Card
+				<ServerCard
 					name="guild"
 					title={guild.name}
 					description="You have enough permissions to invite us to this server!"
@@ -36,7 +36,7 @@
 					button={Invite(guild.id)}
 				/>
 			{:else if guild.permissions['ManageGuild'] === true}
-				<Card
+				<ServerCard
 					name="guild"
 					title={guild.name}
 					description="You have enough permissions to invite us to this server!"
@@ -44,7 +44,7 @@
 					button={Invite(guild.id)}
 				/>
 			{:else}
-				<Card
+				<ServerCard
 					name="guild"
 					title={guild.name}
 					description="You do NOT have enough permissions to invite us to this server!"
