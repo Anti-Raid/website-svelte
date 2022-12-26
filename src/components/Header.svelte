@@ -5,8 +5,6 @@
 	import Update from './Update.svelte';
 	import Swal from 'sweetalert2';
 
-    export const notifications = user.notifications.filter((i: any) => i.read === false);
-
 	const navigation = [
 		{ name: 'Home', href: '/', current: true },
 		{ name: 'Invite', href: '/invite', current: false },
@@ -84,6 +82,8 @@
 		// Close
 		else notificationPanel.className = 'absolute right-0 z-10 mt-2 w-48 origin-top-right invisible';
 	};
+
+        if (user) export const notifications = user.notifications.filter((i: any) => i.read === false);
 </script>
 
 <Update
