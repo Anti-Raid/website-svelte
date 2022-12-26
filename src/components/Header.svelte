@@ -72,11 +72,15 @@
 	};
 
 	const openNotificationPanel = () => {
-		const menu = document.getElementById('open_notifications') as HTMLDivElement;
-		const currentClass = menu.className;
+		const notificationPanel = document.getElementById('open-notifications') as HTMLDivElement;
+		const className = notificationPanel.className;
 
-		if (currentClass === 'hidden') menu.className = 'block';
-		else menu.className = 'hidden';
+		// Open
+		if (className === 'absolute right-0 z-10 mt-2 w-48 origin-top-right invisible')
+			notificationPanel.className =
+				'absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none';
+		// Close
+		else notificationPanel.className = 'absolute right-0 z-10 mt-2 w-48 origin-top-right invisible';
 	};
 </script>
 
@@ -157,7 +161,7 @@
 					{#if user}
 						<button
 							type="button"
-							class="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+							class="flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                             id="notifications-button"
 							aria-expanded="false"
 							aria-haspopup="true"
@@ -212,7 +216,7 @@
 							>
 								<h2>Notifications</h2>
 							</div>
-                            
+
 							<div
 								class="absolute right-0 z-10 mt-2 w-48 origin-top-right invisible"
 								role="menu"
