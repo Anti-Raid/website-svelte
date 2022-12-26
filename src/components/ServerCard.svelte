@@ -20,12 +20,12 @@
            <h2 class="ml-2 text-2xl font-bold tracking-light text-gray-900 dark:text-white">{title}</h2>
         </div>
 
-	<p class="mt-3 mb-4 font-normal text-gray-700 dark:text-gray-400">{description}</p>
+	<p class="mt-3 mb-2 font-normal text-gray-700 dark:text-gray-400">{description}</p>
 
 	{#if button}
 		<button
 			on:click={button.click}
-			class="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-emerald-700 rounded-md focus:ring-4 focus:outline-none focus:ring-emerald-300 dark:bg-emerald-700 dark:focus:ring-emerald-800"
+			class="mt-2 inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-emerald-700 rounded-md focus:ring-4 focus:outline-none focus:ring-emerald-300 dark:bg-emerald-700 dark:focus:ring-emerald-800"
 			>{button.name}</button
 		>
 	{/if}
