@@ -157,8 +157,8 @@
 					{#if user}
 						<button
 							type="button"
-							class="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-							id="notifications-button"
+							class="flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                            id="notifications-button"
 							aria-expanded="false"
 							aria-haspopup="true"
 							on:click={openNotificationPanel}
@@ -202,6 +202,17 @@
 								</button>
 							</div>
 
+                            <div
+								class="absolute right-0 z-10 mt-2 w-48 origin-top-right invisible"
+								role="menu"
+								aria-orientation="vertical"
+								aria-labelledby="notifications-button"
+								tabindex="-1"
+								id="open-notifications"
+							>
+								<h2>Notifications</h2>
+							</div>
+                            
 							<div
 								class="absolute right-0 z-10 mt-2 w-48 origin-top-right invisible"
 								role="menu"
@@ -215,17 +226,6 @@
 										{item.name}
 									</a>
 								{/each}
-							</div>
-
-							<div
-								class="absolute right-0 z-10 mt-2 w-48 origin-top-right invisible"
-								role="menu"
-								aria-orientation="vertical"
-								aria-labelledby="notifications-button"
-								tabindex="-1"
-								id="open-notifications"
-							>
-								<h2>Notifications</h2>
 							</div>
 						{:else}
 							<button
