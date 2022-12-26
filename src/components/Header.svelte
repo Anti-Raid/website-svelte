@@ -177,21 +177,6 @@
 								/>
 							</svg>
 						</button>
-
-						<div
-							class="absolute right-0 z-10 mt-2 w-48 origin-top-right invisible"
-							role="menu"
-							aria-orientation="vertical"
-							aria-labelledby="user-notifications-button"
-							tabindex="-1"
-							id="open_notifications"
-						>
-							{#each profileNavigation as item}
-								<a href={item.href} class="block px-4 py-2 text-sm text-gray-700">
-									{item.name}
-								</a>
-							{/each}
-						</div>
 					{/if}
 
 					<div class="relative ml-3">
@@ -221,6 +206,21 @@
 								aria-labelledby="user-menu-button"
 								tabindex="-1"
 								id="profile_menu"
+							>
+								{#each profileNavigation as item}
+									<a href={item.href} class="block px-4 py-2 text-sm text-gray-700">
+										{item.name}
+									</a>
+								{/each}
+							</div>
+
+							<div
+								class="absolute right-0 z-10 mt-2 w-48 origin-top-right invisible"
+								role="menu"
+								aria-orientation="vertical"
+								aria-labelledby="user-notifications-button"
+								tabindex="-1"
+								id="open_notifications"
 							>
 								{#each profileNavigation as item}
 									<a href={item.href} class="block px-4 py-2 text-sm text-gray-700">
