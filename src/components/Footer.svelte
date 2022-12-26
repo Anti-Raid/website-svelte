@@ -26,12 +26,12 @@
 					<li>
 						<a rel="noopener noreferrer" href="/#features">Features</a>
 					</li>
-					
-                    <li>
+
+					<li>
 						<a rel="noopener noreferrer" href="/about">Learn More</a>
 					</li>
 
-                    <li>
+					<li>
 						<a rel="noopener noreferrer" href="/faq">FAQ</a>
 					</li>
 				</ul>
@@ -40,16 +40,22 @@
 			<div class="space-y-3">
 				<h3 class="tracking-wide uppercase dark:dark:text-gray-50">Company</h3>
 				<ul class="space-y-1">
-                    <li>
-                        <a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs/use%20license">Use License</a>
-                    </li>
-
 					<li>
-						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs/privacy%20policy">Privacy Policy</a>
+						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs/use%20license"
+							>Use License</a
+						>
 					</li>
 
 					<li>
-						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs/terms%20of%20service">Terms of Service</a>
+						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs/privacy%20policy"
+							>Privacy Policy</a
+						>
+					</li>
+
+					<li>
+						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs/terms%20of%20service"
+							>Terms of Service</a
+						>
 					</li>
 				</ul>
 			</div>
@@ -60,8 +66,8 @@
 					<li>
 						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/">Public API</a>
 					</li>
-					
-                    <li>
+
+					<li>
 						<a rel="noopener noreferrer" href="https://api.antiraid.xyz/docs">Documentation</a>
 					</li>
 				</ul>
@@ -108,9 +114,10 @@
 				</div>
 			</div>
 		</div>-->
-	</div>
+		</div>
 
-	<div class="py-6 text-sm text-center dark:dark:text-gray-400">
-		© 2022 AntiRaid. All rights reserved.
+		<div class="py-6 text-sm text-center dark:dark:text-gray-400">
+			© 2022 AntiRaid. All rights reserved.
+		</div>
 	</div>
 </footer>

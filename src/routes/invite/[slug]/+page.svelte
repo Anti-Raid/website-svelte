@@ -1,21 +1,23 @@
-<script>
-	/** @type {import('./$types').PageData} */
-	export let data;
+<script lang="ts">
+	export let data: any;
 
 	import Card from '../../../components/Card.svelte';
+	import Nightmare from '../../../components/Nightmare.svelte';
 
-	const CheckPerm = (permissions, owner) => {
+	const CheckPerm = (permissions: any, owner: Boolean) => {
 		if (permissions['Administrator'] || permissions['ManageGuild'] || owner === true) return true;
 		else return false;
 	};
 
 	export let guild = data.user.guilds.find(
-		(i) => i.id === data.slug && CheckPerm(i.permissions, i.owner)
+		(i: any) => i.id === data.slug && CheckPerm(i.permissions, i.owner)
 	);
 </script>
 
 {#if data.user}
 	{#if guild}
+		<Nightmare Title="Invite" Description="Invite AntiRaid into {guild.name}." />
+
 		<Card
 			name="guild"
 			title={guild.name}
@@ -24,8 +26,12 @@
 			button={null}
 		/>
 	{:else}
+		<Nightmare Title="Invite" Description="Invite AntiRaid into your server." />
+
 		<h1 class="text-white">You don't have permissions to invite us to this guild.</h1>
 	{/if}
 {:else}
+	<Nightmare Title="Invite" Description="Invite AntiRaid into your server." />
+
 	<h1 class="text-white">You are not logged in. Please login and reload this page.</h1>
 {/if}

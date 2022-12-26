@@ -1,6 +1,8 @@
 <script lang="ts">
 	import Card from '../../components/Card.svelte';
-	export let data;
+	import Nightmare from '../../components/Nightmare.svelte';
+
+	export let data: any;
 
 	const Invite = (id: string) => {
 		return {
@@ -11,6 +13,8 @@
 		};
 	};
 </script>
+
+<Nightmare Title="Invite" Description="Invite our bot into your server." />
 
 {#if data.user}
 	<div class="servers">

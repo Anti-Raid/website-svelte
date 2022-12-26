@@ -7,8 +7,8 @@
 	export let name: string;
 	export let title: string;
 	export let description: string;
-	export let image: string;
-	export let button: ButtonType;
+	export let image: string | null;
+	export let button: ButtonType | null;
 </script>
 
 <div

@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let short;
-	export let long;
+	export let short: string;
+	export let long: string;
 
 	const removeAlert = () => {
 		const alert = document.getElementById('alert') as HTMLDivElement;
