@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let data: any;
 
-	import Card from '../../../components/Card.svelte';
+	import ServerCard from '../../../components/ServerCard.svelte';
 	import Nightmare from '../../../components/Nightmare.svelte';
 
 	const CheckPerm = (permissions: any, owner: Boolean) => {
@@ -18,7 +18,7 @@
 	{#if guild}
 		<Nightmare Title="Invite" Description="Invite AntiRaid into {guild.name}." />
 
-		<Card
+		<ServerCard
 			name="guild"
 			title={guild.name}
 			description="Let's get you started!"
