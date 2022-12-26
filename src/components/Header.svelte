@@ -82,8 +82,10 @@
 		// Close
 		else notificationPanel.className = 'absolute right-0 z-10 mt-2 w-48 origin-top-right invisible';
 	};
-
-        if (user) export const notifications = user.notifications.filter((i: any) => i.read === false);
+        
+        let notificationData = null;
+        if (user) notificationData = user.notifications.filter((i: any) => i.read === false);
+        export let notifications = notificationData;
 </script>
 
 <Update
