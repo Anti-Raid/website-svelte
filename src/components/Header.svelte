@@ -13,7 +13,7 @@
 
 	const profileNavigation = [
 		{ name: 'Profile', href: '/profile' },
-		{ name: 'Logout', href: '/logout' }
+		{ name: 'Logout', href: '/auth/logout' }
 	];
 
 	const Alert = (title: string, description: string, time: number) => {
