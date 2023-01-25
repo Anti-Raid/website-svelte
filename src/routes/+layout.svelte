@@ -10,7 +10,7 @@
 
 <Header user={data.user || null} />
 
-<Crisp />
+<!--<Crisp nickname={data.user.discordUser.username} avatar="https://cdn.discordapp.com/avatars/{data.user.id}/{data.user.discordUser.avatar}" />-->
 
 <Nightmare
 	Title="Home"
