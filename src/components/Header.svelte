@@ -1,6 +1,5 @@
 <script lang="ts">
 	export let user: any;
-
 	user = user;
 
 	import Update from './Update.svelte';
@@ -14,7 +13,7 @@
 
 	const profileNavigation = [
 		{ name: 'Profile', href: '/profile' },
-		{ name: 'Logout', href: '/logout' }
+		{ name: 'Logout', href: '/auth/logout' }
 	];
 
 	const Alert = (title: string, description: string, time: number) => {
@@ -26,7 +25,7 @@
 		});
 	};
 
-	const classNames = (...classes) => {
+	const classNames = (...classes: any) => {
 		return classes.filter(Boolean).join(' ');
 	};
 
@@ -41,18 +40,6 @@
 			if (json.error) Alert('Error:', json.error, 4000);
 			else window.location.href = json.url;
 		} else Alert('Error:', `It seems that our servers is having issues at this time!`, 2000);
-	};
-
-	const openProfileMenu = () => {
-		const profileMenu = document.getElementById('profile_menu') as HTMLDivElement;
-		const className = profileMenu.className;
-
-		// Open
-		if (className === 'absolute right-0 z-10 mt-2 w-48 origin-top-right invisible')
-			profileMenu.className =
-				'absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none';
-		// Close
-		else profileMenu.className = 'absolute right-0 z-10 mt-2 w-48 origin-top-right invisible';
 	};
 
 	const openMobileMenu = () => {
@@ -71,6 +58,34 @@
 			closeIcon.className.baseVal = 'hidden h-6 w-6';
 		}
 	};
+
+	const openProfileMenu = () => {
+		const profileMenu = document.getElementById('profile_menu') as HTMLDivElement;
+		const className = profileMenu.className;
+
+		// Open
+		if (className === 'absolute right-0 z-10 mt-2 w-48 origin-top-right invisible')
+			profileMenu.className =
+				'absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none';
+		// Close
+		else profileMenu.className = 'absolute right-0 z-10 mt-2 w-48 origin-top-right invisible';
+	};
+
+	const openNotificationPanel = () => {
+		const notificationPanel = document.getElementById('open-notifications') as HTMLDivElement;
+		const className = notificationPanel.className;
+
+		// Open
+		if (className === 'absolute right-0 z-10 mt-2 w-48 origin-top-right invisible')
+			notificationPanel.className =
+				'absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none';
+		// Close
+		else notificationPanel.className = 'absolute right-0 z-10 mt-2 w-48 origin-top-right invisible';
+	};
+        
+        let notificationData = null;
+        if (user) notificationData = user.notifications.filter((i: any) => i.read === false);
+        export let notifications = notificationData;
 </script>
 
 <Update
@@ -147,27 +162,33 @@
 				<div
 					class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0"
 				>
-					<!--<button
-						type="button"
-						class="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-					>
-						<span class="sr-only">View notifications</span>
-						<svg
-							class="h-6 w-6"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke-width="1.5"
-							stroke="currentColor"
-							aria-hidden="true"
+					{#if user}
+						<button
+							type="button"
+                            class="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                            id="notifications-button"
+							aria-expanded="false"
+							aria-haspopup="true"
+							on:click={openNotificationPanel}
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-							/>
-						</svg>
-					</button>-->
+							<span class="sr-only">View notifications</span>
+							<svg
+								class="h-6 w-6"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								aria-hidden="true"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
+								/>
+							</svg>
+						</button>
+					{/if}
 
 					<div class="relative ml-3">
 						{#if user}
@@ -187,6 +208,24 @@
 										alt=""
 									/>
 								</button>
+							</div>
+
+                            <div
+								class="absolute right-0 z-10 mt-2 w-48 origin-top-right invisible"
+								role="menu"
+								aria-orientation="vertical"
+								aria-labelledby="notifications-button"
+								tabindex="-1"
+								id="open-notifications"
+							>
+								<h2>Notifications</h2>
+                                <button>Mark all as Read!</button>
+
+                                {#if notifications.length === 0}
+                                    <h2>There are no notifications to show!</h2>
+                                {:else}
+                                    <h2>There are some notifications to show!</h2>
+                                {/if}
 							</div>
 
 							<div
