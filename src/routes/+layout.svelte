@@ -10,9 +10,7 @@
 
 <Header user={data.user || null} />
 
-{#if data.user}
-    <Crisp nickname={data.user.discordUser.username} avatar="https://cdn.discordapp.com/avatars/{data.user.id}/{data.user.discordUser.avatar}" />
-{/if}
+<Crisp />
 
 <Nightmare
 	Title="Home"
