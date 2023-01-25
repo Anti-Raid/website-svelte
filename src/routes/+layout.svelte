@@ -2,7 +2,7 @@
 	import '../app.css';
 	import 'sweetalert2/dist/sweetalert2.min.css';
 	import Header from '../components/Header.svelte';
-        import Crisp from '../components/Crisp.svelte';
+        //import Crisp from '../components/Crisp.svelte';
 	import Nightmare from '../components/Nightmare.svelte';
 
         export let data;
