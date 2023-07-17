@@ -20,9 +20,7 @@
 			With our services, you can easily protect your <a
 			alt="AntiRaid's Discord Server"
    src="https://discord.gg/v9qRYthfHf"
-   class="font-bold tracking-tight text-indigo-600 hover:text-red-600">Discord Server</span
-			> in a matter of seconds!
-		</a>
+   class="font-bold tracking-tight text-indigo-600 hover:text-red-600">Discord Server</a> in a matter of seconds!</p>
 
 		<div class="mt-5 sm:mt-8 flex justify-center items-center">
 			<div class="rounded-md shadow">
