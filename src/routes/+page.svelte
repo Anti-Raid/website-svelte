@@ -11,7 +11,7 @@
 	<div class="sm:text-center lg:text-left">
 		<h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
 			<span class="block text-white xl:inline">Protect your</span>
-			<span class="block text-indigo-600 xl:inline">Discord Server</span>
+			<a src="https://discord.gg/v9qRYthfHf" alt="AntiRaid's Discord Server" class="block text-indigo-600 xl:inline hover:text-red-600">Discord Server</a>
 		</h1>
 
 		<p
