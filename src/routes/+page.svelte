@@ -17,10 +17,12 @@
 		<p
 			class="mt-3 text-base text-white sm:mx-auto sm:mt-5 sm:max-w-xl sm:text-lg md:mt-5 md:text-xl lg:mx-0"
 		>
-			With our services, you can easily protect your <span
-				class="font-bold tracking-tight text-indigo-600">Discord Server</span
+			With our services, you can easily protect your <a
+			alt="AntiRaid's Discord Server"
+   src="https://discord.gg/v9qRYthfHf"
+   class="font-bold tracking-tight text-indigo-600 hover:text-red-600">Discord Server</span
 			> in a matter of seconds!
-		</p>
+		</a>
 
 		<div class="mt-5 sm:mt-8 flex justify-center items-center">
 			<div class="rounded-md shadow">
