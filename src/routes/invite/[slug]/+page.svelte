@@ -3,6 +3,7 @@
 
 	import ServerCard from '../../../components/ServerCard.svelte';
 	import Nightmare from '../../../components/Nightmare.svelte';
+ import StepProgress from '../../../components/StepProgress.svelte';
 
 	const CheckPerm = (permissions: any, owner: Boolean) => {
 		if (permissions['Administrator'] || permissions['ManageGuild'] || owner === true) return true;
