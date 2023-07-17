@@ -22,7 +22,7 @@
 			> in a matter of seconds!
 		</p>
 
-		<div class="mt-8 flex justify-center items-center">
+		<div class="mt-5 sm:mt-8 flex justify-center items-center">
 			<div class="rounded-md shadow">
 				<a
 					href="/invite"
