@@ -2,9 +2,9 @@
 	import '../app.css';
 	import 'sweetalert2/dist/sweetalert2.min.css';
 	import Header from '../components/Header.svelte';
-        import Nightmare from '../components/Nightmare.svelte';
+	import Nightmare from '../components/Nightmare.svelte';
 
-        export let data;
+	export let data;
 </script>
 
 <Header user={data.user || null} />

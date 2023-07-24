@@ -6,7 +6,6 @@
 
 	export let name: string;
 	export let title: string;
-	export let description: string;
 	export let image: string | null;
 	export let button: ButtonType | null;
 </script>
@@ -16,11 +15,9 @@
 	class="p-6 max-w-sm bg-white rounded-md border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700"
 >
 	<div class="flex">
-           <img class="h-8 rounded-full" src={image} height="32px" width="32px" alt="Card Image" />
-           <h2 class="ml-2 text-2xl font-bold tracking-light text-gray-900 dark:text-white">{title}</h2>
-        </div>
-
-	<p class="mt-3 mb-2 font-normal text-gray-700 dark:text-gray-400">{description}</p>
+		<img class="h-8 rounded-full" src={image} height="32px" width="32px" alt="Server Card" />
+		<h2 class="ml-2 text-2xl font-bold tracking-light text-white">{title}</h2>
+	</div>
 
 	{#if button}
 		<button

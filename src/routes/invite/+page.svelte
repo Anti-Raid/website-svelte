@@ -23,7 +23,6 @@
 				<ServerCard
 					name="guild"
 					title={guild.name}
-					description="You are the owner of this server, you should have enough permissions to invite us into your server!"
 					image="https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png"
 					button={Invite(guild.id)}
 				/>
@@ -31,7 +30,6 @@
 				<ServerCard
 					name="guild"
 					title={guild.name}
-					description="You have enough permissions to invite us to this server!"
 					image="https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png"
 					button={Invite(guild.id)}
 				/>
@@ -39,17 +37,8 @@
 				<ServerCard
 					name="guild"
 					title={guild.name}
-					description="You have enough permissions to invite us to this server!"
 					image="https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png"
 					button={Invite(guild.id)}
-				/>
-			{:else}
-				<ServerCard
-					name="guild"
-					title={guild.name}
-					description="You do NOT have enough permissions to invite us to this server!"
-					image="https://cdn.discordapp.com/icons/{guild.id}/{guild.icon}.png"
-					button={null}
 				/>
 			{/if}
 		{/each}
