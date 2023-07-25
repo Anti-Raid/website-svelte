@@ -12,8 +12,9 @@
 		{ name: 'About', href: '/about', current: false }
 	];
 
- const p = navigation.findIndex((p) => p.href === $page.url.pathname);
- if (p && navigation[p]) navigation[p].Current = true;
+ navigation.map((p) => {
+   if (p.href === $page.url.pathname) p.current = true;
+ });
 
 	const profileNavigation = [
 		{ name: 'Profile', href: '/profile' },
