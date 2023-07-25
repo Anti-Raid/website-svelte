@@ -13,7 +13,7 @@
 	];
 
  navigation.map((p) => {
-   if (p.href === page.url.pathname) p.current = true;
+   if (p.href === $page.url.pathname) p.current = true;
  });
 
 	const profileNavigation = [
