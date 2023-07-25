@@ -4,7 +4,7 @@
 
 	import Update from './Update.svelte';
 	import Swal from 'sweetalert2';
- import { page } from '$app/stores';
+	import { page } from '$app/stores';
 
 	let navigation = [
 		{ name: 'Home', href: '/', current: false },
@@ -12,9 +12,9 @@
 		{ name: 'About', href: '/about', current: false }
 	];
 
- navigation.map((p) => {
-   if (p.href === $page.url.pathname) p.current = true;
- });
+	navigation.map((p) => {
+		if (p.href === $page.url.pathname) p.current = true;
+	});
 
 	const profileNavigation = [
 		{ name: 'Profile', href: '/profile' },

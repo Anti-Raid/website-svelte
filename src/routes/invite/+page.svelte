@@ -17,7 +17,7 @@
 <Nightmare Title="Invite" Description="Invite our bot into your server." />
 
 {#if data.user}
-	<div class="servers">
+	<div class="grid gap-3 md:gap-4 md:grid-cols-3 md:grid-rows-3">
 		{#each data.user.guilds as guild}
 			{#if guild.owner === true}
 				<ServerCard

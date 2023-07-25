@@ -1,11 +1,16 @@
 <script lang="ts">
+	import Swal from 'sweetalert2';
+
 	interface Step {
 		ID: number;
 		Name: string;
 		Current: boolean;
 		Completed: boolean;
 		AllowBack: boolean;
-		Validate: () => boolean;
+		Validate: () => {
+			Result: Boolean;
+			Instructions: String;
+		};
 	}
 
 	export let steps: Step[] = [];
@@ -21,6 +26,13 @@
 	};
 
 	const nextStep = () => {
+		const validate = steps[currentStep].Validate();
+		if (!validate.Result)
+			return Swal.fire({
+				title: 'Unable to complete step!',
+				text: `You did not finish this step.\nInstructions: ${validate.Instructions}`
+			});
+
 		if (currentStep < steps.length - 1) {
 			steps[currentStep].Current = false;
 			steps[currentStep].Completed = true;
@@ -126,7 +138,10 @@
 
 <div class="flex justify-center items-center">
 	{#if steps[currentStep - 1 < 0 ? 0 : currentStep - 1].AllowBack && steps.length === currentStep + 1 && steps[currentStep].Completed === false}
-		<button on:click={prevStep} class="bg-red-600 text-base text-white p-2 border-none rounded-md">
+		<button
+			on:click={prevStep}
+			class="bg-red-600 hover:bg-red-500 text-base text-white p-2 border-none rounded-md"
+		>
 			Back
 		</button>
 	{/if}
@@ -134,7 +149,7 @@
 	{#if steps.length != currentStep + 1}
 		<button
 			on:click={nextStep}
-			class="ml-2 bg-green-600 text-base text-white p-2 border-none rounded-md"
+			class="ml-2 bg-green-600 text-base text-white hover:bg-green-500 p-2 border-none rounded-md"
 		>
 			Next
 		</button>
@@ -143,7 +158,7 @@
 	{#if steps.length === currentStep + 1 && steps[currentStep].Completed === false}
 		<button
 			on:click={completeStep}
-			class="ml-2 bg-green-600 text-base text-white p-2 border-none rounded-md"
+			class="ml-2 bg-green-600 hover:bg-green-500 text-base text-white p-2 border-none rounded-md"
 		>
 			Complete
 		</button>
