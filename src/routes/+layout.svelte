@@ -10,7 +10,7 @@
 		const Sentry = await import('@sentry/browser');
 
 		Sentry.init({
-			dsn: 'https://77411f26652c6ae892ae07782d762b74@trace.select-list.xyz/6',
+			dsn: 'https://ff1f4b972b935dfb769f2ca11adfb148@trace.select-list.xyz/6',
 			replaysSessionSampleRate: 0.3,
 			tracesSampleRate: 0.4,
 			replaysOnErrorSampleRate: 1.0,
