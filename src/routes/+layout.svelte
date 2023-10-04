@@ -17,6 +17,8 @@
 			integrations: [new Sentry.Replay()],
 			release: `ar_web@0877309`
 		});
+
+		throw new Error("bruh")
 	});
 
 	export let data;
