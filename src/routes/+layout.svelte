@@ -3,6 +3,7 @@
 	import 'sweetalert2/dist/sweetalert2.min.css';
 	import Header from '../components/Header.svelte';
 	import Nightmare from '../components/Nightmare.svelte';
+	import onMount from 'svelte';
 
 	onMount(async () => {
 		// Sentry
