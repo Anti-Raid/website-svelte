@@ -12,7 +12,7 @@
 	export let button: ButtonType;
 
 	const ImageLoadError = (a: any) => {
-		a.target.src = '/logo.png';
+		a.target.src = '/logo.webp';
 	};
 
 	// CSS Gradient Generator

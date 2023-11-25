@@ -2,62 +2,51 @@
 	import Swal from 'sweetalert2';
 
 	interface Step {
-		ID: number;
-		Name: string;
-		Current: boolean;
-		Completed: boolean;
-		AllowBack: boolean;
-		Validate: () => {
-			Result: Boolean;
-			Instructions: String;
-		};
+		name: string;
+		current?: boolean;
+		completed?: boolean;
+		disableBack?: boolean;
+		onClick?: () => void;
 	}
 
 	export let steps: Step[] = [];
 
-	let currentStep: number;
-	currentStep = steps.findIndex((step) => step.Current === true) || 0;
+	export let currentStep: number;
 
-	const completeStep = () => {
-		if (currentStep + 1 === steps.length && steps[currentStep].Current === true) {
-			steps[currentStep].Current = false;
-			steps[currentStep].Completed = true;
-		}
-	};
-
-	const nextStep = () => {
-		const validate = steps[currentStep].Validate();
-		if (!validate.Result)
-			return Swal.fire({
+	const nextStep = async () => {
+		try {
+			let currentStepData = steps[currentStep];
+			if (currentStepData.onClick) {
+				currentStepData.onClick();
+			}
+			currentStep = currentStep + 1;
+			return true;
+		} catch (err) {
+			Swal.fire({
 				title: 'Unable to complete step!',
-				text: `You did not finish this step.\nInstructions: ${validate.Instructions}`
+				text: `${
+					err?.toString() || 'Could not go to the next step! Ensure you have filled out all fields!'
+				}`
 			});
 
-		if (currentStep < steps.length - 1) {
-			steps[currentStep].Current = false;
-			steps[currentStep].Completed = true;
-			currentStep++;
-			steps[currentStep].Current = true;
-		} else if (currentStep === steps.length - 1 && !steps[currentStep].Completed) {
-			steps[currentStep].Completed = true;
+			return false;
 		}
 	};
 
-	const prevStep = () => {
-		if (currentStep > 0) {
-			currentStep--;
-			steps[currentStep].Current = true;
-			steps[currentStep].Completed = false;
-			steps[currentStep + 1].Current = false;
-		}
+	const prevStep = async () => {
+		currentStep--;
+		return true;
 	};
+
+	$: if (currentStep === undefined)
+		currentStep = steps.findIndex((step) => step.current === true) || 0;
 </script>
 
 <ol
 	class="flex items-center justify-center w-full text-sm font-medium text-center text-gray-500 dark:text-gray-400 sm:text-base"
 >
-	{#each steps as Step}
-		{#if Step.Completed}
+	{#each steps as step, i}
+		{#if i < currentStep}
 			<li
 				class="flex md:w-full items-center text-indigo-600 dark:text-indigo-500 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 dark:after:border-gray-700"
 			>
@@ -77,10 +66,10 @@
 							clip-rule="evenodd"
 						/>
 					</svg>
-					{Step.Name}
+					{step.name}
 				</span>
 			</li>
-		{:else if Step.Current}
+		{:else if i === currentStep}
 			<li
 				class="flex md:w-full items-center text-red-600 dark:text-red-500 sm:after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-200 after:border-1 after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 dark:after:border-gray-700"
 			>
@@ -100,7 +89,7 @@
 							clip-rule="evenodd"
 						/>
 					</svg>
-					{Step.Name}
+					{step.name}
 				</span>
 			</li>
 		{:else}
@@ -123,7 +112,7 @@
 							clip-rule="evenodd"
 						/>
 					</svg>
-					{Step.Name}
+					{step.name}
 				</span>
 			</li>
 		{/if}
@@ -136,31 +125,18 @@
 
 <div class="p-2" />
 
-<div class="flex justify-center items-center">
-	{#if steps[currentStep - 1 < 0 ? 0 : currentStep - 1].AllowBack && steps.length === currentStep + 1 && steps[currentStep].Completed === false}
+<div class="flex items-center justify-evenly gap-4 mt-4">
+	{#if !steps[currentStep].disableBack && currentStep !== 0}
 		<button
-			on:click={prevStep}
-			class="bg-red-600 hover:bg-red-500 text-base text-white p-2 border-none rounded-md"
+			class="flex items-center justify-center rounded-md border border-transparent bg-red-600 px-8 py-3 text-base font-medium text-white hover:bg-red-700 md:py-4 md:px-10 md:text-lg"
+			on:click={prevStep}>Previous!</button
 		>
-			Back
-		</button>
 	{/if}
 
-	{#if steps.length != currentStep + 1}
+	{#if steps.length > currentStep + 1 && !steps[currentStep].completed}
 		<button
-			on:click={nextStep}
-			class="ml-2 bg-green-600 text-base text-white hover:bg-green-500 p-2 border-none rounded-md"
+			class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
+			on:click={nextStep}>Next!</button
 		>
-			Next
-		</button>
-	{/if}
-
-	{#if steps.length === currentStep + 1 && steps[currentStep].Completed === false}
-		<button
-			on:click={completeStep}
-			class="ml-2 bg-green-600 hover:bg-green-500 text-base text-white p-2 border-none rounded-md"
-		>
-			Complete
-		</button>
 	{/if}
 </div>
