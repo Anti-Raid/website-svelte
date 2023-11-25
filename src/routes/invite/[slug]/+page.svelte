@@ -126,6 +126,12 @@
 				<Notice
 					Description="If you do not want Server Logging, or Audit Logs; you may simply skip this step!"
 				/>
+
+                <div class="p-2" />
+
+                <fieldset class="border border-solid rounded-sm border-gray-300 p-3">
+                    <legend class="text-white font-bold tracking-tight">Channels</legend>
+                </fieldset>
 			{/if}
 
 			{#if currentStep == 2}
