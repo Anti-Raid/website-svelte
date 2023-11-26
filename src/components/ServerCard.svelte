@@ -63,8 +63,8 @@
 			</div>
 
 			<button
-				class="mt-3 bg-indigo-600 px-3 py-2 text-white rounded-md text-base font-medium hover:cursor-pointer hover:bg-indigo-400"
-				>{button.name}</button
+				class="flex mt-3 bg-indigo-600 px-3 py-2 text-white rounded-md text-base font-medium hover:cursor-pointer hover:bg-indigo-400"
+				><i class="fa-solid fa-plus pr-2" /> {button.name}</button
 			>
 		</div>
 	</button>
