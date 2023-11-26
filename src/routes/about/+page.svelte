@@ -1,52 +1,70 @@
-<script>
-	import Nightmare from '../components/Nightmare.svelte';
-</script>
+<script lang="ts">
+	import Divider from '../../components/Divider.svelte';
 
-<Nightmare
-	Title="Home"
-	Description="This website is extremely experimental, and should not be used by the public at this time."
-/>
+	interface TeamMember {
+		Name: string;
+		Role: string;
+		Avatar: string;
+	}
+
+	const Members: TeamMember[] = [
+		{
+			Name: 'Ilieff',
+			Role: 'Owner / CEO',
+			Avatar:
+				'https://cdn.discordapp.com/avatars/775855009421066262/7bea9898ea29e94bd23b7645b7c578c5.webp'
+		},
+		{
+			Name: 'Select',
+			Role: 'Co-Owner / Head Developer',
+			Avatar:
+				'https://cdn.discordapp.com/avatars/564164277251080208/b14fc83f7471961f1b415a4c22517e04'
+		},
+		{
+			Name: 'Burger King',
+			Role: 'Developer',
+			Avatar:
+				'https://cdn.discordapp.com/avatars/728871946456137770/490998f80f493f3861b5d4aa6f383b5c.webp'
+		},
+		{
+			Name: 'Toxic Dev',
+			Role: 'Popular Contributor',
+			Avatar:
+				'https://cdn.discordapp.com/avatars/510065483693817867/a_5b8b978d724408fa66bc880d1ecc8d17.gif'
+		}
+	];
+</script>
 
 <main class="mx-auto mt-10 max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8">
 	<div class="text-center lg:text-left">
 		<h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-			<span class="block text-white xl:inline">Protect your</span>
-			<a
-				href="https://discord.gg/v9qRYthfHf"
-				class="block text-indigo-600 xl:inline hover:text-red-600">Discord Server</a
-			>
+			<span class="block text-white xl:inline">&#128075; About Us</span>
 		</h1>
 
 		<p
 			class="mt-3 text-base text-white sm:mx-auto sm:mt-5 sm:max-w-xl sm:text-lg md:mt-5 md:text-xl lg:mx-0"
 		>
-			With our services, you can easily protect your <a
-				href="https://discord.gg/v9qRYthfHf"
-				class="font-bold tracking-tight text-indigo-600 hover:text-red-600">Discord Server</a
-			> in a matter of seconds!
+			Learn more about <span class="text-indigo-600 font-bold">AntiRaid</span> and our team!
 		</p>
-
-		<div class="mt-5 sm:mt-8 flex justify-center items-center">
-			<div class="rounded-md shadow">
-				<a
-					href="/invite"
-					class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
-					><i class="fa-solid fa-plus pr-2" /> Invite</a
-				>
-			</div>
-
-			<div class="ml-2">
-				<a
-					href="/about"
-					class="flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-8 py-3 text-base font-medium text-indigo-700 hover:bg-indigo-200 md:py-4 md:px-10 md:text-lg"
-					>Learn More <i class="fa-solid fa-arrow-right pl-2" /></a
-				>
-			</div>
-		</div>
 	</div>
 </main>
 
-<div class="p-6" />
+<div class="p-4" />
+
+<p class="text-xl text-white font-semibold text-center">
+	<span class="text-indigo-600">AntiRaid</span> is a
+	<span class="font-extrabold">Automatic Moderation Service</span>
+	created to protect your
+	<a href="https://discord.gg/v9qRYthfHf" class="text-indigo-600 xl:inline hover:text-red-600"
+		>Discord Server</a
+	> from threats, unsafe bots and spamming using our advanced technology!
+</p>
+
+<div class="p-4" />
+
+<Divider Text="Features" Margin="6" />
+
+<div class="p-2" />
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 	<div class="lg:text-center" id="features">
@@ -61,7 +79,6 @@
 					<div
 						class="absolute flex h-12 w-12 items-center justify-center rounded-md bg-indigo-500 text-white"
 					>
-						<!-- Heroicon name: outline/globe-alt -->
 						<svg
 							class="h-6 w-6"
 							xmlns="http://www.w3.org/2000/svg"
@@ -80,6 +97,7 @@
 					</div>
 					<p class="ml-16 text-lg font-medium leading-6 text-white">Raid Prevention</p>
 				</dt>
+
 				<dd class="mt-2 ml-16 text-base text-white">
 					This feature locks down your server, to help prevent members from joining when you are
 					being raided.
@@ -91,7 +109,6 @@
 					<div
 						class="absolute flex h-12 w-12 items-center justify-center rounded-md bg-indigo-500 text-white"
 					>
-						<!-- Heroicon name: outline/scale -->
 						<svg
 							class="h-6 w-6"
 							xmlns="http://www.w3.org/2000/svg"
@@ -110,6 +127,7 @@
 					</div>
 					<p class="ml-16 text-lg font-medium leading-6 text-white">Automatic Roles</p>
 				</dt>
+
 				<dd class="mt-2 ml-16 text-base text-white">
 					This feature automatically gives a role to new members of your server!
 				</dd>
@@ -120,7 +138,6 @@
 					<div
 						class="absolute flex h-12 w-12 items-center justify-center rounded-md bg-indigo-500 text-white"
 					>
-						<!-- Heroicon name: outline/bolt -->
 						<svg
 							class="h-6 w-6"
 							xmlns="http://www.w3.org/2000/svg"
@@ -139,6 +156,7 @@
 					</div>
 					<p class="ml-16 text-lg font-medium leading-6 text-white">Advanced Infractions System</p>
 				</dt>
+
 				<dd class="mt-2 ml-16 text-base text-white">
 					Our Advanced Infractions System allows you to easily make cases against a user for
 					violating rules, while being able to make it contain information such as moderator name,
@@ -151,7 +169,6 @@
 					<div
 						class="absolute flex h-12 w-12 items-center justify-center rounded-md bg-indigo-500 text-white"
 					>
-						<!-- Heroicon name: outline/chat-bubble-bottom-center-text -->
 						<svg
 							class="h-6 w-6"
 							xmlns="http://www.w3.org/2000/svg"
@@ -170,11 +187,46 @@
 					</div>
 					<p class="ml-16 text-lg font-medium leading-6 text-white">Audit Logging</p>
 				</dt>
+
 				<dd class="mt-2 ml-16 text-base text-white">
 					Everytime a action occurs on your server, we will send a message to a specific channel to
 					help better protect your server against attackers.
 				</dd>
 			</div>
 		</dl>
+	</div>
+</div>
+
+<div class="p-4" />
+
+<Divider Text="Meet the Team" Margin="6" />
+
+<div class="py-10">
+	<div class="mx-auto grid max-w-7xl gap-x-6 gap-y-10 px-6 lg:px-8 xl:grid-cols-3">
+		<div class="max-w-2xl">
+			<h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Meet the Team!</h2>
+			<p class="mt-3 text-lg leading-8 text-white">
+				Interested in joining our team? Join our <a
+					href="https://discord.gg/v9qRYthfHf"
+					class="block text-indigo-600 font-bold xl:inline hover:text-red-600">Discord Server</a
+				>
+			</p>
+		</div>
+
+		<ul class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
+			{#each Members as Member}
+				<li>
+					<div class="flex items-center gap-x-6">
+						<img class="h-16 w-16 rounded-full" src={Member.Avatar} alt={Member.Name} />
+						<div>
+							<h3 class="text-lg font-semibold leading-7 tracking-tight text-white">
+								{Member.Name}
+							</h3>
+							<p class="text-md font-semibold leading-6 text-indigo-600">{Member.Role}</p>
+						</div>
+					</div>
+				</li>
+			{/each}
+		</ul>
 	</div>
 </div>

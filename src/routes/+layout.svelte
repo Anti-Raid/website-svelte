@@ -1,5 +1,6 @@
 <script>
 	import '../app.css';
+	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import 'sweetalert2/dist/sweetalert2.min.css';
 	import Header from '../components/Header.svelte';
 	import Nightmare from '../components/Nightmare.svelte';

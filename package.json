@@ -11,8 +11,8 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
-		"@sveltejs/kit": "next",
 		"@sveltejs/adapter-cloudflare": "^2.3.1",
+		"@sveltejs/kit": "next",
 		"autoprefixer": "^10.4.8",
 		"postcss": "^8.4.16",
 		"prettier": "^2.6.2",
@@ -26,8 +26,10 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@fortawesome/fontawesome-free": "^6.4.2",
+		"@sentry/browser": "^7.69.0",
+		"@tailwindcss/forms": "^0.5.7",
 		"cookie": "^0.6.0",
-		"sweetalert2": "^11.4.29",
-		"@sentry/browser": "^7.69.0"
+		"sweetalert2": "^11.4.29"
 	}
 }

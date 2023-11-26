@@ -128,15 +128,15 @@
 <div class="flex items-center justify-evenly gap-4 mt-4">
 	{#if !steps[currentStep].disableBack && currentStep !== 0}
 		<button
-			class="flex items-center justify-center rounded-md border border-transparent bg-red-600 px-8 py-3 text-base font-medium text-white hover:bg-red-700 md:py-4 md:px-10 md:text-lg"
-			on:click={prevStep}>Previous!</button
+			class="flex items-center justify-center rounded-md border border-transparent bg-red-600 px-6 py-2 text-base font-medium text-white hover:bg-red-700 md:py-4 md:px-10 md:text-lg"
+			on:click={prevStep}><i class="fa-solid fa-arrow-left pr-2" /> Previous</button
 		>
 	{/if}
 
 	{#if steps.length > currentStep + 1 && !steps[currentStep].completed}
 		<button
-			class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
-			on:click={nextStep}>Next!</button
+			class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-2 text-base font-medium text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
+			on:click={nextStep}>Next <i class="fa-solid fa-arrow-right pl-2" /></button
 		>
 	{/if}
 </div>

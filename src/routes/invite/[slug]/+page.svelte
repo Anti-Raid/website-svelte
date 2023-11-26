@@ -39,7 +39,7 @@
 			name: 'Logging',
 			current: false,
 			completed: false,
-			disableBack: false,
+			disableBack: true,
 			onClick: () => {
 				return true;
 			}
@@ -110,7 +110,7 @@
 					<a
 						class="mt-2 bg-indigo-600 px-3 py-2 text-white rounded-md text-base font-medium hover:cursor-pointer hover:bg-indigo-400"
 						href="https://discord.com/api/oauth2/authorize?client_id={client_id}&response_type=code&permissions=8&scope=bot%20applications.commands&guild_id={guild.id}&disable_guild_select=true&state={state}&redirect_uri={PageURL}/invite/complete&prompt=consent"
-						>Invite Now</a
+						><i class="fa-solid fa-plus pr-2" /> Invite Now</a
 					>
 				</div>
 			{/if}
@@ -127,11 +127,11 @@
 					Description="If you do not want Server Logging, or Audit Logs; you may simply skip this step!"
 				/>
 
-                <div class="p-2" />
+				<div class="p-2" />
 
-                <fieldset class="border border-solid rounded-sm border-gray-300 p-3">
-                    <legend class="text-white font-bold tracking-tight">Channels</legend>
-                </fieldset>
+				<fieldset class="border border-solid rounded-sm border-gray-300 p-3">
+					<legend class="text-white font-bold tracking-tight">Channels</legend>
+				</fieldset>
 			{/if}
 
 			{#if currentStep == 2}
