@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "vite dev --host 0.0.0.0",
 		"build": "vite build",
-		"preview": "vite preview",
+		"preview": "vite preview --host 0.0.0.0 --port 5173",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"format": "prettier --write ."
@@ -29,6 +29,7 @@
 	"type": "module",
 	"dependencies": {
 		"@iconify/svelte": "^3.1.6",
+		"@sveltejs/adapter-auto": "^3.1.1",
 		"@tailwindcss/forms": "^0.5.7",
 		"@tailwindcss/typography": "^0.5.10",
 		"@vincjo/datatables": "^1.14.4",

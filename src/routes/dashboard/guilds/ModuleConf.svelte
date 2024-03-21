@@ -13,9 +13,9 @@
 	import { Readable } from "svelte/store";
 	import BoolInput from "../../../components/inputs/BoolInput.svelte";
 	import { UserGuildBaseData } from "$lib/generated/types";
-	import { get } from "http";
 	import { fetchClient } from "$lib/fetch/fetch";
 	import { CanonicalCommandExtendedData } from "$lib/converters";
+	import { get } from "$lib/configs/functions/services";
 
     export let instanceList: InstanceList;
     export let guildId: string;
