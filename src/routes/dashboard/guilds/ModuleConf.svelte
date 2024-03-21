@@ -9,10 +9,11 @@
 	import { DataHandler, Datatable, Th, ThFilter } from "@vincjo/datatables";
 	import { Readable } from "svelte/store";
 	import BoolInput from "../../../components/inputs/BoolInput.svelte";
-	import { UserGuildBaseData } from "$lib/generated/types";
+	import { ApiError, UserGuildBaseData } from "$lib/generated/types";
 	import { fetchClient } from "$lib/fetch/fetch";
 	import { CanonicalCommandExtendedData } from "$lib/converters";
 	import { get } from "$lib/configs/functions/services";
+	import { getAuthCreds } from "$lib/auth/getAuthCreds";
 
     export let instanceList: InstanceList;
     export let guildId: string;
@@ -25,17 +26,21 @@
     }
 
     const toggleModule = async(enabled: boolean) => {
-        let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/modules/${state.openModule}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                disabled: !enabled
-            })
+        let authData = getAuthCreds()
+
+        if(!authData) {
+            return [false, "No auth data"]
+        }
+
+        let res = await fetchClient(`${get('splashtail')}/users/${authData.user_id}/guilds/${guildId}/toggle-module?module=${state.openModule}&disabled=${!enabled}`, {
+            method: "PUT",
+            auth: authData.token,
         })
+
+        if(!res.ok) {
+            return [false, res]
+        }
         
-        let module = state.clusterModuleData[guildClusterId][state.openModule]
         let cmc = findModuleInCmc(currentModuleConfiguration, state.openModule)
 
         if(!cmc) {
@@ -50,6 +55,8 @@
             // Update existing module
             cmc.disabled = !enabled
         }
+
+        return [true, null]
     }
 
     interface State {
@@ -256,9 +263,9 @@
                             <h1 class="text-2xl font-semibold">{state.clusterModuleData[guildClusterId][state.openModule]?.name}</h1>
                             <p class="text-slate-200">{state.clusterModuleData[guildClusterId][state.openModule]?.description}</p>
 
-                            {#if state.clusterModuleData[guildClusterId][state.openModule]?.configurable}
+                            {#if state.clusterModuleData[guildClusterId][state.openModule]?.toggleable}
                                 <p class="text-green-500 mt-2">
-                                    <strong>This module is CONFIGURABLE</strong>
+                                    <strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
                                 </p>
 
                                 <BoolInput 
@@ -270,11 +277,13 @@
                                         findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled === undefined ?
                                         state.clusterModuleData[guildClusterId][state.openModule]?.is_default_enabled 
                                         : !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
-                                    onChange={() => {}}
+                                    onChange={v => {
+                                        toggleModule(v)
+                                    }}
                                 />
                             {:else}
                                 <p class="text-red-500 mt-2">
-                                    <strong>This module is NOT CONFIGURABLE</strong>
+                                    <strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
                                 </p>
                             {/if}
 

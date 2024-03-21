@@ -236,13 +236,13 @@
                             <h1 class="text-2xl font-semibold">{state.clusterModuleData[state?.openCluster][state?.openModule]?.name}</h1>
                             <p class="text-slate-200">{state.clusterModuleData[state?.openCluster][state?.openModule]?.description}</p>
 
-                            {#if state.clusterModuleData[state?.openCluster][state?.openModule].configurable}
+                            {#if state.clusterModuleData[state?.openCluster][state?.openModule].toggleable}
                                 <p class="text-green-500 mt-2">
-                                    <strong>This module is CONFIGURABLE</strong>
+                                    <strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
                                 </p>
                             {:else}
                                 <p class="text-red-500 mt-2">
-                                    <strong>This module is NOT CONFIGURABLE</strong>
+                                    <strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
                                 </p>
                             {/if}
 
