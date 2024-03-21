@@ -4,11 +4,8 @@
 	import { CanonicalCommand, CanonicalCommandData, CanonicalModule, GuildModuleConfiguration } from "$lib/generated/silverpelt";
 	import logger from "$lib/ui/logger";
 	import Message from "../../../components/Message.svelte";
-	import Modal from "../../..//components/Modal.svelte";
 	import NavButton from "../../../components/inputs/button/NavButton.svelte";
-    import ButtonReact from "../../../components/inputs/button/ButtonReact.svelte";
 	import InputText from "../../../components/inputs/InputText.svelte";
-	import { Color } from "../../../components/inputs/button/colors";
 	import { DataHandler, Datatable, Th, ThFilter } from "@vincjo/datatables";
 	import { Readable } from "svelte/store";
 	import BoolInput from "../../../components/inputs/BoolInput.svelte";
@@ -23,12 +20,8 @@
     export let guildData: UserGuildBaseData;
     export let guildClusterId: number;
 
-    const findModuleInCmc = (module: string) => {
+    const findModuleInCmc = (currentModuleConfiguration: GuildModuleConfiguration[], module: string) => {
         return currentModuleConfiguration.find(cmc => cmc.module == module)
-    }
-
-    const getOpenModule = () => {
-        return state.clusterModuleData[guildClusterId][state.openModule]
     }
 
     const toggleModule = async(enabled: boolean) => {
@@ -43,7 +36,7 @@
         })
         
         let module = state.clusterModuleData[guildClusterId][state.openModule]
-        let cmc = findModuleInCmc(state.openModule)
+        let cmc = findModuleInCmc(currentModuleConfiguration, state.openModule)
 
         if(!cmc) {
             // Create new module
@@ -260,10 +253,10 @@
                     <!--Content-->
                     <div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
                         {#if state.openModule}
-                            <h1 class="text-2xl font-semibold">{getOpenModule()?.name}</h1>
-                            <p class="text-slate-200">{getOpenModule()?.description}</p>
+                            <h1 class="text-2xl font-semibold">{state.clusterModuleData[guildClusterId][state.openModule]?.name}</h1>
+                            <p class="text-slate-200">{state.clusterModuleData[guildClusterId][state.openModule]?.description}</p>
 
-                            {#if getOpenModule().configurable}
+                            {#if state.clusterModuleData[guildClusterId][state.openModule]?.configurable}
                                 <p class="text-green-500 mt-2">
                                     <strong>This module is CONFIGURABLE</strong>
                                 </p>
@@ -274,9 +267,9 @@
                                     description="Toggle this module on or off"
                                     disabled={false}
                                     value={
-                                        findModuleInCmc(state?.openModule)?.disabled === undefined ?
-                                        getOpenModule().is_default_enabled 
-                                        : !findModuleInCmc(state?.openModule)?.disabled}
+                                        findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled === undefined ?
+                                        state.clusterModuleData[guildClusterId][state.openModule]?.is_default_enabled 
+                                        : !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
                                     onChange={() => {}}
                                 />
                             {:else}
@@ -285,7 +278,7 @@
                                 </p>
                             {/if}
 
-                            {#if getOpenModule().commands_configurable}
+                            {#if state.clusterModuleData[guildClusterId][state.openModule]?.commands_configurable}
                                 <p class="text-green-500 mt-2">
                                     <strong>Commands in this module are individually CONFIGURABLE</strong>
                                 </p>
@@ -295,7 +288,7 @@
                                 </p>
                             {/if}
 
-                            {#if getOpenModule().web_hidden}
+                            {#if state.clusterModuleData[guildClusterId][state.openModule]?.web_hidden}
                                 <p class="text-red-500 mt-2">
                                     <strong>This module is HIDDEN on the website and dashboard</strong>
                                 </p>
@@ -306,7 +299,7 @@
                                 label="Enabled by default"
                                 description="Whether this module is enabled by default"
                                 disabled={true}
-                                value={getOpenModule().is_default_enabled}
+                                value={state.clusterModuleData[guildClusterId][state.openModule]?.is_default_enabled}
                                 onChange={() => {}}
                             />
 
