@@ -14,6 +14,8 @@
 	import { CanonicalCommandExtendedData } from "$lib/converters";
 	import { get } from "$lib/configs/functions/services";
 	import { getAuthCreds } from "$lib/auth/getAuthCreds";
+	import UnorderedList from "../../../components/UnorderedList.svelte";
+	import ListItem from "../../../components/ListItem.svelte";
 
     export let instanceList: InstanceList;
     export let guildId: string;
@@ -60,9 +62,10 @@
     }
 
     interface State {
+        togglingStates: Record<string, ["loading" | "loading-big" | "error" | "success", string]>;
         openModule: string;
         commandSearch: string;
-        clusterModuleData: Record<number, Record<string, CanonicalModule>>;
+        clusterModuleData: Record<string, CanonicalModule>;
         searchedCommands: LookedUpCommand[];
         clusterFinderOpen: boolean;
         clusterFinderByGuildIdExpectedData: {
@@ -72,6 +75,7 @@
     }
 
     let state: State = {
+        togglingStates: {},
         openModule: "core",
         clusterModuleData: {},
         commandSearch: "",
@@ -85,7 +89,7 @@
         module: CanonicalModule;
     }
     const commandLookup = (): LookedUpCommand[] => {
-        let moduleData = state.clusterModuleData[guildClusterId];
+        let moduleData = state.clusterModuleData;
         if(!moduleData) return [];
 
         let commands: LookedUpCommand[] = [];
@@ -118,8 +122,8 @@
     const fetchCluster = async (_: number | undefined) => {
         logger.info("FetchCluster", "Fetching cluster modules", guildClusterId)
         let resp = await makeSharedRequest(opGetClusterModules(guildClusterId))
-        // Save resp to state
-        if(!state.clusterModuleData[guildClusterId]) state.clusterModuleData[guildClusterId] = resp;
+        logger.info("FetchCluster", "got response", resp)
+        state.clusterModuleData = resp;
     }
 
     $: if(state?.commandSearch) {
@@ -137,7 +141,9 @@
 
     let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
     const createCmdDataTable = async (_: string) => {
-        let module = state.clusterModuleData[guildClusterId][state.openModule];
+        let module = state.clusterModuleData[state.openModule];
+
+        console.log(module, state.clusterModuleData)
 
         let commands: ParsedCanonicalCommandData[] = [];
 
@@ -198,7 +204,7 @@
     </small>
     <section class="command-list flex flex-grow">
         <div class="cluster-map-content flex-1 flex-grow px-2">
-            {#if !state.clusterModuleData[guildClusterId]}
+            {#if !Object.keys(state.clusterModuleData).length}
                 {#await fetchCluster(guildClusterId)}
                     <Message type="loading">
                         Loading cluster modules...
@@ -244,13 +250,13 @@
 
                         <hr class="mb-2" />
 
-                        {#each Object.entries(state.clusterModuleData[guildClusterId]) as [_, module]}
+                        {#each Object.entries(state.clusterModuleData) as [_, module]}
                             {#if !module?.web_hidden}
                                 <NavButton 
                                     current={state.openModule == module?.id}
                                     title={module?.name} 
                                     onClick={() => {
-                                        state.openModule = module?.id || state.clusterModuleData[guildClusterId]["core"].id
+                                        state.openModule = module?.id || state.clusterModuleData["core"].id
                                     }}
                                     extClass="block mb-2 w-full"
                                 />
@@ -260,14 +266,51 @@
                     <!--Content-->
                     <div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
                         {#if state.openModule}
-                            <h1 class="text-2xl font-semibold">{state.clusterModuleData[guildClusterId][state.openModule]?.name}</h1>
-                            <p class="text-slate-200">{state.clusterModuleData[guildClusterId][state.openModule]?.description}</p>
+                            <h1 class="text-2xl font-semibold">{state.clusterModuleData[state.openModule]?.name}</h1>
+                            <p class="text-slate-200">{state.clusterModuleData[state.openModule]?.description}</p>
 
-                            {#if state.clusterModuleData[guildClusterId][state.openModule]?.toggleable}
-                                <p class="text-green-500 mt-2">
-                                    <strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
-                                </p>
+                            <details>
+                                <summary class="hover:cursor-pointer">Misc Details</summary>
+                                <UnorderedList>
+                                    <ListItem>
+                                        {#if state.clusterModuleData[state.openModule]?.commands_configurable}
+                                            <small class="text-green-500 mt-2">
+                                                <strong>Commands in this module are individually CONFIGURABLE</strong>
+                                            </small>
+                                        {:else}
+                                            <small class="text-red-500 mt-2">
+                                                <strong>Commands in this module are NOT individually CONFIGURABLE</strong>
+                                            </small>
+                                        {/if}    
+                                    </ListItem>
 
+                                    <ListItem>
+                                        {#if state.clusterModuleData[state.openModule]?.web_hidden}
+                                            <small class="text-red-500 mt-2">
+                                                <strong>This module is HIDDEN on the website and dashboard</strong>
+                                            </small>
+                                        {:else}
+                                            <small class="text-green-500 mt-2">
+                                                <strong>This module is VISIBLE on the website and dashboard</strong> 
+                                            </small>
+                                        {/if}    
+                                    </ListItem>
+
+                                    <ListItem>
+                                        {#if state.clusterModuleData[state.openModule]?.toggleable}
+                                            <small class="text-green-500 mt-2">
+                                                <strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
+                                            </small>
+                                        {:else}
+                                            <small class="text-red-500 mt-2">
+                                                <strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
+                                            </small>
+                                        {/if}    
+                                    </ListItem>
+                                </UnorderedList>
+                            </details>
+
+                            {#if state.clusterModuleData[state.openModule]?.toggleable}
                                 <BoolInput 
                                     id="enabled"
                                     label="Module Enabled"
@@ -275,32 +318,20 @@
                                     disabled={false}
                                     value={
                                         findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled === undefined ?
-                                        state.clusterModuleData[guildClusterId][state.openModule]?.is_default_enabled 
+                                        state.clusterModuleData[state.openModule]?.is_default_enabled 
                                         : !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
-                                    onChange={v => {
-                                        toggleModule(v)
+                                    onChange={async v => {
+                                        state.togglingStates[`mod/${state.openModule}/toggle`] = ["loading", "Saving module state..."]
+                                        await toggleModule(v)
+                                        state.togglingStates[`mod/${state.openModule}/toggle`] = ["success", v ? "Successfully enabled module" : "Successfully disabled module"]
                                     }}
                                 />
-                            {:else}
-                                <p class="text-red-500 mt-2">
-                                    <strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
-                                </p>
-                            {/if}
 
-                            {#if state.clusterModuleData[guildClusterId][state.openModule]?.commands_configurable}
-                                <p class="text-green-500 mt-2">
-                                    <strong>Commands in this module are individually CONFIGURABLE</strong>
-                                </p>
-                            {:else}
-                                <p class="text-red-500 mt-2">
-                                    <strong>Commands in this module are NOT individually CONFIGURABLE</strong>
-                                </p>
-                            {/if}
-
-                            {#if state.clusterModuleData[guildClusterId][state.openModule]?.web_hidden}
-                                <p class="text-red-500 mt-2">
-                                    <strong>This module is HIDDEN on the website and dashboard</strong>
-                                </p>
+                                {#if state.togglingStates[`mod/${state.openModule}/toggle`]}
+                                    <Message type={state.togglingStates[`mod/${state.openModule}/toggle`][0]}>
+                                        {state.togglingStates[`mod/${state.openModule}/toggle`][1]}
+                                    </Message>
+                                {/if}
                             {/if}
 
                             <BoolInput 
@@ -308,7 +339,7 @@
                                 label="Enabled by default"
                                 description="Whether this module is enabled by default"
                                 disabled={true}
-                                value={state.clusterModuleData[guildClusterId][state.openModule]?.is_default_enabled}
+                                value={state.clusterModuleData[state.openModule]?.is_default_enabled}
                                 onChange={() => {}}
                             />
 
@@ -380,22 +411,16 @@
                                                         </ul>
                                                     </td>
                                                     <td>
-                                                        <ul class="list-disc list-outside">
-                                                            {#each (row.extended_data?.default_perms?.checks || []) as check}
-                                                                <li class="mr-2">
-                                                                    <pre class="command-parameter">{check.kittycat_perms}</pre>
-                                                                </li>
-                                                            {/each}
-                                                        </ul>
+                                                        Testing
                                                     </td>
                                                 </tr>
                                             {/each}
                                         </tbody>
                                     </table>            
                                 </Datatable>
-                            {:catch}
+                            {:catch err}
                                 <Message type="error">
-                                    Failed to load commands
+                                    Failed to load commands: {err}
                                 </Message>
                             {/await}
                         {/if}
