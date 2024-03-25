@@ -2,10 +2,13 @@
 	import { goto } from "$app/navigation";
 	import { getAuthCreds } from "$lib/auth/getAuthCreds";
 	import { get } from "$lib/configs/functions/services";
+	import { makeSharedRequest, opGetClusterHealth, opGetClusterModules, opGetModuleConfiguration } from "$lib/fetch/ext";
 	import { fetchClient } from "$lib/fetch/fetch";
 	import { ApiError, UserGuildBaseData } from "$lib/generated/types";
+	import { getClusterOfShard, getShardIDFromGuildID } from "$lib/mewext/mewext";
 	import { formatApiError } from "$lib/ui/error";
     import Message from "../../../components/Message.svelte";
+	import Guild from "./Guild.svelte";
 
     let currentState = "Loading dashboard data"
 
@@ -43,8 +46,34 @@
 
         let guildData: UserGuildBaseData = await res.json()
 
+        currentState = "Fetching cluster health and metadata"
+
+        let instanceList = await makeSharedRequest(opGetClusterHealth)
+
+        currentState = "Fetching cluster modules for guild"
+
+        let [guildShardId, err] = getShardIDFromGuildID(guildId, instanceList.Instances.length)
+
+        if(err) {
+            throw err
+        }
+
+        let guildClusterId = getClusterOfShard(guildShardId, instanceList.Map)
+
+        let clusterModules = await makeSharedRequest(opGetClusterModules(guildClusterId))
+
+        currentState = "Fetching current module configuration"
+
+        let currentModuleConfiguration = await makeSharedRequest(opGetModuleConfiguration(guildId))
+
         return {
+            guildId,
+            currentModuleConfiguration,
             guildData,
+            instanceList,
+            guildShardId,
+            guildClusterId,
+            clusterModules
         }
     }
 </script>
@@ -61,12 +90,15 @@
     </small>
 {:then r}
     {#if r}
-        <section class="flex justify-center guild-basic-details"> 
-            <!--Avatar-->
-            <img loading="lazy" src={r.guildData.icon} alt="" />
-            <!--Guild Name-->
-            <h1 class="text-2xl font-semibold">{r.guildData.name}</h1>
-        </section>
+        <Guild 
+            guildId={r.guildId}
+            currentModuleConfiguration={r.currentModuleConfiguration}
+            guildData={r.guildData}
+            instanceList={r.instanceList}
+            guildShardId={r.guildShardId}
+            guildClusterId={r.guildClusterId}
+            clusterModules={r.clusterModules}
+        />
     {:else}
         <Message type="loading">Please wait</Message>
     {/if}

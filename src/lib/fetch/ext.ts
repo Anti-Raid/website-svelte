@@ -1,7 +1,8 @@
+import { getAuthCreds } from "$lib/auth/getAuthCreds"
 import { get } from "$lib/configs/functions/services"
 import { fetchClient } from "$lib/fetch/fetch"
 import { InstanceList } from "$lib/generated/mewld/proc"
-import { CanonicalModule } from "$lib/generated/silverpelt"
+import { CanonicalModule, GuildModuleConfiguration } from "$lib/generated/silverpelt"
 import { ApiError } from "$lib/generated/types"
 import logger from "$lib/ui/logger"
 
@@ -9,7 +10,8 @@ let cachedData: Map<string, any> = new Map()
 
 interface SharedRequester<T> {
     name: string
-    requestFunc: () => Promise<T>
+    requestFunc: () => Promise<T>,
+    shouldCache: boolean
 }
 
 interface SharedRequestOpts {
@@ -26,7 +28,9 @@ export async function makeSharedRequest<T>(requester: SharedRequester<T>, opts?:
 
     logger.info('makeSharedRequest', `Fetched ${requester.name} from server`, data)
 
-    cachedData.set(requester.name, data)
+    if (requester.shouldCache) {
+        cachedData.set(requester.name, data)
+    }
 
     return data
 }
@@ -44,7 +48,8 @@ export const opGetClusterHealth: SharedRequester<InstanceList> = {
         const data: InstanceList = await res.json()
         
         return data
-    }
+    },
+    shouldCache: true
 }
 
 // Fetches the modules of a cluster
@@ -68,6 +73,31 @@ export const opGetClusterModules = (clusterId: number): SharedRequester<Record<s
             }
 
             return parsedMap
-        }
+        },
+        shouldCache: true
     }    
+}
+
+export const opGetModuleConfiguration = (guildId: string): SharedRequester<GuildModuleConfiguration[]> => {
+    let authData = getAuthCreds()
+    
+    return {
+        name: `guildModuleConfiguration:${guildId}`,
+        requestFunc: async (): Promise<GuildModuleConfiguration[]> => {
+            const res = await fetchClient(`${get('splashtail')}/users/${authData?.user_id}/guilds/${guildId}/module-configurations`, {
+                headers: {
+                    Authorization: `User ${authData?.token}`
+                }
+            });
+            if(!res.ok) {
+                let resp: ApiError = await res.json()
+                throw new Error(`Failed to fetch guild module configuration: ${res.status}: ${resp?.message}`)
+            }
+        
+            const data: GuildModuleConfiguration[] = await res.json()
+            
+            return data
+        },
+        shouldCache: false
+    }
 }
