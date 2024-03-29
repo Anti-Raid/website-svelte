@@ -14,10 +14,16 @@
 	import InputText from '../inputs/InputText.svelte';
 	import GuildClusterLookup from './GuildClusterLookup.svelte';
 	import { Color } from '../inputs/button/colors';
-	import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
+	import { DataHandler } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
 	import BoolInput from '../inputs/BoolInput.svelte';
 	import { CanonicalCommandExtendedData } from '$lib/converters';
+	import Pagination from './datatable/Pagination.svelte';
+	import RowCount from './datatable/RowCount.svelte';
+	import RowsPerPage from './datatable/RowsPerPage.svelte';
+	import Search from './datatable/Search.svelte';
+	import ThFilter from './datatable/ThFilter.svelte';
+	import ThSort from './datatable/ThSort.svelte';
 
 	export let instanceList: InstanceList;
 
@@ -106,6 +112,7 @@
 	}
 
 	let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
+
 	const createCmdDataTable = async (_: string) => {
 		let module = state.clusterModuleData[state.openCluster][state.openModule];
 
@@ -153,7 +160,6 @@
 		}
 
 		const handler = new DataHandler(commands, { rowsPerPage: 20 });
-
 		cmdDataTable = handler.getRows();
 
 		return {
@@ -299,14 +305,23 @@
 							{#await createCmdDataTable(state?.openModule)}
 								<Message type="loading">Loading commands...</Message>
 							{:then data}
-								<Datatable handler={data.handler} search={false}>
-									<table class="overflow-x-auto">
+								<div class="overflow-x-auto space-y-4">
+									<!-- Header -->
+									<header class="flex justify-between gap-4">
+										<Search handler={data.handler} />
+										<RowsPerPage handler={data.handler} />
+									</header>
+
+									<!-- Table -->
+									<table class="table table-hover table-compact w-full table-auto">
 										<thead>
 											<tr>
-												<Th handler={data.handler} orderBy={'qualified_name'}>Name</Th>
-												<Th handler={data.handler} orderBy={'description'}>Description</Th>
-												<Th handler={data.handler} orderBy={'arguments'}>Arguments</Th>
-												<Th handler={data.handler} orderBy={'search_permissions'}>Permissions</Th>
+												<ThSort handler={data.handler} orderBy={'qualified_name'}>Name</ThSort>
+												<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
+												<ThSort handler={data.handler} orderBy={'arguments'}>Arguments</ThSort>
+												<ThSort handler={data.handler} orderBy={'search_permissions'}
+													>Permissions</ThSort
+												>
 											</tr>
 											<tr>
 												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
@@ -315,6 +330,7 @@
 												<ThFilter handler={data.handler} filterBy={'search_permissions'} />
 											</tr>
 										</thead>
+
 										<tbody>
 											{#each $cmdDataTable as row}
 												<tr>
@@ -379,7 +395,13 @@
 											{/each}
 										</tbody>
 									</table>
-								</Datatable>
+
+									<!-- Footer -->
+									<footer class="flex justify-between">
+										<RowCount handler={data.handler} />
+										<Pagination handler={data.handler} />
+									</footer>
+								</div>
 							{:catch}
 								<Message type="error">Failed to load commands</Message>
 							{/await}
@@ -437,20 +459,3 @@
 		</Modal>
 	{/if}
 </article>
-
-<style>
-	table {
-		color: white;
-		margin: 0 !important;
-	}
-	tbody td {
-		border: 1px solid #f5f5f5;
-		padding: 4px 20px;
-	}
-	tbody tr {
-		transition: all, 0.2s;
-	}
-	tbody tr:hover {
-		background: #252323;
-	}
-</style>
