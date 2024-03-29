@@ -18,18 +18,20 @@
 		on:change={() => {
 			if (onChange) onChange(value);
 		}}
-		aria-disabled={disabled ? true : false}
-		disabled={disabled ? true : false}
-		required={required ? true : false}
-		aria-required={required ? true : false}
-		class={disabled ? 'cursor-not-allowed bg-slate-400' : 'cursor-pointer'}
+		aria-disabled={disabled}
+		{disabled}
+		{required}
+		aria-required={required}
+		class="rounded-full cursor-pointer checked:bg-blue-500 disabled:checked:bg-blue-500 disabled:checked:opacity-85 disabled:cursor-not-allowed disabled:bg-slate-500"
 	/>
+
 	<label for={id} class="text-white text-left">
 		<span class="text-white text-left ml-1">
-			<span class="text-yellow-200 hover:cursor-pointer font-semibold">
+			<span class="text-gray-200 hover:cursor-pointer font-semibold">
 				{label}
 			</span>
 		</span>
 	</label>
 </div>
+
 <p class="opacity-80 text-sm">{description}</p>

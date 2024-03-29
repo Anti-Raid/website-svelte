@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { error } from "$lib/toast";
+	import { error } from '$lib/toast';
 
 	interface Step {
 		name: string;
@@ -22,7 +22,7 @@
 			currentStep = currentStep + 1;
 			return true;
 		} catch (err) {
-			error(err?.toString() || "An unknown error occurred");
+			error(err?.toString() || 'An unknown error occurred');
 
 			return false;
 		}

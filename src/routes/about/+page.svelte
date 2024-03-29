@@ -2,7 +2,7 @@
 	import Divider from '../../components/Divider.svelte';
 	import BotFeatures from '../../components/common/BotFeatures.svelte';
 	import ClusterHealth from '../../components/common/ClusterHealth.svelte';
-	import support from "$lib/configs/data/support.json";
+	import support from '$lib/configs/data/support.json';
 
 	interface TeamMember {
 		Name: string;
@@ -58,9 +58,8 @@
 	<span class="text-indigo-600">AntiRaid</span> is a
 	<span class="font-extrabold">Automatic Moderation Service</span>
 	created to protect your
-	<a href={support?.discord} class="text-indigo-600 xl:inline hover:text-red-600"
-		>Discord Server</a
-	> from threats, unsafe bots and spamming using our advanced technology!
+	<a href={support?.discord} class="text-indigo-600 xl:inline hover:text-red-600">Discord Server</a>
+	from threats, unsafe bots and spamming using our advanced technology!
 </p>
 
 <div class="p-4" />

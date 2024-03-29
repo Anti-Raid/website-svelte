@@ -11,7 +11,9 @@
 			<h2 class="mb-8 font-extrabold text-9xl">
 				<span class="sr-only">Error</span>{$page.status}
 			</h2>
-			<p class="text-2xl font-semibold md:text-3xl">{$page?.error?.message || "Something happened!"}</p>
+			<p class="text-2xl font-semibold md:text-3xl">
+				{$page?.error?.message || 'Something happened!'}
+			</p>
 			<p class="mt-4 mb-8 dark:text-gray-400">{subText || 'Unknown Error!'}</p>
 			<p class="mt-4 mb-8 dark:text-gray-400">{JSON.stringify($page.error)}</p>
 			<a

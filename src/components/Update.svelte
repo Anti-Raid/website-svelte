@@ -37,7 +37,7 @@
 					<button
 						type="button"
 						class="-mr-1 flex rounded-md p-2 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
-						on:click={() => isOpen = !isOpen}
+						on:click={() => (isOpen = !isOpen)}
 					>
 						<span class="sr-only">Dismiss</span>
 						<svg

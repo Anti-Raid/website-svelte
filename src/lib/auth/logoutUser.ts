@@ -1,4 +1,4 @@
 export const logoutUser = () => {
-    localStorage.removeItem('wistala')
-    localStorage.clear()
-}
+	localStorage.removeItem('wistala');
+	localStorage.clear();
+};
