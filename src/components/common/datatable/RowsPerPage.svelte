@@ -7,7 +7,10 @@
 
 <aside class="flex place-items-center">
 	Show
-	<select class="bg-slate-700 rounded-md text-white font-semibold border-none text-base focus:outline-none ml-2" bind:value={$rowsPerPage}>
+	<select
+		class="bg-surface-700 rounded-md text-primary-600 font-semibold border-none text-base focus:outline-none ml-2"
+		bind:value={$rowsPerPage}
+	>
 		{#each options as option}
 			<option value={option}>
 				{option}

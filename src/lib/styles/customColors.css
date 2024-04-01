@@ -1,7 +1,7 @@
 /**
  DARK MODE THEME AND ACCENTS
 */
-[data-theme='violet'] {
+[data-theme='skeleton'] {
 	background-color: #16151d;
 	--gradient: rgba(146, 51, 234, 0.2);
 	--900: rgba(76, 29, 149);

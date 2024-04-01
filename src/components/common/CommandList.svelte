@@ -313,8 +313,8 @@
 									</header>
 
 									<!-- Table -->
-									<table class="table table-hover table-compact w-full table-auto">
-										<thead>
+									<table class="table table-hover table-compact bg-surface-400 w-full table-auto">
+										<thead class="bg-surface-500">
 											<tr>
 												<ThSort handler={data.handler} orderBy={'qualified_name'}>Name</ThSort>
 												<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
@@ -418,10 +418,9 @@
 	</details>
 
 	{#if state.clusterFinderOpen}
-		<Modal bind:showModal={state.clusterFinderOpen}>
-			<h1 slot="header" class="font-semibold text-2xl">Help</h1>
-			<h2 class="text-xl">Server Lookup</h2>
-			<p>
+		<Modal Title="Help" Logo="/logo.webp" bind:showModal={state.clusterFinderOpen}>
+			<h1 class="font-semibold text-xl">Server Lookup</h1>
+			<p class="text-gray-300 font-semibold">
 				If you're planning to add AntiRaid to a specific server, please enter the Server's ID below.
 				You can find your Server's ID from either the <em>AntiRaid Dashboard</em> or by
 				<em
@@ -432,6 +431,8 @@
 					></em
 				>
 			</p>
+
+			<div class="p-3" />
 
 			<GuildClusterLookup
 				{instanceList}
