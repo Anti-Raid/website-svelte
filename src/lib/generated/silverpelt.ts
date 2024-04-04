@@ -8,33 +8,33 @@ From silverpelt/canonical_module
 
 export type CommandExtendedDataMap = Record<string, CommandExtendedData>;
 export interface CanonicalModule {
-  id: string;
-  name: string;
-  description: string;
-  toggleable: boolean;
-  commands_configurable: boolean;
-  web_hidden: boolean;
-  is_default_enabled: boolean;
-  commands: CanonicalCommand[];
+	id: string;
+	name: string;
+	description: string;
+	toggleable: boolean;
+	commands_configurable: boolean;
+	web_hidden: boolean;
+	is_default_enabled: boolean;
+	commands: CanonicalCommand[];
 }
 export interface CanonicalCommand {
-  command: CanonicalCommandData;
-  extended_data: CommandExtendedDataMap;
+	command: CanonicalCommandData;
+	extended_data: CommandExtendedDataMap;
 }
 export interface CanonicalCommandArgument {
-  name: string;
-  description?: string;
-  required: boolean;
-  choices: string[];
+	name: string;
+	description?: string;
+	required: boolean;
+	choices: string[];
 }
 export interface CanonicalCommandData {
-  name: string;
-  qualified_name: string;
-  description?: string;
-  nsfw: boolean;
-  subcommands: CanonicalCommandData[];
-  subcommand_required: boolean;
-  arguments: CanonicalCommandArgument[];
+	name: string;
+	qualified_name: string;
+	description?: string;
+	nsfw: boolean;
+	subcommands: CanonicalCommandData[];
+	subcommand_required: boolean;
+	arguments: CanonicalCommandArgument[];
 }
 
 //////////
@@ -48,43 +48,43 @@ export type NativePermission = string;
  * PermissionCheck represents the permissions needed to run a command.
  */
 export interface PermissionCheck {
-  kittycat_perms: string[]; // The kittycat permissions needed to run the command
-  native_perms: NativePermission[]; // The native permissions needed to run the command (converted from serenity::all::Permissions)
-  outer_and: boolean; // Whether the next permission check should be ANDed (all needed) or OR'd (at least one) to the current
-  inner_and: boolean; // Whether or not the perms are ANDed (all needed) or OR'd (at least one)
+	kittycat_perms: string[]; // The kittycat permissions needed to run the command
+	native_perms: NativePermission[]; // The native permissions needed to run the command (converted from serenity::all::Permissions)
+	outer_and: boolean; // Whether the next permission check should be ANDed (all needed) or OR'd (at least one) to the current
+	inner_and: boolean; // Whether or not the perms are ANDed (all needed) or OR'd (at least one)
 }
 /**
  * PermissionChecks represents a list of permission checks.
  */
 export interface PermissionChecks {
-  checks: PermissionCheck[]; // The list of permission checks
-  checks_needed: number /* int */; // Number of checks that need to be true
+	checks: PermissionCheck[]; // The list of permission checks
+	checks_needed: number /* int */; // Number of checks that need to be true
 }
 /**
  * CommandExtendedData represents the default permissions needed to run a command.
  */
 export interface CommandExtendedData {
-  default_perms: PermissionChecks; // The default permissions needed to run this command
-  is_default_enabled: boolean; // Whether or not the command is enabled by default
+	default_perms: PermissionChecks; // The default permissions needed to run this command
+	is_default_enabled: boolean; // Whether or not the command is enabled by default
 }
 /**
  * GuildCommandConfiguration represents guild command configuration data.
  */
 export interface GuildCommandConfiguration {
-  id: string; // The ID
-  guild_id: string; // The guild id (from db)
-  command: string; // The command name
-  commands?: PermissionChecks; // The permission method (kittycat)
-  disabled?: boolean; // Whether or not the command is disabled
+	id: string; // The ID
+	guild_id: string; // The guild id (from db)
+	command: string; // The command name
+	commands?: PermissionChecks; // The permission method (kittycat)
+	disabled?: boolean; // Whether or not the command is disabled
 }
 /**
  * GuildModuleConfiguration represents guild module configuration data.
  */
 export interface GuildModuleConfiguration {
-  id: string; // The ID
-  guild_id: string; // The guild id (from db)
-  module: string; // The module id
-  disabled?: boolean; // Whether or not the module is disabled or not. None means to use the default module configuration
+	id: string; // The ID
+	guild_id: string; // The guild id (from db)
+	module: string; // The module id
+	disabled?: boolean; // Whether or not the module is disabled or not. None means to use the default module configuration
 }
 
 //////////
@@ -94,11 +94,11 @@ From botv2 silverpelt/permissions.rs
 */
 
 export interface PermissionResult {
-  var: string;
-  message?: string;
-  check?: PermissionCheck;
-  command_config?: GuildCommandConfiguration;
-  module_config?: GuildModuleConfiguration;
-  checks?: PermissionChecks;
-  error?: string;
+	var: string;
+	message?: string;
+	check?: PermissionCheck;
+	command_config?: GuildCommandConfiguration;
+	module_config?: GuildModuleConfiguration;
+	checks?: PermissionChecks;
+	error?: string;
 }

@@ -3,8 +3,14 @@
 @tailwind utilities;
 @tailwind variants;
 
-main, h1, h2, h3, h4, h5, h6 {
-    color: white;
+main,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: white;
 }
 
 @layer base {
@@ -55,12 +61,7 @@ main, h1, h2, h3, h4, h5, h6 {
 }
 
 @layer base {
-	* {
-		@apply border-border;
-	}
 	body {
-		font-feature-settings:
-			'rlig' 1,
-			'calt' 1;
+		font-feature-settings: 'rlig' 1, 'calt' 1;
 	}
 }

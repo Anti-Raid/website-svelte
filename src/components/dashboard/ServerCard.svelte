@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
 	interface Action {
 		name: string;
@@ -15,7 +15,7 @@ import { onMount } from 'svelte';
 	export let blurImage: boolean = false;
 	export let actions: Action[] = [];
 	export let mainAction: Action;
-	export let disabled: string = ""; // If set, disabled with this message
+	export let disabled: string = ''; // If set, disabled with this message
 
 	const imageLoadError = (a: any) => {
 		a.target.src = '/logo.webp';
@@ -54,7 +54,7 @@ import { onMount } from 'svelte';
 	<div class="bg-slate-900 dark:bg-gray-800 pt-6 px-6 pb-2 rounded-b">
 		<div class="flex justify-center items-center mb-2">
 			<img
-				class={"h-7 w-7 rounded-md icon " + (blurImage ? "blur" : "")}
+				class={'h-7 w-7 rounded-md icon ' + (blurImage ? 'blur' : '')}
 				src={image}
 				height="28px"
 				width="28px"
@@ -64,16 +64,20 @@ import { onMount } from 'svelte';
 
 			{#if disabled}
 				<span class="ml-2 text-xl font-extrabold dark:text-white truncate">{name}</span>
+			{:else if mainAction.click}
+				<button
+					on:click={mainAction.click}
+					class="ml-2 text-xl font-extrabold dark:text-white truncate hover:underline"
+				>
+					{name}
+				</button>
 			{:else}
-				{#if mainAction.click}
-					<button on:click={mainAction.click} class="ml-2 text-xl font-extrabold dark:text-white truncate hover:underline">
-						{name}
-					</button>
-				{:else}
-					<a href={mainAction.href} class="ml-2 text-xl font-extrabold dark:text-white truncate hover:underline block">
-						{name}
-					</a>
-				{/if}
+				<a
+					href={mainAction.href}
+					class="ml-2 text-xl font-extrabold dark:text-white truncate hover:underline block"
+				>
+					{name}
+				</a>
 			{/if}
 		</div>
 
@@ -139,18 +143,16 @@ import { onMount } from 'svelte';
 </section>
 
 <style>
-.icon.blur:hover {
-        filter: blur(0px);
-}
+	.icon.blur:hover {
+		filter: blur(0px);
+	}
 
-.card {
-        transition: all 0.3s;
-        box-shadow:
-                0 4px 8px 0 #23272a,
-                0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
+	.card {
+		transition: all 0.3s;
+		box-shadow: 0 4px 8px 0 #23272a, 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
 
-.card:hover {
-        transform: translate(0px, -5px);
-}
+	.card:hover {
+		transform: translate(0px, -5px);
+	}
 </style>

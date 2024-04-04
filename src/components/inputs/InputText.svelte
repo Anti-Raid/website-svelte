@@ -18,8 +18,8 @@
 	let errorMsg = '';
 
 	function checkLength() {
-		if(onChange) {
-			onChange()
+		if (onChange) {
+			onChange();
 		}
 
 		if (!showErrors) return;

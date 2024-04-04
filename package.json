@@ -29,6 +29,8 @@
 	"type": "module",
 	"dependencies": {
 		"@iconify/svelte": "^3.1.6",
+		"@skeletonlabs/skeleton": "^2.9.0",
+		"@skeletonlabs/tw-plugin": "^0.3.1",
 		"@sveltejs/adapter-auto": "^3.1.1",
 		"@tailwindcss/forms": "^0.5.7",
 		"@tailwindcss/typography": "^0.5.10",

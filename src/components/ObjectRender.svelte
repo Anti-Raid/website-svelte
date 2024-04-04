@@ -20,4 +20,3 @@
 {:else}
 	<p class="text-red-500">No information can be provided about this entity</p>
 {/if}
-

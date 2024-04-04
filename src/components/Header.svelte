@@ -20,94 +20,94 @@
 		{ name: 'Status', href: '/status' }
 	];
 
-	let open = "";
+	let open = '';
 
-	let mobileMenuOpen: boolean = false
-	let profileMenuOpen: boolean = false
+	let mobileMenuOpen: boolean = false;
+	let profileMenuOpen: boolean = false;
 
 	type LoginData = null | {
 		profileNavigation: {
-			name: string
-			href: string
-		}[]
-		user: User | undefined
-	}
+			name: string;
+			href: string;
+		}[];
+		user: User | undefined;
+	};
 
 	const getLoginData = async () => {
 		let authCreds = getAuthCreds();
 
-		if(!authCreds) return;
+		if (!authCreds) return;
 
 		let authCheck = false;
 		let user: User | undefined;
 
-		let cachedAuthUser = localStorage.getItem("authUser")
-		if(cachedAuthUser) {
-        	setTimeout(async () => {
-            	// Check auth
-				if(!authCreds) {
-					throw new Error("No auth credentials found")
+		let cachedAuthUser = localStorage.getItem('authUser');
+		if (cachedAuthUser) {
+			setTimeout(async () => {
+				// Check auth
+				if (!authCreds) {
+					throw new Error('No auth credentials found');
 				}
 
 				try {
 					let check = await checkAuthCreds(authCreds);
 
-					if(!check) {
-						logoutUser()
-						return
+					if (!check) {
+						logoutUser();
+						return;
 					}
 				} catch {
-					return
+					return;
 				}
-			}, 1000 * 60 * 5)
-        	user = JSON.parse(cachedAuthUser)
-			authCheck = true
-    	} else {
+			}, 1000 * 60 * 5);
+			user = JSON.parse(cachedAuthUser);
+			authCheck = true;
+		} else {
 			try {
 				authCheck = await checkAuthCreds(authCreds);
 			} catch {
-				return
+				return;
 			}
 
-			if(!authCheck) {
-				logoutUser()
-				return
+			if (!authCheck) {
+				logoutUser();
+				return;
 			}
 
 			user = await getUser(authCreds);
 
-			if(!user) {
-				logger.error("Auth", "Failed to get user data")
-				return
+			if (!user) {
+				logger.error('Auth', 'Failed to get user data');
+				return;
 			}
 		}
 
-		localStorage.setItem("authUser", JSON.stringify(user))
+		localStorage.setItem('authUser', JSON.stringify(user));
 
 		let data: LoginData = {
 			profileNavigation: [
 				{
-					name: "Dashboard",
-					href: "/dashboard"
+					name: 'Dashboard',
+					href: '/dashboard'
 				},
 				{
-					name: "Developers",
-					href: "/dashboard/developers"
+					name: 'Developers',
+					href: '/dashboard/developers'
 				}
 			],
 			user
-		}
+		};
 
-		return data
-	}
+		return data;
+	};
 
 	const loginDiscord = async () => {
 		try {
-			await loginUser()
+			await loginUser();
 		} catch (err) {
-			error(err?.toString() || "Failed to login")
+			error(err?.toString() || 'Failed to login');
 		}
-	}
+	};
 
 	$: {
 		navigation.map((p) => {
@@ -139,7 +139,7 @@
 						href={item.href}
 						current={item.name === open}
 						onClick={() => {
-							mobileMenuOpen = false
+							mobileMenuOpen = false;
 						}}
 						extClass="hidden md:block"
 					/>
@@ -150,7 +150,7 @@
 			<button
 				type="button"
 				class="block md:hidden rounded-md p-2 font-medium text-left text-gray-300 hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-1 focus:ring-inset focus:ring-white"
-				on:click={() => mobileMenuOpen = !mobileMenuOpen}
+				on:click={() => (mobileMenuOpen = !mobileMenuOpen)}
 				aria-controls="mobile-menu"
 				aria-expanded="false"
 			>
@@ -172,14 +172,10 @@
 							id="user-menu-button"
 							aria-expanded="false"
 							aria-haspopup="true"
-							on:click={() => profileMenuOpen = !profileMenuOpen}
+							on:click={() => (profileMenuOpen = !profileMenuOpen)}
 						>
 							<span class="sr-only">Open user menu</span>
-							<img
-								class="h-8 w-8 rounded-full"
-								src={data?.user?.user?.avatar}
-								alt=""
-							/>
+							<img class="h-8 w-8 rounded-full" src={data?.user?.user?.avatar} alt="" />
 						</button>
 
 						{#if profileMenuOpen}
@@ -190,10 +186,14 @@
 								id="profile-menu"
 								class="text-white font-semibold"
 							>
-								<div class="transition absolute z-50 w-96 max-w-sm px-4 mt-3 transform -right-0 opacity-100 translate-y-0">
-									<div class="dropdown-container overflow-hidden rounded-lg shadow-lg ring-1 ring-black bg-black ring-opacity-5">
+								<div
+									class="transition absolute z-50 w-96 max-w-sm px-4 mt-3 transform -right-0 opacity-100 translate-y-0"
+								>
+									<div
+										class="dropdown-container overflow-hidden rounded-lg shadow-lg ring-1 ring-black bg-black ring-opacity-5"
+									>
 										<div class="relative w-full">
-											{#each (data?.profileNavigation || []) as item}
+											{#each data?.profileNavigation || [] as item}
 												<a href={item.href} class="block hover:bg-slate-800 p-7">
 													{item.name}
 												</a>
@@ -217,13 +217,13 @@
 				<button
 					type="button"
 					on:click={() => {
-						window.location.reload()
+						window.location.reload();
 					}}
 					class="text-red-500"
 				>
 					Reload?
 				</button>
-			{/await}	
+			{/await}
 		</div>
 	</div>
 
@@ -236,12 +236,12 @@
 						href={item.href}
 						current={item.name === open}
 						onClick={() => {
-							mobileMenuOpen = false
+							mobileMenuOpen = false;
 						}}
 						extClass="block"
 					/>
 				{/each}
 			</div>
 		</div>
-	{/if}	
+	{/if}
 </header>

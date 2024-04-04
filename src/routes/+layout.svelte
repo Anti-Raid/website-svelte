@@ -10,5 +10,4 @@
 <main class="p-3 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 	<slot />
 	<SvelteToast options={{}} />
-</main>	
-
+</main>

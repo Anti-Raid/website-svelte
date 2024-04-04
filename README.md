@@ -39,4 +39,4 @@ You can preview the production build with `npm run preview`.
 
 ## Licensing
 
-- ``src/components/inputs`` and ``src/components/inputs/button`` come from [panelv2](https://github.com/infinitybotlist/panelv2)
+- `src/components/inputs` and `src/components/inputs/button` come from [panelv2](https://github.com/infinitybotlist/panelv2)

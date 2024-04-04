@@ -4,7 +4,7 @@
 	import support from '../lib/configs/data/support.json';
 	import BotFeatures from '../components/common/BotFeatures.svelte';
 	import ClusterHealth from '../components/common/ClusterHealth.svelte';
-	import Message from "../components/Message.svelte";
+	import Message from '../components/Message.svelte';
 	import { makeSharedRequest, opGetClusterHealth } from '$lib/fetch/ext';
 	import CommandList from '../components/common/CommandList.svelte';
 </script>
@@ -17,9 +17,8 @@
 <div class="text-center lg:text-left">
 	<h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
 		<span class="block text-white xl:inline">Protect your</span>
-		<a
-			href={support?.discord}
-			class="block text-indigo-600 xl:inline hover:text-red-600">Discord Server</a
+		<a href={support?.discord} class="block text-indigo-600 xl:inline hover:text-red-600"
+			>Discord Server</a
 		>
 	</h1>
 
@@ -47,6 +46,7 @@
 				href="/about"
 				class="flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-8 py-3 text-base font-medium text-indigo-700 hover:bg-indigo-200 md:py-4 md:px-10 md:text-lg"
 				>Learn More <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
+			</a>
 		</div>
 	</div>
 </div>
