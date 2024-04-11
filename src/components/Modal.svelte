@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let Title: string; // Modal Title
-	export let Logo: string; // Logo URL
+	export let title: string; // Modal Title
+	export let logo: string = "/logo.webp"; // Logo URL
 
 	export let showModal: boolean; // boolean, whether or not the modal is shown or not
 
@@ -22,14 +22,14 @@
 		<div class="modal-overlay fixed w-full h-full bg-gray-900 opacity-50" />
 
 		<div
-			class="bg-surface-600 w-full lg:h-max lg:w-1/2 mx-auto rounded-lg shadow-xl z-50 overflow-y-auto"
+			class="bg-slate-800 w-full lg:h-max lg:w-1/2 mx-auto rounded-lg shadow-xl z-50 overflow-y-auto"
 		>
 			<div
-				class="flex justify-between items-center head bg-surface-800 text-primary-400 py-5 px-8 text-2xl font-extrabold"
+				class="flex justify-between items-center head bg-slate-800 text-primary-400 py-5 px-8 text-2xl font-extrabold"
 			>
 				<div class="flex">
-					<img class="h-10 rounded-full" src={Logo} alt={Title} />
-					<h2 class="ml-2 mt-1">{Title}</h2>
+					<img class="h-10 rounded-full" src={logo} alt={title} />
+					<h2 class="ml-2 mt-1">{title}</h2>
 				</div>
 
 				<button
@@ -50,7 +50,7 @@
 				</button>
 			</div>
 
-			<div class="content p-4">
+			<div class="content p-4 text-white">
 				<slot />
 			</div>
 		</div>

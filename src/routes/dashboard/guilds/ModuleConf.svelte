@@ -21,6 +21,7 @@
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import UnorderedList from '../../../components/UnorderedList.svelte';
 	import ListItem from '../../../components/ListItem.svelte';
+	import Modal from '../../../components/Modal.svelte';
 
 	export let instanceList: InstanceList;
 	export let guildId: string;
@@ -81,6 +82,8 @@
 		clusterModuleData: Record<string, CanonicalModule>;
 		searchedCommands: LookedUpCommand[];
 		clusterFinderOpen: boolean;
+		commandEditOpen?: ParsedCanonicalCommandData;
+		commandEditorOpen: boolean;
 		clusterFinderByGuildIdExpectedData: {
 			cluster: number;
 			shard: number;
@@ -94,6 +97,7 @@
 		commandSearch: '',
 		searchedCommands: [],
 		clusterFinderOpen: false,
+		commandEditorOpen: false,
 		clusterFinderByGuildIdExpectedData: null
 	};
 
@@ -153,8 +157,17 @@
 		subcommand_depth: number;
 		parent_command?: CanonicalCommandData;
 		extended_data: CanonicalCommandExtendedData;
+		extended_data_map: Record<string, CanonicalCommandExtendedData>;
 		search_permissions: string;
 	}
+
+	// Returns the name of a command
+	const getCommandName = (cmd: ParsedCanonicalCommandData) => {
+		return cmd?.subcommand_depth == 0
+			? cmd?.name
+			: `${cmd?.parent_command?.name} ${cmd?.name}`;
+	};
+	
 
 	let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
 	const createCmdDataTable = async (_: string) => {
@@ -178,6 +191,7 @@
 				subcommand_depth: depth,
 				parent_command: parent,
 				extended_data: extData,
+				extended_data_map: extended_data,
 				search_permissions: extData?.default_perms?.checks
 					?.map((check) => check?.kittycat_perms)
 					?.join(', ')
@@ -382,13 +396,13 @@
 												<Th handler={data.handler} orderBy={'qualified_name'}>Name</Th>
 												<Th handler={data.handler} orderBy={'description'}>Description</Th>
 												<Th handler={data.handler} orderBy={'arguments'}>Arguments</Th>
-												<Th handler={data.handler} orderBy={'search_permissions'}>Permissions</Th>
+												<Th handler={data.handler} orderBy={'qualified_name'}>Manage</Th>
 											</tr>
 											<tr>
 												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
 												<ThFilter handler={data.handler} filterBy={'description'} />
 												<ThFilter handler={data.handler} filterBy={'arguments'} />
-												<ThFilter handler={data.handler} filterBy={'search_permissions'} />
+												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
 											</tr>
 										</thead>
 										<tbody>
@@ -442,7 +456,17 @@
 															{/each}
 														</ul>
 													</td>
-													<td> Testing </td>
+													<td>
+														<button 
+															class="text-themable-400 hover:text-themable-500"
+															on:click={() => {
+																state.commandEditOpen = row;
+																state.commandEditorOpen = true
+															}}
+														>
+															Edit
+														</button>
+													</td>
 												</tr>
 											{/each}
 										</tbody>
@@ -465,6 +489,39 @@
 	<summary class="hover:cursor-pointer">Debug</summary>
 	<pre>{JSON.stringify(state, null, 4)}</pre>
 </details>
+
+{#if state.commandEditOpen}
+	<Modal bind:showModal={state.commandEditorOpen} title={`Command '${getCommandName(state.commandEditOpen)}'`}>
+		<!--
+			<BoolInput
+			id="enabled"
+			label="Command Enabled"
+			description="Toggle this command on or off"
+			disabled={false}
+			value={findModuleInCmc(currentModuleConfiguration, state?.openModule)
+				?.disabled === undefined
+				? state.clusterModuleData[state.openModule]?.is_default_enabled
+				: !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
+			onChange={async (v) => {
+				state.togglingStates[`mod/${state.openModule}/toggle`] = [
+					'loading',
+					'Saving module state...'
+				];
+				await toggleModule(v);
+				state.togglingStates[`mod/${state.openModule}/toggle`] = [
+					'success',
+					v ? 'Successfully enabled module' : 'Successfully disabled module'
+				];
+			}}
+		/>
+
+		{#if state.togglingStates[`mod/${state.openModule}/toggle`]}
+			<Message type={state.togglingStates[`mod/${state.openModule}/toggle`][0]}>
+				{state.togglingStates[`mod/${state.openModule}/toggle`][1]}
+			</Message>
+		{/if}-->
+	</Modal>
+{/if}
 
 <style>
 	table {
