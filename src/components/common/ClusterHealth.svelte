@@ -30,12 +30,7 @@
 </script>
 
 {#if openCluster != undefined && showModal}
-	<Modal bind:showModal>
-		<h1 slot="header" class="font-semibold text-2xl">
-			Cluster {openCluster} - {instanceList?.Map?.find((cluster) => cluster.ID == openCluster)
-				?.Name}
-		</h1>
-
+	<Modal bind:showModal title={`Cluster ${openCluster} - ${instanceList?.Map?.find((cluster) => cluster.ID == openCluster)?.Name}`}>
 		<h2 class="text-xl font-semibold">Cluster Map</h2>
 		<ObjectRender object={instanceList?.Map?.find((cluster) => cluster.ID == openCluster)} />
 		<h2 class="mt-2 text-xl font-semibold">Instance</h2>
