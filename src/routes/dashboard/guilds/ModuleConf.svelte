@@ -101,21 +101,6 @@
 			return [false, res];
 		}
 
-		let cmc = findModuleInCmc(currentModuleConfiguration, state.openModule);
-
-		if (!cmc) {
-			// Create new module
-			currentModuleConfiguration.push({
-				id: '',
-				guild_id: guildId,
-				module: state.openModule,
-				disabled: !enabled
-			});
-		} else {
-			// Update existing module
-			cmc.disabled = !enabled;
-		}
-
 		return [true, null];
 	};
 
@@ -527,7 +512,7 @@
 						<details>
 							<summary class="text-lg font-semibold hover:cursor-pointer">{commandConfig?.command}</summary>
 							<BoolInput
-								id="enabled"
+								id={`cmd-enabled-${commandConfig?.command}`}
 								label="Command Enabled"
 								description="Whether this command is enabled or not"
 								disabled={false}
@@ -537,18 +522,20 @@
 										'loading',
 										'Saving command state...'
 									];
+									state.togglingStates = state.togglingStates
 									await toggleCommand(commandConfig?.command, v);
 									commandConfig.disabled = !v;
 									state.togglingStates[`cmd/${state.openModule}/toggle`] = [
 										'success',
 										v ? 'Successfully enabled command' : 'Successfully disabled command'
 									];
+									state.togglingStates = state.togglingStates
 								}}
 							/>
 							
-							{#if state.togglingStates[`cmd/${state.openModule}/toggle`]}
-								<Message type={state.togglingStates[`mod/${state.openModule}/toggle`][0]}>
-									{state.togglingStates[`cmd/${state.openModule}/toggle`][1]}
+							{#if state.togglingStates[`cmd/${commandConfig?.command}/toggle`]}
+								<Message type={state.togglingStates[`cmd/${commandConfig?.command}/toggle`][0]}>
+									{state.togglingStates[`cmd/${commandConfig?.command}/toggle`][1]}
 								</Message>
 							{/if}	
 							

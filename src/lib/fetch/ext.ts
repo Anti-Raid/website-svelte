@@ -143,6 +143,6 @@ export const opGetCommandConfigurations = (
 
 			return data;
 		},
-		shouldCache: true
+		shouldCache: false
 	};
 };
