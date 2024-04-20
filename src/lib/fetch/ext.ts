@@ -2,8 +2,9 @@ import { getAuthCreds } from '$lib/auth/getAuthCreds';
 import { get } from '$lib/configs/functions/services';
 import { fetchClient } from '$lib/fetch/fetch';
 import { InstanceList } from '$lib/generated/mewld/proc';
-import { CanonicalModule, GuildModuleConfiguration } from '$lib/generated/silverpelt';
+import { CanonicalModule, GuildCommandConfiguration, GuildModuleConfiguration } from '$lib/generated/silverpelt';
 import { ApiError } from '$lib/generated/types';
+import { formatApiError } from '$lib/ui/error';
 import logger from '$lib/ui/logger';
 
 let cachedData: Map<string, any> = new Map();
@@ -111,5 +112,37 @@ export const opGetModuleConfiguration = (
 			return data;
 		},
 		shouldCache: false
+	};
+};
+
+export const opGetCommandConfigurations = (
+	guildId: string,
+	command: string
+): SharedRequester<GuildCommandConfiguration[]> => {
+	let authData = getAuthCreds();
+
+	return {
+		name: `guildCommandConfigurations:${guildId}:${command}`,
+		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
+			const res = await fetchClient(
+				`${get('splashtail')}/users/${authData?.user_id}/guilds/${guildId}/commands/${command}/configurations`,
+				{
+					headers: {
+						Authorization: `User ${authData?.token}`
+					}
+				}
+			);
+			if (!res.ok) {
+				let resp: ApiError = await res.json();
+				throw new Error(
+					formatApiError("Failed to fetch guild command configuration", resp)
+				);
+			}
+
+			const data: GuildCommandConfiguration[] = await res.json();
+
+			return data;
+		},
+		shouldCache: true
 	};
 };
