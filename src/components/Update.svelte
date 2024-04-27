@@ -1,8 +1,13 @@
 <script lang="ts">
+	export let id: string;
 	export let short: string;
 	export let long: string;
 
-	export let isOpen: boolean = true;
+	let isOpen: boolean | null = null;
+
+	$: {
+		isOpen = localStorage.getItem(`update:${id}`) != "true"
+	}
 </script>
 
 {#if isOpen}
@@ -37,7 +42,10 @@
 					<button
 						type="button"
 						class="-mr-1 flex rounded-md p-2 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
-						on:click={() => (isOpen = !isOpen)}
+						on:click={() => {
+							isOpen = !isOpen
+							localStorage.setItem(`update:${id}`, "true")
+						}}
 					>
 						<span class="sr-only">Dismiss</span>
 						<svg

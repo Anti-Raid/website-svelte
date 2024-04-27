@@ -10,7 +10,7 @@
 	import Icon from '@iconify/svelte';
 	import NavButton from './inputs/button/NavButton.svelte';
 	import { loginUser } from '$lib/auth/loginUser';
-	import { error, success } from '$lib/toast';
+	import { error } from '$lib/toast';
 
 	let navigation = [
 		{ name: 'Home', href: '/' },
@@ -117,6 +117,7 @@
 </script>
 
 <Update
+	id="experimental-site-notice"
 	short="This site is experimental."
 	long="This website is experimental, and may have issues."
 />
