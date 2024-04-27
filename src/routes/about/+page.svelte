@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Meta from '../../components/Meta.svelte';
 	import Divider from '../../components/Divider.svelte';
 	import BotFeatures from '../../components/common/BotFeatures.svelte';
 	import ClusterHealth from '../../components/common/ClusterHealth.svelte';
@@ -38,7 +39,12 @@
 	];
 </script>
 
-<main class="mx-auto mt-10 max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8">
+<Meta
+	title="About"
+	description="This website is extremely experimental, and should not be used by the public at this time."
+/>
+
+<section>
 	<div class="text-center lg:text-left">
 		<h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
 			<span class="block text-white xl:inline">&#128075; About Us</span>
@@ -50,7 +56,6 @@
 			Learn more about <span class="text-indigo-600 font-bold">AntiRaid</span> and our team!
 		</p>
 	</div>
-</main>
 
 <div class="p-4" />
 
@@ -69,7 +74,7 @@
 <div class="p-2" />
 
 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-	<div class="lg:text-center" id="features">
+	<div id="features-what" class="text-center">
 		<h2 class="text-lg font-semibold text-indigo-600">Features</h2>
 		<p class="max-w-2xl text-xl text-white lg:mx-auto">What features does AntiRaid offer?</p>
 	</div>
@@ -114,3 +119,5 @@
 		</ul>
 	</div>
 </div>
+
+</section>
