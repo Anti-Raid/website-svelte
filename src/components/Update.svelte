@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { browser } from "$app/environment";
+
 	export let id: string;
 	export let short: string;
 	export let long: string;
@@ -6,7 +8,9 @@
 	let isOpen: boolean | null = null;
 
 	$: {
-		isOpen = localStorage.getItem(`update:${id}`) != "true"
+		if(browser) {
+			isOpen = localStorage.getItem(`update:${id}`) != "true"
+		}
 	}
 </script>
 
