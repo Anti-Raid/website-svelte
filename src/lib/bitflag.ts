@@ -67,7 +67,7 @@ export class BitFlag {
         for(let flagKey of Object.keys(this.flagDescriptors)) {
             let flagVal = BigInt(this.flagDescriptors[flagKey]);
             if ((this.flags & flagVal) == flagVal) {
-                setFlags[flagKey] = flagKey;
+                setFlags[flagKey] = flagVal.toString();
             }
         }
 
@@ -82,7 +82,7 @@ export class BitFlag {
         for(let flagKey of Object.keys(this.flagDescriptors)) {
             let flagVal = BigInt(this.flagDescriptors[flagKey]);
             if ((this.flags & flagVal) != flagVal) {
-                unsetFlags[flagKey] = flagKey;
+                unsetFlags[flagKey] = flagVal.toString();
             }
         }
 
