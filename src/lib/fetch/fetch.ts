@@ -3,6 +3,8 @@ import logger from '../ui/logger';
 import { PermissionCheck, PermissionChecks, PermissionResult } from '$lib/generated/silverpelt';
 import dompurify from 'dompurify';
 import * as marked from 'marked';
+import { BitFlag } from '$lib/bitflag';
+import serenityPermissions from '$lib/generated/rust/serenity_perms.json';
 
 const { sanitize } = dompurify;
 
@@ -44,7 +46,8 @@ class PermissionCheckFormatter {
 				if (index !== 0) {
 					result += ' ';
 				}
-				result += perm;
+				let permsBf = new BitFlag(serenityPermissions, perm);
+				result += `${perm} (${Object.keys(permsBf.getSetFlags())})`;
 				if (index < this.nativePerms.length - 1) {
 					result += this.innerAnd ? ' AND' : ' OR';
 				}
