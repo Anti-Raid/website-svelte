@@ -118,21 +118,21 @@ export class PermissionResultFormatter {
 			case 'MissingNativePerms':
 			case 'MissingAnyPerms':
 				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
-				return `You do not have the required permissions to run this command. Try checking that you have the below permissions: ${checksFmt.toString()}`;
+				return `You do not have the required permissions to perform this action. Try checking that you have the below permissions: ${checksFmt.toString()}`;
 			case 'CommandDisabled':
-				return `The command \`\`${this.result.command_config?.command}\`\` (inherited from \`\`${this.result.command_config?.command}\`\`) is disabled on this server`;
+				return `You cannot perform this action because the command \`\`${this.result.command_config?.command}\`\` (inherited from \`\`${this.result.command_config?.command}\`\`) is disabled on this server`;
 			case 'UnknownModule':
 				return `The module \`\`${this.result.module_config?.module}\`\` does not exist`;
 			case 'ModuleDisabled':
 				return `The module \`\`${this.result.module_config?.module}\`\` is disabled on this server`;
 			case 'NoChecksSucceeded':
 				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
-				return `You do not have the required permissions to run this command. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
+				return `You do not have the required permissions to perform this action. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'MissingMinChecks':
 				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
-				return `You do not have the required permissions to run this command. You need at least ${
+				return `You do not have the required permissions to perform this action. You need at least ${
 					checksFmt.checksNeeded
-				} of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
+				} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'DiscordError':
 				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
 			case 'GenericError':
