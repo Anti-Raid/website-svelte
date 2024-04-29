@@ -13,4 +13,12 @@
 	export let clusterModules: Record<string, CanonicalModule>;
 </script>
 
-<ModuleConf {guildId} {currentModuleConfiguration} {instanceList} {guildData} {guildClusterId} {guildShardId} {clusterModules} />
+<ModuleConf
+	{guildId}
+	{currentModuleConfiguration}
+	{instanceList}
+	{guildData}
+	{guildClusterId}
+	{guildShardId}
+	{clusterModules}
+/>

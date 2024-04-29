@@ -13,5 +13,5 @@
 {:then data}
 	<CommandList instanceList={data} />
 {:catch err}
-	<Message type="error">Error loading cluster data: {err}</Message>
+	<Message type="error">{@html err}</Message>
 {/await}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { browser } from "$app/environment";
+	import { browser } from '$app/environment';
 
 	export let id: string;
 	export let short: string;
@@ -8,8 +8,8 @@
 	let isOpen: boolean | null = null;
 
 	$: {
-		if(browser) {
-			isOpen = localStorage.getItem(`update:${id}`) != "true"
+		if (browser) {
+			isOpen = localStorage.getItem(`update:${id}`) != 'true';
 		}
 	}
 </script>
@@ -47,8 +47,8 @@
 						type="button"
 						class="-mr-1 flex rounded-md p-2 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2"
 						on:click={() => {
-							isOpen = !isOpen
-							localStorage.setItem(`update:${id}`, "true")
+							isOpen = !isOpen;
+							localStorage.setItem(`update:${id}`, 'true');
 						}}
 					>
 						<span class="sr-only">Dismiss</span>

@@ -16,7 +16,11 @@
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div on:click|stopPropagation>
 		<!-- svelte-ignore a11y-autofocus -->
-		<button class="close-btn bg-surface-500 hover:bg-surface-600 text-white rounded-full ml-4" autofocus on:click={() => dialog.close()}>
+		<button
+			class="close-btn bg-surface-500 hover:bg-surface-600 text-white rounded-full ml-4"
+			autofocus
+			on:click={() => dialog.close()}
+		>
 			<span class="sr-only">Close</span>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +31,9 @@
 				class="text-primary-400"
 			>
 				<path d="M0 0h24v24H0V0z" fill="none" />
-				<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z" />
+				<path
+					d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+				/>
 			</svg>
 		</button>
 		<h1 class="font-semibold text-xl">{title}</h1>

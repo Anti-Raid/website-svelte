@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { makeSharedRequest, opGetClusterModules, opGetCommandConfigurations } from '$lib/fetch/ext';
+	import {
+		makeSharedRequest,
+		opGetClusterModules,
+		opGetCommandConfigurations
+	} from '$lib/fetch/ext';
 	import { InstanceList } from '$lib/generated/mewld/proc';
 	import {
 		CanonicalCommand,
@@ -23,7 +27,6 @@
 	import UnorderedList from '../../../components/UnorderedList.svelte';
 	import ListItem from '../../../components/ListItem.svelte';
 	import Modal from '../../../components/Modal.svelte';
-	import { formatApiError } from '$lib/ui/error';
 	import { Color } from '../../../components/inputs/button/colors';
 
 	export let instanceList: InstanceList;
@@ -49,9 +52,9 @@
 		}
 
 		let res = await fetchClient(
-			`${get('splashtail')}/users/${authData.user_id}/guilds/${guildId}/toggle-module?module=${
-				moduleName
-			}&disabled=${!enabled}`,
+			`${get('splashtail')}/users/${
+				authData.user_id
+			}/guilds/${guildId}/toggle-module?module=${moduleName}&disabled=${!enabled}`,
 			{
 				method: 'PUT',
 				auth: authData.token
@@ -88,9 +91,9 @@
 		}
 
 		let res = await fetchClient(
-			`${get('splashtail')}/users/${authData.user_id}/guilds/${guildId}/toggle-command?command=${
-				command
-			}&disabled=${!enabled}`,
+			`${get('splashtail')}/users/${
+				authData.user_id
+			}/guilds/${guildId}/toggle-command?command=${command}&disabled=${!enabled}`,
 			{
 				method: 'PUT',
 				auth: authData.token
@@ -105,7 +108,7 @@
 	};
 
 	interface State {
-		togglingStates: Record<string, ['loading' | 'loading-big' | 'error' | 'success', string]>;
+		togglingStates: Record<string, ['loading' | 'error' | 'success', string]>;
 		openModule: string;
 		commandSearch: string;
 		searchedCommands: LookedUpCommand[];
@@ -183,11 +186,8 @@
 
 	// Returns the name of a command
 	const getCommandName = (cmd: ParsedCanonicalCommandData) => {
-		return cmd?.subcommand_depth == 0
-			? cmd?.name
-			: `${cmd?.parent_command?.name} ${cmd?.name}`;
+		return cmd?.subcommand_depth == 0 ? cmd?.name : `${cmd?.parent_command?.name} ${cmd?.name}`;
 	};
-	
 
 	let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
 	const createCmdDataTable = async (_: string) => {
@@ -252,7 +252,8 @@
 <article class="command-list-article overflow-x-auto overflow-y-hidden h-full">
 	<small class="text-red-600 word-wrap block mb-1">
 		Different clusters may have different available modules due to outages, A/B testing and other
-		reasons. Your server is on cluster <strong>{guildClusterId}</strong>, shard <strong>{guildShardId}</strong>.
+		reasons. Your server is on cluster <strong>{guildClusterId}</strong>, shard
+		<strong>{guildShardId}</strong>.
 	</small>
 	<section class="command-list flex flex-grow">
 		<div class="cluster-map-content flex-1 flex-grow px-2">
@@ -284,12 +285,7 @@
 				<nav class="cluster-map flex-none w-52">
 					<section class="guild-basic-details mb-2">
 						<!--Avatar-->
-						<img
-							loading="lazy"
-							src={guildData.icon}
-							class="h-10 m-0 align-middle inline"
-							alt=""
-						/>
+						<img loading="lazy" src={guildData.icon} class="h-10 m-0 align-middle inline" alt="" />
 						<!--Guild Name-->
 						<span class="font-semibold align-middle m-0">{guildData.name}</span>
 					</section>
@@ -364,8 +360,8 @@
 								label="Module Enabled"
 								description="Toggle this module on or off"
 								disabled={false}
-								value={findModuleInCmc(currentModuleConfiguration, state?.openModule)
-									?.disabled === undefined
+								value={findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled ===
+								undefined
 									? clusterModules[state.openModule]?.is_default_enabled
 									: !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
 								onChange={async (v) => {
@@ -426,8 +422,9 @@
 														</span>
 													{:else}
 														<span class="whitespace-nowrap">
-															<span class="font-semibold">{row?.parent_command?.name}</span
-															>{' '}<em>{row.name}</em>
+															<span class="font-semibold">{row?.parent_command?.name}</span>{' '}<em
+																>{row.name}</em
+															>
 														</span>
 													{/if}
 
@@ -468,11 +465,11 @@
 													</ul>
 												</td>
 												<td>
-													<button 
+													<button
 														class="text-themable-400 hover:text-themable-500"
 														on:click={() => {
 															state.commandEditOpen = row;
-															state.commandEditorOpen = true
+															state.commandEditorOpen = true;
 														}}
 													>
 														Edit
@@ -501,7 +498,10 @@
 </details>
 
 {#if state.commandEditOpen}
-	<Modal bind:showModal={state.commandEditorOpen} title={`Command '${getCommandName(state.commandEditOpen)}'`}>
+	<Modal
+		bind:showModal={state.commandEditorOpen}
+		title={`Command '${getCommandName(state.commandEditOpen)}'`}
+	>
 		{#await makeSharedRequest(opGetCommandConfigurations(guildId, getCommandName(state.commandEditOpen)))}
 			<Message type="loading">Loading command configurations...</Message>
 		{:then commandConfigs}
@@ -510,7 +510,9 @@
 				{#each commandConfigs as commandConfig}
 					<li>
 						<details>
-							<summary class="text-lg font-semibold hover:cursor-pointer">{commandConfig?.command}</summary>
+							<summary class="text-lg font-semibold hover:cursor-pointer"
+								>{commandConfig?.command}</summary
+							>
 							<BoolInput
 								id={`cmd-enabled-${commandConfig?.command}`}
 								label="Command Enabled"
@@ -522,54 +524,50 @@
 										'loading',
 										'Saving command state...'
 									];
-									state.togglingStates = state.togglingStates
+									state.togglingStates = state.togglingStates;
 									await toggleCommand(commandConfig?.command, v);
 									commandConfig.disabled = !v;
 									state.togglingStates[`cmd/${state.openModule}/toggle`] = [
 										'success',
 										v ? 'Successfully enabled command' : 'Successfully disabled command'
 									];
-									state.togglingStates = state.togglingStates
+									state.togglingStates = state.togglingStates;
 								}}
 							/>
-							
+
 							{#if state.togglingStates[`cmd/${commandConfig?.command}/toggle`]}
 								<Message type={state.togglingStates[`cmd/${commandConfig?.command}/toggle`][0]}>
 									{state.togglingStates[`cmd/${commandConfig?.command}/toggle`][1]}
 								</Message>
-							{/if}	
-							
-							<ButtonReact 
+							{/if}
+
+							<ButtonReact
 								color={Color.Themable}
 								icon="mdi:edit"
 								text="Manage..."
-								onClick={
-									async () => {
-										let found = false;
-										for(let cmd of $cmdDataTable) {
-											if(getCommandName(cmd) == commandConfig.command) {
-												state.commandEditorOpen = false
-												state.commandEditOpen = cmd
-												state.commandEditorOpen = true
-												found = true
-												break;
-											}
+								onClick={async () => {
+									let found = false;
+									for (let cmd of $cmdDataTable) {
+										if (getCommandName(cmd) == commandConfig.command) {
+											state.commandEditorOpen = false;
+											state.commandEditOpen = cmd;
+											state.commandEditorOpen = true;
+											found = true;
+											break;
 										}
+									}
 
-										return found
-									}
-								}
-								states={
-									{
-										"loading": "Loading...",
-										"error": "Failed to load command configurations",
-										"success": "Successfully loaded command configurations"
-									}
-								}
+									return found;
+								}}
+								states={{
+									loading: 'Loading...',
+									error: 'Failed to load command configurations',
+									success: 'Successfully loaded command configurations'
+								}}
 							/>
-						</details>	
+						</details>
 					</li>
-				{/each}	
+				{/each}
 			</ul>
 		{:catch err}
 			<Message type="error">Failed to load command configurations: {err}</Message>

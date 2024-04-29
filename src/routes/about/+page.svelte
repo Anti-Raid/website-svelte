@@ -57,67 +57,68 @@
 		</p>
 	</div>
 
-<div class="p-4" />
+	<div class="p-4" />
 
-<p class="text-xl text-white font-semibold text-center">
-	<span class="text-indigo-600">AntiRaid</span> is a
-	<span class="font-extrabold">Automatic Moderation Service</span>
-	created to protect your
-	<a href={support?.discord} class="text-indigo-600 xl:inline hover:text-red-600">Discord Server</a>
-	from threats, unsafe bots and spamming using our advanced technology!
-</p>
+	<p class="text-xl text-white font-semibold text-center">
+		<span class="text-indigo-600">AntiRaid</span> is a
+		<span class="font-extrabold">Automatic Moderation Service</span>
+		created to protect your
+		<a href={support?.discord} class="text-indigo-600 xl:inline hover:text-red-600"
+			>Discord Server</a
+		>
+		from threats, unsafe bots and spamming using our advanced technology!
+	</p>
 
-<div class="p-4" />
+	<div class="p-4" />
 
-<Divider text="Features" margin="6" />
+	<Divider text="Features" margin="6" />
 
-<div class="p-2" />
+	<div class="p-2" />
 
-<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-	<div id="features-what" class="text-center">
-		<h2 class="text-lg font-semibold text-indigo-600">Features</h2>
-		<p class="max-w-2xl text-xl text-white lg:mx-auto">What features does AntiRaid offer?</p>
-	</div>
-
-	<div class="mt-10">
-		<dl class="space-y-10 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
-			<BotFeatures />
-		</dl>
-	</div>
-</div>
-
-<div class="p-4" />
-
-<Divider text="Meet the Team" margin="6" />
-
-<div class="py-10">
-	<div class="mx-auto grid max-w-7xl gap-x-6 gap-y-10 px-6 lg:px-8 xl:grid-cols-3">
-		<div class="max-w-2xl">
-			<h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Meet the Team!</h2>
-			<p class="mt-3 text-lg leading-8 text-white">
-				Interested in joining our team? Join our <a
-					href="https://discord.gg/v9qRYthfHf"
-					class="block text-indigo-600 font-bold xl:inline hover:text-red-600">Discord Server</a
-				>
-			</p>
+	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+		<div id="features-what" class="text-center">
+			<h2 class="text-lg font-semibold text-indigo-600">Features</h2>
+			<p class="max-w-2xl text-xl text-white lg:mx-auto">What features does AntiRaid offer?</p>
 		</div>
 
-		<ul class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
-			{#each Members as Member}
-				<li>
-					<div class="flex items-center gap-x-6">
-						<img class="h-16 w-16 rounded-full" src={Member.Avatar} alt={Member.Name} />
-						<div>
-							<h3 class="text-lg font-semibold leading-7 tracking-tight text-white">
-								{Member.Name}
-							</h3>
-							<p class="text-md font-semibold leading-6 text-indigo-600">{Member.Role}</p>
-						</div>
-					</div>
-				</li>
-			{/each}
-		</ul>
+		<div class="mt-10">
+			<dl class="space-y-10 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
+				<BotFeatures />
+			</dl>
+		</div>
 	</div>
-</div>
 
+	<div class="p-4" />
+
+	<Divider text="Meet the Team" margin="6" />
+
+	<div class="py-10">
+		<div class="mx-auto grid max-w-7xl gap-x-6 gap-y-10 px-6 lg:px-8 xl:grid-cols-3">
+			<div class="max-w-2xl">
+				<h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Meet the Team!</h2>
+				<p class="mt-3 text-lg leading-8 text-white">
+					Interested in joining our team? Join our <a
+						href="https://discord.gg/v9qRYthfHf"
+						class="block text-indigo-600 font-bold xl:inline hover:text-red-600">Discord Server</a
+					>
+				</p>
+			</div>
+
+			<ul class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
+				{#each Members as Member}
+					<li>
+						<div class="flex items-center gap-x-6">
+							<img class="h-16 w-16 rounded-full" src={Member.Avatar} alt={Member.Name} />
+							<div>
+								<h3 class="text-lg font-semibold leading-7 tracking-tight text-white">
+									{Member.Name}
+								</h3>
+								<p class="text-md font-semibold leading-6 text-indigo-600">{Member.Role}</p>
+							</div>
+						</div>
+					</li>
+				{/each}
+			</ul>
+		</div>
+	</div>
 </section>

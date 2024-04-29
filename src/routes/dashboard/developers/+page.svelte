@@ -11,7 +11,6 @@
 		UserSessionList
 	} from '$lib/generated/types';
 	import { error, success } from '$lib/toast';
-	import { formatApiError } from '$lib/ui/error';
 	import Message from '../../../components/Message.svelte';
 	import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
@@ -47,10 +46,8 @@
 		});
 
 		if (!res.ok) {
-			if (!res.ok) {
-			}
-			let err: ApiError = await res.json();
-			throw new Error(formatApiError(`Failed to fetch base session data`, err));
+			let err = await res.error("Session Data", "markdown")
+			throw new Error(err);
 		}
 
 		let data: UserSessionList = await res.json();
@@ -90,8 +87,8 @@
 			if (res.ok) {
 				success(`Successfully revoked session ${sessionId}`);
 			} else {
-				let err: ApiError = await res.json();
-				error(formatApiError('Failed to revoke session', err));
+				let err = await res.error("Revoke session", "markdown");
+				error(err);
 			}
 		} catch (err) {
 			error(`Failed to revoke session: ${err}`);
@@ -123,9 +120,8 @@
 			createSessionResp = await res.json();
 			return true;
 		} else {
-			let err: ApiError = await res.json();
-			error(formatApiError('Failed to create session', err));
-			return false;
+			let err = await res.error("Create session", "markdown");
+			throw new Error(err)
 		}
 	};
 </script>
@@ -304,7 +300,7 @@
 		</p>
 	{/if}
 {:catch err}
-	<Message type="error">Error loading dashboard data: {err}</Message>
+	<Message type="error">{@html err}</Message>
 {/await}
 
 <style>

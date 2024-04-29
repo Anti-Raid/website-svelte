@@ -2,9 +2,12 @@ import { getAuthCreds } from '$lib/auth/getAuthCreds';
 import { get } from '$lib/configs/functions/services';
 import { fetchClient } from '$lib/fetch/fetch';
 import { InstanceList } from '$lib/generated/mewld/proc';
-import { CanonicalModule, GuildCommandConfiguration, GuildModuleConfiguration } from '$lib/generated/silverpelt';
+import {
+	CanonicalModule,
+	GuildCommandConfiguration,
+	GuildModuleConfiguration
+} from '$lib/generated/silverpelt';
 import { ApiError } from '$lib/generated/types';
-import { formatApiError } from '$lib/ui/error';
 import logger from '$lib/ui/logger';
 
 let cachedData: Map<string, any> = new Map();
@@ -45,8 +48,8 @@ export const opGetClusterHealth: SharedRequester<InstanceList> = {
 	requestFunc: async (): Promise<InstanceList> => {
 		const res = await fetchClient(`${get('splashtail')}/clusters/health`);
 		if (!res.ok) {
-			let resp: ApiError = await res.json();
-			throw new Error(`Failed to fetch clusters health: ${res.status}: ${resp?.message}`);
+			let err = await res.error("Cluster Health");
+			throw new Error(err);
 		}
 
 		const data: InstanceList = await res.json();
@@ -65,8 +68,8 @@ export const opGetClusterModules = (
 		requestFunc: async (): Promise<Record<string, CanonicalModule>> => {
 			const res = await fetchClient(`${get('splashtail')}/clusters/${clusterId}/modules`);
 			if (!res.ok) {
-				let resp: ApiError = await res.json();
-				throw new Error(`Failed to fetch clusters modules: ${res.status}: ${resp?.message}`);
+				let err = await res.error("Cluster Modules");
+				throw new Error(err);
 			}
 
 			const data: CanonicalModule[] = await res.json();
@@ -101,10 +104,8 @@ export const opGetModuleConfiguration = (
 				}
 			);
 			if (!res.ok) {
-				let resp: ApiError = await res.json();
-				throw new Error(
-					`Failed to fetch guild module configuration: ${res.status}: ${resp?.message}`
-				);
+				let err = await res.error("Guild Module Configuration");
+				throw new Error(err);
 			}
 
 			const data: GuildModuleConfiguration[] = await res.json();
@@ -125,7 +126,9 @@ export const opGetCommandConfigurations = (
 		name: `guildCommandConfigurations:${guildId}:${command}`,
 		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
 			const res = await fetchClient(
-				`${get('splashtail')}/users/${authData?.user_id}/guilds/${guildId}/commands/${command}/configurations`,
+				`${get('splashtail')}/users/${
+					authData?.user_id
+				}/guilds/${guildId}/commands/${command}/configurations`,
 				{
 					headers: {
 						Authorization: `User ${authData?.token}`
@@ -133,10 +136,8 @@ export const opGetCommandConfigurations = (
 				}
 			);
 			if (!res.ok) {
-				let resp: ApiError = await res.json();
-				throw new Error(
-					formatApiError("Failed to fetch guild command configuration", resp)
-				);
+				let err = await res.error("Guild Command Configuration")
+				throw new Error(err);
 			}
 
 			const data: GuildCommandConfiguration[] = await res.json();
