@@ -82,11 +82,11 @@ class PermissionChecksFormatter {
 	}
 
 	toString() {
-		return this.checks.checks
+		let checks = this.checks.checks
 			.map((c, index) => {
 				let check = new PermissionCheckFormatter(c);
 
-				let result = `${index+1}.\n${check.toString()}`;
+				let result = `${index + 1}.\n${check.toString()}`;
 				let empty = check.kittycatPerms.length === 0 && check.nativePerms.length === 0;
 				if (index < this.checks.checks.length - 1 && !empty) {
 					result += check.outerAnd ? ' AND ' : ' OR ';
@@ -94,6 +94,8 @@ class PermissionChecksFormatter {
 				return result;
 			})
 			.join(' ');
+
+		checks += `\n\n**Checks Needed**: ${this.checksNeeded}`;
 	}
 }
 
@@ -130,9 +132,8 @@ export class PermissionResultFormatter {
 				return `You do not have the required permissions to perform this action. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'MissingMinChecks':
 				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
-				return `You do not have the required permissions to perform this action. You need at least ${
-					checksFmt.checksNeeded
-				} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
+				return `You do not have the required permissions to perform this action. You need at least ${checksFmt.checksNeeded
+					} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'DiscordError':
 				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
 			case 'GenericError':
@@ -160,7 +161,7 @@ export class PermissionResultFormatter {
 				async: true,
 				breaks: true,
 			});
-			
+
 			return outHtml;
 		}
 
@@ -205,7 +206,7 @@ export class ClientResponse {
 
 		logger.info("ClientResponse", "Error", this.errorType)
 
-		if(!type) {
+		if (!type) {
 			type = 'html'
 		}
 
@@ -221,8 +222,8 @@ export class ClientResponse {
 
 					// Add some formatting for ol/ul
 					outHtml = outHtml
-					.replaceAll("<ol", "<ol class='list-decimal pl-6 mb-2'")
-					.replaceAll("<ul", "<ul class='pl-1'");
+						.replaceAll("<ol", "<ol class='list-decimal pl-6 mb-2'")
+						.replaceAll("<ul", "<ul class='pl-1'");
 
 					return outHtml;
 			}
@@ -236,7 +237,7 @@ export class ClientResponse {
 				let sanitized = sanitize(htmlOut);
 
 				// Ensure that the error message is wrapped in a paragraph
-				if(!sanitized.startsWith("<p")) {
+				if (!sanitized.startsWith("<p")) {
 					sanitized = `<p class="mb-2">${sanitized}</p>`
 				}
 
