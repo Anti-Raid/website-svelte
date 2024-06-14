@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { makeSharedRequest, opGetClusterModules } from '$lib/fetch/ext';
+	import {
+		makeSharedRequest,
+		opGetClusterModules,
+		opGetCommandConfigurations
+	} from '$lib/fetch/ext';
 	import { InstanceList } from '$lib/generated/mewld/proc';
 	import {
 		CanonicalCommand,
@@ -10,6 +14,7 @@
 	import logger from '$lib/ui/logger';
 	import Message from '../../../components/Message.svelte';
 	import NavButton from '../../../components/inputs/button/NavButton.svelte';
+	import ButtonReact from '../../../components/inputs/button/ButtonReact.svelte';
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
@@ -21,12 +26,16 @@
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import UnorderedList from '../../../components/UnorderedList.svelte';
 	import ListItem from '../../../components/ListItem.svelte';
+	import Modal from '../../../components/Modal.svelte';
+	import { Color } from '../../../components/inputs/button/colors';
 
 	export let instanceList: InstanceList;
+	export let clusterModules: Record<string, CanonicalModule>;
 	export let guildId: string;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 	export let guildData: UserGuildBaseData;
 	export let guildClusterId: number;
+	export let guildShardId: number;
 
 	const findModuleInCmc = (
 		currentModuleConfiguration: GuildModuleConfiguration[],
@@ -35,7 +44,7 @@
 		return currentModuleConfiguration.find((cmc) => cmc.module == module);
 	};
 
-	const toggleModule = async (enabled: boolean) => {
+	const toggleModule = async (moduleName: string, enabled: boolean) => {
 		let authData = getAuthCreds();
 
 		if (!authData) {
@@ -43,9 +52,9 @@
 		}
 
 		let res = await fetchClient(
-			`${get('splashtail')}/users/${authData.user_id}/guilds/${guildId}/toggle-module?module=${
-				state.openModule
-			}&disabled=${!enabled}`,
+			`${get('splashtail')}/users/${
+				authData.user_id
+			}/guilds/${guildId}/toggle-module?module=${moduleName}&disabled=${!enabled}`,
 			{
 				method: 'PUT',
 				auth: authData.token
@@ -56,14 +65,14 @@
 			return [false, res];
 		}
 
-		let cmc = findModuleInCmc(currentModuleConfiguration, state.openModule);
+		let cmc = findModuleInCmc(currentModuleConfiguration, moduleName);
 
 		if (!cmc) {
 			// Create new module
 			currentModuleConfiguration.push({
 				id: '',
 				guild_id: guildId,
-				module: state.openModule,
+				module: moduleName,
 				disabled: !enabled
 			});
 		} else {
@@ -74,13 +83,38 @@
 		return [true, null];
 	};
 
+	const toggleCommand = async (command: string, enabled: boolean) => {
+		let authData = getAuthCreds();
+
+		if (!authData) {
+			return [false, 'No auth data'];
+		}
+
+		let res = await fetchClient(
+			`${get('splashtail')}/users/${
+				authData.user_id
+			}/guilds/${guildId}/toggle-command?command=${command}&disabled=${!enabled}`,
+			{
+				method: 'PUT',
+				auth: authData.token
+			}
+		);
+
+		if (!res.ok) {
+			return [false, res];
+		}
+
+		return [true, null];
+	};
+
 	interface State {
-		togglingStates: Record<string, ['loading' | 'loading-big' | 'error' | 'success', string]>;
+		togglingStates: Record<string, ['loading' | 'error' | 'success', string]>;
 		openModule: string;
 		commandSearch: string;
-		clusterModuleData: Record<string, CanonicalModule>;
 		searchedCommands: LookedUpCommand[];
 		clusterFinderOpen: boolean;
+		commandEditOpen?: ParsedCanonicalCommandData;
+		commandEditorOpen: boolean;
 		clusterFinderByGuildIdExpectedData: {
 			cluster: number;
 			shard: number;
@@ -90,10 +124,10 @@
 	let state: State = {
 		togglingStates: {},
 		openModule: 'core',
-		clusterModuleData: {},
 		commandSearch: '',
 		searchedCommands: [],
 		clusterFinderOpen: false,
+		commandEditorOpen: false,
 		clusterFinderByGuildIdExpectedData: null
 	};
 
@@ -102,7 +136,7 @@
 		module: CanonicalModule;
 	}
 	const commandLookup = (): LookedUpCommand[] => {
-		let moduleData = state.clusterModuleData;
+		let moduleData = clusterModules;
 		if (!moduleData) return [];
 
 		let commands: LookedUpCommand[] = [];
@@ -136,13 +170,6 @@
 		return commands;
 	};
 
-	const fetchCluster = async (_: number | undefined) => {
-		logger.info('FetchCluster', 'Fetching cluster modules', guildClusterId);
-		let resp = await makeSharedRequest(opGetClusterModules(guildClusterId));
-		logger.info('FetchCluster', 'got response', resp);
-		state.clusterModuleData = resp;
-	};
-
 	$: if (state?.commandSearch) {
 		state.searchedCommands = commandLookup();
 	} else {
@@ -153,14 +180,18 @@
 		subcommand_depth: number;
 		parent_command?: CanonicalCommandData;
 		extended_data: CanonicalCommandExtendedData;
+		extended_data_map: Record<string, CanonicalCommandExtendedData>;
 		search_permissions: string;
 	}
 
+	// Returns the name of a command
+	const getCommandName = (cmd: ParsedCanonicalCommandData) => {
+		return cmd?.subcommand_depth == 0 ? cmd?.name : `${cmd?.parent_command?.name} ${cmd?.name}`;
+	};
+
 	let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
 	const createCmdDataTable = async (_: string) => {
-		let module = state.clusterModuleData[state.openModule];
-
-		console.log(module, state.clusterModuleData);
+		let module = clusterModules[state.openModule];
 
 		let commands: ParsedCanonicalCommandData[] = [];
 
@@ -178,6 +209,7 @@
 				subcommand_depth: depth,
 				parent_command: parent,
 				extended_data: extData,
+				extended_data_map: extended_data,
 				search_permissions: extData?.default_perms?.checks
 					?.map((check) => check?.kittycat_perms)
 					?.join(', ')
@@ -220,243 +252,242 @@
 <article class="command-list-article overflow-x-auto overflow-y-hidden h-full">
 	<small class="text-red-600 word-wrap block mb-1">
 		Different clusters may have different available modules due to outages, A/B testing and other
-		reasons.
+		reasons. Your server is on cluster <strong>{guildClusterId}</strong>, shard
+		<strong>{guildShardId}</strong>.
 	</small>
 	<section class="command-list flex flex-grow">
 		<div class="cluster-map-content flex-1 flex-grow px-2">
-			{#if !Object.keys(state.clusterModuleData).length}
-				{#await fetchCluster(guildClusterId)}
-					<Message type="loading">Loading cluster modules...</Message>
-				{:catch}
-					<Message type="error">Failed to load cluster modules</Message>
-				{/await}
-			{:else}
-				<!--Search bar-->
-				<InputText
-					id="command-search-bar"
-					label="Command Lookup"
-					placeholder="Search for a command"
-					minlength={0}
-					showErrors={false}
-					bind:value={state.commandSearch}
-				/>
+			<!--Search bar-->
+			<InputText
+				id="command-search-bar"
+				label="Command Lookup"
+				placeholder="Search for a command"
+				minlength={0}
+				showErrors={false}
+				bind:value={state.commandSearch}
+			/>
 
-				<ul>
-					{#each state.searchedCommands as searchedCommand}
-						<li class="cluster-search-command mb-7">
-							<h3 class="text-xl font-bold">{searchedCommand?.command?.command?.name}</h3>
-							{#if searchedCommand?.command?.command?.description}
-								<p class="text-slate-200">{searchedCommand?.command?.command?.description}</p>
-							{/if}
-							<p class="text-slate-200"><strong>Module:</strong> {searchedCommand?.module?.name}</p>
-						</li>
-					{/each}
-				</ul>
-
-				<!--Module list-->
-				<section class="cluster-module-list flex flex-grow">
-					<!--Bar-->
-					<nav class="cluster-map flex-none w-52">
-						<section class="guild-basic-details mb-2">
-							<!--Avatar-->
-							<img
-								loading="lazy"
-								src={guildData.icon}
-								class="h-10 m-0 align-middle inline"
-								alt=""
-							/>
-							<!--Guild Name-->
-							<span class="font-semibold align-middle m-0">{guildData.name}</span>
-						</section>
-
-						<hr class="mb-2" />
-
-						{#each Object.entries(state.clusterModuleData) as [_, module]}
-							{#if !module?.web_hidden}
-								<NavButton
-									current={state.openModule == module?.id}
-									title={module?.name}
-									onClick={() => {
-										state.openModule = module?.id || state.clusterModuleData['core'].id;
-									}}
-									extClass="block mb-2 w-full"
-								/>
-							{/if}
-						{/each}
-					</nav>
-					<!--Content-->
-					<div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
-						{#if state.openModule}
-							<h1 class="text-2xl font-semibold">
-								{state.clusterModuleData[state.openModule]?.name}
-							</h1>
-							<p class="text-slate-200">{state.clusterModuleData[state.openModule]?.description}</p>
-
-							<details>
-								<summary class="hover:cursor-pointer">Misc Details</summary>
-								<UnorderedList>
-									<ListItem>
-										{#if state.clusterModuleData[state.openModule]?.commands_configurable}
-											<small class="text-green-500 mt-2">
-												<strong>Commands in this module are individually CONFIGURABLE</strong>
-											</small>
-										{:else}
-											<small class="text-red-500 mt-2">
-												<strong>Commands in this module are NOT individually CONFIGURABLE</strong>
-											</small>
-										{/if}
-									</ListItem>
-
-									<ListItem>
-										{#if state.clusterModuleData[state.openModule]?.web_hidden}
-											<small class="text-red-500 mt-2">
-												<strong>This module is HIDDEN on the website and dashboard</strong>
-											</small>
-										{:else}
-											<small class="text-green-500 mt-2">
-												<strong>This module is VISIBLE on the website and dashboard</strong>
-											</small>
-										{/if}
-									</ListItem>
-
-									<ListItem>
-										{#if state.clusterModuleData[state.openModule]?.toggleable}
-											<small class="text-green-500 mt-2">
-												<strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
-											</small>
-										{:else}
-											<small class="text-red-500 mt-2">
-												<strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
-											</small>
-										{/if}
-									</ListItem>
-								</UnorderedList>
-							</details>
-
-							{#if state.clusterModuleData[state.openModule]?.toggleable}
-								<BoolInput
-									id="enabled"
-									label="Module Enabled"
-									description="Toggle this module on or off"
-									disabled={false}
-									value={findModuleInCmc(currentModuleConfiguration, state?.openModule)
-										?.disabled === undefined
-										? state.clusterModuleData[state.openModule]?.is_default_enabled
-										: !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
-									onChange={async (v) => {
-										state.togglingStates[`mod/${state.openModule}/toggle`] = [
-											'loading',
-											'Saving module state...'
-										];
-										await toggleModule(v);
-										state.togglingStates[`mod/${state.openModule}/toggle`] = [
-											'success',
-											v ? 'Successfully enabled module' : 'Successfully disabled module'
-										];
-									}}
-								/>
-
-								{#if state.togglingStates[`mod/${state.openModule}/toggle`]}
-									<Message type={state.togglingStates[`mod/${state.openModule}/toggle`][0]}>
-										{state.togglingStates[`mod/${state.openModule}/toggle`][1]}
-									</Message>
-								{/if}
-							{/if}
-
-							<BoolInput
-								id="enabled-by-default"
-								label="Enabled by default"
-								description="Whether this module is enabled by default"
-								disabled={true}
-								value={state.clusterModuleData[state.openModule]?.is_default_enabled}
-								onChange={() => {}}
-							/>
-
-							{#await createCmdDataTable(state?.openModule)}
-								<Message type="loading">Loading commands...</Message>
-							{:then data}
-								<Datatable handler={data.handler} search={false}>
-									<table class="overflow-x-auto">
-										<thead>
-											<tr>
-												<Th handler={data.handler} orderBy={'qualified_name'}>Name</Th>
-												<Th handler={data.handler} orderBy={'description'}>Description</Th>
-												<Th handler={data.handler} orderBy={'arguments'}>Arguments</Th>
-												<Th handler={data.handler} orderBy={'search_permissions'}>Permissions</Th>
-											</tr>
-											<tr>
-												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
-												<ThFilter handler={data.handler} filterBy={'description'} />
-												<ThFilter handler={data.handler} filterBy={'arguments'} />
-												<ThFilter handler={data.handler} filterBy={'search_permissions'} />
-											</tr>
-										</thead>
-										<tbody>
-											{#each $cmdDataTable as row}
-												<tr>
-													<td>
-														{#if row.subcommand_depth == 0}
-															<span class="font-semibold">
-																{row.name}
-															</span>
-														{:else}
-															<span class="whitespace-nowrap">
-																<span class="font-semibold">{row?.parent_command?.name}</span
-																>{' '}<em>{row.name}</em>
-															</span>
-														{/if}
-
-														<!--NSFW command, TODO: Make tooltip-->
-														{#if row.nsfw}
-															<div class="command-note">
-																<span class="text-red-400 font-semibold">NSFW</span>
-															</div>
-														{/if}
-
-														<!--Base command of a slash command, TODO: Make tooltip-->
-														{#if row.subcommand_required || row.subcommands.length}
-															<div class="command-note">
-																<span class="text-blue-400 font-semibold">BASE</span>
-															</div>
-														{/if}
-													</td>
-													<td>
-														{#if row.description}
-															{row.description}
-														{:else}
-															Mystery Box?
-														{/if}
-													</td>
-													<td>
-														<ul class="list-disc list-outside">
-															{#each row.arguments as arg, i}
-																<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
-																	<span class="command-argument">
-																		<span class="font-semibold">{arg.name}</span
-																		>{#if arg.required}<span
-																				class="text-red-400 font-semibold text-lg"
-																				>*<span class="sr-only">Required parameter)</span></span
-																			>{/if}{#if arg.description}: <em>{arg.description}</em>{/if}
-																	</span>
-																</li>
-															{/each}
-														</ul>
-													</td>
-													<td> Testing </td>
-												</tr>
-											{/each}
-										</tbody>
-									</table>
-								</Datatable>
-							{:catch err}
-								<Message type="error">
-									Failed to load commands: {err}
-								</Message>
-							{/await}
+			<ul>
+				{#each state.searchedCommands as searchedCommand}
+					<li class="cluster-search-command mb-7">
+						<h3 class="text-xl font-bold">{searchedCommand?.command?.command?.name}</h3>
+						{#if searchedCommand?.command?.command?.description}
+							<p class="text-slate-200">{searchedCommand?.command?.command?.description}</p>
 						{/if}
-					</div>
-				</section>
-			{/if}
+						<p class="text-slate-200"><strong>Module:</strong> {searchedCommand?.module?.name}</p>
+					</li>
+				{/each}
+			</ul>
+
+			<!--Module list-->
+			<section class="cluster-module-list flex flex-grow">
+				<!--Bar-->
+				<nav class="cluster-map flex-none w-52">
+					<section class="guild-basic-details mb-2">
+						<!--Avatar-->
+						<img loading="lazy" src={guildData.icon} class="h-10 m-0 align-middle inline" alt="" />
+						<!--Guild Name-->
+						<span class="font-semibold align-middle m-0">{guildData.name}</span>
+					</section>
+
+					<hr class="mb-2" />
+
+					{#each Object.entries(clusterModules) as [_, module]}
+						{#if !module?.web_hidden}
+							<NavButton
+								current={state.openModule == module?.id}
+								title={module?.name}
+								onClick={() => {
+									state.openModule = module?.id || clusterModules['core'].id;
+								}}
+								extClass="block mb-2 w-full"
+							/>
+						{/if}
+					{/each}
+				</nav>
+				<!--Content-->
+				<div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
+					{#if state.openModule}
+						<h1 class="text-2xl font-semibold">
+							{clusterModules[state.openModule]?.name}
+						</h1>
+						<p class="text-slate-200">{clusterModules[state.openModule]?.description}</p>
+
+						<details>
+							<summary class="hover:cursor-pointer">Misc Details</summary>
+							<UnorderedList>
+								<ListItem>
+									{#if clusterModules[state.openModule]?.commands_configurable}
+										<small class="text-green-500 mt-2">
+											<strong>Commands in this module are individually CONFIGURABLE</strong>
+										</small>
+									{:else}
+										<small class="text-red-500 mt-2">
+											<strong>Commands in this module are NOT individually CONFIGURABLE</strong>
+										</small>
+									{/if}
+								</ListItem>
+
+								<ListItem>
+									{#if clusterModules[state.openModule]?.web_hidden}
+										<small class="text-red-500 mt-2">
+											<strong>This module is HIDDEN on the website and dashboard</strong>
+										</small>
+									{:else}
+										<small class="text-green-500 mt-2">
+											<strong>This module is VISIBLE on the website and dashboard</strong>
+										</small>
+									{/if}
+								</ListItem>
+
+								<ListItem>
+									{#if clusterModules[state.openModule]?.toggleable}
+										<small class="text-green-500 mt-2">
+											<strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
+										</small>
+									{:else}
+										<small class="text-red-500 mt-2">
+											<strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
+										</small>
+									{/if}
+								</ListItem>
+							</UnorderedList>
+						</details>
+
+						{#if clusterModules[state.openModule]?.toggleable}
+							<BoolInput
+								id="enabled"
+								label="Module Enabled"
+								description="Toggle this module on or off"
+								disabled={false}
+								value={findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled ===
+								undefined
+									? clusterModules[state.openModule]?.is_default_enabled
+									: !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
+								onChange={async (v) => {
+									state.togglingStates[`mod/${state.openModule}/toggle`] = [
+										'loading',
+										'Saving module state...'
+									];
+									await toggleModule(state.openModule, v);
+									state.togglingStates[`mod/${state.openModule}/toggle`] = [
+										'success',
+										v ? 'Successfully enabled module' : 'Successfully disabled module'
+									];
+								}}
+							/>
+
+							{#if state.togglingStates[`mod/${state.openModule}/toggle`]}
+								<Message type={state.togglingStates[`mod/${state.openModule}/toggle`][0]}>
+									{state.togglingStates[`mod/${state.openModule}/toggle`][1]}
+								</Message>
+							{/if}
+						{/if}
+
+						<BoolInput
+							id="enabled-by-default"
+							label="Enabled by default"
+							description="Whether this module is enabled by default"
+							disabled={true}
+							value={clusterModules[state.openModule]?.is_default_enabled}
+							onChange={() => {}}
+						/>
+
+						{#await createCmdDataTable(state?.openModule)}
+							<Message type="loading">Loading commands...</Message>
+						{:then data}
+							<Datatable handler={data.handler} search={false}>
+								<table class="overflow-x-auto">
+									<thead>
+										<tr>
+											<Th handler={data.handler} orderBy={'qualified_name'}>Name</Th>
+											<Th handler={data.handler} orderBy={'description'}>Description</Th>
+											<Th handler={data.handler} orderBy={'arguments'}>Arguments</Th>
+											<Th handler={data.handler} orderBy={'qualified_name'}>Manage</Th>
+										</tr>
+										<tr>
+											<ThFilter handler={data.handler} filterBy={'qualified_name'} />
+											<ThFilter handler={data.handler} filterBy={'description'} />
+											<ThFilter handler={data.handler} filterBy={'arguments'} />
+											<ThFilter handler={data.handler} filterBy={'qualified_name'} />
+										</tr>
+									</thead>
+									<tbody>
+										{#each $cmdDataTable as row}
+											<tr>
+												<td>
+													{#if row.subcommand_depth == 0}
+														<span class="font-semibold">
+															{row.name}
+														</span>
+													{:else}
+														<span class="whitespace-nowrap">
+															<span class="font-semibold">{row?.parent_command?.name}</span>{' '}<em
+																>{row.name}</em
+															>
+														</span>
+													{/if}
+
+													<!--NSFW command, TODO: Make tooltip-->
+													{#if row.nsfw}
+														<div class="command-note">
+															<span class="text-red-400 font-semibold">NSFW</span>
+														</div>
+													{/if}
+
+													<!--Base command of a slash command, TODO: Make tooltip-->
+													{#if row.subcommand_required || row.subcommands.length}
+														<div class="command-note">
+															<span class="text-blue-400 font-semibold">BASE</span>
+														</div>
+													{/if}
+												</td>
+												<td>
+													{#if row.description}
+														{row.description}
+													{:else}
+														Mystery Box?
+													{/if}
+												</td>
+												<td>
+													<ul class="list-disc list-outside">
+														{#each row.arguments as arg, i}
+															<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
+																<span class="command-argument">
+																	<span class="font-semibold">{arg.name}</span
+																	>{#if arg.required}<span
+																			class="text-red-400 font-semibold text-lg"
+																			>*<span class="sr-only">Required parameter)</span></span
+																		>{/if}{#if arg.description}: <em>{arg.description}</em>{/if}
+																</span>
+															</li>
+														{/each}
+													</ul>
+												</td>
+												<td>
+													<button
+														class="text-themable-400 hover:text-themable-500"
+														on:click={() => {
+															state.commandEditOpen = row;
+															state.commandEditorOpen = true;
+														}}
+													>
+														Edit
+													</button>
+												</td>
+											</tr>
+										{/each}
+									</tbody>
+								</table>
+							</Datatable>
+						{:catch err}
+							<Message type="error">
+								Failed to load commands: {err}
+							</Message>
+						{/await}
+					{/if}
+				</div>
+			</section>
 		</div>
 	</section>
 </article>
@@ -465,6 +496,84 @@
 	<summary class="hover:cursor-pointer">Debug</summary>
 	<pre>{JSON.stringify(state, null, 4)}</pre>
 </details>
+
+{#if state.commandEditOpen}
+	<Modal
+		bind:showModal={state.commandEditorOpen}
+		title={`Command '${getCommandName(state.commandEditOpen)}'`}
+	>
+		{#await makeSharedRequest(opGetCommandConfigurations(guildId, getCommandName(state.commandEditOpen)))}
+			<Message type="loading">Loading command configurations...</Message>
+		{:then commandConfigs}
+			<h2 class="text-xl font-semibold">Related Command Configurations</h2>
+			<ul>
+				{#each commandConfigs as commandConfig}
+					<li>
+						<details>
+							<summary class="text-lg font-semibold hover:cursor-pointer"
+								>{commandConfig?.command}</summary
+							>
+							<BoolInput
+								id={`cmd-enabled-${commandConfig?.command}`}
+								label="Command Enabled"
+								description="Whether this command is enabled or not"
+								disabled={false}
+								value={!commandConfig?.disabled}
+								onChange={async (v) => {
+									state.togglingStates[`cmd/${commandConfig?.command}/toggle`] = [
+										'loading',
+										'Saving command state...'
+									];
+									state.togglingStates = state.togglingStates;
+									await toggleCommand(commandConfig?.command, v);
+									commandConfig.disabled = !v;
+									state.togglingStates[`cmd/${state.openModule}/toggle`] = [
+										'success',
+										v ? 'Successfully enabled command' : 'Successfully disabled command'
+									];
+									state.togglingStates = state.togglingStates;
+								}}
+							/>
+
+							{#if state.togglingStates[`cmd/${commandConfig?.command}/toggle`]}
+								<Message type={state.togglingStates[`cmd/${commandConfig?.command}/toggle`][0]}>
+									{state.togglingStates[`cmd/${commandConfig?.command}/toggle`][1]}
+								</Message>
+							{/if}
+
+							<ButtonReact
+								color={Color.Themable}
+								icon="mdi:edit"
+								text="Manage..."
+								onClick={async () => {
+									let found = false;
+									for (let cmd of $cmdDataTable) {
+										if (getCommandName(cmd) == commandConfig.command) {
+											state.commandEditorOpen = false;
+											state.commandEditOpen = cmd;
+											state.commandEditorOpen = true;
+											found = true;
+											break;
+										}
+									}
+
+									return found;
+								}}
+								states={{
+									loading: 'Loading...',
+									error: 'Failed to load command configurations',
+									success: 'Successfully loaded command configurations'
+								}}
+							/>
+						</details>
+					</li>
+				{/each}
+			</ul>
+		{:catch err}
+			<Message type="error">Failed to load command configurations: {err}</Message>
+		{/await}
+	</Modal>
+{/if}
 
 <style>
 	table {

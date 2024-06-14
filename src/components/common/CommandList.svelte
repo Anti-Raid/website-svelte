@@ -418,7 +418,7 @@
 	</details>
 
 	{#if state.clusterFinderOpen}
-		<Modal Title="Help" Logo="/logo.webp" bind:showModal={state.clusterFinderOpen}>
+		<Modal title="Help" bind:showModal={state.clusterFinderOpen}>
 			<h1 class="font-semibold text-xl">Server Lookup</h1>
 			<p class="text-gray-300 font-semibold">
 				If you're planning to add AntiRaid to a specific server, please enter the Server's ID below.

@@ -9,9 +9,8 @@
 		opGetModuleConfiguration
 	} from '$lib/fetch/ext';
 	import { fetchClient } from '$lib/fetch/fetch';
-	import { ApiError, UserGuildBaseData } from '$lib/generated/types';
+	import { UserGuildBaseData } from '$lib/generated/types';
 	import { getClusterOfShard, getShardIDFromGuildID } from '$lib/mewext/mewext';
-	import { formatApiError } from '$lib/ui/error';
 	import Message from '../../../components/Message.svelte';
 	import Guild from './Guild.svelte';
 
@@ -48,8 +47,8 @@
 		);
 
 		if (!res.ok) {
-			let err: ApiError = await res.json();
-			throw new Error(formatApiError('Failed to fetch base guild data', err));
+			let err = await res.error('Base Guild Data');
+			throw new Error(err);
 		}
 
 		let guildData: UserGuildBaseData = await res.json();
@@ -107,5 +106,5 @@
 		<Message type="loading">Please wait</Message>
 	{/if}
 {:catch err}
-	<Message type="error">Error loading dashboard data: {err}</Message>
+	<Message type="error"><strong>Error</strong>{@html (err?.message || err)}</Message>
 {/await}

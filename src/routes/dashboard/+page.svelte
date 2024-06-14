@@ -83,6 +83,18 @@
 		{currentState}
 	</small>
 {:then}
+	<ButtonReact
+		color={Color.Themable}
+		text="Refresh Server List"
+		icon="mdi:refresh"
+		onClick={recacheForce}
+		states={{
+			loading: 'Refreshing...',
+			error: 'Failed to refresh',
+			success: 'Refreshed'
+		}}
+	/>
+
 	<h1 class="text-white font-semibold text-2xl">Servers With AntiRaid ({hasBot?.length})</h1>
 	<p class="mb-2 text-red-500">
 		You may or may not have permission to view or modify these servers...

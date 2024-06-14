@@ -22,7 +22,7 @@
 		{disabled}
 		{required}
 		aria-required={required}
-		class="rounded-full cursor-pointer checked:bg-blue-500 disabled:checked:bg-blue-500 disabled:checked:opacity-85 disabled:cursor-not-allowed disabled:bg-slate-500"
+		class="rounded-full cursor-pointer checked:bg-blue-500 disabled:checked:bg-blue-500 disabled:checked:opacity-70 disabled:cursor-not-allowed disabled:bg-slate-500"
 	/>
 
 	<label for={id} class="text-white text-left">

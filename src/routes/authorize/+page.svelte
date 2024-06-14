@@ -26,8 +26,8 @@
 		});
 
 		if (!res.ok) {
-			let err: ApiError = await res.json();
-			throw new Error(err?.message?.toString() || 'Unknown error creating session');
+			let err = await res.error('Create session', "markdown")
+			throw new Error(err);
 		}
 
 		let data: UserLogin = await res.json();
@@ -58,11 +58,11 @@
 </script>
 
 {#await createSession()}
-	<Message type="loading-big">Authorizing...</Message>
+	<Message type="loading" big={true}>Authorizing...</Message>
 {:then}
-	<Message type="success">Authorized!</Message>
+	<Message type="success" big={true}>Authorized!</Message>
 {:catch error}
-	<Message type="error">
-		{error?.message || 'Unknown error creating session'}
+	<Message type="error" big={true}>
+		{@html error}
 	</Message>
 {/await}
