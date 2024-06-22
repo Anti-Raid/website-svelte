@@ -1,4 +1,5 @@
 <script lang="ts">
+	import logger from '$lib/ui/logger';
 	import TabButton from './TabButton.svelte';
 
 	interface Tab {
@@ -19,6 +20,9 @@
 	<TabButton
 		visible={tab.id == visibleTab}
 		text={tab.label}
-		onClick={() => (visibleTab = tab.id)}
+		onClick={() => {
+			logger.info('TabButton.switch', tab.id);
+			visibleTab = tab.id;
+		}}
 	/>
 {/each}
