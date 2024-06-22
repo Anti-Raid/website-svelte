@@ -1,14 +1,10 @@
 <script lang="ts">
-	import {
-		makeSharedRequest,
-		opGetClusterModules,
-		opGetCommandConfigurations
-	} from '$lib/fetch/ext';
 	import { InstanceList } from '$lib/generated/mewld/proc';
 	import {
 		CanonicalCommand,
 		CanonicalCommandData,
 		CanonicalModule,
+		GuildCommandConfiguration,
 		GuildModuleConfiguration
 	} from '$lib/generated/silverpelt';
 	import logger from '$lib/ui/logger';
@@ -28,14 +24,60 @@
 	import ListItem from '../../../components/ListItem.svelte';
 	import Modal from '../../../components/Modal.svelte';
 	import { Color } from '../../../components/inputs/button/colors';
+	import TabbedPane from '../../../components/inputs/button/tabs/TabbedPane.svelte';
+	import { permuteCommands } from '$lib/mewext/mewext';
 
 	export let instanceList: InstanceList;
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let guildId: string;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
+	export let currentCommandConfiguration: GuildCommandConfiguration[];
 	export let guildData: UserGuildBaseData;
 	export let guildClusterId: number;
 	export let guildShardId: number;
+
+	const getCommandConfigurations = (command: string): GuildCommandConfiguration[] => {
+		logger.info('GetCommandConfigurations', 'Getting command configurations for', command);
+
+		let ccs = []; // List of command configurations to return
+
+		let permuted_commands = permuteCommands(command);
+		let base_command = permuted_commands[0];
+
+		// For each permuted command, find the command configuration
+		for (let permuted_command of permuted_commands) {
+			let cc = currentCommandConfiguration.find((cmc) => cmc.command == permuted_command);
+
+			if (cc) {
+				ccs.push(cc);
+			} else {
+				// Try falling back to the default command configuration in clusterModules
+				for (let module of Object.values(clusterModules)) {
+					for (let cmd of module.commands) {
+						if (cmd.command.name == base_command) {
+							// The key on the extended data should be everything but the base command
+							let extDataKey = permuted_command.split(' ').slice(1).join(' ');
+
+							if (!cmd.extended_data[extDataKey]) {
+								continue;
+							}
+
+							let cc: GuildCommandConfiguration = {
+								id: '',
+								guild_id: guildId,
+								command: permuted_command,
+								perms: cmd.extended_data[extDataKey].default_perms,
+								disabled: cmd.extended_data[extDataKey].is_default_enabled
+							};
+							ccs.push(cc);
+						}
+					}
+				}
+			}
+		}
+
+		return ccs;
+	};
 
 	const findModuleInCmc = (
 		currentModuleConfiguration: GuildModuleConfiguration[],
@@ -110,6 +152,7 @@
 	interface State {
 		togglingStates: Record<string, ['loading' | 'error' | 'success', string]>;
 		openModule: string;
+		openMobuleTab: string;
 		commandSearch: string;
 		searchedCommands: LookedUpCommand[];
 		clusterFinderOpen: boolean;
@@ -124,6 +167,7 @@
 	let state: State = {
 		togglingStates: {},
 		openModule: 'core',
+		openMobuleTab: 'cmdList',
 		commandSearch: '',
 		searchedCommands: [],
 		clusterFinderOpen: false,
@@ -393,98 +437,110 @@
 							onChange={() => {}}
 						/>
 
-						{#await createCmdDataTable(state?.openModule)}
-							<Message type="loading">Loading commands...</Message>
-						{:then data}
-							<Datatable handler={data.handler} search={false}>
-								<table class="overflow-x-auto">
-									<thead>
-										<tr>
-											<Th handler={data.handler} orderBy={'qualified_name'}>Name</Th>
-											<Th handler={data.handler} orderBy={'description'}>Description</Th>
-											<Th handler={data.handler} orderBy={'arguments'}>Arguments</Th>
-											<Th handler={data.handler} orderBy={'qualified_name'}>Manage</Th>
-										</tr>
-										<tr>
-											<ThFilter handler={data.handler} filterBy={'qualified_name'} />
-											<ThFilter handler={data.handler} filterBy={'description'} />
-											<ThFilter handler={data.handler} filterBy={'arguments'} />
-											<ThFilter handler={data.handler} filterBy={'qualified_name'} />
-										</tr>
-									</thead>
-									<tbody>
-										{#each $cmdDataTable as row}
+						<TabbedPane
+							visibleTab={state.openMobuleTab}
+							tabs={[
+								{ id: 'cmdList', label: 'Commands' },
+								{ id: 'settings', label: 'Settings' }
+							]}
+						/>
+						{#if state.openMobuleTab == 'cmdList'}
+							{#await createCmdDataTable(state?.openModule)}
+								<Message type="loading">Loading commands...</Message>
+							{:then data}
+								<Datatable handler={data.handler} search={false}>
+									<table class="overflow-x-auto">
+										<thead>
 											<tr>
-												<td>
-													{#if row.subcommand_depth == 0}
-														<span class="font-semibold">
-															{row.name}
-														</span>
-													{:else}
-														<span class="whitespace-nowrap">
-															<span class="font-semibold">{row?.parent_command?.name}</span>{' '}<em
-																>{row.name}</em
-															>
-														</span>
-													{/if}
-
-													<!--NSFW command, TODO: Make tooltip-->
-													{#if row.nsfw}
-														<div class="command-note">
-															<span class="text-red-400 font-semibold">NSFW</span>
-														</div>
-													{/if}
-
-													<!--Base command of a slash command, TODO: Make tooltip-->
-													{#if row.subcommand_required || row.subcommands.length}
-														<div class="command-note">
-															<span class="text-blue-400 font-semibold">BASE</span>
-														</div>
-													{/if}
-												</td>
-												<td>
-													{#if row.description}
-														{row.description}
-													{:else}
-														Mystery Box?
-													{/if}
-												</td>
-												<td>
-													<ul class="list-disc list-outside">
-														{#each row.arguments as arg, i}
-															<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
-																<span class="command-argument">
-																	<span class="font-semibold">{arg.name}</span
-																	>{#if arg.required}<span
-																			class="text-red-400 font-semibold text-lg"
-																			>*<span class="sr-only">Required parameter)</span></span
-																		>{/if}{#if arg.description}: <em>{arg.description}</em>{/if}
-																</span>
-															</li>
-														{/each}
-													</ul>
-												</td>
-												<td>
-													<button
-														class="text-themable-400 hover:text-themable-500"
-														on:click={() => {
-															state.commandEditOpen = row;
-															state.commandEditorOpen = true;
-														}}
-													>
-														Edit
-													</button>
-												</td>
+												<Th handler={data.handler} orderBy={'qualified_name'}>Name</Th>
+												<Th handler={data.handler} orderBy={'description'}>Description</Th>
+												<Th handler={data.handler} orderBy={'arguments'}>Arguments</Th>
+												<Th handler={data.handler} orderBy={'qualified_name'}>Manage</Th>
 											</tr>
-										{/each}
-									</tbody>
-								</table>
-							</Datatable>
-						{:catch err}
-							<Message type="error">
-								Failed to load commands: {err}
-							</Message>
-						{/await}
+											<tr>
+												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
+												<ThFilter handler={data.handler} filterBy={'description'} />
+												<ThFilter handler={data.handler} filterBy={'arguments'} />
+												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
+											</tr>
+										</thead>
+										<tbody>
+											{#each $cmdDataTable as row}
+												<tr>
+													<td>
+														{#if row.subcommand_depth == 0}
+															<span class="font-semibold">
+																{row.name}
+															</span>
+														{:else}
+															<span class="whitespace-nowrap">
+																<span class="font-semibold">{row?.parent_command?.name}</span
+																>{' '}<em>{row.name}</em>
+															</span>
+														{/if}
+
+														<!--NSFW command, TODO: Make tooltip-->
+														{#if row.nsfw}
+															<div class="command-note">
+																<span class="text-red-400 font-semibold">NSFW</span>
+															</div>
+														{/if}
+
+														<!--Base command of a slash command, TODO: Make tooltip-->
+														{#if row.subcommand_required || row.subcommands.length}
+															<div class="command-note">
+																<span class="text-blue-400 font-semibold">BASE</span>
+															</div>
+														{/if}
+													</td>
+													<td>
+														{#if row.description}
+															{row.description}
+														{:else}
+															Mystery Box?
+														{/if}
+													</td>
+													<td>
+														<ul class="list-disc list-outside">
+															{#each row.arguments as arg, i}
+																<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
+																	<span class="command-argument">
+																		<span class="font-semibold">{arg.name}</span
+																		>{#if arg.required}<span
+																				class="text-red-400 font-semibold text-lg"
+																				>*<span class="sr-only">Required parameter)</span></span
+																			>{/if}{#if arg.description}: <em>{arg.description}</em>{/if}
+																	</span>
+																</li>
+															{/each}
+														</ul>
+													</td>
+													<td>
+														<button
+															class="text-themable-400 hover:text-themable-500"
+															on:click={() => {
+																state.commandEditOpen = row;
+																state.commandEditorOpen = true;
+															}}
+														>
+															Edit
+														</button>
+													</td>
+												</tr>
+											{/each}
+										</tbody>
+									</table>
+								</Datatable>
+							{:catch err}
+								<Message type="error">
+									Failed to load commands: {err}
+								</Message>
+							{/await}
+						{:else if state.openMobuleTab == 'settings'}
+							<p class="text-slate-200">
+								<strong>Settings for this module are not yet available.</strong>
+							</p>
+						{/if}
 					{/if}
 				</div>
 			</section>
@@ -502,76 +558,70 @@
 		bind:showModal={state.commandEditorOpen}
 		title={`Command '${getCommandName(state.commandEditOpen)}'`}
 	>
-		{#await makeSharedRequest(opGetCommandConfigurations(guildId, getCommandName(state.commandEditOpen)))}
-			<Message type="loading">Loading command configurations...</Message>
-		{:then commandConfigs}
-			<h2 class="text-xl font-semibold">Related Command Configurations</h2>
-			<ul>
-				{#each commandConfigs as commandConfig}
-					<li>
-						<details>
-							<summary class="text-lg font-semibold hover:cursor-pointer"
-								>{commandConfig?.command}</summary
-							>
-							<BoolInput
-								id={`cmd-enabled-${commandConfig?.command}`}
-								label="Command Enabled"
-								description="Whether this command is enabled or not"
-								disabled={false}
-								value={!commandConfig?.disabled}
-								onChange={async (v) => {
-									state.togglingStates[`cmd/${commandConfig?.command}/toggle`] = [
-										'loading',
-										'Saving command state...'
-									];
-									state.togglingStates = state.togglingStates;
-									await toggleCommand(commandConfig?.command, v);
-									commandConfig.disabled = !v;
-									state.togglingStates[`cmd/${state.openModule}/toggle`] = [
-										'success',
-										v ? 'Successfully enabled command' : 'Successfully disabled command'
-									];
-									state.togglingStates = state.togglingStates;
-								}}
-							/>
+		<h2 class="text-xl font-semibold">Related Command Configurations</h2>
+		<ul>
+			{#each getCommandConfigurations(getCommandName(state.commandEditOpen)) as commandConfig}
+				<li>
+					<details>
+						<summary class="text-lg font-semibold hover:cursor-pointer"
+							>{commandConfig?.command}</summary
+						>
+						<BoolInput
+							id={`cmd-enabled-${commandConfig?.command}`}
+							label="Command Enabled"
+							description="Whether this command is enabled or not"
+							disabled={false}
+							value={!commandConfig?.disabled}
+							onChange={async (v) => {
+								state.togglingStates[`cmd/${commandConfig?.command}/toggle`] = [
+									'loading',
+									'Saving command state...'
+								];
+								state.togglingStates = state.togglingStates;
+								await toggleCommand(commandConfig?.command, v);
+								commandConfig.disabled = !v;
+								state.togglingStates[`cmd/${state.openModule}/toggle`] = [
+									'success',
+									v ? 'Successfully enabled command' : 'Successfully disabled command'
+								];
+								state.togglingStates = state.togglingStates;
+							}}
+						/>
 
-							{#if state.togglingStates[`cmd/${commandConfig?.command}/toggle`]}
-								<Message type={state.togglingStates[`cmd/${commandConfig?.command}/toggle`][0]}>
-									{state.togglingStates[`cmd/${commandConfig?.command}/toggle`][1]}
-								</Message>
-							{/if}
+						{#if state.togglingStates[`cmd/${commandConfig?.command}/toggle`]}
+							<Message type={state.togglingStates[`cmd/${commandConfig?.command}/toggle`][0]}>
+								{state.togglingStates[`cmd/${commandConfig?.command}/toggle`][1]}
+							</Message>
+						{/if}
 
-							<ButtonReact
-								color={Color.Themable}
-								icon="mdi:edit"
-								text="Manage..."
-								onClick={async () => {
-									let found = false;
-									for (let cmd of $cmdDataTable) {
-										if (getCommandName(cmd) == commandConfig.command) {
-											state.commandEditorOpen = false;
-											state.commandEditOpen = cmd;
-											state.commandEditorOpen = true;
-											found = true;
-											break;
-										}
+						<ButtonReact
+							color={Color.Themable}
+							icon="mdi:edit"
+							text="Manage..."
+							onClick={async () => {
+								let found = false;
+								for (let cmd of $cmdDataTable) {
+									if (getCommandName(cmd) == commandConfig.command) {
+										state.commandEditorOpen = false;
+										state.commandEditOpen = cmd;
+										state.commandEditorOpen = true;
+										found = true;
+										break;
 									}
+								}
 
-									return found;
-								}}
-								states={{
-									loading: 'Loading...',
-									error: 'Failed to load command configurations',
-									success: 'Successfully loaded command configurations'
-								}}
-							/>
-						</details>
-					</li>
-				{/each}
-			</ul>
-		{:catch err}
-			<Message type="error">Failed to load command configurations: {err}</Message>
-		{/await}
+								return found;
+							}}
+							states={{
+								loading: 'Loading...',
+								error: 'Failed to load command configurations',
+								success: 'Successfully loaded command configurations'
+							}}
+						/>
+					</details>
+				</li>
+			{/each}
+		</ul>
 	</Modal>
 {/if}
 

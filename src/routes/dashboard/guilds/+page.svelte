@@ -6,6 +6,7 @@
 		makeSharedRequest,
 		opGetClusterHealth,
 		opGetClusterModules,
+		opGetCommandConfigurationsForGuild,
 		opGetModuleConfiguration
 	} from '$lib/fetch/ext';
 	import { fetchClient } from '$lib/fetch/fetch';
@@ -73,9 +74,16 @@
 
 		let currentModuleConfiguration = await makeSharedRequest(opGetModuleConfiguration(guildId));
 
+		currentState = 'Fetching current command configuration';
+
+		let currentCommandConfiguration = await makeSharedRequest(
+			opGetCommandConfigurationsForGuild(guildId)
+		);
+
 		return {
 			guildId,
 			currentModuleConfiguration,
+			currentCommandConfiguration,
 			guildData,
 			instanceList,
 			guildShardId,
@@ -96,6 +104,7 @@
 		<Guild
 			guildId={r.guildId}
 			currentModuleConfiguration={r.currentModuleConfiguration}
+			currentCommandConfiguration={r.currentCommandConfiguration}
 			guildData={r.guildData}
 			instanceList={r.instanceList}
 			guildShardId={r.guildShardId}
@@ -106,5 +115,5 @@
 		<Message type="loading">Please wait</Message>
 	{/if}
 {:catch err}
-	<Message type="error"><strong>Error</strong>{@html (err?.message || err)}</Message>
+	<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
 {/await}

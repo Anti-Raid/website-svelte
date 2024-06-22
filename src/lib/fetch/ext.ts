@@ -126,8 +126,7 @@ export const opGetCommandConfigurations = (
 		name: `guildCommandConfigurations:${guildId}:${command}`,
 		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
 			const res = await fetchClient(
-				`${get('splashtail')}/users/${
-					authData?.user_id
+				`${get('splashtail')}/users/${authData?.user_id
 				}/guilds/${guildId}/commands/${command}/configurations`,
 				{
 					headers: {
@@ -137,6 +136,36 @@ export const opGetCommandConfigurations = (
 			);
 			if (!res.ok) {
 				let err = await res.error("Guild Command Configuration")
+				throw new Error(err);
+			}
+
+			const data: GuildCommandConfiguration[] = await res.json();
+
+			return data;
+		},
+		shouldCache: false
+	};
+};
+
+export const opGetCommandConfigurationsForGuild = (
+	guildId: string,
+): SharedRequester<GuildCommandConfiguration[]> => {
+	let authData = getAuthCreds();
+
+	return {
+		name: `guildCommandConfigurations:${guildId}`,
+		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
+			const res = await fetchClient(
+				`${get('splashtail')}/users/${authData?.user_id
+				}/guilds/${guildId}/command-configurations`,
+				{
+					headers: {
+						Authorization: `User ${authData?.token}`
+					}
+				}
+			);
+			if (!res.ok) {
+				let err = await res.error("Guild Command Configurations")
 				throw new Error(err);
 			}
 
