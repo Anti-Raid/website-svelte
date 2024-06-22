@@ -40,7 +40,7 @@ Converted to SvelteKit from NextJS for panel use
 	}
 
 	let state: ReactState = ReactState.Normal; // Current state of the button
-	let display: Display = { icon, text, className, disabled: false }; // Current display of the button
+	export let display: Display = { icon, text, className, disabled: false }; // Current display of the button
 
 	$: {
 		switch (state) {
