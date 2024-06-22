@@ -99,7 +99,6 @@ Converted to SvelteKit from NextJS for panel use
 	{type}
 	on:click|preventDefault
 	on:click={async () => {
-		display.disabled = true; // Disable the button
 		if (state == ReactState.Loading || display.disabled) return;
 
 		state = ReactState.Loading;
