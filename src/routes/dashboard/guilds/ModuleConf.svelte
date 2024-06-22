@@ -57,50 +57,81 @@
 
 			if (cc) {
 				ccs.push(cc);
-			} else {
-				// Try falling back to the default command configuration in clusterModules
-				for (let module of Object.values(clusterModules)) {
-					for (let cmd of module.commands) {
-						logger.info(
-							'GetCommandConfigurations',
-							'Checking command',
+				continue;
+			}
+
+			// Try falling back to the default command configuration in clusterModules
+			for (let module of Object.values(clusterModules)) {
+				for (let cmd of module.commands) {
+					if (cmd.command.name == base_command || cmd.command.qualified_name == base_command) {
+						// The key on the extended data should be everything but the base command
+						let subcommand: string = permuted_command.split(' ').slice(1).join(' ');
+
+						logger.info('GetCommandConfigurations', 'Got subcommand from permuted command', {
+							permuted_command,
 							base_command,
-							cmd.command.name,
-							cmd.command.qualified_name
-						);
+							permuted_commands,
+							subcommand
+						});
 
-						if (cmd.command.name == base_command || cmd.command.qualified_name == base_command) {
-							// The key on the extended data should be everything but the base command
-							let extDataKey: string = '';
+						if (cmd.extended_data[subcommand]) {
+							let cc: GuildCommandConfiguration = {
+								id: '',
+								guild_id: guildId,
+								command: permuted_command,
+								perms: cmd.extended_data[subcommand].default_perms,
+								disabled: !cmd.extended_data[subcommand].is_default_enabled
+							};
+							ccs.push(cc);
+							continue;
+						}
 
-							if (permuted_command.length > 1) {
-								extDataKey = permuted_command.split(' ').slice(1).join(' ');
-							}
-
-							logger.info('GetCommandConfigurations', 'Got extended data key', {
-								permuted_command,
-								base_command,
-								permuted_commands,
-								extDataKey
-							});
-
-							if (!cmd.extended_data[extDataKey]) {
-								continue;
-							}
+						// The cmd itself does not exist in extended_data, add a fallback
+						if (cmd.extended_data['']) {
+							let cc: GuildCommandConfiguration = {
+								id: '',
+								guild_id: guildId,
+								command: permuted_command,
+								perms: cmd.extended_data[''].default_perms,
+								disabled: !cmd.extended_data[''].is_default_enabled
+							};
+							ccs.push(cc);
+							continue;
+						} else {
+							// No extended data for this command, add a default configuration
+							logger.info(
+								'GetCommandConfigurations',
+								'Falling back to default configuration for command',
+								{
+									base_command,
+									permuted_command,
+									permuted_commands
+								}
+							);
 
 							let cc: GuildCommandConfiguration = {
 								id: '',
 								guild_id: guildId,
 								command: permuted_command,
-								perms: cmd.extended_data[extDataKey].default_perms,
-								disabled: cmd.extended_data[extDataKey].is_default_enabled
+								perms: {
+									checks: [],
+									checks_needed: 1
+								},
+								disabled: false
 							};
 							ccs.push(cc);
+							continue;
 						}
 					}
 				}
 			}
 		}
+
+		logger.info('GetCommandConfigurations', 'Got command configs [ccs]', {
+			base_command,
+			permuted_commands,
+			ccs
+		});
 
 		return ccs;
 	};
@@ -193,8 +224,8 @@
 
 	let state: State = {
 		togglingStates: {},
-		openModule: 'core',
-		openMobuleTab: 'cmdList',
+		openModule: '',
+		openMobuleTab: 'moduleInfo',
 		commandSearch: '',
 		searchedCommands: [],
 		clusterFinderOpen: false,
@@ -202,6 +233,18 @@
 		commandEditConfigs: [],
 		clusterFinderByGuildIdExpectedData: null
 	};
+
+	$: {
+		if (!state.openModule) {
+			// Find first non-hidden module
+			for (let module of Object.values(clusterModules)) {
+				if (!module?.web_hidden) {
+					state.openModule = module?.id;
+					break;
+				}
+			}
+		}
+	}
 
 	interface LookedUpCommand {
 		command: CanonicalCommand;
@@ -389,94 +432,95 @@
 						</h1>
 						<p class="text-slate-200">{clusterModules[state.openModule]?.description}</p>
 
-						<details>
-							<summary class="hover:cursor-pointer">Misc Details</summary>
-							<UnorderedList>
-								<ListItem>
-									{#if clusterModules[state.openModule]?.commands_configurable}
-										<small class="text-green-500 mt-2">
-											<strong>Commands in this module are individually CONFIGURABLE</strong>
-										</small>
-									{:else}
-										<small class="text-red-500 mt-2">
-											<strong>Commands in this module are NOT individually CONFIGURABLE</strong>
-										</small>
-									{/if}
-								</ListItem>
-
-								<ListItem>
-									{#if clusterModules[state.openModule]?.web_hidden}
-										<small class="text-red-500 mt-2">
-											<strong>This module is HIDDEN on the website and dashboard</strong>
-										</small>
-									{:else}
-										<small class="text-green-500 mt-2">
-											<strong>This module is VISIBLE on the website and dashboard</strong>
-										</small>
-									{/if}
-								</ListItem>
-
-								<ListItem>
-									{#if clusterModules[state.openModule]?.toggleable}
-										<small class="text-green-500 mt-2">
-											<strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
-										</small>
-									{:else}
-										<small class="text-red-500 mt-2">
-											<strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
-										</small>
-									{/if}
-								</ListItem>
-							</UnorderedList>
-						</details>
-
-						{#if clusterModules[state.openModule]?.toggleable}
-							<BoolInput
-								id="enabled"
-								label="Module Enabled"
-								description="Toggle this module on or off"
-								disabled={false}
-								value={findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled ===
-								undefined
-									? clusterModules[state.openModule]?.is_default_enabled
-									: !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
-								onChange={async (v) => {
-									state.togglingStates[`mod/${state.openModule}/toggle`] = [
-										'loading',
-										'Saving module state...'
-									];
-									await toggleModule(state.openModule, v);
-									state.togglingStates[`mod/${state.openModule}/toggle`] = [
-										'success',
-										v ? 'Successfully enabled module' : 'Successfully disabled module'
-									];
-								}}
-							/>
-
-							{#if state.togglingStates[`mod/${state.openModule}/toggle`]}
-								<Message type={state.togglingStates[`mod/${state.openModule}/toggle`][0]}>
-									{state.togglingStates[`mod/${state.openModule}/toggle`][1]}
-								</Message>
-							{/if}
-						{/if}
-
-						<BoolInput
-							id="enabled-by-default"
-							label="Enabled by default"
-							description="Whether this module is enabled by default"
-							disabled={true}
-							value={clusterModules[state.openModule]?.is_default_enabled}
-							onChange={() => {}}
-						/>
-
 						<TabbedPane
 							bind:visibleTab={state.openMobuleTab}
 							tabs={[
+								{ id: 'moduleInfo', label: 'Info' },
 								{ id: 'cmdList', label: 'Commands' },
 								{ id: 'settings', label: 'Settings' }
 							]}
 						/>
-						{#if state.openMobuleTab == 'cmdList'}
+						{#if state.openMobuleTab == 'moduleInfo'}
+							<details open>
+								<summary class="hover:cursor-pointer">Misc Details</summary>
+								<UnorderedList>
+									<ListItem>
+										{#if clusterModules[state.openModule]?.commands_configurable}
+											<small class="text-green-500 mt-2">
+												<strong>Commands in this module are individually CONFIGURABLE</strong>
+											</small>
+										{:else}
+											<small class="text-red-500 mt-2">
+												<strong>Commands in this module are NOT individually CONFIGURABLE</strong>
+											</small>
+										{/if}
+									</ListItem>
+
+									<ListItem>
+										{#if clusterModules[state.openModule]?.web_hidden}
+											<small class="text-red-500 mt-2">
+												<strong>This module is HIDDEN on the website and dashboard</strong>
+											</small>
+										{:else}
+											<small class="text-green-500 mt-2">
+												<strong>This module is VISIBLE on the website and dashboard</strong>
+											</small>
+										{/if}
+									</ListItem>
+
+									<ListItem>
+										{#if clusterModules[state.openModule]?.toggleable}
+											<small class="text-green-500 mt-2">
+												<strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
+											</small>
+										{:else}
+											<small class="text-red-500 mt-2">
+												<strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
+											</small>
+										{/if}
+									</ListItem>
+								</UnorderedList>
+							</details>
+
+							{#if clusterModules[state.openModule]?.toggleable}
+								<BoolInput
+									id="enabled"
+									label="Module Enabled"
+									description="Toggle this module on or off"
+									disabled={false}
+									value={findModuleInCmc(currentModuleConfiguration, state?.openModule)
+										?.disabled === undefined
+										? clusterModules[state.openModule]?.is_default_enabled
+										: !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
+									onChange={async (v) => {
+										state.togglingStates[`mod/${state.openModule}/toggle`] = [
+											'loading',
+											'Saving module state...'
+										];
+										await toggleModule(state.openModule, v);
+										state.togglingStates[`mod/${state.openModule}/toggle`] = [
+											'success',
+											v ? 'Successfully enabled module' : 'Successfully disabled module'
+										];
+									}}
+								/>
+
+								{#if state.togglingStates[`mod/${state.openModule}/toggle`]}
+									<Message type={state.togglingStates[`mod/${state.openModule}/toggle`][0]}>
+										{state.togglingStates[`mod/${state.openModule}/toggle`][1]}
+									</Message>
+								{/if}
+							{/if}
+
+							<BoolInput
+								id="enabled-by-default"
+								label="Enabled by default"
+								description="Whether this module is enabled by default"
+								disabled={true}
+								value={clusterModules[state.openModule]?.is_default_enabled}
+								onChange={() => {}}
+							/>
+						{:else if state.openMobuleTab == 'cmdList'}
 							{#await createCmdDataTable(state?.openModule)}
 								<Message type="loading">Loading commands...</Message>
 							{:then data}

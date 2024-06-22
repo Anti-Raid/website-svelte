@@ -11,6 +11,8 @@
 	import NavButton from './inputs/button/NavButton.svelte';
 	import { loginUser } from '$lib/auth/loginUser';
 	import { error } from '$lib/toast';
+	import { LSAuthData } from '$lib/auth/core';
+	import { browser } from '$app/environment';
 
 	let navigation = [
 		{ name: 'Home', href: '/' },
@@ -30,7 +32,25 @@
 			name: string;
 			href: string;
 		}[];
-		user: User | undefined;
+		user: User;
+	};
+
+	const checkUserAuth = async (authCreds: LSAuthData) => {
+		// Check auth
+		if (!authCreds) {
+			throw new Error('No auth credentials found');
+		}
+
+		try {
+			let check = await checkAuthCreds(authCreds);
+
+			if (!check) {
+				logoutUser();
+				return;
+			}
+		} catch {
+			return;
+		}
 	};
 
 	const getLoginData = async () => {
@@ -38,51 +58,20 @@
 
 		if (!authCreds) return;
 
-		let authCheck = false;
-		let user: User | undefined;
-
 		let cachedAuthUser = localStorage.getItem('authUser');
-		if (cachedAuthUser) {
-			setTimeout(async () => {
-				// Check auth
-				if (!authCreds) {
-					throw new Error('No auth credentials found');
-				}
 
-				try {
-					let check = await checkAuthCreds(authCreds);
-
-					if (!check) {
-						logoutUser();
-						return;
-					}
-				} catch {
-					return;
-				}
-			}, 1000 * 60 * 5);
-			user = JSON.parse(cachedAuthUser);
-			authCheck = true;
-		} else {
-			try {
-				authCheck = await checkAuthCreds(authCreds);
-			} catch {
-				return;
-			}
-
-			if (!authCheck) {
-				logoutUser();
-				return;
-			}
-
-			user = await getUser(authCreds);
-
-			if (!user) {
-				logger.error('Auth', 'Failed to get user data');
-				return;
-			}
+		if (!cachedAuthUser) {
+			throw new Error('UNAUTHORIZED');
 		}
 
-		localStorage.setItem('authUser', JSON.stringify(user));
+		let user: User = JSON.parse(cachedAuthUser);
+
+		if (!user) {
+			throw new Error('UNAUTHORIZED');
+		}
+
+		setTimeout(checkUserAuth, 1000 * 60 * 5);
+		checkUserAuth(authCreds);
 
 		let data: LoginData = {
 			profileNavigation: [
@@ -147,7 +136,7 @@
 				{/each}
 			</div>
 		</div>
-		<div class="flex items-center space-x-4">
+		<div class="flex items-center space-x-2">
 			<button
 				type="button"
 				class="block md:hidden rounded-md p-2 font-medium text-left text-gray-300 hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-1 focus:ring-inset focus:ring-white"
@@ -164,6 +153,7 @@
 			</button>
 			{#await getLoginData()}
 				<Icon icon="fa-solid:yin-yang" width="32px" class="animate-spin text-white" />
+				<span class="animate-pulse text-white">...</span>
 			{:then data}
 				{#if data && data?.user}
 					<div class="w-full">

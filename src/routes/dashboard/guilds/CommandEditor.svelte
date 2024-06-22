@@ -12,9 +12,7 @@
 </script>
 
 <Modal bind:showModal={isOpen} title={`Command '${commandName}'`}>
-	<h2 class="text-xl font-semibold">
-		Related Command Configurations ({JSON.stringify(commandConfigs)})
-	</h2>
+	<h2 class="text-xl font-semibold">Command Configurations</h2>
 	<ul>
 		{#each commandConfigs as commandConfig}
 			<li>

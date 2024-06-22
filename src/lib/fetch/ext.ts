@@ -74,6 +74,8 @@ export const opGetClusterModules = (
 
 			const data: CanonicalModule[] = await res.json();
 
+			data.sort((a, b) => a.name.localeCompare(b.name)); // Sort by module name in ascending order
+
 			// A CanonicalModule[] is hard to work with, so we'll convert it to a map
 			let parsedMap: Record<string, CanonicalModule> = {};
 
