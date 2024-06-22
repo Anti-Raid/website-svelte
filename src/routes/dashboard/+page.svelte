@@ -42,8 +42,7 @@
 		);
 
 		if (!res.ok) {
-			let err: ApiError = await res.json();
-			throw new Error(`Failed to fetch user guild list: ${err?.message} (${err?.context})`);
+			throw new Error(await res.error('User Guild List', 'markdown'));
 		}
 
 		guilds = await res.json();
@@ -67,12 +66,7 @@
 	};
 
 	const recacheForce = async () => {
-		try {
-			await loadIndexDashPage(true);
-			return true;
-		} catch (e) {
-			return false;
-		}
+		await loadIndexDashPage(true);
 	};
 </script>
 

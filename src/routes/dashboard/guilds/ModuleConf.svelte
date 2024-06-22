@@ -11,9 +11,9 @@
 	import Message from '../../../components/Message.svelte';
 	import NavButton from '../../../components/inputs/button/NavButton.svelte';
 	import ButtonReact from '../../../components/inputs/button/ButtonReact.svelte';
+	import { Readable } from 'svelte/store';
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
-	import { Readable, Writable, readable, writable } from 'svelte/store';
 	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 	import { ApiError, UserGuildBaseData } from '$lib/generated/types';
 	import { fetchClient } from '$lib/fetch/fetch';
@@ -26,6 +26,7 @@
 	import { Color } from '../../../components/inputs/button/colors';
 	import TabbedPane from '../../../components/inputs/button/tabs/TabbedPane.svelte';
 	import { permuteCommands } from '$lib/mewext/mewext';
+	import CommandEditor from './CommandEditor.svelte';
 
 	export let instanceList: InstanceList;
 	export let clusterModules: Record<string, CanonicalModule>;
@@ -190,7 +191,7 @@
 		} | null;
 	}
 
-	let state: Writable<State> = writable({
+	let state: State = {
 		togglingStates: {},
 		openModule: 'core',
 		openMobuleTab: 'cmdList',
@@ -200,7 +201,7 @@
 		commandEditorOpen: false,
 		commandEditConfigs: [],
 		clusterFinderByGuildIdExpectedData: null
-	});
+	};
 
 	interface LookedUpCommand {
 		command: CanonicalCommand;
@@ -227,7 +228,7 @@
 
 				if (
 					checkProps.some((prop) =>
-						prop?.toLowerCase()?.includes($state.commandSearch?.toLowerCase())
+						prop?.toLowerCase()?.includes(state.commandSearch?.toLowerCase())
 					)
 				) {
 					commands.push({
@@ -241,14 +242,14 @@
 		return commands;
 	};
 
-	$: if ($state) {
-		logger.info('ModuleConf.State', $state);
+	$: if (state) {
+		logger.info('ModuleConf.State', state);
 	}
 
-	$: if ($state?.commandSearch) {
-		$state.searchedCommands = commandLookup();
+	$: if (state?.commandSearch) {
+		state.searchedCommands = commandLookup();
 	} else {
-		$state.searchedCommands = [];
+		state.searchedCommands = [];
 	}
 
 	interface ParsedCanonicalCommandData extends CanonicalCommandData {
@@ -266,7 +267,7 @@
 
 	let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
 	const createCmdDataTable = async (_: string) => {
-		let module = clusterModules[$state.openModule];
+		let module = clusterModules[state.openModule];
 
 		let commands: ParsedCanonicalCommandData[] = [];
 
@@ -339,11 +340,11 @@
 				placeholder="Search for a command"
 				minlength={0}
 				showErrors={false}
-				bind:value={$state.commandSearch}
+				bind:value={state.commandSearch}
 			/>
 
 			<ul>
-				{#each $state.searchedCommands as searchedCommand}
+				{#each state.searchedCommands as searchedCommand}
 					<li class="cluster-search-command mb-7">
 						<h3 class="text-xl font-bold">{searchedCommand?.command?.command?.name}</h3>
 						{#if searchedCommand?.command?.command?.description}
@@ -370,10 +371,10 @@
 					{#each Object.entries(clusterModules) as [_, module]}
 						{#if !module?.web_hidden}
 							<NavButton
-								current={$state.openModule == module?.id}
+								current={state.openModule == module?.id}
 								title={module?.name}
 								onClick={() => {
-									$state.openModule = module?.id || clusterModules['core'].id;
+									state.openModule = module?.id || clusterModules['core'].id;
 								}}
 								extClass="block mb-2 w-full"
 							/>
@@ -382,17 +383,17 @@
 				</nav>
 				<!--Content-->
 				<div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
-					{#if $state.openModule}
+					{#if state.openModule}
 						<h1 class="text-2xl font-semibold">
-							{clusterModules[$state.openModule]?.name}
+							{clusterModules[state.openModule]?.name}
 						</h1>
-						<p class="text-slate-200">{clusterModules[$state.openModule]?.description}</p>
+						<p class="text-slate-200">{clusterModules[state.openModule]?.description}</p>
 
 						<details>
 							<summary class="hover:cursor-pointer">Misc Details</summary>
 							<UnorderedList>
 								<ListItem>
-									{#if clusterModules[$state.openModule]?.commands_configurable}
+									{#if clusterModules[state.openModule]?.commands_configurable}
 										<small class="text-green-500 mt-2">
 											<strong>Commands in this module are individually CONFIGURABLE</strong>
 										</small>
@@ -404,7 +405,7 @@
 								</ListItem>
 
 								<ListItem>
-									{#if clusterModules[$state.openModule]?.web_hidden}
+									{#if clusterModules[state.openModule]?.web_hidden}
 										<small class="text-red-500 mt-2">
 											<strong>This module is HIDDEN on the website and dashboard</strong>
 										</small>
@@ -416,7 +417,7 @@
 								</ListItem>
 
 								<ListItem>
-									{#if clusterModules[$state.openModule]?.toggleable}
+									{#if clusterModules[state.openModule]?.toggleable}
 										<small class="text-green-500 mt-2">
 											<strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
 										</small>
@@ -429,32 +430,32 @@
 							</UnorderedList>
 						</details>
 
-						{#if clusterModules[$state.openModule]?.toggleable}
+						{#if clusterModules[state.openModule]?.toggleable}
 							<BoolInput
 								id="enabled"
 								label="Module Enabled"
 								description="Toggle this module on or off"
 								disabled={false}
-								value={findModuleInCmc(currentModuleConfiguration, $state?.openModule)?.disabled ===
+								value={findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled ===
 								undefined
-									? clusterModules[$state.openModule]?.is_default_enabled
-									: !findModuleInCmc(currentModuleConfiguration, $state?.openModule)?.disabled}
+									? clusterModules[state.openModule]?.is_default_enabled
+									: !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
 								onChange={async (v) => {
-									$state.togglingStates[`mod/${$state.openModule}/toggle`] = [
+									state.togglingStates[`mod/${state.openModule}/toggle`] = [
 										'loading',
-										'Saving module $state...'
+										'Saving module state...'
 									];
-									await toggleModule($state.openModule, v);
-									$state.togglingStates[`mod/${$state.openModule}/toggle`] = [
+									await toggleModule(state.openModule, v);
+									state.togglingStates[`mod/${state.openModule}/toggle`] = [
 										'success',
 										v ? 'Successfully enabled module' : 'Successfully disabled module'
 									];
 								}}
 							/>
 
-							{#if $state.togglingStates[`mod/${$state.openModule}/toggle`]}
-								<Message type={$state.togglingStates[`mod/${$state.openModule}/toggle`][0]}>
-									{$state.togglingStates[`mod/${$state.openModule}/toggle`][1]}
+							{#if state.togglingStates[`mod/${state.openModule}/toggle`]}
+								<Message type={state.togglingStates[`mod/${state.openModule}/toggle`][0]}>
+									{state.togglingStates[`mod/${state.openModule}/toggle`][1]}
 								</Message>
 							{/if}
 						{/if}
@@ -464,19 +465,19 @@
 							label="Enabled by default"
 							description="Whether this module is enabled by default"
 							disabled={true}
-							value={clusterModules[$state.openModule]?.is_default_enabled}
+							value={clusterModules[state.openModule]?.is_default_enabled}
 							onChange={() => {}}
 						/>
 
 						<TabbedPane
-							bind:visibleTab={$state.openMobuleTab}
+							bind:visibleTab={state.openMobuleTab}
 							tabs={[
 								{ id: 'cmdList', label: 'Commands' },
 								{ id: 'settings', label: 'Settings' }
 							]}
 						/>
-						{#if $state.openMobuleTab == 'cmdList'}
-							{#await createCmdDataTable($state?.openModule)}
+						{#if state.openMobuleTab == 'cmdList'}
+							{#await createCmdDataTable(state?.openModule)}
 								<Message type="loading">Loading commands...</Message>
 							{:then data}
 								<Datatable handler={data.handler} search={false}>
@@ -551,13 +552,13 @@
 															class="text-themable-400 hover:text-themable-500"
 															on:click={() => {
 																logger.info('EditCommand', 'Editing command', row);
-																$state.commandEditorOpen = false;
-																$state.commandEditOpen = undefined;
-																$state.commandEditOpen = row;
-																$state.commandEditConfigs = getCommandConfigurations(
-																	getCommandName($state.commandEditOpen)
+																state.commandEditorOpen = false;
+																state.commandEditOpen = undefined;
+																state.commandEditOpen = row;
+																state.commandEditConfigs = getCommandConfigurations(
+																	getCommandName(state.commandEditOpen)
 																);
-																$state.commandEditorOpen = true;
+																state.commandEditorOpen = true;
 															}}
 														>
 															Edit
@@ -573,7 +574,7 @@
 									Failed to load commands: {err}
 								</Message>
 							{/await}
-						{:else if $state.openMobuleTab == 'settings'}
+						{:else if state.openMobuleTab == 'settings'}
 							<p class="text-slate-200">
 								<strong>Settings for this module are not yet available.</strong>
 							</p>
@@ -587,79 +588,15 @@
 
 <details>
 	<summary class="hover:cursor-pointer">Debug</summary>
-	<pre>{JSON.stringify($state, null, 4)}</pre>
+	<pre>{JSON.stringify(state, null, 4)}</pre>
 </details>
 
-{#if $state.commandEditOpen}
-	<Modal
-		bind:showModal={$state.commandEditorOpen}
-		title={`Command '${getCommandName($state.commandEditOpen)}'`}
-	>
-		<h2 class="text-xl font-semibold">Related Command Configurations</h2>
-		<ul>
-			{#each $state.commandEditConfigs as commandConfig}
-				<li>
-					<details>
-						<summary class="text-lg font-semibold hover:cursor-pointer"
-							>{commandConfig.command}</summary
-						>
-						<BoolInput
-							id={`cmd-enabled-${commandConfig.command}`}
-							label="Command Enabled"
-							description="Whether this command is enabled or not"
-							disabled={false}
-							value={!commandConfig?.disabled}
-							onChange={async (v) => {
-								$state.togglingStates[`cmd/${commandConfig.command}/toggle`] = [
-									'loading',
-									'Saving command $state...'
-								];
-								$state.togglingStates = $state.togglingStates;
-								await toggleCommand(commandConfig?.command, v);
-								commandConfig.disabled = !v;
-								$state.togglingStates[`cmd/${$state.openModule}/toggle`] = [
-									'success',
-									v ? 'Successfully enabled command' : 'Successfully disabled command'
-								];
-								$state.togglingStates = $state.togglingStates;
-							}}
-						/>
-
-						{#if $state.togglingStates[`cmd/${commandConfig?.command}/toggle`]}
-							<Message type={$state.togglingStates[`cmd/${commandConfig?.command}/toggle`][0]}>
-								{$state.togglingStates[`cmd/${commandConfig?.command}/toggle`][1]}
-							</Message>
-						{/if}
-
-						<ButtonReact
-							color={Color.Themable}
-							icon="mdi:edit"
-							text="Manage..."
-							onClick={async () => {
-								let found = false;
-								for (let cmd of $cmdDataTable) {
-									if (getCommandName(cmd) == commandConfig.command) {
-										$state.commandEditorOpen = false;
-										$state.commandEditOpen = cmd;
-										$state.commandEditorOpen = true;
-										found = true;
-										break;
-									}
-								}
-
-								return found;
-							}}
-							states={{
-								loading: 'Loading...',
-								error: 'Failed to load command configurations',
-								success: 'Successfully loaded command configurations'
-							}}
-						/>
-					</details>
-				</li>
-			{/each}
-		</ul>
-	</Modal>
+{#if state.commandEditOpen}
+	<CommandEditor
+		bind:isOpen={state.commandEditorOpen}
+		commandName={getCommandName(state.commandEditOpen)}
+		commandConfigs={state.commandEditConfigs}
+	/>
 {/if}
 
 <style>

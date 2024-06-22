@@ -46,7 +46,7 @@
 		});
 
 		if (!res.ok) {
-			let err = await res.error("Session Data", "markdown")
+			let err = await res.error('Session Data', 'markdown');
 			throw new Error(err);
 		}
 
@@ -87,7 +87,7 @@
 			if (res.ok) {
 				success(`Successfully revoked session ${sessionId}`);
 			} else {
-				let err = await res.error("Revoke session", "markdown");
+				let err = await res.error('Revoke session', 'markdown');
 				error(err);
 			}
 		} catch (err) {
@@ -115,14 +115,12 @@
 			body: JSON.stringify(createSession)
 		});
 
-		if (res.ok) {
-			success('Session created');
-			createSessionResp = await res.json();
-			return true;
-		} else {
-			let err = await res.error("Create session", "markdown");
-			throw new Error(err)
+		if (!res.ok) {
+			throw new Error(await res.error('Create session', 'markdown'));
 		}
+
+		success('Session created');
+		createSessionResp = await res.json();
 	};
 </script>
 

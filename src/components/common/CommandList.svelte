@@ -445,10 +445,11 @@
 					icon="mdi:forward"
 					text="Take Me There!"
 					onClick={async () => {
-						if (!state.clusterFinderByGuildIdExpectedData) return false;
+						if (!state.clusterFinderByGuildIdExpectedData) {
+							throw new Error('No cluster data found');
+						}
 						state.openCluster = state.clusterFinderByGuildIdExpectedData.cluster;
 						state.clusterFinderOpen = false;
-						return true;
 					}}
 					states={{
 						loading: 'Loading...',

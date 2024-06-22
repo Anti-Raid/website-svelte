@@ -1,13 +1,10 @@
 // @ts-check
-const { skeleton } = require('@skeletonlabs/tw-plugin');
-
 /** @type {import('tailwindcss').Config}*/
 const config = {
 	mode: 'jit',
 	important: true,
 	content: [
 		'./src/**/*.{html,js,svelte,ts}',
-		require('path').join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')
 	],
 	darkMode: 'class',
 	theme: {
@@ -66,11 +63,6 @@ const config = {
 		require('@tailwindcss/typography'),
 		require('@tailwindcss/forms'),
 		require('tailwindcss-animate'),
-		skeleton({
-			themes: {
-				preset: ['skeleton']
-			}
-		})
 	]
 };
 

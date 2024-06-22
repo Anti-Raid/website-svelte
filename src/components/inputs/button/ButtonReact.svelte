@@ -21,9 +21,8 @@ Converted to SvelteKit from NextJS for panel use
 	export let text: string;
 	export let type: 'button' | 'submit' = 'submit';
 	export let states: States;
-	export let noRevertState: boolean = false;
 	export let disableBtnAfter: string = '';
-	export let onClick: () => Promise<boolean>;
+	export let onClick: () => Promise<void>;
 
 	// Internal state
 	enum ReactState {
@@ -99,46 +98,33 @@ Converted to SvelteKit from NextJS for panel use
 	aria-disabled={display.disabled}
 	{type}
 	on:click|preventDefault
-	on:click={() => {
+	on:click={async () => {
 		display.disabled = true; // Disable the button
-		if (state == ReactState.Loading) return;
+		if (state == ReactState.Loading || display.disabled) return;
 
 		state = ReactState.Loading;
 
-		setTimeout(() => {
-			let resp = onClick().catch((e) => {
-				error(`${e}`);
-				state = ReactState.Error;
+		try {
+			await onClick();
+			state = ReactState.Clicked;
+		} catch (err) {
+			error(err?.toString() || 'An error occurred');
+			state = ReactState.Error;
+		}
 
-				// Wait 2 seconds
-				if (!noRevertState && !disableBtnAfter) {
-					setTimeout(() => {
-						state = ReactState.Normal;
-						display.disabled = false;
-					}, 4000);
-				}
-			});
-
-			// Check if Promise
-			if (resp && resp.then) {
-				resp.then((out) => {
-					state = out ? ReactState.Clicked : ReactState.Error;
-
-					// Wait 2 seconds
-					if (!noRevertState && !disableBtnAfter) {
-						setTimeout(() => {
-							state = ReactState.Normal;
-							display.disabled = false;
-						}, 4000);
-					}
-				});
-			} else {
-				if (!noRevertState && !disableBtnAfter) {
+		// Wait 2 seconds
+		if (!disableBtnAfter) {
+			setTimeout(() => {
+				if (states) {
 					state = ReactState.Normal;
-					display.disabled = false;
 				}
-			}
-		}, 300);
+
+				display.disabled = false;
+			}, 4000);
+		} else {
+			display.disabled = true;
+			display.text = disableBtnAfter;
+		}
 	}}
 >
 	<ButtonInner {color} icon={display.icon} text={display.text} class={display.className} />
