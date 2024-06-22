@@ -60,9 +60,28 @@
 				// Try falling back to the default command configuration in clusterModules
 				for (let module of Object.values(clusterModules)) {
 					for (let cmd of module.commands) {
-						if (cmd.command.name == base_command) {
+						logger.info(
+							'GetCommandConfigurations',
+							'Checking command',
+							base_command,
+							cmd.command.name,
+							cmd.command.qualified_name
+						);
+
+						if (cmd.command.name == base_command || cmd.command.qualified_name == base_command) {
 							// The key on the extended data should be everything but the base command
-							let extDataKey = permuted_command.split(' ').slice(1).join(' ');
+							let extDataKey: string = '';
+
+							if (permuted_command.length > 1) {
+								extDataKey = permuted_command.split(' ').slice(1).join(' ');
+							}
+
+							logger.info('GetCommandConfigurations', 'Got extended data key', {
+								permuted_command,
+								base_command,
+								permuted_commands,
+								extDataKey
+							});
 
 							if (!cmd.extended_data[extDataKey]) {
 								continue;
