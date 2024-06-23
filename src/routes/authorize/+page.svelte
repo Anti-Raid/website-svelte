@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { getUser } from '$lib/auth/getUser';
 	import { get } from '$lib/configs/functions/services';
 	import { fetchClient } from '$lib/fetch/fetch';
-	import { ApiError, AuthorizeRequest, UserLogin } from '$lib/generated/types';
+	import { ApiError, AuthorizeRequest, User, UserLogin } from '$lib/generated/types';
 	import logger from '$lib/ui/logger';
 	import Message from '../../components/Message.svelte';
 
@@ -26,13 +27,21 @@
 		});
 
 		if (!res.ok) {
-			let err = await res.error('Create session', "markdown")
+			let err = await res.error('Create session', 'markdown');
 			throw new Error(err);
 		}
 
 		let data: UserLogin = await res.json();
 
+		// Fetch authUser from api
+		let user = await getUser(data.user_id);
+
+		if (!user) {
+			throw new Error('Failed to fetch user');
+		}
+
 		localStorage.setItem('wistala', JSON.stringify(data));
+		localStorage.setItem('authUser', JSON.stringify(user));
 
 		setTimeout(() => {
 			if (guildId) {

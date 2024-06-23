@@ -238,7 +238,7 @@ export interface GuildCommandConfiguration {
   id: string; // The ID
   guild_id: string; // The guild id (from db)
   command: string; // The command name
-  perms?: PermissionChecks; // The permission method (kittycat)
+  perms?: PermissionChecks; // The permission checks on the command, if unset, will revert to either the modules default_perms and if that is unset, the default perms set on the command itself
   disabled?: boolean; // Whether or not the command is disabled
 }
 /**
@@ -249,6 +249,7 @@ export interface GuildModuleConfiguration {
   guild_id: string; // The guild id (from db)
   module: string; // The module id
   disabled?: boolean; // Whether or not the module is disabled or not. None means to use the default module configuration
+  default_perms?: PermissionChecks; // The default permission checks of the module, can be overrided by the command configuration
 }
 
 //////////

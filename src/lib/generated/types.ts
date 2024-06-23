@@ -168,6 +168,16 @@ export interface IOAuthDiscordError {
 }
 
 //////////
+// source: modules.go
+
+/**
+ * PatchGuildModuleConfiguration allows updating the guild module configuration
+ */
+export interface PatchGuildModuleConfiguration {
+  disabled?: boolean; // Whether or not the module is disabled or not. None means to use the default module configuration
+}
+
+//////////
 // source: task.go
 
 export interface TaskCreateResponse {

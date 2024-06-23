@@ -56,12 +56,14 @@
 	const getLoginData = async () => {
 		let authCreds = getAuthCreds();
 
-		if (!authCreds) return;
+		if (!authCreds) throw new Error('UNAUTHORIZED');
 
 		let cachedAuthUser = localStorage.getItem('authUser');
 
 		if (!cachedAuthUser) {
-			throw new Error('UNAUTHORIZED');
+			let userRes = await getUser(authCreds.user_id);
+			cachedAuthUser = JSON.stringify(userRes);
+			localStorage.setItem('authUser', cachedAuthUser);
 		}
 
 		let user: User = JSON.parse(cachedAuthUser);

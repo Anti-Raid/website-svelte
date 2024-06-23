@@ -6,14 +6,14 @@ import { LSAuthData } from './core';
 
 let cachedUserValue: User | null = null;
 
-export const getUser = async (data: LSAuthData) => {
+export const getUser = async (userId: string) => {
 	if (cachedUserValue) {
 		return cachedUserValue;
 	}
 
-	const res = await fetchClient(`${get('splashtail')}/users/${data.user_id}`);
+	const res = await fetchClient(`${get('splashtail')}/users/${userId}`);
 
-	if (!res.ok && data?.user_id) {
+	if (!res.ok && userId) {
 		logger.error('Auth', 'Could not find user perm information from API');
 		return;
 	}
