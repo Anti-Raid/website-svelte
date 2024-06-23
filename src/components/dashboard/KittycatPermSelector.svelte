@@ -93,6 +93,7 @@
 		<InputText
 			id="scope"
 			bind:value={scope}
+			onChange={() => (perm = rewindPerms(namespace, permission, scope, negator))}
 			label="Scope"
 			placeholder="Fine-grained permission controls."
 			minlength={1}
