@@ -238,10 +238,8 @@
 		if (!state.openModule) {
 			// Find first non-hidden module
 			for (let module of Object.values(clusterModules)) {
-				if (!module?.web_hidden) {
-					state.openModule = module?.id;
-					break;
-				}
+				state.openModule = module?.id;
+				break;
 			}
 		}
 	}
@@ -257,8 +255,6 @@
 		let commands: LookedUpCommand[] = [];
 
 		for (let module of Object.values(moduleData)) {
-			if (module?.web_hidden) continue; // Skip web_hidden modules, they are internal and are not publicly usable anyways
-
 			for (let command of module?.commands) {
 				let checkProps = [
 					command?.command?.name,
@@ -412,16 +408,14 @@
 					<hr class="mb-2" />
 
 					{#each Object.entries(clusterModules) as [_, module]}
-						{#if !module?.web_hidden}
-							<NavButton
-								current={state.openModule == module?.id}
-								title={module?.name}
-								onClick={() => {
-									state.openModule = module?.id || clusterModules['core'].id;
-								}}
-								extClass="block mb-2 w-full"
-							/>
-						{/if}
+						<NavButton
+							current={state.openModule == module?.id}
+							title={module?.name}
+							onClick={() => {
+								state.openModule = module?.id || clusterModules['core'].id;
+							}}
+							extClass="block mb-2 w-full"
+						/>
 					{/each}
 				</nav>
 				<!--Content-->

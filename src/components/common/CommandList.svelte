@@ -62,8 +62,6 @@
 		let commands: LookedUpCommand[] = [];
 
 		for (let module of Object.values(moduleData)) {
-			if (module?.web_hidden) continue; // Skip web_hidden modules, they are internal and are not publicly usable anyways
-
 			for (let command of module?.commands) {
 				let checkProps = [
 					command?.command?.name,
