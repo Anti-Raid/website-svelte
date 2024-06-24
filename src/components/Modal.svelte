@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let Title: string; // Modal Title
-	export let Logo: string; // Logo URL
+	export let title: string; // Modal Title
+	export let logo: string; // Logo URL
 
 	export let showModal: boolean; // boolean, whether or not the modal is shown or not
 
@@ -24,8 +24,8 @@
 				class="flex justify-between items-center head bg-surface-800 text-primary-400 py-5 px-8 text-2xl font-extrabold"
 			>
 				<div class="flex">
-					<img class="h-10 rounded-full" src={Logo} alt={Title} />
-					<h2 class="ml-2 mt-1">{Title}</h2>
+					<img class="h-10 rounded-full" src={logo} alt={title} />
+					<h2 class="ml-2 mt-1">{title}</h2>
 				</div>
 
 				<button

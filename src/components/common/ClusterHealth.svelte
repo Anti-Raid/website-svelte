@@ -32,9 +32,9 @@
 {#if openCluster != undefined && showModal}
 	<Modal
 		bind:showModal
-		Title={instanceList?.Map?.find((cluster) => cluster.ID == openCluster)?.Name?.toString() ||
+		title={instanceList?.Map?.find((cluster) => cluster.ID == openCluster)?.Name?.toString() ||
 			'Cluster'}
-		Logo="/logo.webp"
+		logo="/logo.webp"
 	>
 		<h2 class="text-xl font-semibold">Cluster Map</h2>
 		<ObjectRender object={instanceList?.Map?.find((cluster) => cluster.ID == openCluster)} />

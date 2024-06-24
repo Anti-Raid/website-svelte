@@ -24,11 +24,11 @@ export const getColor = (color: Color): [string, string] => {
 	switch (color) {
 		case Color.Red:
 			colorClass = 'bg-red-600 hover:bg-red-800';
-			iconClass = 'bg-red-700 text-amber-800';
+			iconClass = 'bg-red-700';
 			break;
 		case Color.Themable:
-			colorClass = 'bg-primary-600 hover:bg-primary-800';
-			iconClass = 'bg-primary-800';
+			colorClass = 'bg-secondary-600 hover:bg-secondary-800';
+			iconClass = 'bg-secondary-800';
 			break;
 		case Color.Amber:
 			colorClass = 'bg-amber-600 hover:bg-amber-800';

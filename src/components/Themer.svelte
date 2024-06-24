@@ -4,27 +4,38 @@
 
 	export let isOpen: boolean = false;
 
-	const themes = [{ id: 'rocket', color: 'rocket', label: 'Rocket', class: 'text-primary-500' }];
+	const themes = [
+		{ id: 'rocket', color: 'rocket', label: 'Rocket', class: 'text-primary-500' },
+		{ id: 'skeleton', color: 'skeleton', label: 'Skeleton', class: 'text-primary-500' },
+		{ id: 'wintry', color: 'wintry', label: 'Wintry', class: 'text-primary-500' },
+		{ id: 'modern', color: 'modern', label: 'Modern', class: 'text-primary-500' },
+		{ id: 'seafoam', color: 'seafoam', label: 'Seafoam', class: 'text-primary-500' },
+		{ id: 'vintage', color: 'vintage', label: 'Vintage', class: 'text-primary-500' },
+		{ id: 'sahara', color: 'sahara', label: 'Sahara', class: 'text-primary-500' },
+		{ id: 'hamlindigo', color: 'hamlindigo', label: 'Hamlindigo', class: 'text-primary-500' },
+		{ id: 'gold-nouveau', color: 'gold-nouveau', label: 'Gold Nouveau', class: 'text-primary-500' },
+		{ id: 'crimson', color: 'crimson', label: 'Crimson', class: 'text-primary-500' }
+	];
 
 	// Temporary
-	let theme: string = 'amber';
+	let theme: string = 'crimson';
 	const changeColor = (th: string) => {
-		//theme = th;
-		//document.documentElement.setAttribute('data-theme', th);
-		//localStorage.setItem('theme->antiraid', th);
+		theme = th;
+		document.querySelector('#antiraid-body')?.setAttribute('data-theme', th);
+		localStorage.setItem('theme->antiraid', th);
 	};
 
 	$: {
 		if (browser) {
-			//theme = localStorage.getItem('theme->antiraid') || 'amber';
-			//document.documentElement.setAttribute('data-theme', theme);
+			theme = localStorage.getItem('theme->antiraid') || 'crimson';
+			document.querySelector('#antiraid-body')?.setAttribute('data-theme', theme);
 		}
 	}
 </script>
 
 {#if isOpen}
 	<div
-		class="absolute z-50 transition transform translate-y-0 opacity-100 lg:w-72 -right-5 md:right-0 sm:px-0"
+		class="absolute z-50 transition transform translate-y-0 opacity-100 w-56 lg:w-72 -right-5 md:right-0 sm:px-0"
 	>
 		<div
 			class="overflow-x-hidden overflow-y-scroll bg-black rounded-lg shadow-lg dropdown-container ring-1 ring-black ring-opacity-5"

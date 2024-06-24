@@ -12,7 +12,7 @@
 	import NavButton from '../../../components/inputs/button/NavButton.svelte';
 	import { Readable } from 'svelte/store';
 	import InputText from '../../../components/inputs/InputText.svelte';
-	import { DataHandler, Datatable, Th } from '@vincjo/datatables';
+	import { DataHandler } from '@vincjo/datatables';
 	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 	import { ApiError, UserGuildBaseData } from '$lib/generated/types';
 	import { fetchClient } from '$lib/fetch/fetch';
@@ -300,6 +300,7 @@
 		extended_data: CanonicalCommandExtendedData;
 		extended_data_map: Record<string, CanonicalCommandExtendedData>;
 		search_permissions: string;
+		full_name: string;
 	}
 
 	// Returns the name of a command
@@ -330,7 +331,8 @@
 				extended_data_map: extended_data,
 				search_permissions: extData?.default_perms?.checks
 					?.map((check) => check?.kittycat_perms)
-					?.join(', ')
+					?.join(', '),
+				full_name: depth == 0 ? command?.name : `${parent?.name} ${command?.name}`
 			});
 
 			if (command?.subcommands) {
@@ -535,17 +537,17 @@
 									<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
 										<thead>
 											<tr class="bg-surface-800">
-												<ThSort handler={data.handler} orderBy={'qualified_name'}>Name</ThSort>
+												<ThSort handler={data.handler} orderBy={'full_name'}>Name</ThSort>
 												<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
 												<ThSort handler={data.handler} orderBy={'arguments'}>Arguments</ThSort>
-												<ThSort handler={data.handler} orderBy={'qualified_name'}>Manage</ThSort>
+												<ThSort handler={data.handler} orderBy={'full_name'}>Manage</ThSort>
 											</tr>
 
 											<tr class="bg-surface-800">
-												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
+												<ThFilter handler={data.handler} filterBy={'full_name'} />
 												<ThFilter handler={data.handler} filterBy={'description'} />
 												<ThFilter handler={data.handler} filterBy={'arguments'} />
-												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
+												<ThFilter handler={data.handler} filterBy={'full_name'} />
 											</tr>
 										</thead>
 
@@ -661,17 +663,6 @@
 {/if}
 
 <style>
-	table {
-		color: white;
-		margin: 0 !important;
-	}
-	tbody td {
-		border: 1px solid #f5f5f5;
-		padding: 4px 20px;
-	}
-	tbody tr {
-		transition: all, 0.2s;
-	}
 	tbody tr:hover {
 		background: #252323;
 	}
