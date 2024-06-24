@@ -3,6 +3,7 @@ import { get } from '$lib/configs/functions/services';
 import { fetchClient } from '$lib/fetch/fetch';
 import { InstanceList } from '$lib/generated/mewld/proc';
 import {
+	CanonicalCommand,
 	CanonicalModule,
 	GuildCommandConfiguration,
 	GuildModuleConfiguration
@@ -80,6 +81,13 @@ export const opGetClusterModules = (
 			let parsedMap: Record<string, CanonicalModule> = {};
 
 			for (let module of data) {
+				if (module.web_hidden) {
+					continue; // Skip hidden modules
+				}
+
+				// Get rid of web_hidden commands as well
+				module.commands = module.commands.filter((cmd) => !cmd.extended_data.web_hidden);
+
 				parsedMap[module.id] = module;
 			}
 
@@ -128,8 +136,7 @@ export const opGetCommandConfigurations = (
 		name: `guildCommandConfigurations:${guildId}:${command}`,
 		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
 			const res = await fetchClient(
-				`${get('splashtail')}/users/${
-					authData?.user_id
+				`${get('splashtail')}/users/${authData?.user_id
 				}/guilds/${guildId}/commands/${command}/configurations`,
 				{
 					headers: {
