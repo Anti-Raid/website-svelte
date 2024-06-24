@@ -11,7 +11,7 @@
 	export let commandConfigs: GuildCommandConfiguration[];
 </script>
 
-<Modal bind:showModal={isOpen} title={`Command '${commandName}'`}>
+<Modal bind:showModal={isOpen} Title={`Command '${commandName}'`} Logo="/logo.webp">
 	<h2 class="text-xl font-semibold">Command Configurations</h2>
 	<ul>
 		{#each commandConfigs as commandConfig}

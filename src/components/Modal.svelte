@@ -16,14 +16,10 @@
 	on:close={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
 >
-	<div
-		class="modal z-50 fixed w-full h-full top-0 left-0 flex items-center justify-center p-8 lg:p-0"
-	>
+	<div class="modal z-50 fixed w-full h-full top-0 left-0 flex items-center justify-center lg:p-0">
 		<div class="modal-overlay fixed w-full h-full bg-gray-900 opacity-50" />
 
-		<div
-			class="bg-surface-600 w-full lg:h-max lg:w-1/2 mx-auto rounded-lg shadow-xl z-50 overflow-y-auto"
-		>
+		<div class="bg-surface-600 w-full lg:h-max lg:w-1/2 mx-auto rounded-lg shadow-xl z-50">
 			<div
 				class="flex justify-between items-center head bg-surface-800 text-primary-400 py-5 px-8 text-2xl font-extrabold"
 			>
