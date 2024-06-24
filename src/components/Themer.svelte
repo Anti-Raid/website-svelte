@@ -5,20 +5,20 @@
 	export let isOpen: boolean = false;
 
 	const themes = [
-		{ id: 'amber', color: 'amber', label: 'Amber', class: 'text-amber', new: false },
-		{ id: 'amethyst', color: 'amethyst', label: 'Amethyst', class: 'text-amethyst', new: false },
-		{ id: 'blackout', color: 'blackout', label: 'Blackout', class: 'text-blackout', new: true },
-		{ id: 'cyberpunk', color: 'cyberpunk', label: 'Cyberpunk', class: 'text-cyberpunk', new: true },
-		{ id: 'sandstorm', color: 'sandstorm', label: 'Sandstorm', class: 'text-sandstorm', new: true },
-		{ id: 'emerald', color: 'emerald', label: 'Emerald', class: 'text-emerald', new: false },
-		{ id: 'forest', color: 'forest', label: 'Forest', class: 'text-forest', new: true },
-		{ id: 'midnight', color: 'midnight', label: 'Midnight', class: 'text-midnight', new: true },
-		{ id: 'ocean', color: 'ocean', label: 'Ocean', class: 'text-ocean', new: true },
-		{ id: 'quartz', color: 'ocean', label: 'Quartz', class: 'text-quartz', new: true },
-		{ id: 'rose', color: 'rose', label: 'Rose', class: 'text-rose', new: false },
-		{ id: 'skyline', color: 'skyline', label: 'Skyline', class: 'text-skyline', new: false },
-		{ id: 'tropical', color: 'tropical', label: 'Tropical', class: 'text-tropical', new: true },
-		{ id: 'wine', color: 'wine', label: 'Wine', class: 'text-wine', new: true }
+		{ id: 'amber', color: 'amber', label: 'Amber', class: 'text-amber' },
+		{ id: 'amethyst', color: 'amethyst', label: 'Amethyst', class: 'text-amethyst' },
+		{ id: 'blackout', color: 'blackout', label: 'Blackout', class: 'text-blackout' },
+		{ id: 'cyberpunk', color: 'cyberpunk', label: 'Cyberpunk', class: 'text-cyberpunk' },
+		{ id: 'sandstorm', color: 'sandstorm', label: 'Sandstorm', class: 'text-sandstorm' },
+		{ id: 'emerald', color: 'emerald', label: 'Emerald', class: 'text-emerald' },
+		{ id: 'forest', color: 'forest', label: 'Forest', class: 'text-forest' },
+		{ id: 'midnight', color: 'midnight', label: 'Midnight', class: 'text-midnight' },
+		{ id: 'ocean', color: 'ocean', label: 'Ocean', class: 'text-ocean' },
+		{ id: 'quartz', color: 'ocean', label: 'Quartz', class: 'text-quartz' },
+		{ id: 'rose', color: 'rose', label: 'Rose', class: 'text-rose' },
+		{ id: 'skyline', color: 'skyline', label: 'Skyline', class: 'text-skyline' },
+		{ id: 'tropical', color: 'tropical', label: 'Tropical', class: 'text-tropical' },
+		{ id: 'wine', color: 'wine', label: 'Wine', class: 'text-wine' }
 	];
 
 	// Temporary
@@ -60,13 +60,6 @@
 						<div class="flex items-center justify-between w-full">
 							<span class={`hover:bg-${String(th.color)}-500`}>
 								{th.label}
-								{#if th.new}
-									<span
-										class={`ml-2 text-xs font-semibold ${th.class} bg-dark px-1.5 py-0.5 rounded-full`}
-									>
-										NEW
-									</span>
-								{/if}
 							</span>
 							<Icon
 								icon="ic:round-circle"

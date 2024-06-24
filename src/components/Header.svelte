@@ -212,7 +212,7 @@
 				>
 					<Icon icon="mdi:palette" class="text-3xl text-white-900" />
 				</button>
-				<div bind:this={openElements.themeMenu.bind} class="themer-div">
+				<div bind:this={openElements.themeMenu.bind} class="themer-div text-left">
 					<Themer bind:isOpen={openElements.themeMenu.open} />
 				</div>
 			</span>
