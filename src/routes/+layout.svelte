@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.postcss';
-	import '../styling/themes.css';
 	import Header from '../components/Header.svelte';
 	import { SvelteToast } from '@zerodevx/svelte-toast';
 </script>

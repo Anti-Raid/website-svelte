@@ -43,8 +43,8 @@
 		{minlength}
 		{id}
 		class={disabled
-			? 'w-full mx-auto mt-2 flex bg-black bg-opacity-30 text-gray-100 rounded-xl border border-themable-200 opacity-75 py-4 px-6 disabled'
-			: 'w-full mt-2 flex transition duration-200 hover:bg-opacity-50 bg-black bg-opacity-30 text-white focus:text-themable-400 rounded-xl border border-themable-200 focus:border-themable-400 focus:outline-none py-4 px-6'}
+			? 'w-full mx-auto mt-2 flex bg-black bg-opacity-30 text-gray-100 rounded-xl border border-primary-200 opacity-75 py-4 px-6 disabled'
+			: 'w-full mt-2 flex transition duration-200 hover:bg-opacity-50 bg-black bg-opacity-30 text-white focus:text-primary-400 rounded-xl border border-primary-200 focus:border-primary-400 focus:outline-none py-4 px-6'}
 		{placeholder}
 		{required}
 		{disabled}

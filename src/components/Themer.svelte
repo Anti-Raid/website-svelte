@@ -4,22 +4,7 @@
 
 	export let isOpen: boolean = false;
 
-	const themes = [
-		{ id: 'amber', color: 'amber', label: 'Amber', class: 'text-amber' },
-		{ id: 'amethyst', color: 'amethyst', label: 'Amethyst', class: 'text-amethyst' },
-		{ id: 'blackout', color: 'blackout', label: 'Blackout', class: 'text-blackout' },
-		{ id: 'cyberpunk', color: 'cyberpunk', label: 'Cyberpunk', class: 'text-cyberpunk' },
-		{ id: 'sandstorm', color: 'sandstorm', label: 'Sandstorm', class: 'text-sandstorm' },
-		{ id: 'emerald', color: 'emerald', label: 'Emerald', class: 'text-emerald' },
-		{ id: 'forest', color: 'forest', label: 'Forest', class: 'text-forest' },
-		{ id: 'midnight', color: 'midnight', label: 'Midnight', class: 'text-midnight' },
-		{ id: 'ocean', color: 'ocean', label: 'Ocean', class: 'text-ocean' },
-		{ id: 'quartz', color: 'ocean', label: 'Quartz', class: 'text-quartz' },
-		{ id: 'rose', color: 'rose', label: 'Rose', class: 'text-rose' },
-		{ id: 'skyline', color: 'skyline', label: 'Skyline', class: 'text-skyline' },
-		{ id: 'tropical', color: 'tropical', label: 'Tropical', class: 'text-tropical' },
-		{ id: 'wine', color: 'wine', label: 'Wine', class: 'text-wine' }
-	];
+	const themes = [{ id: 'rocket', color: 'rocket', label: 'Rocket', class: 'text-primary-500' }];
 
 	// Temporary
 	let theme: string = 'amber';
@@ -53,7 +38,7 @@
 						}}
 						class={`group flex rounded-md items-center w-full px-3 py-2 transition-all duration-150 ${
 							theme === th.id
-								? `text-white bg-themable-500 shadow-md shadow-violet-500/10 hover:bg-themable-500`
+								? `text-white bg-primary-500 shadow-md shadow-violet-500/10 hover:bg-primary-500`
 								: 'text-white/75 hover:text-white/100 hover:bg-gray-800/20'
 						} `}
 					>

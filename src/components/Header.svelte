@@ -207,8 +207,8 @@
 					aria-label="View Themes"
 					on:click={() => (openElements.themeMenu.open = !openElements.themeMenu.open)}
 					class={openElements.themeMenu.open
-						? 'px-3 py-2 text-center text-white rounded-md bg-themable-500 bg-opacity-20'
-						: 'px-3 py-2 text-center text-white bg-transparent rounded-md hover:bg-themable-500 hover:bg-opacity-20'}
+						? 'px-3 py-2 text-center text-white rounded-md bg-primary-500 bg-opacity-20'
+						: 'px-3 py-2 text-center text-white bg-transparent rounded-md hover:bg-primary-500 hover:bg-opacity-20'}
 				>
 					<Icon icon="mdi:palette" class="text-3xl text-white-900" />
 				</button>

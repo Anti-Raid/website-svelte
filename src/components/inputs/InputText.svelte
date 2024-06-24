@@ -50,8 +50,8 @@
 		type="text"
 		{id}
 		class={disabled
-			? 'w-full mx-auto mt-2 flex bg-black bg-opacity-30 text-gray-100 rounded-xl border border-themable-200 opacity-75 py-4 px-6 disabled cursor-not-allowed'
-			: 'w-full mx-auto mt-2 flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-themable-400 rounded-xl border border-themable-200 focus:border-themable-400 focus:outline-none py-4 px-6'}
+			? 'w-full mx-auto mt-2 flex bg-black bg-opacity-30 text-gray-100 rounded-xl border border-primary-200 opacity-75 py-4 px-6 disabled cursor-not-allowed'
+			: 'w-full mx-auto mt-2 flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-primary-400 rounded-xl border border-primary-200 focus:border-primary-400 focus:outline-none py-4 px-6'}
 		{placeholder}
 		{required}
 		{disabled}

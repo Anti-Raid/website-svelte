@@ -593,7 +593,7 @@
 													</td>
 													<td>
 														<button
-															class="text-themable-400 hover:text-themable-500"
+															class="text-primary-400 hover:text-primary-500"
 															on:click={() => {
 																logger.info('EditCommand', 'Editing command', row);
 																state.commandEditorOpen = false;

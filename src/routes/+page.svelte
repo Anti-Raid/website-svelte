@@ -21,7 +21,7 @@
 	<p class="text-xl text-white mx-auto mt-5 max-w-full">
 		With our services, you can easily protect your <a
 			href={support?.discord}
-			class="font-bold tracking-tight text-themable-400 hover:text-red-600">Discord Server</a
+			class="font-bold tracking-tight text-primary-400 hover:text-red-600">Discord Server</a
 		> in a matter of seconds!
 	</p>
 
