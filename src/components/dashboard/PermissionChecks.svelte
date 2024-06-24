@@ -12,14 +12,15 @@
 
 <section class="permission-check">
 	<div class="permission-check__content">
-		<details class="permission-check__details border p-2">
-			<summary class="permission-check__summary hover:cursor-pointer">Kittycat Permissions</summary>
+		<details class="permission-check__details border p-2" open>
+			<summary class="permission-check__summary hover:cursor-pointer">Permission Checks</summary>
 			<PermissionCheckArray
 				bind:perms={permissionChecks.checks}
 				id={`permission-checks__a-${id}`}
 			/>
 		</details>
 		<details class="permission-check__details border p-2" open>
+			<summary class="permission-check__summary hover:cursor-pointer">Constraints</summary>
 			<InputNumber
 				id={`permission-checks-needed-${id}`}
 				label="Checks Needed"

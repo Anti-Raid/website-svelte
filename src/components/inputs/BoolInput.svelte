@@ -9,7 +9,7 @@
 	export let onChange: undefined | ((value: boolean) => void);
 </script>
 
-<div class="mt-4 col-span-9 pt-2 lg:pt-0 justify-middle items-center align-bottom text-lg flex">
+<div class="col-span-9 pt-2 lg:pt-0 justify-middle items-center align-bottom text-lg flex">
 	<input
 		{id}
 		name={id}

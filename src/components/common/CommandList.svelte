@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { makeSharedRequest, opGetClusterModules } from '$lib/fetch/ext';
 	import { InstanceList } from '$lib/generated/mewld/proc';
-	import {
-		CanonicalCommand,
-		CanonicalCommandData,
-		CanonicalModule
-	} from '$lib/generated/silverpelt';
+	import { CanonicalModule } from '$lib/generated/silverpelt';
 	import logger from '$lib/ui/logger';
 	import Message from '../Message.svelte';
 	import Modal from '../Modal.svelte';
@@ -17,13 +13,18 @@
 	import { DataHandler } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
 	import BoolInput from '../inputs/BoolInput.svelte';
-	import { CanonicalCommandExtendedData } from '$lib/converters';
 	import Pagination from './datatable/Pagination.svelte';
 	import RowCount from './datatable/RowCount.svelte';
 	import RowsPerPage from './datatable/RowsPerPage.svelte';
 	import Search from './datatable/Search.svelte';
 	import ThFilter from './datatable/ThFilter.svelte';
 	import ThSort from './datatable/ThSort.svelte';
+	import {
+		LookedUpCommand,
+		ParsedCanonicalCommandData,
+		commandLookup,
+		extractCommandsFromModule
+	} from '$lib/ui/commands';
 
 	export let instanceList: InstanceList;
 
@@ -50,44 +51,6 @@
 		clusterFinderByGuildIdExpectedData: null
 	};
 
-	interface LookedUpCommand {
-		command: CanonicalCommand;
-		module: CanonicalModule;
-	}
-	const commandLookup = (): LookedUpCommand[] => {
-		if (state?.openCluster == undefined) return [];
-		let moduleData = state.clusterModuleData[state.openCluster];
-		if (!moduleData) return [];
-
-		let commands: LookedUpCommand[] = [];
-
-		for (let module of Object.values(moduleData)) {
-			for (let command of module?.commands) {
-				let checkProps = [
-					command?.command?.name,
-					command?.command?.qualified_name,
-					command?.command?.description,
-					...command?.command?.subcommands?.map((subcommand) => subcommand?.name),
-					...command?.command?.subcommands?.map((subcommand) => subcommand?.qualified_name),
-					...command?.command?.subcommands?.map((subcommand) => subcommand?.description)
-				];
-
-				if (
-					checkProps.some((prop) =>
-						prop?.toLowerCase()?.includes(state.commandSearch?.toLowerCase())
-					)
-				) {
-					commands.push({
-						command,
-						module
-					});
-				}
-			}
-		}
-
-		return commands;
-	};
-
 	const fetchCluster = async (_: number | undefined) => {
 		logger.info('FetchCluster', 'Fetching cluster modules', state?.openCluster);
 		let resp = await makeSharedRequest(opGetClusterModules(state?.openCluster));
@@ -96,17 +59,13 @@
 			state.clusterModuleData[state?.openCluster || 0] = resp;
 	};
 
-	$: if (state?.commandSearch) {
-		state.searchedCommands = commandLookup();
+	$: if (state?.commandSearch && state.clusterModuleData[state.openCluster]) {
+		state.searchedCommands = commandLookup(
+			state.clusterModuleData[state.openCluster],
+			state.commandSearch
+		);
 	} else {
 		state.searchedCommands = [];
-	}
-
-	interface ParsedCanonicalCommandData extends CanonicalCommandData {
-		subcommand_depth: number;
-		parent_command?: CanonicalCommandData;
-		extended_data: CanonicalCommandExtendedData;
-		search_permissions: string;
 	}
 
 	let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
@@ -114,48 +73,7 @@
 	const createCmdDataTable = async (_: string) => {
 		let module = state.clusterModuleData[state.openCluster][state.openModule];
 
-		let commands: ParsedCanonicalCommandData[] = [];
-
-		// Recursively parse commands
-		const parseCommand = (
-			command: CanonicalCommandData,
-			extended_data: Record<string, CanonicalCommandExtendedData>,
-			depth: number = 0,
-			parent: CanonicalCommandData | undefined
-		) => {
-			let extData = extended_data[depth == 0 ? '' : command?.name] || extended_data[''];
-			logger.info('ParseCommand', 'Parsing command', command?.name, depth, parent, extData);
-			commands.push({
-				...command,
-				subcommand_depth: depth,
-				parent_command: parent,
-				extended_data: extData,
-				search_permissions: extData?.default_perms?.checks
-					?.map((check) => check?.kittycat_perms)
-					?.join(', ')
-			});
-
-			if (command?.subcommands) {
-				for (let subcommand of command?.subcommands) {
-					parseCommand(subcommand, extended_data, depth + 1, command);
-				}
-			}
-		};
-
-		for (let command of module?.commands) {
-			let extData: Record<string, CanonicalCommandExtendedData> = {};
-
-			for (let id in command?.extended_data) {
-				extData[id] = {
-					id,
-					...command?.extended_data[id]
-				};
-			}
-
-			logger.info('ParseCommand.ExtData', 'Got extended data', extData);
-
-			parseCommand(command?.command, extData, 0, undefined);
-		}
+		let commands: ParsedCanonicalCommandData[] = await extractCommandsFromModule(module);
 
 		const handler = new DataHandler(commands, { rowsPerPage: 20 });
 		cmdDataTable = handler.getRows();

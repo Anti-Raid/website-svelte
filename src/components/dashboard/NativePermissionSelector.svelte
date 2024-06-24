@@ -22,7 +22,7 @@
 </script>
 
 <div
-	class="native-permission-selector grid gap-2 grid-rows-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+	class="native-permission-selector grid gap-2 grid-rows-auto grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
 >
 	{#each Object.entries(serenityPermissions) as [name, permission]}
 		{#if name != ''}

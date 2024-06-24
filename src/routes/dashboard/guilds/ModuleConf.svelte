@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { InstanceList } from '$lib/generated/mewld/proc';
 	import {
-		CanonicalCommand,
-		CanonicalCommandData,
 		CanonicalModule,
 		GuildCommandConfiguration,
 		GuildModuleConfiguration
@@ -13,16 +11,8 @@
 	import { Readable } from 'svelte/store';
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import { DataHandler } from '@vincjo/datatables';
-	import BoolInput from '../../../components/inputs/BoolInput.svelte';
-	import { ApiError, UserGuildBaseData } from '$lib/generated/types';
-	import { fetchClient } from '$lib/fetch/fetch';
-	import { CanonicalCommandExtendedData } from '$lib/converters';
-	import { get } from '$lib/configs/functions/services';
-	import { getAuthCreds } from '$lib/auth/getAuthCreds';
-	import UnorderedList from '../../../components/UnorderedList.svelte';
-	import ListItem from '../../../components/ListItem.svelte';
+	import { UserGuildBaseData } from '$lib/generated/types';
 	import TabbedPane from '../../../components/inputs/button/tabs/TabbedPane.svelte';
-	import { permuteCommands } from '$lib/mewext/mewext';
 	import CommandEditor from './CommandEditor.svelte';
 	import Pagination from '../../../components/common/datatable/Pagination.svelte';
 	import RowCount from '../../../components/common/datatable/RowCount.svelte';
@@ -30,6 +20,15 @@
 	import Search from '../../../components/common/datatable/Search.svelte';
 	import ThFilter from '../../../components/common/datatable/ThFilter.svelte';
 	import ThSort from '../../../components/common/datatable/ThSort.svelte';
+	import {
+		LookedUpCommand,
+		ParsedCanonicalCommandData,
+		commandLookup,
+		extractCommandsFromModule,
+		getCommandConfigurations,
+		getCommandName
+	} from '$lib/ui/commands';
+	import ModuleInfoTab from './ModuleInfoTab.svelte';
 
 	export let instanceList: InstanceList;
 	export let clusterModules: Record<string, CanonicalModule>;
@@ -40,173 +39,11 @@
 	export let guildClusterId: number;
 	export let guildShardId: number;
 
-	const getCommandConfigurations = (command: string): GuildCommandConfiguration[] => {
-		let ccs = []; // List of command configurations to return
-
-		let permuted_commands = permuteCommands(command);
-		let base_command = permuted_commands[0];
-
-		logger.info(
-			'GetCommandConfigurations',
-			'Getting command configurations for',
-			command,
-			permuted_commands,
-			base_command
-		);
-
-		// For each permuted command, find the command configuration
-		for (let permuted_command of permuted_commands) {
-			let cc = currentCommandConfiguration.find((cmc) => cmc.command == permuted_command);
-
-			if (cc) {
-				ccs.push(cc);
-				continue;
-			}
-
-			// Try falling back to the default command configuration in clusterModules
-			for (let module of Object.values(clusterModules)) {
-				for (let cmd of module.commands) {
-					if (cmd.command.name == base_command || cmd.command.qualified_name == base_command) {
-						// The key on the extended data should be everything but the base command
-						let subcommand: string = permuted_command.split(' ').slice(1).join(' ');
-
-						logger.info('GetCommandConfigurations', 'Got subcommand from permuted command', {
-							permuted_command,
-							base_command,
-							permuted_commands,
-							subcommand
-						});
-
-						if (cmd.extended_data[subcommand]) {
-							let cc: GuildCommandConfiguration = {
-								id: '',
-								guild_id: guildId,
-								command: permuted_command,
-								perms: cmd.extended_data[subcommand].default_perms,
-								disabled: !cmd.extended_data[subcommand].is_default_enabled
-							};
-							ccs.push(cc);
-							continue;
-						}
-
-						// The cmd itself does not exist in extended_data, add a fallback
-						if (cmd.extended_data['']) {
-							let cc: GuildCommandConfiguration = {
-								id: '',
-								guild_id: guildId,
-								command: permuted_command,
-								perms: cmd.extended_data[''].default_perms,
-								disabled: !cmd.extended_data[''].is_default_enabled
-							};
-							ccs.push(cc);
-							continue;
-						} else {
-							// No extended data for this command, add a default configuration
-							logger.info(
-								'GetCommandConfigurations',
-								'Falling back to default configuration for command',
-								{
-									base_command,
-									permuted_command,
-									permuted_commands
-								}
-							);
-
-							let cc: GuildCommandConfiguration = {
-								id: '',
-								guild_id: guildId,
-								command: permuted_command,
-								perms: {
-									checks: [],
-									checks_needed: 1
-								},
-								disabled: false
-							};
-							ccs.push(cc);
-							continue;
-						}
-					}
-				}
-			}
-		}
-
-		logger.info('GetCommandConfigurations', 'Got command configs [ccs]', {
-			base_command,
-			permuted_commands,
-			ccs
-		});
-
-		return ccs;
-	};
-
 	const findModuleInCmc = (
 		currentModuleConfiguration: GuildModuleConfiguration[],
 		module: string
 	) => {
 		return currentModuleConfiguration.find((cmc) => cmc.module == module);
-	};
-
-	const toggleModule = async (moduleName: string, enabled: boolean) => {
-		let authData = getAuthCreds();
-
-		if (!authData) {
-			return [false, 'No auth data'];
-		}
-
-		let res = await fetchClient(
-			`${get('splashtail')}/users/${
-				authData.user_id
-			}/guilds/${guildId}/toggle-module?module=${moduleName}&disabled=${!enabled}`,
-			{
-				method: 'PUT',
-				auth: authData.token
-			}
-		);
-
-		if (!res.ok) {
-			return [false, res];
-		}
-
-		let cmc = findModuleInCmc(currentModuleConfiguration, moduleName);
-
-		if (!cmc) {
-			// Create new module
-			currentModuleConfiguration.push({
-				id: '',
-				guild_id: guildId,
-				module: moduleName,
-				disabled: !enabled
-			});
-		} else {
-			// Update existing module
-			cmc.disabled = !enabled;
-		}
-
-		return [true, null];
-	};
-
-	const toggleCommand = async (command: string, enabled: boolean) => {
-		let authData = getAuthCreds();
-
-		if (!authData) {
-			return [false, 'No auth data'];
-		}
-
-		let res = await fetchClient(
-			`${get('splashtail')}/users/${
-				authData.user_id
-			}/guilds/${guildId}/toggle-command?command=${command}&disabled=${!enabled}`,
-			{
-				method: 'PUT',
-				auth: authData.token
-			}
-		);
-
-		if (!res.ok) {
-			return [false, res];
-		}
-
-		return [true, null];
 	};
 
 	interface State {
@@ -247,115 +84,21 @@
 		}
 	}
 
-	interface LookedUpCommand {
-		command: CanonicalCommand;
-		module: CanonicalModule;
-	}
-	const commandLookup = (): LookedUpCommand[] => {
-		let moduleData = clusterModules;
-		if (!moduleData) return [];
-
-		let commands: LookedUpCommand[] = [];
-
-		for (let module of Object.values(moduleData)) {
-			for (let command of module?.commands) {
-				let checkProps = [
-					command?.command?.name,
-					command?.command?.qualified_name,
-					command?.command?.description,
-					...command?.command?.subcommands?.map((subcommand) => subcommand?.name),
-					...command?.command?.subcommands?.map((subcommand) => subcommand?.qualified_name),
-					...command?.command?.subcommands?.map((subcommand) => subcommand?.description)
-				];
-
-				if (
-					checkProps.some((prop) =>
-						prop?.toLowerCase()?.includes(state.commandSearch?.toLowerCase())
-					)
-				) {
-					commands.push({
-						command,
-						module
-					});
-				}
-			}
-		}
-
-		return commands;
-	};
-
 	$: if (state) {
 		logger.info('ModuleConf.State', state);
 	}
 
-	$: if (state?.commandSearch) {
-		state.searchedCommands = commandLookup();
+	$: if (state?.commandSearch && clusterModules && state.commandSearch) {
+		state.searchedCommands = commandLookup(clusterModules, state.commandSearch);
 	} else {
 		state.searchedCommands = [];
 	}
-
-	interface ParsedCanonicalCommandData extends CanonicalCommandData {
-		subcommand_depth: number;
-		parent_command?: CanonicalCommandData;
-		extended_data: CanonicalCommandExtendedData;
-		extended_data_map: Record<string, CanonicalCommandExtendedData>;
-		search_permissions: string;
-		full_name: string;
-	}
-
-	// Returns the name of a command
-	const getCommandName = (cmd: ParsedCanonicalCommandData) => {
-		return cmd?.subcommand_depth == 0 ? cmd?.name : `${cmd?.parent_command?.name} ${cmd?.name}`;
-	};
 
 	let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
 	const createCmdDataTable = async (_: string) => {
 		let module = clusterModules[state.openModule];
 
-		let commands: ParsedCanonicalCommandData[] = [];
-
-		// Recursively parse commands
-		const parseCommand = (
-			command: CanonicalCommandData,
-			extended_data: Record<string, CanonicalCommandExtendedData>,
-			depth: number = 0,
-			parent: CanonicalCommandData | undefined
-		) => {
-			let extData = extended_data[depth == 0 ? '' : command?.name] || extended_data[''];
-			logger.info('ParseCommand', 'Parsing command', command?.name, depth, parent, extData);
-			commands.push({
-				...command,
-				subcommand_depth: depth,
-				parent_command: parent,
-				extended_data: extData,
-				extended_data_map: extended_data,
-				search_permissions: extData?.default_perms?.checks
-					?.map((check) => check?.kittycat_perms)
-					?.join(', '),
-				full_name: depth == 0 ? command?.name : `${parent?.name} ${command?.name}`
-			});
-
-			if (command?.subcommands) {
-				for (let subcommand of command?.subcommands) {
-					parseCommand(subcommand, extended_data, depth + 1, command);
-				}
-			}
-		};
-
-		for (let command of module?.commands) {
-			let extData: Record<string, CanonicalCommandExtendedData> = {};
-
-			for (let id in command?.extended_data) {
-				extData[id] = {
-					id,
-					...command?.extended_data[id]
-				};
-			}
-
-			logger.info('ParseCommand.ExtData', 'Got extended data', extData);
-
-			parseCommand(command?.command, extData, 0, undefined);
-		}
+		let commands = await extractCommandsFromModule(module);
 
 		const handler = new DataHandler(commands, { rowsPerPage: 20 });
 
@@ -441,84 +184,9 @@
 							]}
 						/>
 						{#if state.openMobuleTab == 'moduleInfo'}
-							<details open>
-								<summary class="hover:cursor-pointer">Misc Details</summary>
-								<UnorderedList>
-									<ListItem>
-										{#if clusterModules[state.openModule]?.commands_configurable}
-											<small class="text-green-500 mt-2">
-												<strong>Commands in this module are individually CONFIGURABLE</strong>
-											</small>
-										{:else}
-											<small class="text-red-500 mt-2">
-												<strong>Commands in this module are NOT individually CONFIGURABLE</strong>
-											</small>
-										{/if}
-									</ListItem>
-
-									<ListItem>
-										{#if clusterModules[state.openModule]?.web_hidden}
-											<small class="text-red-500 mt-2">
-												<strong>This module is HIDDEN on the website and dashboard</strong>
-											</small>
-										{:else}
-											<small class="text-green-500 mt-2">
-												<strong>This module is VISIBLE on the website and dashboard</strong>
-											</small>
-										{/if}
-									</ListItem>
-
-									<ListItem>
-										{#if clusterModules[state.openModule]?.toggleable}
-											<small class="text-green-500 mt-2">
-												<strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
-											</small>
-										{:else}
-											<small class="text-red-500 mt-2">
-												<strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
-											</small>
-										{/if}
-									</ListItem>
-								</UnorderedList>
-							</details>
-
-							{#if clusterModules[state.openModule]?.toggleable}
-								<BoolInput
-									id="enabled"
-									label="Module Enabled"
-									description="Toggle this module on or off"
-									disabled={false}
-									value={findModuleInCmc(currentModuleConfiguration, state?.openModule)
-										?.disabled === undefined
-										? clusterModules[state.openModule]?.is_default_enabled
-										: !findModuleInCmc(currentModuleConfiguration, state?.openModule)?.disabled}
-									onChange={async (v) => {
-										state.togglingStates[`mod/${state.openModule}/toggle`] = [
-											'loading',
-											'Saving module state...'
-										];
-										await toggleModule(state.openModule, v);
-										state.togglingStates[`mod/${state.openModule}/toggle`] = [
-											'success',
-											v ? 'Successfully enabled module' : 'Successfully disabled module'
-										];
-									}}
-								/>
-
-								{#if state.togglingStates[`mod/${state.openModule}/toggle`]}
-									<Message type={state.togglingStates[`mod/${state.openModule}/toggle`][0]}>
-										{state.togglingStates[`mod/${state.openModule}/toggle`][1]}
-									</Message>
-								{/if}
-							{/if}
-
-							<BoolInput
-								id="enabled-by-default"
-								label="Enabled by default"
-								description="Whether this module is enabled by default"
-								disabled={true}
-								value={clusterModules[state.openModule]?.is_default_enabled}
-								onChange={() => {}}
+							<ModuleInfoTab
+								module={clusterModules[state.openModule]}
+								{currentModuleConfiguration}
 							/>
 						{:else if state.openMobuleTab == 'cmdList'}
 							{#await createCmdDataTable(state?.openModule)}
@@ -611,6 +279,9 @@
 																state.commandEditOpen = undefined;
 																state.commandEditOpen = row;
 																state.commandEditConfigs = getCommandConfigurations(
+																	clusterModules,
+																	currentCommandConfiguration,
+																	guildId,
 																	getCommandName(state.commandEditOpen)
 																);
 																state.commandEditorOpen = true;

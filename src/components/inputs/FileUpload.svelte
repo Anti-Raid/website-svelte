@@ -43,7 +43,7 @@
 	}
 </script>
 
-<div class="file-upload mb-3">
+<div class="file-upload">
 	<Label {id} {label} />
 	<br />
 	<input
