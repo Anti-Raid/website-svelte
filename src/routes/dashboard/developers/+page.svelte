@@ -12,7 +12,7 @@
 	} from '$lib/generated/types';
 	import { error, success } from '$lib/toast';
 	import Message from '../../../components/Message.svelte';
-	import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
+	import { DataHandler, Datatable, Th } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import Select from '../../../components/inputs/select/Select.svelte';
@@ -21,6 +21,12 @@
 	import Label from '../../../components/inputs/Label.svelte';
 	import ButtonReact from '../../../components/inputs/button/ButtonReact.svelte';
 	import { Color } from '../../../components/inputs/button/colors';
+	import Pagination from '../../../components/common/datatable/Pagination.svelte';
+	import RowCount from '../../../components/common/datatable/RowCount.svelte';
+	import RowsPerPage from '../../../components/common/datatable/RowsPerPage.svelte';
+	import Search from '../../../components/common/datatable/Search.svelte';
+	import ThFilter from '../../../components/common/datatable/ThFilter.svelte';
+	import ThSort from '../../../components/common/datatable/ThSort.svelte';
 
 	let sessionRows: Readable<UserSession[]>;
 	let otherSessionRows: Readable<UserSession[]>;
@@ -144,17 +150,27 @@
 		<em class="opacity-70">{testAuthData?.data?.session_id}</em>
 	</p>
 
-	<Datatable handler={data.sessionHandler} search={false}>
-		<table class="overflow-x-auto">
+	<div class="overflow-x-auto space-y-4">
+		<!-- Header -->
+		<header class="flex justify-between gap-4">
+			<Search handler={data.sessionHandler} />
+			<RowsPerPage handler={data.sessionHandler} />
+		</header>
+
+		<div class="p-1" />
+
+		<!-- Table -->
+		<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
 			<thead>
-				<tr>
-					<Th handler={data.sessionHandler} orderBy={'id'}>ID</Th>
-					<Th handler={data.sessionHandler} orderBy={'type'}>Type</Th>
-					<Th handler={data.sessionHandler} orderBy={'expiry'}>Expiry</Th>
-					<Th handler={data.sessionHandler} orderBy={'created_at'}>Created At</Th>
-					<Th handler={data.sessionHandler} orderBy={'id'}>Actions</Th>
+				<tr class="bg-surface-800">
+					<ThSort handler={data.sessionHandler} orderBy={'id'}>ID</ThSort>
+					<ThSort handler={data.sessionHandler} orderBy={'type'}>Type</ThSort>
+					<ThSort handler={data.sessionHandler} orderBy={'expiry'}>Expiry</ThSort>
+					<ThSort handler={data.sessionHandler} orderBy={'created_at'}>Created At</ThSort>
+					<ThSort handler={data.sessionHandler} orderBy={'id'}>Actions</ThSort>
 				</tr>
-				<tr>
+
+				<tr class="bg-surface-800">
 					<ThFilter handler={data.sessionHandler} filterBy={'id'} />
 					<ThFilter handler={data.sessionHandler} filterBy={'type'} />
 					<ThFilter handler={data.sessionHandler} filterBy={'expiry'} />
@@ -187,22 +203,38 @@
 				{/each}
 			</tbody>
 		</table>
-	</Datatable>
+
+		<!-- Footer -->
+		<footer class="flex justify-between">
+			<RowCount handler={data.sessionHandler} />
+			<Pagination handler={data.sessionHandler} />
+		</footer>
+	</div>
 
 	<h1 class="font-semibold text-2xl">API Tokens</h1>
 
-	<Datatable handler={data.otherSessionHandler} search={false}>
-		<table class="overflow-x-auto">
+	<div class="overflow-x-auto space-y-4">
+		<!-- Header -->
+		<header class="flex justify-between gap-4">
+			<Search handler={data.otherSessionHandler} />
+			<RowsPerPage handler={data.otherSessionHandler} />
+		</header>
+
+		<div class="p-1" />
+
+		<!-- Table -->
+		<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
 			<thead>
-				<tr>
-					<Th handler={data.otherSessionHandler} orderBy={'id'}>ID</Th>
-					<Th handler={data.otherSessionHandler} orderBy={'name'}>Name</Th>
-					<Th handler={data.otherSessionHandler} orderBy={'type'}>Type</Th>
-					<Th handler={data.otherSessionHandler} orderBy={'expiry'}>Expiry</Th>
-					<Th handler={data.otherSessionHandler} orderBy={'created_at'}>Created At</Th>
-					<Th handler={data.otherSessionHandler} orderBy={'id'}>Actions</Th>
+				<tr class="bg-surface-800">
+					<ThSort handler={data.otherSessionHandler} orderBy={'id'}>ID</ThSort>
+					<ThSort handler={data.otherSessionHandler} orderBy={'name'}>Name</ThSort>
+					<ThSort handler={data.otherSessionHandler} orderBy={'type'}>Type</ThSort>
+					<ThSort handler={data.otherSessionHandler} orderBy={'expiry'}>Expiry</ThSort>
+					<ThSort handler={data.otherSessionHandler} orderBy={'created_at'}>Created At</ThSort>
+					<ThSort handler={data.otherSessionHandler} orderBy={'id'}>Actions</ThSort>
 				</tr>
-				<tr>
+
+				<tr class="bg-surface-800">
 					<ThFilter handler={data.otherSessionHandler} filterBy={'id'} />
 					<ThFilter handler={data.otherSessionHandler} filterBy={'name'} />
 					<ThFilter handler={data.otherSessionHandler} filterBy={'type'} />
@@ -231,7 +263,13 @@
 				{/each}
 			</tbody>
 		</table>
-	</Datatable>
+
+		<!-- Footer -->
+		<footer class="flex justify-between">
+			<RowCount handler={data.otherSessionHandler} />
+			<Pagination handler={data.otherSessionHandler} />
+		</footer>
+	</div>
 
 	<h1 class="font-semibold text-2xl">Create Session</h1>
 

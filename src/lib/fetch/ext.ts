@@ -136,7 +136,8 @@ export const opGetCommandConfigurations = (
 		name: `guildCommandConfigurations:${guildId}:${command}`,
 		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
 			const res = await fetchClient(
-				`${get('splashtail')}/users/${authData?.user_id
+				`${get('splashtail')}/users/${
+					authData?.user_id
 				}/guilds/${guildId}/commands/${command}/configurations`,
 				{
 					headers: {

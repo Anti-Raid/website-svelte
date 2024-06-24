@@ -10,10 +10,9 @@
 	import logger from '$lib/ui/logger';
 	import Message from '../../../components/Message.svelte';
 	import NavButton from '../../../components/inputs/button/NavButton.svelte';
-	import ButtonReact from '../../../components/inputs/button/ButtonReact.svelte';
 	import { Readable } from 'svelte/store';
 	import InputText from '../../../components/inputs/InputText.svelte';
-	import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
+	import { DataHandler, Datatable, Th } from '@vincjo/datatables';
 	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 	import { ApiError, UserGuildBaseData } from '$lib/generated/types';
 	import { fetchClient } from '$lib/fetch/fetch';
@@ -22,11 +21,15 @@
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import UnorderedList from '../../../components/UnorderedList.svelte';
 	import ListItem from '../../../components/ListItem.svelte';
-	import Modal from '../../../components/Modal.svelte';
-	import { Color } from '../../../components/inputs/button/colors';
 	import TabbedPane from '../../../components/inputs/button/tabs/TabbedPane.svelte';
 	import { permuteCommands } from '$lib/mewext/mewext';
 	import CommandEditor from './CommandEditor.svelte';
+	import Pagination from '../../../components/common/datatable/Pagination.svelte';
+	import RowCount from '../../../components/common/datatable/RowCount.svelte';
+	import RowsPerPage from '../../../components/common/datatable/RowsPerPage.svelte';
+	import Search from '../../../components/common/datatable/Search.svelte';
+	import ThFilter from '../../../components/common/datatable/ThFilter.svelte';
+	import ThSort from '../../../components/common/datatable/ThSort.svelte';
 
 	export let instanceList: InstanceList;
 	export let clusterModules: Record<string, CanonicalModule>;
@@ -418,6 +421,7 @@
 						/>
 					{/each}
 				</nav>
+
 				<!--Content-->
 				<div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
 					{#if state.openModule}
@@ -518,22 +522,33 @@
 							{#await createCmdDataTable(state?.openModule)}
 								<Message type="loading">Loading commands...</Message>
 							{:then data}
-								<Datatable handler={data.handler} search={false}>
-									<table class="overflow-x-auto">
+								<div class="overflow-x-auto space-y-4">
+									<!-- Header -->
+									<header class="flex justify-between gap-4">
+										<Search handler={data.handler} />
+										<RowsPerPage handler={data.handler} />
+									</header>
+
+									<div class="p-1" />
+
+									<!-- Table -->
+									<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
 										<thead>
-											<tr>
-												<Th handler={data.handler} orderBy={'qualified_name'}>Name</Th>
-												<Th handler={data.handler} orderBy={'description'}>Description</Th>
-												<Th handler={data.handler} orderBy={'arguments'}>Arguments</Th>
-												<Th handler={data.handler} orderBy={'qualified_name'}>Manage</Th>
+											<tr class="bg-surface-800">
+												<ThSort handler={data.handler} orderBy={'qualified_name'}>Name</ThSort>
+												<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
+												<ThSort handler={data.handler} orderBy={'arguments'}>Arguments</ThSort>
+												<ThSort handler={data.handler} orderBy={'qualified_name'}>Manage</ThSort>
 											</tr>
-											<tr>
+
+											<tr class="bg-surface-800">
 												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
 												<ThFilter handler={data.handler} filterBy={'description'} />
 												<ThFilter handler={data.handler} filterBy={'arguments'} />
 												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
 											</tr>
 										</thead>
+
 										<tbody>
 											{#each $cmdDataTable as row}
 												<tr>
@@ -606,7 +621,15 @@
 											{/each}
 										</tbody>
 									</table>
-								</Datatable>
+								</div>
+
+								<div class="p-1" />
+
+								<!-- Footer -->
+								<footer class="flex justify-between">
+									<RowCount handler={data.handler} />
+									<Pagination handler={data.handler} />
+								</footer>
 							{:catch err}
 								<Message type="error">
 									Failed to load commands: {err}
