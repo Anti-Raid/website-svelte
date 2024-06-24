@@ -23,12 +23,12 @@ export type Permissions = string;
  * 	pub guild_connections: bool,
  */
 export interface SerenityRoleTags {
-  bot_id?: string;
-  integration_id?: string;
-  premium_subscriber: boolean;
-  subscription_listing_id?: string;
-  available_for_purchase: boolean;
-  guild_connections: boolean;
+	bot_id?: string;
+	integration_id?: string;
+	premium_subscriber: boolean;
+	subscription_listing_id?: string;
+	available_for_purchase: boolean;
+	guild_connections: boolean;
 }
 /**
  * 		A role object from serenity because discordgo's Role object is garbage
@@ -43,13 +43,13 @@ export interface SerenityRoleTags {
  * 	    pub unicode_emoji: Option<FixedString<u32>>,
  */
 export interface SerenityRole {
-  id: string;
-  guild_id: string;
-  color: number /* int */;
-  name: string;
-  permissions?: Permissions;
-  position: number /* int16 */;
-  tags?: SerenityRoleTags;
-  icon?: string;
-  unicode_emoji: string;
+	id: string;
+	guild_id: string;
+	color: number /* int */;
+	name: string;
+	permissions?: Permissions;
+	position: number /* int16 */;
+	tags?: SerenityRoleTags;
+	icon?: string;
+	unicode_emoji: string;
 }

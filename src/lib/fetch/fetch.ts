@@ -132,8 +132,9 @@ export class PermissionResultFormatter {
 				return `You do not have the required permissions to perform this action. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'MissingMinChecks':
 				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
-				return `You do not have the required permissions to perform this action. You need at least ${checksFmt.checksNeeded
-					} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
+				return `You do not have the required permissions to perform this action. You need at least ${
+					checksFmt.checksNeeded
+				} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'DiscordError':
 				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
 			case 'GenericError':
@@ -150,7 +151,7 @@ export class PermissionResultFormatter {
 	async format(type: 'markdown' | 'html'): Promise<string> {
 		let md = `${this.toMarkdown()}\n\n\n\n**Code:** ${this.result.var}`;
 
-		logger.info("PermissionResultFormatter", "Formatting", md)
+		logger.info('PermissionResultFormatter', 'Formatting', md);
 
 		if (!md) {
 			throw new Error('Failed to format permission result, md is null/undefined');
@@ -159,7 +160,7 @@ export class PermissionResultFormatter {
 		if (type === 'html') {
 			let outHtml = await marked.parse(md, {
 				async: true,
-				breaks: true,
+				breaks: true
 			});
 
 			return outHtml;
@@ -204,10 +205,10 @@ export class ClientResponse {
 			throw new Error(`Cannot call error() when response.ok is true`);
 		}
 
-		logger.info("ClientResponse", "Error", this.errorType)
+		logger.info('ClientResponse', 'Error', this.errorType);
 
 		if (!type) {
-			type = 'html'
+			type = 'html';
 		}
 
 		if (this.errorType) {
@@ -222,8 +223,8 @@ export class ClientResponse {
 
 					// Add some formatting for ol/ul
 					outHtml = outHtml
-						.replaceAll("<ol", "<ol class='list-decimal pl-6 mb-2'")
-						.replaceAll("<ul", "<ul class='pl-1'");
+						.replaceAll('<ol', "<ol class='list-decimal pl-6 mb-2'")
+						.replaceAll('<ul', "<ul class='pl-1'");
 
 					return outHtml;
 			}
@@ -232,13 +233,13 @@ export class ClientResponse {
 		try {
 			let json: ApiError = await this.response.json();
 
-			if (type == "html") {
+			if (type == 'html') {
 				let htmlOut = await marked.parse(this.formatApiError(base || 'Error', json));
 				let sanitized = sanitize(htmlOut);
 
 				// Ensure that the error message is wrapped in a paragraph
-				if (!sanitized.startsWith("<p")) {
-					sanitized = `<p class="mb-2">${sanitized}</p>`
+				if (!sanitized.startsWith('<p')) {
+					sanitized = `<p class="mb-2">${sanitized}</p>`;
 				}
 
 				return sanitized;
@@ -285,7 +286,7 @@ export async function fetchClient(
 	if (options.headers) {
 		headers = {
 			...headers,
-			...options.headers as Record<string, string>
+			...(options.headers as Record<string, string>)
 		};
 	}
 

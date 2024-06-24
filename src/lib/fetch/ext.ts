@@ -48,7 +48,7 @@ export const opGetClusterHealth: SharedRequester<InstanceList> = {
 	requestFunc: async (): Promise<InstanceList> => {
 		const res = await fetchClient(`${get('splashtail')}/clusters/health`);
 		if (!res.ok) {
-			let err = await res.error("Cluster Health");
+			let err = await res.error('Cluster Health');
 			throw new Error(err);
 		}
 
@@ -68,7 +68,7 @@ export const opGetClusterModules = (
 		requestFunc: async (): Promise<Record<string, CanonicalModule>> => {
 			const res = await fetchClient(`${get('splashtail')}/clusters/${clusterId}/modules`);
 			if (!res.ok) {
-				let err = await res.error("Cluster Modules");
+				let err = await res.error('Cluster Modules');
 				throw new Error(err);
 			}
 
@@ -106,7 +106,7 @@ export const opGetModuleConfiguration = (
 				}
 			);
 			if (!res.ok) {
-				let err = await res.error("Guild Module Configuration");
+				let err = await res.error('Guild Module Configuration');
 				throw new Error(err);
 			}
 
@@ -128,7 +128,8 @@ export const opGetCommandConfigurations = (
 		name: `guildCommandConfigurations:${guildId}:${command}`,
 		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
 			const res = await fetchClient(
-				`${get('splashtail')}/users/${authData?.user_id
+				`${get('splashtail')}/users/${
+					authData?.user_id
 				}/guilds/${guildId}/commands/${command}/configurations`,
 				{
 					headers: {
@@ -137,7 +138,7 @@ export const opGetCommandConfigurations = (
 				}
 			);
 			if (!res.ok) {
-				let err = await res.error("Guild Command Configuration")
+				let err = await res.error('Guild Command Configuration');
 				throw new Error(err);
 			}
 
@@ -150,7 +151,7 @@ export const opGetCommandConfigurations = (
 };
 
 export const opGetCommandConfigurationsForGuild = (
-	guildId: string,
+	guildId: string
 ): SharedRequester<GuildCommandConfiguration[]> => {
 	let authData = getAuthCreds();
 
@@ -158,8 +159,7 @@ export const opGetCommandConfigurationsForGuild = (
 		name: `guildCommandConfigurations:${guildId}`,
 		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
 			const res = await fetchClient(
-				`${get('splashtail')}/users/${authData?.user_id
-				}/guilds/${guildId}/command-configurations`,
+				`${get('splashtail')}/users/${authData?.user_id}/guilds/${guildId}/command-configurations`,
 				{
 					headers: {
 						Authorization: `User ${authData?.token}`
@@ -167,7 +167,7 @@ export const opGetCommandConfigurationsForGuild = (
 				}
 			);
 			if (!res.ok) {
-				let err = await res.error("Guild Command Configurations")
+				let err = await res.error('Guild Command Configurations');
 				throw new Error(err);
 			}
 

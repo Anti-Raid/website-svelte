@@ -313,9 +313,9 @@
 									</header>
 
 									<!-- Table -->
-									<table class="table table-hover table-compact bg-surface-400 w-full table-auto">
-										<thead class="bg-surface-500">
-											<tr>
+									<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
+										<thead>
+											<tr class="bg-surface-800">
 												<ThSort handler={data.handler} orderBy={'qualified_name'}>Name</ThSort>
 												<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
 												<ThSort handler={data.handler} orderBy={'arguments'}>Arguments</ThSort>
@@ -323,7 +323,7 @@
 													>Permissions</ThSort
 												>
 											</tr>
-											<tr>
+											<tr class="bg-surface-800">
 												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
 												<ThFilter handler={data.handler} filterBy={'description'} />
 												<ThFilter handler={data.handler} filterBy={'arguments'} />
@@ -418,7 +418,7 @@
 	</details>
 
 	{#if state.clusterFinderOpen}
-		<Modal title="Help" bind:showModal={state.clusterFinderOpen}>
+		<Modal Title="Help" Logo="/logo.webp" bind:showModal={state.clusterFinderOpen}>
 			<h1 class="font-semibold text-xl">Server Lookup</h1>
 			<p class="text-gray-300 font-semibold">
 				If you're planning to add AntiRaid to a specific server, please enter the Server's ID below.

@@ -9,15 +9,15 @@
 	// Temporary
 	let theme: string = 'amber';
 	const changeColor = (th: string) => {
-		theme = th;
-		document.documentElement.setAttribute('data-theme', th);
-		localStorage.setItem('theme->antiraid', th);
+		//theme = th;
+		//document.documentElement.setAttribute('data-theme', th);
+		//localStorage.setItem('theme->antiraid', th);
 	};
 
 	$: {
 		if (browser) {
-			theme = localStorage.getItem('theme->antiraid') || 'amber';
-			document.documentElement.setAttribute('data-theme', theme);
+			//theme = localStorage.getItem('theme->antiraid') || 'amber';
+			//document.documentElement.setAttribute('data-theme', theme);
 		}
 	}
 </script>
