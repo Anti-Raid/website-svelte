@@ -17,13 +17,19 @@
 	export let module: CanonicalModule;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 
-	const isModuleDisabled = (): boolean => {
+	const isModuleDisabled = (
+		module: CanonicalModule,
+		currentModuleConfiguration: GuildModuleConfiguration[]
+	): boolean => {
 		return currentModuleConfiguration.find((m) => m.module === module.id)?.disabled === undefined
 			? module?.is_default_enabled
 			: !currentModuleConfiguration.find((m) => m.module === module.id)?.disabled;
 	};
 
-	const getModuleDefaultPerms = (): PCT => {
+	const getModuleDefaultPerms = (
+		module: CanonicalModule,
+		currentModuleConfiguration: GuildModuleConfiguration[]
+	): PCT => {
 		return (
 			currentModuleConfiguration.find((m) => m.module === module.id)?.default_perms || {
 				checks: [],
@@ -34,12 +40,12 @@
 
 	let state = {
 		disabled: {
-			initial: structuredClone(isModuleDisabled()),
-			current: structuredClone(isModuleDisabled())
+			initial: structuredClone(isModuleDisabled(module, currentModuleConfiguration)),
+			current: structuredClone(isModuleDisabled(module, currentModuleConfiguration))
 		},
 		default_perms: {
-			initial: structuredClone(getModuleDefaultPerms()),
-			current: structuredClone(getModuleDefaultPerms())
+			initial: structuredClone(getModuleDefaultPerms(module, currentModuleConfiguration)),
+			current: structuredClone(getModuleDefaultPerms(module, currentModuleConfiguration))
 		}
 	};
 
