@@ -68,6 +68,18 @@
 
 		success('Module configuration updated successfully');
 	};
+
+	$: module,
+		(state = {
+			disabled: {
+				initial: structuredClone(isModuleDisabled()),
+				current: isModuleDisabled()
+			},
+			default_perms: {
+				initial: structuredClone(getModuleDefaultPerms()),
+				current: getModuleDefaultPerms()
+			}
+		});
 </script>
 
 <BoolInput
