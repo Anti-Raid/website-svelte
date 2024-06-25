@@ -71,9 +71,9 @@
 </script>
 
 <BoolInput
-	id="enabled"
-	label="Module Enabled"
-	description="Toggle this module on or off"
+	id="disabled"
+	label="Module Disabled"
+	description="Is this module disabled or not?"
 	disabled={!module.toggleable}
 	bind:value={state.disabled.current}
 	onChange={(_) => {}}
