@@ -19,7 +19,7 @@
 
 	const isModuleDisabled = (): boolean => {
 		return currentModuleConfiguration.find((m) => m.module === module.id)?.disabled === undefined
-			? module?.is_default_enabled
+			? !module?.is_default_enabled
 			: !currentModuleConfiguration.find((m) => m.module === module.id)?.disabled;
 	};
 
