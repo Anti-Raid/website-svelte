@@ -5,7 +5,15 @@
 	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 	import ListItem from '../../../components/ListItem.svelte';
 	import UnorderedList from '../../../components/UnorderedList.svelte';
+	import { PartialPatchRecord, createPartialPatch } from '$lib/utils';
+	import ButtonReact from '../../../components/inputs/button/ButtonReact.svelte';
+	import { Color } from '../../../components/inputs/button/colors';
+	import { fetchClient } from '$lib/fetch/fetch';
+	import { get } from '$lib/configs/functions/services';
+	import { getAuthCreds } from '$lib/auth/getAuthCreds';
+	import { success } from '$lib/toast';
 
+	export let guildId: string;
 	export let module: CanonicalModule;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 
@@ -25,14 +33,40 @@
 	};
 
 	const state = {
-		moduleDisabled: {
+		disabled: {
 			initial: structuredClone(isModuleDisabled()),
 			current: isModuleDisabled()
 		},
-		moduleDefaultPerms: {
+		default_perms: {
 			initial: structuredClone(getModuleDefaultPerms()),
 			current: getModuleDefaultPerms()
 		}
+	};
+
+	const updateModuleConfiguration = async () => {
+		let authCreds = getAuthCreds();
+
+		if (!authCreds) throw new Error('No auth credentials found');
+
+		const createPatch = createPartialPatch(state as PartialPatchRecord<unknown>);
+
+		let res = await fetchClient(
+			`${get('splashtail')}/users/${authCreds?.user_id}/guilds/${guildId}/modules/${
+				module.id
+			}/configurations`,
+			{
+				auth: authCreds?.token,
+				method: 'PATCH',
+				body: JSON.stringify(createPatch)
+			}
+		);
+
+		if (!res.ok) {
+			let err = await res.error('Failed to update module configuration');
+			throw new Error(err);
+		}
+
+		success('Module configuration updated successfully');
 	};
 </script>
 
@@ -41,10 +75,22 @@
 	label="Module Enabled"
 	description="Toggle this module on or off"
 	disabled={!module.toggleable}
-	bind:value={state.moduleDisabled.current}
+	bind:value={state.disabled.current}
 	onChange={(_) => {}}
 />
-<PermissionChecks id={`pc-${module.id}`} bind:permissionChecks={state.moduleDefaultPerms.current} />
+<PermissionChecks id={`pc-${module.id}`} bind:permissionChecks={state.default_perms.current} />
+
+<ButtonReact
+	color={Color.Themable}
+	icon="mdi:save"
+	text="Save"
+	onClick={updateModuleConfiguration}
+	states={{
+		loading: 'Saving...',
+		success: 'Saved!',
+		error: 'Failed to save changes'
+	}}
+/>
 
 <hr class="mt-5 border-[4px]" />
 

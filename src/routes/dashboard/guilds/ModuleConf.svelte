@@ -185,6 +185,7 @@
 						/>
 						{#if state.openMobuleTab == 'moduleInfo'}
 							<ModuleInfoTab
+								{guildId}
 								module={clusterModules[state.openModule]}
 								{currentModuleConfiguration}
 							/>
