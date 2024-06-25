@@ -73,11 +73,11 @@
 		(state = {
 			disabled: {
 				initial: structuredClone(isModuleDisabled()),
-				current: isModuleDisabled()
+				current: structuredClone(isModuleDisabled())
 			},
 			default_perms: {
 				initial: structuredClone(getModuleDefaultPerms()),
-				current: getModuleDefaultPerms()
+				current: structuredClone(getModuleDefaultPerms())
 			}
 		});
 </script>
