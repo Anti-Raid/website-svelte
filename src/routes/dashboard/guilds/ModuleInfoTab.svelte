@@ -35,11 +35,11 @@
 	let state = {
 		disabled: {
 			initial: structuredClone(isModuleDisabled()),
-			current: isModuleDisabled()
+			current: structuredClone(isModuleDisabled())
 		},
 		default_perms: {
 			initial: structuredClone(getModuleDefaultPerms()),
-			current: getModuleDefaultPerms()
+			current: structuredClone(getModuleDefaultPerms())
 		}
 	};
 
@@ -69,7 +69,7 @@
 		success('Module configuration updated successfully');
 	};
 
-	$: module,
+	$: module.id,
 		(state = {
 			disabled: {
 				initial: structuredClone(isModuleDisabled()),
