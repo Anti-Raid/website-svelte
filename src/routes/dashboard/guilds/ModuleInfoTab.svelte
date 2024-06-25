@@ -12,12 +12,14 @@
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import { success } from '$lib/toast';
+	import logger from '$lib/ui/logger';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 
 	const isModuleDisabled = (): boolean => {
+		logger.info('ModuleInfoTab', 'isModuleDisabled', module.id, currentModuleConfiguration);
 		return currentModuleConfiguration.find((m) => m.module === module.id)?.disabled === undefined
 			? !module?.is_default_enabled
 			: !currentModuleConfiguration.find((m) => m.module === module.id)?.disabled;
