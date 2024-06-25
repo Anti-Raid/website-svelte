@@ -9,15 +9,30 @@
 	export let module: CanonicalModule;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 
-	let moduleDisabled: boolean =
-		currentModuleConfiguration.find((m) => m.module === module.id)?.disabled === undefined
+	const isModuleDisabled = (): boolean => {
+		return currentModuleConfiguration.find((m) => m.module === module.id)?.disabled === undefined
 			? module?.is_default_enabled
 			: !currentModuleConfiguration.find((m) => m.module === module.id)?.disabled;
+	};
 
-	let moduleDefaultPerms: PCT = currentModuleConfiguration.find((m) => m.module === module.id)
-		?.default_perms || {
-		checks: [],
-		checks_needed: 1
+	const getModuleDefaultPerms = (): PCT => {
+		return (
+			currentModuleConfiguration.find((m) => m.module === module.id)?.default_perms || {
+				checks: [],
+				checks_needed: 1
+			}
+		);
+	};
+
+	const state = {
+		moduleDisabled: {
+			initial: structuredClone(isModuleDisabled()),
+			current: isModuleDisabled()
+		},
+		moduleDefaultPerms: {
+			initial: structuredClone(getModuleDefaultPerms()),
+			current: getModuleDefaultPerms()
+		}
 	};
 </script>
 
@@ -26,10 +41,10 @@
 	label="Module Enabled"
 	description="Toggle this module on or off"
 	disabled={!module.toggleable}
-	bind:value={moduleDisabled}
+	bind:value={state.moduleDisabled.current}
 	onChange={(_) => {}}
 />
-<PermissionChecks id={`pc-${module.id}`} bind:permissionChecks={moduleDefaultPerms} />
+<PermissionChecks id={`pc-${module.id}`} bind:permissionChecks={state.moduleDefaultPerms.current} />
 
 <hr class="mt-5 border-[4px]" />
 
