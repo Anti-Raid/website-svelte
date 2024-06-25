@@ -32,7 +32,7 @@
 		);
 	};
 
-	const state = {
+	let state = {
 		disabled: {
 			initial: structuredClone(isModuleDisabled()),
 			current: isModuleDisabled()
