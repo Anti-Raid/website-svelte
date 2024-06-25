@@ -32,18 +32,8 @@
 		);
 	};
 
-	let state: {
-		disabled: {
-			initial: boolean;
-			current: boolean;
-		};
-		default_perms: {
-			initial: PCT;
-			current: PCT;
-		};
-	};
-	$: module.id,
-		(state = {
+	const getState = () => {
+		return {
 			disabled: {
 				initial: structuredClone(isModuleDisabled()),
 				current: structuredClone(isModuleDisabled())
@@ -52,7 +42,20 @@
 				initial: structuredClone(getModuleDefaultPerms()),
 				current: structuredClone(getModuleDefaultPerms())
 			}
-		});
+		};
+	};
+
+	let state = getState();
+
+	// Svelte workaround to workaround state
+	let moduleId: string;
+
+	$: if (module.id != moduleId) {
+		moduleId = module.id;
+	}
+
+	$: moduleId, (state = getState());
+	// end of workaround
 
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
