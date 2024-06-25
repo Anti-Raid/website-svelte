@@ -38,7 +38,7 @@
 		);
 	};
 
-	let state = {
+	$: state = {
 		disabled: {
 			initial: structuredClone(isModuleDisabled(module, currentModuleConfiguration)),
 			current: structuredClone(isModuleDisabled(module, currentModuleConfiguration))
