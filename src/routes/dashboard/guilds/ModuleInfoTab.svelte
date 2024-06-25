@@ -20,9 +20,20 @@
 
 	const isModuleDisabled = (): boolean => {
 		logger.info('ModuleInfoTab', 'isModuleDisabled', module.id, currentModuleConfiguration);
-		return currentModuleConfiguration.find((m) => m.module === module.id)?.disabled === undefined
-			? !module?.is_default_enabled
-			: !currentModuleConfiguration.find((m) => m.module === module.id)?.disabled;
+
+		let cmc = currentModuleConfiguration.find((m) => m.module === module.id);
+
+		if (!cmc) {
+			logger.info(
+				'ModuleInfoTab',
+				'isModuleDisabled',
+				module.id,
+				'not found in currentModuleConfiguration'
+			);
+			return !module?.is_default_enabled;
+		}
+
+		return cmc.disabled === undefined ? !module?.is_default_enabled : cmc.disabled;
 	};
 
 	const getModuleDefaultPerms = (): PCT => {
