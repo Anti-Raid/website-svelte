@@ -32,16 +32,27 @@
 		);
 	};
 
-	$: state = {
+	let state: {
 		disabled: {
-			initial: structuredClone(isModuleDisabled()),
-			current: structuredClone(isModuleDisabled())
-		},
+			initial: boolean;
+			current: boolean;
+		};
 		default_perms: {
-			initial: structuredClone(getModuleDefaultPerms()),
-			current: structuredClone(getModuleDefaultPerms())
-		}
+			initial: PCT;
+			current: PCT;
+		};
 	};
+	$: module.id,
+		(state = {
+			disabled: {
+				initial: structuredClone(isModuleDisabled()),
+				current: structuredClone(isModuleDisabled())
+			},
+			default_perms: {
+				initial: structuredClone(getModuleDefaultPerms()),
+				current: structuredClone(getModuleDefaultPerms())
+			}
+		});
 
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
