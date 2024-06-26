@@ -1,6 +1,8 @@
 <script lang="ts">
 	export let onclick: (e: MouseEvent) => void;
-	export let text: string;
 </script>
 
-<button class="bg-primary-600 hover:bg-primary-400 p-2" on:click={onclick}>{text}</button>
+<button
+	class="button text-sm px-1 py-2 rounded-md bg-secondary-600 hover:bg-secondary-500 font-semibold tracking-tight"
+	on:click={onclick}><slot /></button
+>
