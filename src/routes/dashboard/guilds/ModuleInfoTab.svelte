@@ -5,7 +5,7 @@
 	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 	import ListItem from '../../../components/ListItem.svelte';
 	import UnorderedList from '../../../components/UnorderedList.svelte';
-	import { PartialPatchRecord, createPartialPatch } from '$lib/utils';
+	import { PartialPatchRecord, createPartialPatch } from '$lib/partialPatch';
 	import ButtonReact from '../../../components/inputs/button/ButtonReact.svelte';
 	import { Color } from '../../../components/inputs/button/colors';
 	import { fetchClient } from '$lib/fetch/fetch';
