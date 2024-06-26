@@ -18,22 +18,22 @@
 	export let module: CanonicalModule;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 
-	const isModuleDisabled = (): boolean => {
-		logger.info('ModuleInfoTab', 'isModuleDisabled', module.id, currentModuleConfiguration);
+	const isModuleEnabled = (): boolean => {
+		logger.info('ModuleInfoTab', 'isModuleEnabled', module.id, currentModuleConfiguration);
 
 		let cmc = currentModuleConfiguration.find((m) => m.module === module.id);
 
 		if (!cmc) {
 			logger.info(
 				'ModuleInfoTab',
-				'isModuleDisabled',
+				'isModuleEnabled',
 				module.id,
 				'not found in currentModuleConfiguration'
 			);
-			return !module?.is_default_enabled;
+			return module?.is_default_enabled;
 		}
 
-		return cmc.disabled === undefined ? !module?.is_default_enabled : cmc.disabled;
+		return cmc.disabled === undefined ? module?.is_default_enabled : !cmc.disabled;
 	};
 
 	const getModuleDefaultPerms = (): PCT => {
@@ -45,11 +45,22 @@
 		);
 	};
 
-	const getState = () => {
+	interface PartialPatchType {
+		enabled: boolean;
+		default_perms: PCT;
+	}
+
+	const getState = (): PartialPatchRecord<PartialPatchType> => {
 		return {
-			disabled: {
-				initial: structuredClone(isModuleDisabled()),
-				current: structuredClone(isModuleDisabled())
+			enabled: {
+				initial: structuredClone(isModuleEnabled()),
+				current: structuredClone(isModuleEnabled()),
+				parse: (v) => {
+					return {
+						key: 'disabled',
+						value: !v
+					};
+				}
 			},
 			default_perms: {
 				initial: structuredClone(getModuleDefaultPerms()),
@@ -98,11 +109,11 @@
 </script>
 
 <BoolInput
-	id="disabled"
-	label="Module Disabled"
-	description="Is this module disabled or not?"
+	id="enabled"
+	label="Module Enabled"
+	description="Is this module enabled or not?"
 	disabled={!module.toggleable}
-	bind:value={state.disabled.current}
+	bind:value={state.enabled.current}
 	onChange={(_) => {}}
 />
 <PermissionChecks id={`pc-${module.id}`} bind:permissionChecks={state.default_perms.current} />

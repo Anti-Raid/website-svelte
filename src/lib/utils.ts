@@ -1,11 +1,19 @@
 import isEqual from 'lodash.isequal'
 
+export interface ParsedPartialPatch {
+    key: any;
+    value: any;
+}
+
 export interface PartialPatch<T> {
     initial: T;
     current: T;
+    parse?: (value: T) => ParsedPartialPatch;
 }
 
-export type PartialPatchRecord<T> = Record<string, PartialPatch<T>>;
+export type PartialPatchRecord<T> = {
+    [P in keyof T]: PartialPatch<T[P]>;
+};
 
 /**
  * Creates a partial patch from a patch record
@@ -15,9 +23,11 @@ export type PartialPatchRecord<T> = Record<string, PartialPatch<T>>;
 export const createPartialPatch = <T>(patch: PartialPatchRecord<T>) => {
     let createdPatch: Record<string, any> = {};
 
-    for (let [key, value] of Object.entries(patch)) {
+    for (let [key, v] of Object.entries(patch)) {
+        let value = v as any;
         if (!isEqual(value.initial, value.current)) {
-            createdPatch[key] = value.current;
+            let parsed = value.parse ? value.parse(value.current) : { key: key, value: value.current }
+            createdPatch[parsed?.key] = parsed;
         }
     }
 
