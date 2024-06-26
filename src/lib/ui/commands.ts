@@ -4,7 +4,7 @@ import { permuteCommands } from "$lib/mewext/mewext";
 import logger from "./logger";
 
 export interface LookedUpCommand {
-    command: CanonicalCommand;
+    command: ParsedCanonicalCommandData;
     module: CanonicalModule;
 }
 
@@ -15,23 +15,14 @@ export const commandLookup = (clusterModules: Record<string, CanonicalModule>, q
     let commands: LookedUpCommand[] = [];
 
     for (let module of Object.values(moduleData)) {
-        for (let command of module?.commands) {
-            let checkProps = [
-                command?.command?.name,
-                command?.command?.qualified_name,
-                command?.command?.description,
-                ...command?.command?.subcommands?.map((subcommand) => subcommand?.name),
-                ...command?.command?.subcommands?.map((subcommand) => subcommand?.qualified_name),
-                ...command?.command?.subcommands?.map((subcommand) => subcommand?.description)
-            ];
+        let extractedCommands = extractCommandsFromModule(module);
 
+        for (let command of extractedCommands) {
             if (
-                checkProps.some((prop) =>
-                    prop?.toLowerCase()?.includes(query.toLowerCase())
-                )
+                command?.full_name?.includes(query.toLowerCase())
             ) {
                 commands.push({
-                    command,
+                    command: command,
                     module
                 });
             }
@@ -55,7 +46,7 @@ export const getCommandName = (cmd: ParsedCanonicalCommandData) => {
     return cmd?.subcommand_depth == 0 ? cmd?.name : `${cmd?.parent_command?.name} ${cmd?.name}`;
 };
 
-export const extractCommandsFromModule = async (module: CanonicalModule) => {
+export const extractCommandsFromModule = (module: CanonicalModule) => {
     let commands: ParsedCanonicalCommandData[] = [];
 
     // Recursively parse commands

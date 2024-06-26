@@ -73,7 +73,7 @@
 	const createCmdDataTable = async (_: string) => {
 		let module = state.clusterModuleData[state.openCluster][state.openModule];
 
-		let commands: ParsedCanonicalCommandData[] = await extractCommandsFromModule(module);
+		let commands: ParsedCanonicalCommandData[] = extractCommandsFromModule(module);
 
 		const handler = new DataHandler(commands, { rowsPerPage: 20 });
 		cmdDataTable = handler.getRows();
@@ -138,10 +138,10 @@
 				<ul>
 					{#each state.searchedCommands as searchedCommand}
 						<li class="cluster-search-command mb-7">
-							<h3 class="text-xl font-bold">{searchedCommand?.command?.command?.name}</h3>
+							<h3 class="text-xl font-bold">{searchedCommand?.command?.full_name}</h3>
 
-							{#if searchedCommand?.command?.command?.description}
-								<p class="text-slate-200">{searchedCommand?.command?.command?.description}</p>
+							{#if searchedCommand?.command?.description}
+								<p class="text-slate-200">{searchedCommand?.command?.description}</p>
 							{/if}
 
 							<p class="text-slate-200"><strong>Module:</strong> {searchedCommand?.module?.name}</p>
