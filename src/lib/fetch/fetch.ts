@@ -132,9 +132,8 @@ export class PermissionResultFormatter {
 				return `You do not have the required permissions to perform this action. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'MissingMinChecks':
 				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
-				return `You do not have the required permissions to perform this action. You need at least ${
-					checksFmt.checksNeeded
-				} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
+				return `You do not have the required permissions to perform this action. You need at least ${checksFmt.checksNeeded
+					} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'DiscordError':
 				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
 			case 'GenericError':
@@ -297,7 +296,7 @@ export async function fetchClient(
 		modifier += ' (authorized)';
 	} else {
 		if (headers['Authorization']) {
-			logger.error('FetchClient', 'options.auth must be used for auth');
+			throw new Error('options.auth must be used for auth');
 		}
 	}
 

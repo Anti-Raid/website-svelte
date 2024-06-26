@@ -108,9 +108,7 @@ export const opGetModuleConfiguration = (
 			const res = await fetchClient(
 				`${get('splashtail')}/users/${authData?.user_id}/guilds/${guildId}/module-configurations`,
 				{
-					headers: {
-						Authorization: `User ${authData?.token}`
-					}
+					auth: authData?.token
 				}
 			);
 			if (!res.ok) {
@@ -136,13 +134,10 @@ export const opGetCommandConfigurations = (
 		name: `guildCommandConfigurations:${guildId}:${command}`,
 		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
 			const res = await fetchClient(
-				`${get('splashtail')}/users/${
-					authData?.user_id
+				`${get('splashtail')}/users/${authData?.user_id
 				}/guilds/${guildId}/commands/${command}/configurations`,
 				{
-					headers: {
-						Authorization: `User ${authData?.token}`
-					}
+					auth: authData?.token
 				}
 			);
 			if (!res.ok) {
@@ -169,9 +164,7 @@ export const opGetCommandConfigurationsForGuild = (
 			const res = await fetchClient(
 				`${get('splashtail')}/users/${authData?.user_id}/guilds/${guildId}/command-configurations`,
 				{
-					headers: {
-						Authorization: `User ${authData?.token}`
-					}
+					auth: authData?.token
 				}
 			);
 			if (!res.ok) {

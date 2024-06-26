@@ -72,6 +72,8 @@
 	let state = getState();
 
 	// Svelte workaround to workaround state
+	//
+	// If and only if the module id changes do we need to rederive the state
 	let moduleId: string;
 
 	$: if (module.id != moduleId) {
@@ -81,12 +83,19 @@
 	$: moduleId, (state = getState());
 	// end of workaround
 
+	// Ensure changes is updated whenever state changes
+	$: changes = createPartialPatch(state);
+
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
 
 		if (!authCreds) throw new Error('No auth credentials found');
 
-		const createPatch = createPartialPatch(state as PartialPatchRecord<unknown>);
+		const createPatch = createPartialPatch(state);
+
+		if (Object.keys(changes).length == 0) {
+			throw new Error('No changes to save');
+		}
 
 		let res = await fetchClient(
 			`${get('splashtail')}/users/${authCreds?.user_id}/guilds/${guildId}/modules/${
@@ -118,17 +127,19 @@
 />
 <PermissionChecks id={`pc-${module.id}`} bind:permissionChecks={state.default_perms.current} />
 
-<ButtonReact
-	color={Color.Themable}
-	icon="mdi:save"
-	text="Save"
-	onClick={updateModuleConfiguration}
-	states={{
-		loading: 'Saving...',
-		success: 'Saved!',
-		error: 'Failed to save changes'
-	}}
-/>
+{#if Object.keys(changes).length}
+	<ButtonReact
+		color={Color.Themable}
+		icon="mdi:edit"
+		text="Save"
+		onClick={updateModuleConfiguration}
+		states={{
+			loading: 'Saving...',
+			success: 'Saved!',
+			error: 'Failed to save changes'
+		}}
+	/>
+{/if}
 
 <hr class="mt-5 border-[4px]" />
 

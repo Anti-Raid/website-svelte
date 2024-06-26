@@ -119,8 +119,7 @@
 			return;
 		}
 
-		setTimeout(checkUserAuth, 1000 * 60 * 5);
-		checkUserAuth(authCreds);
+		setInterval(checkUserAuth, 1000 * 60 * 5);
 
 		let data: LoginData = {
 			profileNavigation: [
