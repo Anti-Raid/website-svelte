@@ -1,9 +1,6 @@
 <script lang="ts">
 	import { PermissionChecks } from '$lib/generated/silverpelt';
-	import BoolInput from '../inputs/BoolInput.svelte';
 	import InputNumber from '../inputs/InputNumber.svelte';
-	import KittycatPermSelectArray from './KittycatPermSelectArray.svelte';
-	import NativePermissionSelectArray from './NativePermissionSelectArray.svelte';
 	import PermissionCheckArray from './PermissionCheckArray.svelte';
 
 	export let permissionChecks: PermissionChecks;
