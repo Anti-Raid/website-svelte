@@ -96,6 +96,7 @@ class PermissionChecksFormatter {
 			.join(' ');
 
 		checks += `\n\n**Checks Needed**: ${this.checksNeeded}`;
+		return checks
 	}
 }
 
