@@ -13,6 +13,7 @@
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import { success } from '$lib/toast';
 	import logger from '$lib/ui/logger';
+	import { makeSharedRequest, opGetModuleConfiguration } from '$lib/fetch/ext';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
@@ -34,6 +35,18 @@
 		}
 
 		return cmc.disabled === undefined ? module?.is_default_enabled : !cmc.disabled;
+	};
+
+	const isModuleDisabledOverriden = (
+		currentModuleConfiguration: GuildModuleConfiguration[]
+	): boolean => {
+		let cmc = currentModuleConfiguration.find((m) => m.module === module.id);
+
+		if (!cmc) {
+			return false;
+		}
+
+		return cmc.disabled !== undefined;
 	};
 
 	const getModuleDefaultPerms = (): PCT => {
@@ -86,6 +99,10 @@
 	// Ensure changes is updated whenever state changes
 	$: changes = createPartialPatch(state);
 
+	// Ensure manuallyOverriden is updated whenever moduleId changes
+	let manuallyOverriden: boolean;
+	$: moduleId, (manuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration));
+
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
 
@@ -113,6 +130,9 @@
 			throw new Error(err);
 		}
 
+		currentModuleConfiguration = await makeSharedRequest(opGetModuleConfiguration(guildId));
+
+		state = getState(); // Rederive state
 		success('Module configuration updated successfully');
 	};
 </script>
@@ -185,6 +205,24 @@
 		{:else}
 			<small class="text-red-500 mt-2">
 				<strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
+			</small>
+		{/if}
+	</ListItem>
+
+	<ListItem>
+		{#if manuallyOverriden}
+			<small class="text-green-500 mt-2">
+				<strong
+					>The disabled/enabled state of this module has been manually modified and will no longer
+					follow the default enabled/disabled state defined for it.</strong
+				>
+			</small>
+		{:else}
+			<small class="text-green-500 mt-2">
+				<strong
+					>This module will use the default enabled/disabled state defined for it unless manually
+					modified.</strong
+				>
 			</small>
 		{/if}
 	</ListItem>

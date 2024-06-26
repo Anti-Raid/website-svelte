@@ -18,14 +18,14 @@ type PermissionCheck struct {
 
 <section class="permission-check">
 	<div class="permission-check__content">
-		<details class="permission-check__details border p-2">
+		<details class="permission-check__details border p-2" open>
 			<summary class="permission-check__summary hover:cursor-pointer">Kittycat Permissions</summary>
 			<KittycatPermSelectArray
 				bind:perms={permissionCheck.kittycat_perms}
 				id={`permission-check__ksa-${id}`}
 			/>
 		</details>
-		<details class="permission-check__details border p-2">
+		<details class="permission-check__details border p-2" open>
 			<summary class="permission-check__summary hover:cursor-pointer">Native Permissions</summary>
 			<NativePermissionSelectArray
 				bind:perms={permissionCheck.native_perms}

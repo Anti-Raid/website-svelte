@@ -39,15 +39,7 @@
 	export let guildClusterId: number;
 	export let guildShardId: number;
 
-	const findModuleInCmc = (
-		currentModuleConfiguration: GuildModuleConfiguration[],
-		module: string
-	) => {
-		return currentModuleConfiguration.find((cmc) => cmc.module == module);
-	};
-
 	interface State {
-		togglingStates: Record<string, ['loading' | 'error' | 'success', string]>;
 		openModule: string;
 		openMobuleTab: string;
 		commandSearch: string;
@@ -63,7 +55,6 @@
 	}
 
 	let state: State = {
-		togglingStates: {},
 		openModule: '',
 		openMobuleTab: 'moduleInfo',
 		commandSearch: '',
@@ -187,7 +178,7 @@
 							<ModuleInfoTab
 								{guildId}
 								module={clusterModules[state.openModule]}
-								{currentModuleConfiguration}
+								bind:currentModuleConfiguration
 							/>
 						{:else if state.openMobuleTab == 'cmdList'}
 							{#await createCmdDataTable(state?.openModule)}

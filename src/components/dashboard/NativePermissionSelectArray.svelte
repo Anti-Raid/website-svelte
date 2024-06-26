@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BoxButton from '../inputs/button/BoxButton.svelte';
 	import NativePermissionSelector from './NativePermissionSelector.svelte';
 
 	export let perms: string[] = [];
@@ -7,30 +8,31 @@
 
 <section {id} class="kittycat-perm-select-array mb-2">
 	{#if perms?.length == 0}
-		<button
-			class="bg-primary-600 hover:bg-primary-400 p-3"
-			on:click={() => {
+		<BoxButton
+			text="Add Permission"
+			onclick={() => {
 				perms = [...perms, ''];
-			}}>Add Permission</button
-		>
+			}}
+		/>
 	{/if}
 
 	{#each perms as perm, i}
 		<NativePermissionSelector id={`${id}-${i}`} bind:nativePerms={perm} />
 
 		<div class="flex flex-row">
-			<button
-				class="bg-primary-600 hover:bg-primary-400 p-3 mr-2"
-				on:click={() => {
+			<BoxButton
+				text="Add Permission"
+				onclick={() => {
 					perms = [...perms.slice(0, i + 1), '', ...perms.slice(i + 1)];
-				}}>Add Permission</button
-			>
-			<button
-				class="bg-red-600 hover:bg-red-400 p-3"
-				on:click={() => {
+				}}
+			/>
+			<div class="mr-2" />
+			<BoxButton
+				text="Remove Permission"
+				onclick={() => {
 					perms = perms.filter((_, index) => index !== i);
-				}}>Remove Permission</button
-			>
+				}}
+			/>
 		</div>
 	{/each}
 </section>
