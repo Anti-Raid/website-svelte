@@ -174,7 +174,7 @@
 
 <UnorderedList>
 	<ListItem>
-		{#if module.commands_configurable}
+		{#if module.commands_toggleable}
 			<small class="text-green-500 mt-2">
 				<strong>Commands in this module are individually CONFIGURABLE</strong>
 			</small>

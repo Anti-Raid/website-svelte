@@ -127,6 +127,8 @@ export class PermissionResultFormatter {
 				return `You cannot perform this action because the command \`\`${this.result.command_config?.command}\`\` (inherited from \`\`${this.result.command_config?.command}\`\`) is disabled on this server`;
 			case 'UnknownModule':
 				return `The module \`\`${this.result.module_config?.module}\`\` does not exist`;
+			case 'ModuleNotFound':
+				return `The module corresponding to this command could not be determined!`;
 			case 'ModuleDisabled':
 				return `The module \`\`${this.result.module_config?.module}\`\` is disabled on this server`;
 			case 'NoChecksSucceeded':
@@ -140,6 +142,8 @@ export class PermissionResultFormatter {
 					} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'DiscordError':
 				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
+			case 'SudoNotGranted':
+				return 'This module is only available for root (staff) and/or developers of the bot'
 			case 'GenericError':
 				return this.result.error;
 		}

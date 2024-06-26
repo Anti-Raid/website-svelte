@@ -12,7 +12,7 @@ export interface CanonicalModule {
   name: string;
   description: string;
   toggleable: boolean;
-  commands_configurable: boolean;
+  commands_toggleable: boolean;
   web_hidden: boolean;
   virtual_module: boolean;
   is_default_enabled: boolean;
