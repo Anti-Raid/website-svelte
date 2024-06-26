@@ -232,7 +232,7 @@
 									<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
 										<thead>
 											<tr class="bg-surface-800">
-												<ThSort handler={data.handler} orderBy={'qualified_name'}>Name</ThSort>
+												<ThSort handler={data.handler} orderBy={'full_name'}>Name</ThSort>
 												<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
 												<ThSort handler={data.handler} orderBy={'arguments'}>Arguments</ThSort>
 												<ThSort handler={data.handler} orderBy={'search_permissions'}
@@ -240,7 +240,7 @@
 												>
 											</tr>
 											<tr class="bg-surface-800">
-												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
+												<ThFilter handler={data.handler} filterBy={'full_name'} />
 												<ThFilter handler={data.handler} filterBy={'description'} />
 												<ThFilter handler={data.handler} filterBy={'arguments'} />
 												<ThFilter handler={data.handler} filterBy={'search_permissions'} />
