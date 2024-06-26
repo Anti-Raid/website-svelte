@@ -176,11 +176,13 @@
 	<ListItem>
 		{#if module.commands_toggleable}
 			<small class="text-green-500 mt-2">
-				<strong>Commands in this module are individually CONFIGURABLE</strong>
+				<strong>You can turn ON/OFF (toggle) the commands within this module!</strong>
 			</small>
 		{:else}
 			<small class="text-red-500 mt-2">
-				<strong>Commands in this module are NOT individually CONFIGURABLE</strong>
+				<strong
+					>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
+				>
 			</small>
 		{/if}
 	</ListItem>

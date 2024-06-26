@@ -190,11 +190,13 @@
 
 							{#if state.clusterModuleData[state?.openCluster][state?.openModule].commands_toggleable}
 								<p class="text-green-500 mt-2">
-									<strong>You can configure the commands within this module!</strong>
+									<strong>You can turn ON/OFF (toggle) the commands within this module!</strong>
 								</p>
 							{:else}
 								<p class="text-red-500 mt-2">
-									<strong>You CANNOT configure the commands within this module!</strong>
+									<strong
+										>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
+									>
 								</p>
 							{/if}
 
