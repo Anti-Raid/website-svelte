@@ -119,7 +119,8 @@ export class PermissionResultFormatter {
 			case 'MissingKittycatPerms':
 			case 'MissingNativePerms':
 			case 'MissingAnyPerms':
-				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
+				if (!this.result.checks) throw new Error('Missing checks for permission result');
+				checksFmt = new PermissionChecksFormatter(this.result.checks);
 				return `You do not have the required permissions to perform this action. Try checking that you have the below permissions: ${checksFmt.toString()}`;
 			case 'CommandDisabled':
 				return `You cannot perform this action because the command \`\`${this.result.command_config?.command}\`\` (inherited from \`\`${this.result.command_config?.command}\`\`) is disabled on this server`;
@@ -128,10 +129,12 @@ export class PermissionResultFormatter {
 			case 'ModuleDisabled':
 				return `The module \`\`${this.result.module_config?.module}\`\` is disabled on this server`;
 			case 'NoChecksSucceeded':
-				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
+				if (!this.result.checks) throw new Error('Missing checks for permission result');
+				checksFmt = new PermissionChecksFormatter(this.result.checks);
 				return `You do not have the required permissions to perform this action. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'MissingMinChecks':
-				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
+				if (!this.result.checks) throw new Error('Missing checks for permission result');
+				checksFmt = new PermissionChecksFormatter(this.result.checks);
 				return `You do not have the required permissions to perform this action. You need at least ${checksFmt.checksNeeded
 					} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'DiscordError':
