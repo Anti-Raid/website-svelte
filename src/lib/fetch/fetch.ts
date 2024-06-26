@@ -47,7 +47,7 @@ class PermissionCheckFormatter {
 					result += ' ';
 				}
 				let permsBf = new BitFlag(serenityPermissions, perm);
-				result += `${perm} (${Object.keys(permsBf.getSetFlags())})`;
+				result += `${Object.keys(permsBf.getSetFlags())} (${perm})`;
 				if (index < this.nativePerms.length - 1) {
 					result += this.innerAnd ? ' AND' : ' OR';
 				}
