@@ -21,7 +21,7 @@
 		<div class="flex flex-row">
 			<BoxButton
 				onclick={() => {
-					perms = [...perms.slice(0, i + 1), '', ...perms.slice(i + 1)];
+					perms = [...perms.slice(0, i + 1), '0', ...perms.slice(i + 1)];
 				}}>Add Permission</BoxButton
 			>
 			<div class="mr-2" />

@@ -2,11 +2,12 @@
 	import serenityPermissions from '$lib/generated/rust/serenity_perms.json';
 	import { BitFlag } from '$lib/bitflag';
 	import BoolInput from '../inputs/BoolInput.svelte';
+	import logger from '$lib/ui/logger';
 
-	export let nativePerms: string = '0';
+	export let nativePerms: string;
 	export let id: string;
 
-	let selectedPermissions: number[] = [];
+	let selectedPermissions: string[] = [];
 
 	const setNewNativePerms = () => {
 		let bitflagClass = new BitFlag(serenityPermissions, '0');
@@ -15,9 +16,24 @@
 			bitflagClass.setFlag(perm, true);
 		}
 
-		nativePerms = bitflagClass.getFlags().toString();
+		let newPerms = bitflagClass.getFlags().toString();
+
+		// Avoid an infinite loop
+		if (newPerms !== nativePerms) {
+			nativePerms = newPerms;
+		}
 	};
 
+	const updateSelectedPerms = () => {
+		logger.info('updateSelectedPerms', nativePerms);
+		let bitflagClass = new BitFlag(serenityPermissions, nativePerms);
+
+		let flags = bitflagClass.getSetFlags();
+
+		selectedPermissions = Object.values(flags);
+	};
+
+	$: nativePerms, updateSelectedPerms();
 	$: selectedPermissions, setNewNativePerms();
 </script>
 
@@ -33,12 +49,14 @@
 						label={name}
 						description={`Toggle '${name}'`}
 						disabled={false}
-						value={selectedPermissions.includes(permission)}
+						value={selectedPermissions.includes(permission.toString())}
 						onChange={(value) => {
 							if (value) {
-								selectedPermissions = [...selectedPermissions, permission];
+								selectedPermissions = [...selectedPermissions, permission.toString()];
 							} else {
-								selectedPermissions = selectedPermissions.filter((perm) => perm !== permission);
+								selectedPermissions = selectedPermissions.filter(
+									(perm) => perm.toString() !== permission.toString()
+								);
 							}
 
 							setNewNativePerms();
