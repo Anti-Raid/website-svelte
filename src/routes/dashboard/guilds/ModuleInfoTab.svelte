@@ -86,7 +86,7 @@
 				parse: (_state, snapshot, v) => {
 					let value: Clearable<boolean> = {
 						clear: false,
-						value: v
+						value: !v
 					};
 
 					// Clear the value if the field is in the reset list
