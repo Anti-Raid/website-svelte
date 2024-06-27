@@ -35,8 +35,7 @@ export const createPartialPatch = <T>(patch: PartialPatchRecord<T>, opts?: Creat
         let parsedCurrent = value.parse ? value.parse(value.current) : { key: key, value: value.current }
 
         if (!isEqual(parsedInitial?.value, parsedCurrent?.value)) {
-            let parsed = value.parse ? value.parse(value.current) : { key: key, value: value.current }
-            createdPatch[parsed?.key] = parsed?.value;
+            createdPatch[parsedCurrent?.key] = parsedCurrent?.value;
         }
     }
 
