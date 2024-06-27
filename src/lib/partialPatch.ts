@@ -6,14 +6,19 @@ export interface ParsedPartialPatch {
     value: any;
 }
 
-export interface PartialPatch<T> {
+// T = type, U = underlying type
+export interface PartialPatch<T, U> {
     initial: T;
     current: T;
-    parse?: (value: T) => ParsedPartialPatch;
+    parse?: (state: PartialPatchRecord<U>, snapshot: Snapshot<U>, value: T) => ParsedPartialPatch;
 }
 
+export type Snapshot<T> = {
+    [P in keyof T]: T[P];
+};
+
 export type PartialPatchRecord<T> = {
-    [P in keyof T]: PartialPatch<T[P]>;
+    [P in keyof T]: PartialPatch<T[P], T>;
 };
 
 export interface CreatePartialPatchOpts {
@@ -28,12 +33,24 @@ export interface CreatePartialPatchOpts {
 export const createPartialPatch = <T>(patch: PartialPatchRecord<T>, opts?: CreatePartialPatchOpts) => {
     let createdPatch: Record<string, any> = {};
 
+    let initialSnapshot: Snapshot<T> = {} as Snapshot<T>;
+
     for (let [key, v] of Object.entries(patch)) {
-        let value = v as PartialPatch<T[keyof T]>;
+        initialSnapshot[key as keyof T] = (v as PartialPatch<T[keyof T], T>).initial;
+    }
+
+    let currentSnapshot: Snapshot<T> = {} as Snapshot<T>;
+
+    for (let [key, v] of Object.entries(patch)) {
+        currentSnapshot[key as keyof T] = (v as PartialPatch<T[keyof T], T>).current;
+    }
+
+    for (let [key, v] of Object.entries(patch)) {
+        let value = v as PartialPatch<T[keyof T], T>;
 
         // Parse the initial and current values
-        let parsedInitial = value.parse ? value.parse(value.initial) : { key: key, value: value.initial }
-        let parsedCurrent = value.parse ? value.parse(value.current) : { key: key, value: value.current }
+        let parsedInitial = value.parse ? value.parse(patch, initialSnapshot, value.initial) : { key: key, value: value.initial }
+        let parsedCurrent = value.parse ? value.parse(patch, currentSnapshot, value.current) : { key: key, value: value.current }
 
         logger.info("createPartialPatch", "Parsed initial value", parsedInitial?.value, "Parsed current value", parsedCurrent?.value)
 

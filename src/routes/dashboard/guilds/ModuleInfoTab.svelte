@@ -83,14 +83,14 @@
 			enabled: {
 				initial: structuredClone(isModuleEnabled()),
 				current: structuredClone(isModuleEnabled()),
-				parse: (v) => {
+				parse: (_state, snapshot, v) => {
 					let value: Clearable<boolean> = {
 						clear: false,
 						value: v
 					};
 
 					// Clear the value if the field is in the reset list
-					if (state?.__resetFields?.current?.includes('enabled')) {
+					if (snapshot?.__resetFields?.includes('enabled')) {
 						value = {
 							clear: true
 						};
@@ -105,14 +105,14 @@
 			default_perms: {
 				initial: structuredClone(getModuleDefaultPerms()),
 				current: structuredClone(getModuleDefaultPerms()),
-				parse: (v) => {
+				parse: (_state, snapshot, v) => {
 					let value: Clearable<PCT> = {
 						clear: false,
 						value: v
 					};
 
 					// Clear the value if the field is in the reset list
-					if (state?.__resetFields?.current?.includes('default_perms')) {
+					if (snapshot?.__resetFields?.includes('default_perms')) {
 						value = {
 							clear: true
 						};
@@ -127,7 +127,7 @@
 			__resetFields: {
 				initial: [],
 				current: [],
-				parse: (v) => {
+				parse: (state, snapshot, v) => {
 					return {
 						key: '__resetFields',
 						value: v
