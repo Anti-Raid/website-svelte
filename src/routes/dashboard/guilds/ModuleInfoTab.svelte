@@ -182,13 +182,14 @@
 		);
 
 		let res = await fetchClient(
-			`${get('splashtail')}/users/${authCreds?.user_id}/guilds/${guildId}/modules/${
-				module.id
-			}/configurations`,
+			`${get('splashtail')}/users/${authCreds?.user_id}/guilds/${guildId}/module-configurations`,
 			{
 				auth: authCreds?.token,
 				method: 'PATCH',
-				body: JSON.stringify(createPatch)
+				body: JSON.stringify({
+					module: module.id,
+					...createPatch
+				})
 			}
 		);
 
@@ -240,6 +241,8 @@
 			} else {
 				state.__resetFields.current.push('default_perms');
 			}
+
+			state = state; // Force re-render
 		}}
 	>
 		{state.__resetFields.current.includes('enabled') ? "Don't Reset" : 'Reset'}
