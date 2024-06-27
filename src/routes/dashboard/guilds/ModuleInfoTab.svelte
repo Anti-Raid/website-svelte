@@ -172,6 +172,8 @@
 			throw new Error('No changes to save');
 		}
 
+		logger.info('ModuleInfoTab', 'updateModuleConfiguration', guildId, module.id, createPatch);
+
 		let res = await fetchClient(
 			`${get('splashtail')}/users/${authCreds?.user_id}/guilds/${guildId}/modules/${
 				module.id
