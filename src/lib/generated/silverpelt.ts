@@ -41,32 +41,6 @@ export interface CanonicalCommandData {
 }
 
 //////////
-// source: cmd.go
-
-/**
- * CheckCommandOptions represents extra options for checking a command.
- */
-export interface CheckCommandOptions {
-  /**
-   * IgnoreModuleDisabled specifies whether or not to ignore the fact that the module is disabled in the guild.
-   */
-  ignore_module_disabled?: boolean;
-  /**
-   * IgnoreCommandDisabled specifies whether or not to ignore the fact that the command is disabled in the guild.
-   */
-  ignore_command_disabled?: boolean;
-  /**
-   * CustomResolvedKittyCatPerms specifies what custom resolved permissions to use for the user.
-   * Note that EnsureUserHasCustomResolved must be true to ensure that the user has all the permissions in the custom_resolved_kittycat_perms.
-   */
-  custom_resolved_kittycat_perms?: string[];
-  /**
-   * EnsureUserHasCustomResolved specifies whether or not to ensure that the user has all the permissions in the custom_resolved_kittycat_perms.
-   */
-  ensure_user_has_custom_resolved?: boolean;
-}
-
-//////////
 // source: config_opts.go
 
 export interface CanonicalSettingsResult {
@@ -230,6 +204,7 @@ export interface CommandExtendedData {
   default_perms: PermissionChecks; // The default permissions needed to run this command
   is_default_enabled: boolean; // Whether or not the command is enabled by default
   web_hidden: boolean; // Whether or not the command is hidden from the web interface
+  virtual_command: boolean; // Whether or not the command is a virtual command or not
 }
 /**
  * GuildCommandConfiguration represents guild command configuration data.

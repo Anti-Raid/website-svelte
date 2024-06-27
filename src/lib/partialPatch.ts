@@ -15,12 +15,16 @@ export type PartialPatchRecord<T> = {
     [P in keyof T]: PartialPatch<T[P]>;
 };
 
+export interface CreatePartialPatchOpts {
+    keepInternalKeys?: boolean; // Don't remove internal keys
+}
+
 /**
  * Creates a partial patch from a patch record
  * 
  * @example const createPatch = createPartialPatch(state);
  */
-export const createPartialPatch = <T>(patch: PartialPatchRecord<T>) => {
+export const createPartialPatch = <T>(patch: PartialPatchRecord<T>, opts?: CreatePartialPatchOpts) => {
     let createdPatch: Record<string, any> = {};
 
     for (let [key, v] of Object.entries(patch)) {
@@ -36,10 +40,12 @@ export const createPartialPatch = <T>(patch: PartialPatchRecord<T>) => {
         }
     }
 
-    // Remove all internal keys (internal keys are those starting with __)
-    for (let key of Object.keys(createdPatch)) {
-        if (key.startsWith('__')) {
-            delete createdPatch[key];
+    if (!opts?.keepInternalKeys) {
+        // Remove all internal keys (internal keys are those starting with __)
+        for (let key of Object.keys(createdPatch)) {
+            if (key.startsWith('__')) {
+                delete createdPatch[key];
+            }
         }
     }
 

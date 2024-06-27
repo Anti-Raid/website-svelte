@@ -152,7 +152,7 @@
 	// end of workaround
 
 	// Ensure changes is updated whenever state changes
-	$: changes = createPartialPatch(state);
+	$: changes = createPartialPatch(state, { keepInternalKeys: true });
 
 	// Ensure manuallyOverriden is updated whenever moduleId changes
 	let toggleManuallyOverriden: boolean;
@@ -211,6 +211,7 @@
 				state.__resetFields.current = state.__resetFields.current.filter((f) => f !== 'enabled');
 			} else {
 				state.__resetFields.current.push('enabled');
+				state = state; // Force re-render
 			}
 		}}
 	>
