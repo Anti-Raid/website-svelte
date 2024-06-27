@@ -1,4 +1,5 @@
 import isEqual from 'lodash.isequal'
+import logger from './ui/logger';
 
 export interface ParsedPartialPatch {
     key: any;
@@ -33,6 +34,8 @@ export const createPartialPatch = <T>(patch: PartialPatchRecord<T>, opts?: Creat
         // Parse the initial and current values
         let parsedInitial = value.parse ? value.parse(value.initial) : { key: key, value: value.initial }
         let parsedCurrent = value.parse ? value.parse(value.current) : { key: key, value: value.current }
+
+        logger.info("createPartialPatch", "Parsed initial value", parsedInitial?.value, "Parsed current value", parsedCurrent?.value)
 
         if (!isEqual(parsedInitial?.value, parsedCurrent?.value)) {
             createdPatch[parsedCurrent?.key] = parsedCurrent?.value;
