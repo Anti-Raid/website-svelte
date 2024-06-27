@@ -14,6 +14,8 @@
 	import { success } from '$lib/toast';
 	import logger from '$lib/ui/logger';
 	import { makeSharedRequest, opGetModuleConfiguration } from '$lib/fetch/ext';
+	import { Clearable } from '$lib/generated/types';
+	import BoxButton from '../../../components/inputs/button/BoxButton.svelte';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
@@ -49,6 +51,18 @@
 		return cmc.disabled !== undefined;
 	};
 
+	const isModuleDefaultPermsOverriden = (
+		currentModuleConfiguration: GuildModuleConfiguration[]
+	): boolean => {
+		let cmc = currentModuleConfiguration.find((m) => m.module === module.id);
+
+		if (!cmc) {
+			return false;
+		}
+
+		return cmc.default_perms !== undefined || !!cmc.default_perms;
+	};
+
 	const getModuleDefaultPerms = (): PCT => {
 		return (
 			currentModuleConfiguration.find((m) => m.module === module.id)?.default_perms || {
@@ -61,6 +75,7 @@
 	interface PartialPatchType {
 		enabled: boolean;
 		default_perms: PCT;
+		__resetFields: ('enabled' | 'default_perms')[];
 	}
 
 	const getState = (): PartialPatchRecord<PartialPatchType> => {
@@ -69,15 +84,55 @@
 				initial: structuredClone(isModuleEnabled()),
 				current: structuredClone(isModuleEnabled()),
 				parse: (v) => {
+					let value: Clearable<boolean> = {
+						clear: false,
+						value: v
+					};
+
+					// Clear the value if the field is in the reset list
+					if (state?.__resetFields?.current?.includes('enabled')) {
+						value = {
+							clear: true
+						};
+					}
+
 					return {
 						key: 'disabled',
-						value: !v
+						value
 					};
 				}
 			},
 			default_perms: {
 				initial: structuredClone(getModuleDefaultPerms()),
-				current: structuredClone(getModuleDefaultPerms())
+				current: structuredClone(getModuleDefaultPerms()),
+				parse: (v) => {
+					let value: Clearable<PCT> = {
+						clear: false,
+						value: v
+					};
+
+					// Clear the value if the field is in the reset list
+					if (state?.__resetFields?.current?.includes('default_perms')) {
+						value = {
+							clear: true
+						};
+					}
+
+					return {
+						key: 'default_perms',
+						value
+					};
+				}
+			},
+			__resetFields: {
+				initial: [],
+				current: [],
+				parse: (v) => {
+					return {
+						key: '__resetFields',
+						value: v
+					};
+				}
 			}
 		};
 	};
@@ -100,8 +155,11 @@
 	$: changes = createPartialPatch(state);
 
 	// Ensure manuallyOverriden is updated whenever moduleId changes
-	let manuallyOverriden: boolean;
-	$: moduleId, (manuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration));
+	let toggleManuallyOverriden: boolean;
+	let defaultPermsManuallyOverriden: boolean;
+	$: moduleId, (toggleManuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration));
+	$: moduleId,
+		(defaultPermsManuallyOverriden = isModuleDefaultPermsOverriden(currentModuleConfiguration));
 
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
@@ -145,7 +203,38 @@
 	bind:value={state.enabled.current}
 	onChange={(_) => {}}
 />
+
+{#if toggleManuallyOverriden}
+	<BoxButton
+		onclick={() => {
+			if (state.__resetFields.current.includes('enabled')) {
+				state.__resetFields.current = state.__resetFields.current.filter((f) => f !== 'enabled');
+			} else {
+				state.__resetFields.current.push('enabled');
+			}
+		}}
+	>
+		{state.__resetFields.current.includes('enabled') ? "Don't Reset" : 'Reset'}
+	</BoxButton>
+{/if}
+
 <PermissionChecks id={`pc-${module.id}`} bind:permissionChecks={state.default_perms.current} />
+
+{#if defaultPermsManuallyOverriden}
+	<BoxButton
+		onclick={() => {
+			if (state.__resetFields.current.includes('default_perms')) {
+				state.__resetFields.current = state.__resetFields.current.filter(
+					(f) => f !== 'default_perms'
+				);
+			} else {
+				state.__resetFields.current.push('default_perms');
+			}
+		}}
+	>
+		{state.__resetFields.current.includes('enabled') ? "Don't Reset" : 'Reset'}
+	</BoxButton>
+{/if}
 
 {#if Object.keys(changes).length}
 	<ButtonReact
@@ -212,7 +301,7 @@
 	</ListItem>
 
 	<ListItem>
-		{#if manuallyOverriden}
+		{#if toggleManuallyOverriden}
 			<small class="text-green-500 mt-2">
 				<strong
 					>The disabled/enabled state of this module has been manually modified and will no longer
@@ -224,6 +313,20 @@
 				<strong
 					>This module will use the default enabled/disabled state defined for it unless manually
 					modified.</strong
+				>
+			</small>
+		{/if}
+	</ListItem>
+
+	<ListItem>
+		{#if defaultPermsManuallyOverriden}
+			<small class="text-green-500 mt-2">
+				<strong>The default permissions of this module have been manually modified.</strong>
+			</small>
+		{:else}
+			<small class="text-green-500 mt-2">
+				<strong
+					>This module will use the default permissions defined for it unless manually modified.</strong
 				>
 			</small>
 		{/if}

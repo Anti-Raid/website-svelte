@@ -36,5 +36,12 @@ export const createPartialPatch = <T>(patch: PartialPatchRecord<T>) => {
         }
     }
 
+    // Remove all internal keys (internal keys are those starting with __)
+    for (let key of Object.keys(createdPatch)) {
+        if (key.startsWith('__')) {
+            delete createdPatch[key];
+        }
+    }
+
     return createdPatch;
 };

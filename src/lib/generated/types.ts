@@ -130,6 +130,13 @@ export interface Vanity {
   code: string;
   created_at: string /* RFC3339 */;
 }
+/**
+ * A clearable is a value that can be either cleared or set
+ */
+export interface Clearable<T extends any> {
+  clear: boolean;
+  value?: T;
+}
 
 //////////
 // source: guild.go
@@ -174,8 +181,8 @@ export interface IOAuthDiscordError {
  * PatchGuildModuleConfiguration allows updating the guild module configuration
  */
 export interface PatchGuildModuleConfiguration {
-  disabled?: boolean; // Whether or not the module is disabled or not. None means to use the default module configuration
-  default_perms?: any /* silverpelt.PermissionChecks */; // The default permission checks of the module, can be overrided by the command configuration
+  disabled?: Clearable<boolean>; // Whether or not the module is disabled or not. None means to use the default module configuration
+  default_perms?: Clearable<any /* silverpelt.PermissionChecks */>; // The default permission checks of the module, can be overrided by the command configuration
 }
 
 //////////
