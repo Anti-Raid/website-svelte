@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { error } from '$lib/toast';
+	import { NoticeProps } from './common/noticearea/noticearea';
+	import NoticeArea from './common/noticearea/NoticeArea.svelte';
 
 	interface Step {
 		name: string;
@@ -22,8 +23,10 @@
 			currentStep = currentStep + 1;
 			return true;
 		} catch (err) {
-			error(err?.toString() || 'An unknown error occurred');
-
+			noticeArea = {
+				level: 'error',
+				text: err?.toString() || 'An unknown error occurred'
+			};
 			return false;
 		}
 	};
@@ -35,7 +38,13 @@
 
 	$: if (currentStep === undefined)
 		currentStep = steps.findIndex((step) => step.current === true) || 0;
+
+	let noticeArea: NoticeProps | null; // This is what creates the notice area when an error occurs
 </script>
+
+{#if noticeArea}
+	<NoticeArea props={noticeArea} />
+{/if}
 
 <ol
 	class="flex items-center justify-center w-full text-sm font-medium text-center text-gray-500 dark:text-gray-400 sm:text-base"

@@ -6,11 +6,9 @@
 	import { logoutUser } from '../lib/auth/logoutUser';
 	import { getUser } from '../lib/auth/getUser';
 	import { User } from '../lib/generated/types';
-	import logger from '../lib/ui/logger';
 	import Icon from '@iconify/svelte';
 	import NavButton from './inputs/button/NavButton.svelte';
 	import { loginUser } from '$lib/auth/loginUser';
-	import { error } from '$lib/toast';
 	import { LSAuthData } from '$lib/auth/core';
 	import { browser } from '$app/environment';
 	import Themer from './Themer.svelte';
@@ -138,14 +136,6 @@
 		return data;
 	};
 
-	const loginDiscord = async () => {
-		try {
-			await loginUser();
-		} catch (err) {
-			error(err?.toString() || 'Failed to login');
-		}
-	};
-
 	$: {
 		navigation.map((p) => {
 			if (p.href === $page.url.pathname) open = p.name;
@@ -264,7 +254,7 @@
 				{:else}
 					<button
 						type="button"
-						on:click={loginDiscord}
+						on:click={loginUser}
 						class="px-4 py-2 text-sm font-medium text-left text-gray-50 rounded-lg cursor-pointer bg-indigo-600 hover:bg-indigo-800 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-white"
 					>
 						Login

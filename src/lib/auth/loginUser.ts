@@ -1,6 +1,6 @@
 import support from '$lib/configs/data/support.json';
 
-export const loginUser = async () => {
+export const loginUser = () => {
 	let state = btoa(window.location.toString());
 
 	window.location.href = support.invite.no_bot

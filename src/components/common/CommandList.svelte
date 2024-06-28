@@ -25,6 +25,8 @@
 		commandLookup,
 		extractCommandsFromModule
 	} from '$lib/ui/commands';
+	import { NoticeProps } from './noticearea/noticearea';
+	import NoticeArea from './noticearea/NoticeArea.svelte';
 
 	export let instanceList: InstanceList;
 
@@ -35,6 +37,7 @@
 		clusterModuleData: Record<number, Record<string, CanonicalModule>>;
 		searchedCommands: LookedUpCommand[];
 		clusterFinderOpen: boolean;
+		clusterFinderNoticeArea: NoticeProps | null;
 		clusterFinderByGuildIdExpectedData: {
 			cluster: number;
 			shard: number;
@@ -48,7 +51,8 @@
 		commandSearch: '',
 		searchedCommands: [],
 		clusterFinderOpen: false,
-		clusterFinderByGuildIdExpectedData: null
+		clusterFinderByGuildIdExpectedData: null,
+		clusterFinderNoticeArea: null
 	};
 
 	const fetchCluster = async (_: number | undefined) => {
@@ -374,7 +378,12 @@
 						error: 'Failed to find cluster',
 						success: 'Found cluster!'
 					}}
+					bind:noticeProps={state.clusterFinderNoticeArea}
 				/>
+
+				{#if state.clusterFinderNoticeArea}
+					<NoticeArea props={state.clusterFinderNoticeArea} />
+				{/if}
 			{/if}
 		</Modal>
 	{/if}

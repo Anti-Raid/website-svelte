@@ -4,13 +4,11 @@
 	import { get } from '$lib/configs/functions/services';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import {
-		ApiError,
 		CreateUserSession,
 		CreateUserSessionResponse,
 		UserSession,
 		UserSessionList
 	} from '$lib/generated/types';
-	import { error, success } from '$lib/toast';
 	import Message from '../../../components/Message.svelte';
 	import { DataHandler, Datatable, Th } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
@@ -27,6 +25,8 @@
 	import Search from '../../../components/common/datatable/Search.svelte';
 	import ThFilter from '../../../components/common/datatable/ThFilter.svelte';
 	import ThSort from '../../../components/common/datatable/ThSort.svelte';
+	import { NoticeProps } from '../../../components/common/noticearea/noticearea';
+	import NoticeArea from '../../../components/common/noticearea/NoticeArea.svelte';
 
 	let sessionRows: Readable<UserSession[]>;
 	let otherSessionRows: Readable<UserSession[]>;
@@ -91,13 +91,22 @@
 			);
 
 			if (res.ok) {
-				success(`Successfully revoked session ${sessionId}`);
+				sessionTopNoticeArea = {
+					level: 'success',
+					text: `Successfully revoked session ${sessionId}`
+				};
 			} else {
 				let err = await res.error('Revoke session', 'markdown');
-				error(err);
+				sessionTopNoticeArea = {
+					level: 'error',
+					text: err
+				};
 			}
 		} catch (err) {
-			error(`Failed to revoke session: ${err}`);
+			sessionTopNoticeArea = {
+				level: 'error',
+				text: `Failed to revoke session: ${err}`
+			};
 		}
 	};
 
@@ -125,9 +134,11 @@
 			throw new Error(await res.error('Create session', 'markdown'));
 		}
 
-		success('Session created');
 		createSessionResp = await res.json();
 	};
+
+	let createSessionNoticeArea: NoticeProps | null = null;
+	let sessionTopNoticeArea: NoticeProps | null = null;
 </script>
 
 {#await loadGuildData()}
@@ -320,7 +331,12 @@
 			error: 'Failed to create session'
 		}}
 		onClick={createSessionFunc}
+		bind:noticeProps={createSessionNoticeArea}
 	/>
+
+	{#if createSessionNoticeArea}
+		<NoticeArea props={createSessionNoticeArea} />
+	{/if}
 
 	{#if createSessionResp}
 		<h2 class="font-semibold text-2xl">Session Created</h2>

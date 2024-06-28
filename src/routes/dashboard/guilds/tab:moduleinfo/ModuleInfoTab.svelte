@@ -11,11 +11,12 @@
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
-	import { success } from '$lib/toast';
 	import logger from '$lib/ui/logger';
 	import { makeSharedRequest, opGetModuleConfiguration } from '$lib/fetch/ext';
 	import { Clearable } from '$lib/generated/types';
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
+	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
+	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
@@ -201,8 +202,9 @@
 		currentModuleConfiguration = await makeSharedRequest(opGetModuleConfiguration(guildId));
 
 		state = getState(); // Rederive state
-		success('Module configuration updated successfully');
 	};
+
+	let updateNoticeArea: NoticeProps | null;
 </script>
 
 <BoolInput
@@ -260,7 +262,12 @@
 			success: 'Saved!',
 			error: 'Failed to save changes'
 		}}
+		bind:noticeProps={updateNoticeArea}
 	/>
+{/if}
+
+{#if updateNoticeArea}
+	<NoticeArea props={updateNoticeArea} />
 {/if}
 
 <hr class="mt-5 border-[4px]" />

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import '../app.css';
 	import Header from '../components/Header.svelte';
-	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import { getVersion } from '$lib/configs/functions/versioner';
 </script>
 
@@ -10,7 +9,6 @@
 <article class="min-h-screen flex-col justify-between overflow-x-hidden">
 	<main class="mt-9 p-3 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-full min-h-screen">
 		<slot />
-		<SvelteToast options={{}} />
 	</main>
 
 	<footer class="mb-auto border-white border-t-2">

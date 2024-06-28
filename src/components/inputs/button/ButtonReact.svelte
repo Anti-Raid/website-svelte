@@ -9,7 +9,7 @@ Converted to SvelteKit from NextJS for panel use
 -->
 
 <script lang="ts">
-	import { error } from '$lib/toast';
+	import { NoticeProps } from '../../common/noticearea/noticearea';
 	import ButtonInner from './ButtonInner.svelte';
 	import type { Color } from './colors';
 	import type { States } from './states';
@@ -23,6 +23,7 @@ Converted to SvelteKit from NextJS for panel use
 	export let states: States;
 	export let disableBtnAfter: string = '';
 	export let onClick: () => Promise<void>;
+	export let noticeProps: NoticeProps | null;
 
 	// Internal state
 	enum ReactState {
@@ -106,8 +107,12 @@ Converted to SvelteKit from NextJS for panel use
 		try {
 			await onClick();
 			state = ReactState.Clicked;
+			noticeProps = null; // Clear any previous errors
 		} catch (err) {
-			error(err?.toString() || 'An error occurred');
+			noticeProps = {
+				level: 'error',
+				text: err?.toString() || 'An error occurred'
+			};
 			state = ReactState.Error;
 		}
 
@@ -117,7 +122,6 @@ Converted to SvelteKit from NextJS for panel use
 				if (states) {
 					state = ReactState.Normal;
 				}
-
 				display.disabled = false;
 			}, 4000);
 		} else {
