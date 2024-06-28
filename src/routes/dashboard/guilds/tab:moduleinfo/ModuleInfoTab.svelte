@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { CanonicalModule, GuildModuleConfiguration } from '$lib/generated/silverpelt';
-	import PermissionChecks from '../../../components/dashboard/PermissionChecks.svelte';
+	import PermissionChecks from '../../../../components/dashboard/PermissionChecks.svelte';
 	import { PermissionChecks as PCT } from '$lib/generated/silverpelt';
-	import BoolInput from '../../../components/inputs/BoolInput.svelte';
-	import ListItem from '../../../components/ListItem.svelte';
-	import UnorderedList from '../../../components/UnorderedList.svelte';
+	import BoolInput from '../../../../components/inputs/BoolInput.svelte';
+	import ListItem from '../../../../components/ListItem.svelte';
+	import UnorderedList from '../../../../components/UnorderedList.svelte';
 	import { PartialPatchRecord, createPartialPatch } from '$lib/partialPatch';
-	import ButtonReact from '../../../components/inputs/button/ButtonReact.svelte';
-	import { Color } from '../../../components/inputs/button/colors';
+	import ButtonReact from '../../../../components/inputs/button/ButtonReact.svelte';
+	import { Color } from '../../../../components/inputs/button/colors';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
@@ -15,7 +15,7 @@
 	import logger from '$lib/ui/logger';
 	import { makeSharedRequest, opGetModuleConfiguration } from '$lib/fetch/ext';
 	import { Clearable } from '$lib/generated/types';
-	import BoxButton from '../../../components/inputs/button/BoxButton.svelte';
+	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
@@ -245,7 +245,7 @@
 			state = state; // Force re-render
 		}}
 	>
-		{state.__resetFields.current.includes('enabled') ? "Don't Reset" : 'Reset'}
+		{state.__resetFields.current.includes('default_perms') ? "Don't Reset" : 'Reset'}
 	</BoxButton>
 {/if}
 

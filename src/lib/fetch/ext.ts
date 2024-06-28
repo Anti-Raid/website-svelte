@@ -153,7 +153,7 @@ export const opGetCommandConfigurations = (
 	};
 };
 
-export const opGetCommandConfigurationsForGuild = (
+export const opGetAllCommandConfigurations = (
 	guildId: string
 ): SharedRequester<GuildCommandConfiguration[]> => {
 	let authData = getAuthCreds();

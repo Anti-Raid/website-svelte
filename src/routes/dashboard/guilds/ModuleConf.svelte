@@ -13,24 +13,16 @@
 	import { DataHandler } from '@vincjo/datatables';
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import TabbedPane from '../../../components/inputs/button/tabs/TabbedPane.svelte';
-	import CommandEditor from './CommandEditor.svelte';
-	import Pagination from '../../../components/common/datatable/Pagination.svelte';
-	import RowCount from '../../../components/common/datatable/RowCount.svelte';
-	import RowsPerPage from '../../../components/common/datatable/RowsPerPage.svelte';
-	import Search from '../../../components/common/datatable/Search.svelte';
-	import ThFilter from '../../../components/common/datatable/ThFilter.svelte';
-	import ThSort from '../../../components/common/datatable/ThSort.svelte';
+	import CommandEditor from './tab:commands/CommandModal.svelte';
 	import {
 		LookedUpCommand,
 		ParsedCanonicalCommandData,
 		commandLookup,
-		extractCommandsFromModule,
-		getCommandConfigurations,
-		getCommandName
+		extractCommandsFromModule
 	} from '$lib/ui/commands';
-	import ModuleInfoTab from './ModuleInfoTab.svelte';
+	import ModuleInfoTab from './tab:moduleinfo/ModuleInfoTab.svelte';
+	import CommandTab from './tab:commands/CommandTab.svelte';
 
-	export let instanceList: InstanceList;
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let guildId: string;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
@@ -41,7 +33,7 @@
 
 	interface State {
 		openModule: string;
-		openMobuleTab: string;
+		openModuleTab: string;
 		commandSearch: string;
 		searchedCommands: LookedUpCommand[];
 		clusterFinderOpen: boolean;
@@ -56,7 +48,7 @@
 
 	let state: State = {
 		openModule: '',
-		openMobuleTab: 'moduleInfo',
+		openModuleTab: 'moduleInfo',
 		commandSearch: '',
 		searchedCommands: [],
 		clusterFinderOpen: false,
@@ -167,140 +159,27 @@
 						<p class="text-slate-200">{clusterModules[state.openModule]?.description}</p>
 
 						<TabbedPane
-							bind:visibleTab={state.openMobuleTab}
+							bind:visibleTab={state.openModuleTab}
 							tabs={[
 								{ id: 'moduleInfo', label: 'Info' },
 								{ id: 'cmdList', label: 'Commands' },
 								{ id: 'settings', label: 'Settings' }
 							]}
 						/>
-						{#if state.openMobuleTab == 'moduleInfo'}
+						{#if state.openModuleTab == 'moduleInfo'}
 							<ModuleInfoTab
 								{guildId}
 								module={clusterModules[state.openModule]}
 								bind:currentModuleConfiguration
 							/>
-						{:else if state.openMobuleTab == 'cmdList'}
-							{#await createCmdDataTable(state?.openModule)}
-								<Message type="loading">Loading commands...</Message>
-							{:then data}
-								<div class="overflow-x-auto space-y-4">
-									<!-- Header -->
-									<header class="flex justify-between gap-4">
-										<Search handler={data.handler} />
-										<RowsPerPage handler={data.handler} />
-									</header>
-
-									<div class="p-1" />
-
-									<!-- Table -->
-									<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
-										<thead>
-											<tr class="bg-surface-800">
-												<ThSort handler={data.handler} orderBy={'full_name'}>Name</ThSort>
-												<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
-												<ThSort handler={data.handler} orderBy={'arguments'}>Arguments</ThSort>
-												<ThSort handler={data.handler} orderBy={'full_name'}>Manage</ThSort>
-											</tr>
-
-											<tr class="bg-surface-800">
-												<ThFilter handler={data.handler} filterBy={'full_name'} />
-												<ThFilter handler={data.handler} filterBy={'description'} />
-												<ThFilter handler={data.handler} filterBy={'arguments'} />
-												<ThFilter handler={data.handler} filterBy={'full_name'} />
-											</tr>
-										</thead>
-
-										<tbody>
-											{#each $cmdDataTable as row}
-												<tr>
-													<td>
-														{#if row.subcommand_depth == 0}
-															<span class="font-semibold">
-																{row.name}
-															</span>
-														{:else}
-															<span class="whitespace-nowrap">
-																<span class="font-semibold">{row?.parent_command?.name}</span
-																>{' '}<em>{row.name}</em>
-															</span>
-														{/if}
-
-														<!--NSFW command, TODO: Make tooltip-->
-														{#if row.nsfw}
-															<div class="command-note">
-																<span class="text-red-400 font-semibold">NSFW</span>
-															</div>
-														{/if}
-
-														<!--Base command of a slash command, TODO: Make tooltip-->
-														{#if row.subcommand_required || row.subcommands.length}
-															<div class="command-note">
-																<span class="text-blue-400 font-semibold">BASE</span>
-															</div>
-														{/if}
-													</td>
-													<td>
-														{#if row.description}
-															{row.description}
-														{:else}
-															Mystery Box?
-														{/if}
-													</td>
-													<td>
-														<ul class="list-disc list-outside">
-															{#each row.arguments as arg, i}
-																<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
-																	<span class="command-argument">
-																		<span class="font-semibold">{arg.name}</span
-																		>{#if arg.required}<span
-																				class="text-red-400 font-semibold text-lg"
-																				>*<span class="sr-only">Required parameter)</span></span
-																			>{/if}{#if arg.description}: <em>{arg.description}</em>{/if}
-																	</span>
-																</li>
-															{/each}
-														</ul>
-													</td>
-													<td>
-														<button
-															class="text-primary-400 hover:text-primary-500"
-															on:click={() => {
-																logger.info('EditCommand', 'Editing command', row);
-																state.commandEditorOpen = false;
-																state.commandEditOpen = undefined;
-																state.commandEditOpen = row;
-																state.commandEditConfigs = getCommandConfigurations(
-																	clusterModules,
-																	currentCommandConfiguration,
-																	guildId,
-																	getCommandName(state.commandEditOpen)
-																);
-																state.commandEditorOpen = true;
-															}}
-														>
-															Edit
-														</button>
-													</td>
-												</tr>
-											{/each}
-										</tbody>
-									</table>
-								</div>
-
-								<div class="p-1" />
-
-								<!-- Footer -->
-								<footer class="flex justify-between">
-									<RowCount handler={data.handler} />
-									<Pagination handler={data.handler} />
-								</footer>
-							{:catch err}
-								<Message type="error">
-									Failed to load commands: {err}
-								</Message>
-							{/await}
-						{:else if state.openMobuleTab == 'settings'}
+						{:else if state.openModuleTab == 'cmdList'}
+							<CommandTab
+								{guildId}
+								moduleId={state.openModule}
+								{clusterModules}
+								{currentCommandConfiguration}
+							/>
+						{:else if state.openModuleTab == 'settings'}
 							<p class="text-slate-200">
 								<strong>Settings for this module are not yet available.</strong>
 							</p>
@@ -316,17 +195,3 @@
 	<summary class="hover:cursor-pointer">Debug</summary>
 	<pre>{JSON.stringify(state, null, 4)}</pre>
 </details>
-
-{#if state.commandEditOpen}
-	<CommandEditor
-		bind:isOpen={state.commandEditorOpen}
-		commandName={getCommandName(state.commandEditOpen)}
-		commandConfigs={state.commandEditConfigs}
-	/>
-{/if}
-
-<style>
-	tbody tr:hover {
-		background: #252323;
-	}
-</style>

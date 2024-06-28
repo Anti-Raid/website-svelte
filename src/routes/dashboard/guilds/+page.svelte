@@ -6,7 +6,7 @@
 		makeSharedRequest,
 		opGetClusterHealth,
 		opGetClusterModules,
-		opGetCommandConfigurationsForGuild,
+		opGetAllCommandConfigurations,
 		opGetModuleConfiguration
 	} from '$lib/fetch/ext';
 	import { fetchClient } from '$lib/fetch/fetch';
@@ -77,7 +77,7 @@
 		currentState = 'Fetching current command configuration';
 
 		let currentCommandConfiguration = await makeSharedRequest(
-			opGetCommandConfigurationsForGuild(guildId)
+			opGetAllCommandConfigurations(guildId)
 		);
 
 		return {

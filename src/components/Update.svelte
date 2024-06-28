@@ -36,9 +36,9 @@
 							/>
 						</svg>
 					</span>
-					<p class="ml-3 truncate font-medium text-white">
-						<span class="md:hidden">{short}</span>
-						<span class="hidden md:inline">{long}</span>
+					<p class="ml-3 truncate font-medium">
+						<span class="md:hidden text-slate-200">{short}</span>
+						<span class="hidden md:inline text-slate-200">{long}</span>
 					</p>
 				</div>
 

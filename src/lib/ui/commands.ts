@@ -35,16 +35,14 @@ export const commandLookup = (clusterModules: Record<string, CanonicalModule>, q
 export interface ParsedCanonicalCommandData extends CanonicalCommandData {
     subcommand_depth: number;
     parent_command?: CanonicalCommandData;
+    /**
+     * The extended data of the command itself
+     */
     extended_data: CanonicalCommandExtendedData;
     extended_data_map: Record<string, CanonicalCommandExtendedData>;
     search_permissions: string;
     full_name: string;
 }
-
-// Returns the name of a command
-export const getCommandName = (cmd: ParsedCanonicalCommandData) => {
-    return cmd?.subcommand_depth == 0 ? cmd?.name : `${cmd?.parent_command?.name} ${cmd?.name}`;
-};
 
 export const extractCommandsFromModule = (module: CanonicalModule) => {
     let commands: ParsedCanonicalCommandData[] = [];
@@ -123,6 +121,10 @@ export const getCommandConfigurations = (clusterModules: Record<string, Canonica
         let cc = currentCommandConfiguration.find((cmc) => cmc.command == permuted_command);
 
         if (cc) {
+            cc.perms = cc.perms || {
+                checks: [],
+                checks_needed: 1
+            };
             ccs.push(cc);
             continue;
         }

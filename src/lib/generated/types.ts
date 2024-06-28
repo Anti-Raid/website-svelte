@@ -83,6 +83,18 @@ export interface TestAuth {
 }
 
 //////////
+// source: commands.go
+
+/**
+ * PatchGuildModuleConfiguration allows updating the guild module configuration
+ */
+export interface PatchGuildCommandConfiguration {
+  command: string;
+  disabled?: Clearable<boolean>; // Whether or not the module is disabled or not. None means to use the default module configuration
+  perms?: Clearable<any /* silverpelt.PermissionChecks */>; // The default permission checks of the module, can be overrided by the command configuration
+}
+
+//////////
 // source: common.go
 
 export const TargetTypeUser = "User";
@@ -181,6 +193,7 @@ export interface IOAuthDiscordError {
  * PatchGuildModuleConfiguration allows updating the guild module configuration
  */
 export interface PatchGuildModuleConfiguration {
+  module: string;
   disabled?: Clearable<boolean>; // Whether or not the module is disabled or not. None means to use the default module configuration
   default_perms?: Clearable<any /* silverpelt.PermissionChecks */>; // The default permission checks of the module, can be overrided by the command configuration
 }

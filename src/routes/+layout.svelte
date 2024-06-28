@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '../app.postcss';
+	import '../app.css';
 	import Header from '../components/Header.svelte';
 	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import { getVersion } from '$lib/configs/functions/versioner';

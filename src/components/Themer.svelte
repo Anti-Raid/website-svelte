@@ -21,14 +21,14 @@
 	let theme: string = 'crimson';
 	const changeColor = (th: string) => {
 		theme = th;
-		document.querySelector('#antiraid-body')?.setAttribute('data-theme', th);
+		document.querySelector('#antiraid')?.setAttribute('data-theme', th);
 		localStorage.setItem('theme->antiraid', th);
 	};
 
 	$: {
 		if (browser) {
 			theme = localStorage.getItem('theme->antiraid') || 'crimson';
-			document.querySelector('#antiraid-body')?.setAttribute('data-theme', theme);
+			document.querySelector('#antiraid')?.setAttribute('data-theme', theme);
 		}
 	}
 </script>
