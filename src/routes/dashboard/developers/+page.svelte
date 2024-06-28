@@ -161,6 +161,10 @@
 		<em class="opacity-70">{testAuthData?.data?.session_id}</em>
 	</p>
 
+	{#if sessionTopNoticeArea}
+		<NoticeArea props={sessionTopNoticeArea} />
+	{/if}
+
 	<div class="overflow-x-auto space-y-4">
 		<!-- Header -->
 		<header class="flex justify-between gap-4">
