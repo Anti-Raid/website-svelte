@@ -177,9 +177,3 @@
 		bind:isOpen
 	/>
 {/if}
-
-<style>
-	tbody tr:hover {
-		background: #252323;
-	}
-</style>

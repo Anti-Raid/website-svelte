@@ -354,20 +354,3 @@
 {:catch err}
 	<Message type="error">{@html err}</Message>
 {/await}
-
-<style>
-	table {
-		color: white;
-		margin: 0 !important;
-	}
-	tbody td {
-		border: 1px solid #f5f5f5;
-		padding: 4px 20px;
-	}
-	tbody tr {
-		transition: all, 0.2s;
-	}
-	tbody tr:hover {
-		background: #252323;
-	}
-</style>

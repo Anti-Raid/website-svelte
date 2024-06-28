@@ -388,9 +388,3 @@
 		</Modal>
 	{/if}
 </article>
-
-<style>
-	tbody tr:hover {
-		background: #252323;
-	}
-</style>
