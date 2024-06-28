@@ -121,10 +121,6 @@ export const getCommandConfigurations = (clusterModules: Record<string, Canonica
         let cc = currentCommandConfiguration.find((cmc) => cmc.command == permuted_command);
 
         if (cc) {
-            cc.perms = cc.perms || {
-                checks: [],
-                checks_needed: 1
-            };
             ccs.push(cc);
             continue;
         }

@@ -10,6 +10,7 @@
 	export let commands: ParsedCanonicalCommandData[];
 
 	export let currentOpenCommand: ParsedCanonicalCommandData;
+	export let allCurrentCommandConfigurations: GuildCommandConfiguration[];
 	export let configsBeingEditted: GuildCommandConfiguration[];
 	export let isOpen: boolean;
 </script>
@@ -30,7 +31,16 @@
 					<CommandEditor
 						{guildId}
 						module={clusterModules[moduleId]}
-						currentCommandConfiguration={commandConfig}
+						{allCurrentCommandConfigurations}
+						currentCommandConfiguration={{
+							...commandConfig,
+							perms: commandConfig.perms
+								? commandConfig.perms
+								: {
+										checks: [],
+										checks_needed: 1
+								  }
+						}}
 						{commands}
 					/>
 				</details>

@@ -173,6 +173,7 @@
 		{commands}
 		{currentOpenCommand}
 		{configsBeingEditted}
+		allCurrentCommandConfigurations={currentCommandConfiguration}
 		bind:isOpen
 	/>
 {/if}

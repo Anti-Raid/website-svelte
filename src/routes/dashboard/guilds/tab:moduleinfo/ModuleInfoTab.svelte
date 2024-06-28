@@ -60,7 +60,7 @@
 			return false;
 		}
 
-		return cmc.default_perms !== undefined || !!cmc.default_perms;
+		return !!cmc.default_perms;
 	};
 
 	const getModuleDefaultPerms = (): PCT => {

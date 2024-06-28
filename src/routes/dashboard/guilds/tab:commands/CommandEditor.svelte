@@ -21,7 +21,15 @@
 	export let guildId: string;
 	export let commands: ParsedCanonicalCommandData[];
 	export let module: CanonicalModule;
+	export let allCurrentCommandConfigurations: GuildCommandConfiguration[]; // All command configurations
 	export let currentCommandConfiguration: GuildCommandConfiguration; // Guild command configuration being editted
+
+	$: logger.info(
+		'CommandEditor',
+		'commands',
+		allCurrentCommandConfigurations,
+		currentCommandConfiguration
+	);
 
 	const isCommandDefaultEnabled = (): boolean => {
 		logger.info('CommandEditor', 'isCommandDefaultEnabled', currentCommandConfiguration);
@@ -60,7 +68,11 @@
 	const isCommandPermsOverriden = (
 		currentCommandConfiguration: GuildCommandConfiguration
 	): boolean => {
-		return currentCommandConfiguration.perms !== undefined || !!currentCommandConfiguration.perms;
+		let cc = allCurrentCommandConfigurations.find(
+			(c) => c.command === currentCommandConfiguration.command
+		);
+		logger.info('CommandEditor', 'isCommandPermsOverriden', cc);
+		return !!cc?.perms;
 	};
 
 	const getModuleDefaultPerms = (): PCT => {
@@ -206,11 +218,11 @@
 			throw new Error(err);
 		}
 
-		let currentCommandConfigurations = await makeSharedRequest(
+		allCurrentCommandConfigurations = await makeSharedRequest(
 			opGetAllCommandConfigurations(guildId)
 		);
 
-		let currentCommandConfigurationReturned = currentCommandConfigurations.find(
+		let currentCommandConfigurationReturned = allCurrentCommandConfigurations.find(
 			(c) => c.command === currentCommandConfiguration.command
 		);
 
