@@ -266,7 +266,7 @@
 			state = state; // Force re-render
 		}}
 	>
-		{state.__resetFields.current.includes('enabled') ? "Don't Reset" : 'Reset'}
+		{state.__resetFields.current.includes('perms') ? "Don't Reset" : 'Reset'}
 	</BoxButton>
 {/if}
 
