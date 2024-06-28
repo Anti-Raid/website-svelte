@@ -60,7 +60,7 @@
 	const isCommandPermsOverriden = (
 		currentCommandConfiguration: GuildCommandConfiguration
 	): boolean => {
-		return currentCommandConfiguration.perms !== undefined;
+		return currentCommandConfiguration.perms !== undefined || !!currentCommandConfiguration.perms;
 	};
 
 	const getModuleDefaultPerms = (): PCT => {
