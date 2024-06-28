@@ -20,5 +20,5 @@
 		class={`text-3xl ${display.borderColor} shrink-0 rounded-full overflow-hidden` +
 			(display.iconColor ? ' ' + display.iconColor : '')}
 	/>
-	{props.text}
+	{@html props.text}
 </div>
