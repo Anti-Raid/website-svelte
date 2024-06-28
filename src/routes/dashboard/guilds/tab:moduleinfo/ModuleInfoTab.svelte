@@ -12,7 +12,6 @@
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import logger from '$lib/ui/logger';
-	import { makeSharedRequest, opGetModuleConfiguration } from '$lib/fetch/ext';
 	import { Clearable } from '$lib/generated/types';
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
@@ -129,10 +128,7 @@
 				initial: [],
 				current: [],
 				parse: (state, snapshot, v) => {
-					return {
-						key: '__resetFields',
-						value: v
-					};
+					return null;
 				}
 			}
 		};
@@ -153,7 +149,7 @@
 	// end of workaround
 
 	// Ensure changes is updated whenever state changes
-	$: changes = createPartialPatch(state, { keepInternalKeys: true });
+	$: changes = createPartialPatch(state);
 
 	// Ensure manuallyOverriden is updated whenever moduleId changes
 	let toggleManuallyOverriden: boolean;
@@ -199,7 +195,16 @@
 			throw new Error(err);
 		}
 
-		currentModuleConfiguration = await makeSharedRequest(opGetModuleConfiguration(guildId));
+		// Update the currentModuleConfiguration with the new data from the patch
+		let moduleConfigIndex = currentModuleConfiguration.findIndex((m) => m.module === module.id);
+
+		if (moduleConfigIndex === -1) {
+			throw new Error('Module configuration not found');
+		}
+
+		currentModuleConfiguration[moduleConfigIndex] = await res.json();
+
+		currentModuleConfiguration = currentModuleConfiguration;
 
 		state = getState(); // Rederive state
 	};

@@ -12,7 +12,6 @@
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import logger from '$lib/ui/logger';
-	import { makeSharedRequest, opGetAllCommandConfigurations } from '$lib/fetch/ext';
 	import { Clearable } from '$lib/generated/types';
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 	import { ParsedCanonicalCommandData } from '$lib/ui/commands';
@@ -148,10 +147,7 @@
 				initial: [],
 				current: [],
 				parse: (state, snapshot, v) => {
-					return {
-						key: '__resetFields',
-						value: v
-					};
+					return null;
 				}
 			}
 		};
@@ -172,7 +168,7 @@
 	// end of workaround
 
 	// Ensure changes is updated whenever state changes
-	$: changes = createPartialPatch(state, { keepInternalKeys: true });
+	$: changes = createPartialPatch(state);
 
 	// Ensure manuallyOverriden is updated whenever moduleId changes
 	let toggleManuallyOverriden: boolean;
@@ -219,19 +215,18 @@
 			throw new Error(err);
 		}
 
-		allCurrentCommandConfigurations = await makeSharedRequest(
-			opGetAllCommandConfigurations(guildId)
-		);
+		currentCommandConfiguration = await res.json();
 
-		let currentCommandConfigurationReturned = allCurrentCommandConfigurations.find(
+		// Find index in allCurrentCommandConfigurations
+		let index = allCurrentCommandConfigurations.findIndex(
 			(c) => c.command === currentCommandConfiguration.command
 		);
 
-		if (!currentCommandConfigurationReturned) {
+		if (index === -1) {
 			throw new Error('Command not found in command configurations');
 		}
 
-		currentCommandConfiguration = currentCommandConfigurationReturned;
+		allCurrentCommandConfigurations[index] = currentCommandConfiguration;
 
 		state = getState(); // Rederive state
 	};
