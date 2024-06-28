@@ -74,9 +74,8 @@
 	p {
 		@apply text-secondary-400;
 	}	
+}
 
-	// TODO: Fix this
-	tbody tr:hover {
-		background: #252323;
-	}
+tbody tr:hover {
+	background: #252323;
 }
