@@ -10,7 +10,7 @@
 </script>
 
 <div
-	class={'flex w-full box-border items-center gap-x-2.5 rounded-lg p-2.5 mx-[0] my-[20px] border text-xl bg-opacity-10 text-slate-100 break-all' +
+	class={'flex w-full box-border items-center gap-x-2.5 rounded-lg p-2.5 mx-[0] my-[20px] border text-xl bg-opacity-10 break-all' +
 		(display.className ? ' ' + display.className : '') +
 		(display.borderColor ? ' ' + display.borderColor : '') +
 		(display.innerBackgroundColor ? ' ' + display.innerBackgroundColor : '')}
@@ -20,5 +20,7 @@
 		class={`text-3xl ${display.borderColor} shrink-0 rounded-full overflow-hidden` +
 			(display.iconColor ? ' ' + display.iconColor : '')}
 	/>
-	{@html props.text}
+	<div class="text-slate-100">
+		{@html props.text}
+	</div>
 </div>
