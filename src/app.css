@@ -69,11 +69,6 @@
 	div {
 		@apply text-primary-600;
 	}
-	
-	span,
-	p {
-		@apply text-secondary-400;
-	}	
 }
 
 tbody tr:hover {

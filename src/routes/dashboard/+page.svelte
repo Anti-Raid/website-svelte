@@ -9,6 +9,8 @@
 	import InputText from '../../components/inputs/InputText.svelte';
 	import ButtonReact from '../../components/inputs/button/ButtonReact.svelte';
 	import { Color } from '../../components/inputs/button/colors';
+	import { NoticeProps } from '../../components/common/noticearea/noticearea';
+	import NoticeArea from '../../components/common/noticearea/NoticeArea.svelte';
 
 	let currentState = 'Loading dashboard data';
 	let guilds: DashboardGuildData;
@@ -68,6 +70,9 @@
 	const recacheForce = async () => {
 		await loadIndexDashPage(true);
 	};
+
+	let topNoticeArea: NoticeProps | null;
+	let bottomNoticeArea: NoticeProps | null;
 </script>
 
 {#await loadIndexDashPage(false)}
@@ -77,6 +82,10 @@
 		{currentState}
 	</small>
 {:then}
+	{#if topNoticeArea}
+		<NoticeArea props={topNoticeArea} />
+	{/if}
+
 	<ButtonReact
 		color={Color.Themable}
 		text="Refresh Server List"
@@ -87,6 +96,7 @@
 			error: 'Failed to refresh',
 			success: 'Refreshed'
 		}}
+		bind:noticeProps={topNoticeArea}
 	/>
 
 	<h1 class="text-white font-semibold text-2xl">Servers With AntiRaid ({hasBot?.length})</h1>
@@ -185,7 +195,12 @@
 			error: 'Failed to refresh',
 			success: 'Refreshed'
 		}}
+		bind:noticeProps={bottomNoticeArea}
 	/>
+
+	{#if bottomNoticeArea}
+		<NoticeArea props={bottomNoticeArea} />
+	{/if}
 {:catch error}
 	<Message type="error">
 		{error?.toString() || 'Failed to load dashboard'}
