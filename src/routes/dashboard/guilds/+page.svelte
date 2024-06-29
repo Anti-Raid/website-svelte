@@ -12,6 +12,11 @@
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import { getClusterOfShard, getShardIDFromGuildID } from '$lib/mewext/mewext';
+	import {
+		extractKnownPermissionsFromModules,
+		makeKittycatPermissionMapperFromPermissions
+	} from '$lib/ui/permMap';
+	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
 	import Message from '../../../components/Message.svelte';
 	import Guild from './Guild.svelte';
 
@@ -80,6 +85,12 @@
 			opGetAllCommandConfigurations(guildId)
 		);
 
+		let commonPermissionContext: CommonPermissionContext = {
+			kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
+				extractKnownPermissionsFromModules(Object.values(clusterModules))
+			)
+		};
+
 		return {
 			guildId,
 			currentModuleConfiguration,
@@ -88,7 +99,8 @@
 			instanceList,
 			guildShardId,
 			guildClusterId,
-			clusterModules
+			clusterModules,
+			commonPermissionContext
 		};
 	};
 </script>
@@ -110,6 +122,7 @@
 			guildShardId={r.guildShardId}
 			guildClusterId={r.guildClusterId}
 			clusterModules={r.clusterModules}
+			commonPermissionContext={r.commonPermissionContext}
 		/>
 	{:else}
 		<Message type="loading">Please wait</Message>

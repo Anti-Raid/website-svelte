@@ -1,8 +1,10 @@
 <script lang="ts">
 	import PermissionCheck from './PermissionCheck.svelte';
 	import { PermissionCheck as PCT } from '$lib/generated/silverpelt';
-	import BoxButton from '../inputs/button/BoxButton.svelte';
+	import BoxButton from '../../inputs/button/BoxButton.svelte';
+	import { CommonPermissionContext } from './commonPermissionContext';
 
+	export let ctx: CommonPermissionContext;
 	export let perms: PCT[] = [];
 	export let id: string;
 </script>
@@ -20,7 +22,7 @@
 	{/if}
 
 	{#each perms as perm, i}
-		<PermissionCheck id={`${id}-${i}`} bind:permissionCheck={perm} />
+		<PermissionCheck id={`${id}-${i}`} bind:permissionCheck={perm} {ctx} />
 
 		<div class="flex flex-row mt-1">
 			<BoxButton

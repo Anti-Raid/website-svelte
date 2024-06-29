@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { PermissionCheck } from '$lib/generated/silverpelt';
-	import BoolInput from '../inputs/BoolInput.svelte';
+	import BoolInput from '../../inputs/BoolInput.svelte';
+	import { CommonPermissionContext } from './commonPermissionContext';
 	import KittycatPermSelectArray from './KittycatPermSelectArray.svelte';
 	import NativePermissionSelectArray from './NativePermissionSelectArray.svelte';
 
@@ -13,6 +14,7 @@ type PermissionCheck struct {
 }
     */
 	export let permissionCheck: PermissionCheck;
+	export let ctx: CommonPermissionContext;
 	export let id: string;
 </script>
 
@@ -21,6 +23,7 @@ type PermissionCheck struct {
 		<details class="permission-check__details border p-2" open>
 			<summary class="permission-check__summary hover:cursor-pointer">Kittycat Permissions</summary>
 			<KittycatPermSelectArray
+				{ctx}
 				bind:perms={permissionCheck.kittycat_perms}
 				id={`permission-check__ksa-${id}`}
 			/>

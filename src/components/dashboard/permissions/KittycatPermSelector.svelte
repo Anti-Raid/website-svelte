@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { permissionMapper, rewindPerms, unwindPerm } from '$lib/ui/permMap';
-	import BoolInput from '../inputs/BoolInput.svelte';
-	import InputText from '../inputs/InputText.svelte';
-	import Select from '../inputs/select/Select.svelte';
+	import { rewindPerms, unwindPerm } from '$lib/ui/permMap';
+	import BoolInput from '../../inputs/BoolInput.svelte';
+	import InputText from '../../inputs/InputText.svelte';
+	import Select from '../../inputs/select/Select.svelte';
+	import { CommonPermissionContext } from './commonPermissionContext';
 
 	// The set permission
 	export let perm: string;
+	export let ctx: CommonPermissionContext;
 	export let validPerm: boolean = false;
 
 	// The following are derived from `perm`
@@ -32,7 +34,7 @@
 				label="Namespace"
 				bind:value={namespace}
 				disabledDefaultInput={true}
-				choices={permissionMapper.map((preselectablePermission) => {
+				choices={ctx.kittycatPermissionMapper.map((preselectablePermission) => {
 					return {
 						id: preselectablePermission.namespace_id,
 						value: preselectablePermission.namespace_id,
@@ -57,7 +59,7 @@
 						value: '*',
 						label: 'All Permissions On Namespace'
 					},
-					...(permissionMapper
+					...(ctx.kittycatPermissionMapper
 						.find((preselectablePermission) => preselectablePermission.namespace_id == namespace)
 						?.permissions.map((preselectablePermissionPermission) => {
 							return {

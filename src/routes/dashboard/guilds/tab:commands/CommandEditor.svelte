@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CanonicalModule, GuildCommandConfiguration } from '$lib/generated/silverpelt';
-	import PermissionChecks from '../../../../components/dashboard/PermissionChecks.svelte';
+	import PermissionChecks from '../../../../components/dashboard/permissions/PermissionChecks.svelte';
 	import { PermissionChecks as PCT } from '$lib/generated/silverpelt';
 	import BoolInput from '../../../../components/inputs/BoolInput.svelte';
 	import ListItem from '../../../../components/ListItem.svelte';
@@ -17,10 +17,12 @@
 	import { ParsedCanonicalCommandData } from '$lib/ui/commands';
 	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
 	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
+	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 
 	export let guildId: string;
 	export let commands: ParsedCanonicalCommandData[];
 	export let module: CanonicalModule;
+	export let commonPermissionContext: CommonPermissionContext;
 	export let allCurrentCommandConfigurations: GuildCommandConfiguration[]; // All command configurations
 	export let currentCommandConfiguration: GuildCommandConfiguration; // Guild command configuration being editted
 
@@ -261,6 +263,7 @@
 <PermissionChecks
 	id={`pc-${currentCommandConfiguration.command}`}
 	bind:permissionChecks={state.perms.current}
+	ctx={commonPermissionContext}
 />
 
 {#if defaultPermsManuallyOverriden}

@@ -16,10 +16,12 @@
 	import Pagination from '../../../../components/common/datatable/Pagination.svelte';
 	import logger from '$lib/ui/logger';
 	import CommandModal from './CommandModal.svelte';
+	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 
 	export let moduleId: string;
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let currentCommandConfiguration: GuildCommandConfiguration[];
+	export let commonPermissionContext: CommonPermissionContext;
 	export let guildId: string;
 
 	let commands: ParsedCanonicalCommandData[] = extractCommandsFromModule(clusterModules[moduleId]);
@@ -173,6 +175,7 @@
 		{commands}
 		{currentOpenCommand}
 		{configsBeingEditted}
+		{commonPermissionContext}
 		allCurrentCommandConfigurations={currentCommandConfiguration}
 		bind:isOpen
 	/>

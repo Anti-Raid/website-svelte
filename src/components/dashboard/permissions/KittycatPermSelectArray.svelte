@@ -1,8 +1,10 @@
 <script lang="ts">
-	import BoxButton from '../inputs/button/BoxButton.svelte';
-	import NativePermissionSelector from './NativePermissionSelector.svelte';
+	import BoxButton from '../../inputs/button/BoxButton.svelte';
+	import { CommonPermissionContext } from './commonPermissionContext';
+	import KittycatPermSelector from './KittycatPermSelector.svelte';
 
 	export let perms: string[] = [];
+	export let ctx: CommonPermissionContext;
 	export let id: string;
 </script>
 
@@ -16,12 +18,12 @@
 	{/if}
 
 	{#each perms as perm, i}
-		<NativePermissionSelector id={`${id}-${i}`} bind:nativePerms={perm} />
+		<KittycatPermSelector {ctx} bind:perm />
 
-		<div class="flex flex-row">
+		<div class="flex flex-row mt-1">
 			<BoxButton
 				onclick={() => {
-					perms = [...perms.slice(0, i + 1), '0', ...perms.slice(i + 1)];
+					perms = [...perms.slice(0, i + 1), '', ...perms.slice(i + 1)];
 				}}>Add Permission</BoxButton
 			>
 			<div class="mr-2" />

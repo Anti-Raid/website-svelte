@@ -1,4 +1,8 @@
-interface PermissionMapper {
+import { CanonicalModule, PermissionChecks } from "$lib/generated/silverpelt";
+import { title } from "$lib/strings";
+import logger from "./logger";
+
+export interface KittycatPermissionMapper {
 	namespace_id: string; // The namespace ID (backup/limits etc.)
 	namespace_label: string; // The namespace label (Backups, Limits etc.)
 	permissions: {
@@ -7,53 +11,100 @@ interface PermissionMapper {
 	}[];
 }
 
-export const permissionMapper: PermissionMapper[] = [
-	{
-		namespace_id: 'server_backups',
-		namespace_label: 'Server Backups',
-		permissions: [
-			{
-				id: 'list',
-				label: 'List Backups'
-			},
-			{
-				id: 'create',
-				label: 'Create Backups'
-			},
-			{
-				id: 'restore',
-				label: 'Restore Backups'
-			}
-		]
-	},
-	{
-		namespace_id: 'limits',
-		namespace_label: 'Server Limits',
-		permissions: [
-			{
-				id: 'view',
-				label: 'View Existing Limits'
-			},
-			{
-				id: 'add',
-				label: 'Create Limits'
-			},
-			{
-				id: 'remove',
-				label: 'Remove Limits'
-			},
-			{
-				id: 'hit',
-				label: 'View Hit Limits'
-			}
-		]
-	},
-	{
-		namespace_id: 'global',
-		namespace_label: 'Global Permissions',
-		permissions: []
+/**
+ * Helper function to extract permissions from permission checks
+ * @param permissionChecks The permission checks to extract permissions from
+ * @returns The permissions extracted from the permission checks
+ */
+const extractPermissionsFromPermissionChecks = (permissionChecks: PermissionChecks) => {
+	let permissions: string[] = [];
+
+	for (let check of permissionChecks?.checks) {
+		for (let permission of check?.kittycat_perms) {
+			permissions.push(permission);
+		}
 	}
-];
+
+	return permissions;
+
+}
+
+/**
+ * Extract known permissions from modules for further processing
+ * 
+ * @param modules The modules to extract known permissions from
+ * @returns The known permissions extracted from the modules
+ */
+export const extractKnownPermissionsFromModules = (modules: CanonicalModule[]) => {
+	let permissions: string[] = [];
+
+	for (let module of modules) {
+		for (let command of module?.commands) {
+			for (let [key, value] of Object.entries(command?.extended_data)) {
+				logger.debug("extractKnownPermissionsFromModules", "Parsing permissions from command: ", key, value);
+				permissions = permissions.concat(extractPermissionsFromPermissionChecks(value?.default_perms));
+			}
+		}
+	}
+
+	return permissions;
+}
+
+export const makeKittycatPermissionMapperFromPermissions = (permissions: string[]): KittycatPermissionMapper[] => {
+	let kittycatPermissionMapper: KittycatPermissionMapper[] = [];
+
+	// Map namespaces with a list of permissions
+	let namespacePermissionMap: { [key: string]: string[] } = {}
+
+	// Iterate over permissions to build the namespacePermissionMap
+	for (let permission of permissions) {
+		const { namespace, permission: perm } = unwindPerm(permission);
+
+		if (!namespacePermissionMap[namespace]) {
+			namespacePermissionMap[namespace] = [];
+		}
+
+		namespacePermissionMap[namespace].push(perm);
+	}
+
+	// Iterate over the namespacePermissionMap to build the KittycatPermissionMapper
+	for (let [namespace, permissions] of Object.entries(namespacePermissionMap)) {
+		let namespaceLabel = title(namespace.replaceAll("_", " "));
+
+		let namespacePermissions: {
+			id: string;
+			label: string;
+		}[] = [];
+
+		let addedPerms: { [key: string]: boolean } = {};
+		for (let permission of permissions) {
+			if (permission == "*") {
+				continue;
+			}
+
+			if (addedPerms[permission]) {
+				continue;
+			}
+
+			addedPerms[permission] = true;
+
+			let permissionLabel = title(permission.replaceAll("_", " "));
+
+			namespacePermissions.push({
+				id: permission,
+				label: permissionLabel
+			});
+		}
+
+		kittycatPermissionMapper.push({
+			namespace_id: namespace,
+			namespace_label: namespaceLabel,
+			permissions: namespacePermissions
+		});
+	}
+
+	return kittycatPermissionMapper;
+}
 
 // Given a perm string, extract it to its components
 export const unwindPerm = (perm: string) => {

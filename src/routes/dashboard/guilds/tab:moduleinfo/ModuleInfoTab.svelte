@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { CanonicalModule, GuildModuleConfiguration } from '$lib/generated/silverpelt';
-	import PermissionChecks from '../../../../components/dashboard/PermissionChecks.svelte';
+	import PermissionChecks from '../../../../components/dashboard/permissions/PermissionChecks.svelte';
 	import { PermissionChecks as PCT } from '$lib/generated/silverpelt';
 	import BoolInput from '../../../../components/inputs/BoolInput.svelte';
 	import ListItem from '../../../../components/ListItem.svelte';
@@ -16,10 +16,12 @@
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
 	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
+	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
+	export let commonPermissionContext: CommonPermissionContext;
 
 	const isModuleEnabled = (): boolean => {
 		logger.info('ModuleInfoTab', 'isModuleEnabled', module.id, currentModuleConfiguration);
@@ -236,7 +238,11 @@
 	</BoxButton>
 {/if}
 
-<PermissionChecks id={`pc-${module.id}`} bind:permissionChecks={state.default_perms.current} />
+<PermissionChecks
+	id={`pc-${module.id}`}
+	bind:permissionChecks={state.default_perms.current}
+	ctx={commonPermissionContext}
+/>
 
 {#if defaultPermsManuallyOverriden}
 	<BoxButton

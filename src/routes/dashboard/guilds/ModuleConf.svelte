@@ -1,19 +1,16 @@
 <script lang="ts">
-	import { InstanceList } from '$lib/generated/mewld/proc';
 	import {
 		CanonicalModule,
 		GuildCommandConfiguration,
 		GuildModuleConfiguration
 	} from '$lib/generated/silverpelt';
 	import logger from '$lib/ui/logger';
-	import Message from '../../../components/Message.svelte';
 	import NavButton from '../../../components/inputs/button/NavButton.svelte';
 	import { Readable } from 'svelte/store';
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import { DataHandler } from '@vincjo/datatables';
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import TabbedPane from '../../../components/inputs/button/tabs/TabbedPane.svelte';
-	import CommandEditor from './tab:commands/CommandModal.svelte';
 	import {
 		LookedUpCommand,
 		ParsedCanonicalCommandData,
@@ -22,8 +19,10 @@
 	} from '$lib/ui/commands';
 	import ModuleInfoTab from './tab:moduleinfo/ModuleInfoTab.svelte';
 	import CommandTab from './tab:commands/CommandTab.svelte';
+	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
 
 	export let clusterModules: Record<string, CanonicalModule>;
+	export let commonPermissionContext: CommonPermissionContext;
 	export let guildId: string;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 	export let currentCommandConfiguration: GuildCommandConfiguration[];
@@ -170,6 +169,7 @@
 							<ModuleInfoTab
 								{guildId}
 								module={clusterModules[state.openModule]}
+								{commonPermissionContext}
 								bind:currentModuleConfiguration
 							/>
 						{:else if state.openModuleTab == 'cmdList'}
@@ -177,7 +177,8 @@
 								{guildId}
 								moduleId={state.openModule}
 								{clusterModules}
-								{currentCommandConfiguration}
+								{commonPermissionContext}
+								bind:currentCommandConfiguration
 							/>
 						{:else if state.openModuleTab == 'settings'}
 							<p class="text-slate-200">

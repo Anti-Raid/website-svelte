@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { PermissionChecks } from '$lib/generated/silverpelt';
-	import InputNumber from '../inputs/InputNumber.svelte';
+	import { CommonPermissionContext } from './commonPermissionContext';
+	import InputNumber from '../../inputs/InputNumber.svelte';
 	import PermissionCheckArray from './PermissionCheckArray.svelte';
 
+	export let ctx: CommonPermissionContext;
 	export let permissionChecks: PermissionChecks;
 	export let id: string;
 </script>
@@ -12,6 +14,7 @@
 		<details class="permission-check__details border p-2" open>
 			<summary class="permission-check__summary hover:cursor-pointer">Permission Checks</summary>
 			<PermissionCheckArray
+				{ctx}
 				bind:perms={permissionChecks.checks}
 				id={`permission-checks__a-${id}`}
 			/>

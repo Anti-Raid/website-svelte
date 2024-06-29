@@ -7,6 +7,7 @@
 	} from '$lib/generated/silverpelt';
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import logger from '$lib/ui/logger';
+	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
 	import ModuleConf from './ModuleConf.svelte';
 
 	export let guildId: string;
@@ -17,6 +18,7 @@
 	export let guildShardId: number;
 	export let guildClusterId: number;
 	export let clusterModules: Record<string, CanonicalModule>;
+	export let commonPermissionContext: CommonPermissionContext;
 
 	$: logger.info('Guild', 'instanceList', instanceList);
 </script>
@@ -29,4 +31,5 @@
 	{guildClusterId}
 	{guildShardId}
 	{clusterModules}
+	{commonPermissionContext}
 />

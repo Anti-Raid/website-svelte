@@ -1,7 +1,7 @@
 <script lang="ts">
 	import serenityPermissions from '$lib/generated/rust/serenity_perms.json';
 	import { BitFlag } from '$lib/bitflag';
-	import BoolInput from '../inputs/BoolInput.svelte';
+	import BoolInput from '../../inputs/BoolInput.svelte';
 	import logger from '$lib/ui/logger';
 
 	export let nativePerms: string;

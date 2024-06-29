@@ -3,10 +3,12 @@
 	import Modal from '../../../../components/Modal.svelte';
 	import { ParsedCanonicalCommandData } from '$lib/ui/commands';
 	import CommandEditor from './CommandEditor.svelte';
+	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 
 	export let guildId: string;
 	export let moduleId: string;
 	export let clusterModules: Record<string, CanonicalModule>;
+	export let commonPermissionContext: CommonPermissionContext;
 	export let commands: ParsedCanonicalCommandData[];
 
 	export let currentOpenCommand: ParsedCanonicalCommandData;
@@ -32,6 +34,7 @@
 						{guildId}
 						module={clusterModules[moduleId]}
 						{allCurrentCommandConfigurations}
+						{commonPermissionContext}
 						currentCommandConfiguration={{
 							...commandConfig,
 							perms: commandConfig.perms
