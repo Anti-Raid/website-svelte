@@ -38,19 +38,16 @@
 
 		currentState = 'Fetching guild data';
 
-		let res = await fetchClient(
-			`${get('splashtail')}/users/${authCreds?.user_id}/guilds/${guildId}`,
-			{
-				auth: authCreds?.token,
-				onRatelimit: (n, err) => {
-					if (!n) {
-						currentState = 'Retrying fetching of guild data';
-					} else {
-						currentState = `${err?.message} [retrying again in ${n / 1000} seconds]`;
-					}
+		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}`, {
+			auth: authCreds?.token,
+			onRatelimit: (n, err) => {
+				if (!n) {
+					currentState = 'Retrying fetching of guild data';
+				} else {
+					currentState = `${err?.message} [retrying again in ${n / 1000} seconds]`;
 				}
 			}
-		);
+		});
 
 		if (!res.ok) {
 			let err = await res.error('Base Guild Data');

@@ -200,17 +200,14 @@
 			state
 		);
 
-		let res = await fetchClient(
-			`${get('splashtail')}/users/${authCreds?.user_id}/guilds/${guildId}/command-configurations`,
-			{
-				auth: authCreds?.token,
-				method: 'PATCH',
-				body: JSON.stringify({
-					command: currentCommandConfiguration.command,
-					...createPatch
-				})
-			}
-		);
+		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/command-configurations`, {
+			auth: authCreds?.token,
+			method: 'PATCH',
+			body: JSON.stringify({
+				command: currentCommandConfiguration.command,
+				...createPatch
+			})
+		});
 
 		if (!res.ok) {
 			let err = await res.error('Failed to update command configuration');

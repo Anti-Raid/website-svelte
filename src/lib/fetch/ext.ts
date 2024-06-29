@@ -3,12 +3,10 @@ import { get } from '$lib/configs/functions/services';
 import { fetchClient } from '$lib/fetch/fetch';
 import { InstanceList } from '$lib/generated/mewld/proc';
 import {
-	CanonicalCommand,
 	CanonicalModule,
 	GuildCommandConfiguration,
 	GuildModuleConfiguration
 } from '$lib/generated/silverpelt';
-import { ApiError } from '$lib/generated/types';
 import logger from '$lib/ui/logger';
 
 let cachedData: Map<string, any> = new Map();
@@ -106,7 +104,7 @@ export const opGetModuleConfiguration = (
 		name: `guildModuleConfiguration:${guildId}`,
 		requestFunc: async (): Promise<GuildModuleConfiguration[]> => {
 			const res = await fetchClient(
-				`${get('splashtail')}/users/${authData?.user_id}/guilds/${guildId}/module-configurations`,
+				`${get('splashtail')}/guilds/${guildId}/module-configurations`,
 				{
 					auth: authData?.token
 				}
@@ -134,8 +132,7 @@ export const opGetCommandConfigurations = (
 		name: `guildCommandConfigurations:${guildId}:${command}`,
 		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
 			const res = await fetchClient(
-				`${get('splashtail')}/users/${authData?.user_id
-				}/guilds/${guildId}/commands/${command}/configurations`,
+				`${get('splashtail')}/guilds/${guildId}/commands/${command}/configurations`,
 				{
 					auth: authData?.token
 				}
@@ -162,7 +159,7 @@ export const opGetAllCommandConfigurations = (
 		name: `guildCommandConfigurations:${guildId}`,
 		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
 			const res = await fetchClient(
-				`${get('splashtail')}/users/${authData?.user_id}/guilds/${guildId}/command-configurations`,
+				`${get('splashtail')}/guilds/${guildId}/command-configurations`,
 				{
 					auth: authData?.token
 				}

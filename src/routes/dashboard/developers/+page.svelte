@@ -15,7 +15,7 @@
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import Select from '../../../components/inputs/select/Select.svelte';
 	import InputNumber from '../../../components/inputs/InputNumber.svelte';
-	import KittycatPermSelectArray from '../../../components/dashboard/KittycatPermSelectArray.svelte';
+	import KittycatPermSelectArray from '../../../components/dashboard/permissions/KittycatPermSelectArray.svelte';
 	import Label from '../../../components/inputs/Label.svelte';
 	import ButtonReact from '../../../components/inputs/button/ButtonReact.svelte';
 	import { Color } from '../../../components/inputs/button/colors';
@@ -27,6 +27,12 @@
 	import ThSort from '../../../components/common/datatable/ThSort.svelte';
 	import { NoticeProps } from '../../../components/common/noticearea/noticearea';
 	import NoticeArea from '../../../components/common/noticearea/NoticeArea.svelte';
+	import { makeSharedRequest, opGetClusterModules } from '$lib/fetch/ext';
+	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
+	import {
+		extractKnownPermissionsFromModules,
+		makeKittycatPermissionMapperFromPermissions
+	} from '$lib/ui/permMap';
 
 	let sessionRows: Readable<UserSession[]>;
 	let otherSessionRows: Readable<UserSession[]>;
@@ -40,7 +46,7 @@
 
 		currentState = 'Fetching session data';
 
-		let res = await fetchClient(`${get('splashtail')}/users/${authCreds?.user_id}/sessions`, {
+		let res = await fetchClient(`${get('splashtail')}/sessions`, {
 			auth: authCreds?.token,
 			onRatelimit: (n, err) => {
 				if (!n) {
@@ -70,9 +76,20 @@
 		sessionRows = sessionHandler.getRows();
 		otherSessionRows = otherSessionHandler.getRows();
 
+		// Get list of cluster modules
+		currentState = 'Fetching all available cluster modules';
+		let clusterModules = await makeSharedRequest(opGetClusterModules(0));
+
+		let commonPermissionContext: CommonPermissionContext = {
+			kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
+				extractKnownPermissionsFromModules(Object.values(clusterModules))
+			)
+		};
+
 		return {
 			otherSessionHandler,
-			sessionHandler
+			sessionHandler,
+			commonPermissionContext
 		};
 	};
 
@@ -82,13 +99,10 @@
 
 			if (!authCreds) throw new Error('No auth credentials found');
 
-			let res = await fetchClient(
-				`${get('splashtail')}/users/${authCreds?.user_id}/sessions/${sessionId}`,
-				{
-					method: 'DELETE',
-					auth: authCreds?.token
-				}
-			);
+			let res = await fetchClient(`${get('splashtail')}/sessions/${sessionId}`, {
+				method: 'DELETE',
+				auth: authCreds?.token
+			});
 
 			if (res.ok) {
 				sessionTopNoticeArea = {
@@ -124,7 +138,7 @@
 
 		if (!creds) throw new Error('No auth credentials found');
 
-		let res = await fetchClient(`${get('splashtail')}/users/${creds?.user_id}/sessions`, {
+		let res = await fetchClient(`${get('splashtail')}/sessions`, {
 			method: 'POST',
 			auth: creds?.token,
 			body: JSON.stringify(createSession)
@@ -323,7 +337,11 @@
 
 	<Label id="session-perms" label="Permission Limits" />
 	<div class="mb-3" />
-	<KittycatPermSelectArray id="session-perms" bind:perms={createSession.perm_limits} />
+	<KittycatPermSelectArray
+		id="session-perms"
+		bind:perms={createSession.perm_limits}
+		ctx={data.commonPermissionContext}
+	/>
 
 	<ButtonReact
 		color={Color.Themable}

@@ -180,17 +180,14 @@
 			state
 		);
 
-		let res = await fetchClient(
-			`${get('splashtail')}/users/${authCreds?.user_id}/guilds/${guildId}/module-configurations`,
-			{
-				auth: authCreds?.token,
-				method: 'PATCH',
-				body: JSON.stringify({
-					module: module.id,
-					...createPatch
-				})
-			}
-		);
+		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/module-configurations`, {
+			auth: authCreds?.token,
+			method: 'PATCH',
+			body: JSON.stringify({
+				module: module.id,
+				...createPatch
+			})
+		});
 
 		if (!res.ok) {
 			let err = await res.error('Failed to update module configuration');

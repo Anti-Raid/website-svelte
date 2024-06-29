@@ -27,21 +27,18 @@
 
 		currentState = 'Fetching user guild list';
 
-		let res = await fetchClient(
-			`${get('splashtail')}/users/${authCreds?.user_id}/guilds?refresh=${refresh}`,
-			{
-				auth: authCreds?.token,
-				onRatelimit: (n, err) => {
-					if (!n) {
-						currentState = 'Retrying fetching of user guild list';
-					} else {
-						currentState = `Ratelimited, retrying user guild list fetch in ${n / 1000} seconds (${
-							err?.message
-						})`;
-					}
+		let res = await fetchClient(`${get('splashtail')}/guilds?refresh=${refresh}`, {
+			auth: authCreds?.token,
+			onRatelimit: (n, err) => {
+				if (!n) {
+					currentState = 'Retrying fetching of user guild list';
+				} else {
+					currentState = `Ratelimited, retrying user guild list fetch in ${n / 1000} seconds (${
+						err?.message
+					})`;
 				}
 			}
-		);
+		});
 
 		if (!res.ok) {
 			throw new Error(await res.error('User Guild List', 'markdown'));
