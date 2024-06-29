@@ -198,10 +198,10 @@
 		let moduleConfigIndex = currentModuleConfiguration.findIndex((m) => m.module === module.id);
 
 		if (moduleConfigIndex === -1) {
-			throw new Error('Module configuration not found');
+			currentModuleConfiguration.push(await res.json());
+		} else {
+			currentModuleConfiguration[moduleConfigIndex] = await res.json();
 		}
-
-		currentModuleConfiguration[moduleConfigIndex] = await res.json();
 
 		currentModuleConfiguration = currentModuleConfiguration;
 
