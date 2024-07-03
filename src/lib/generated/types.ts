@@ -197,6 +197,15 @@ export interface PatchGuildModuleConfiguration {
   disabled?: Clearable<boolean>; // Whether or not the module is disabled or not. None means to use the default module configuration
   default_perms?: Clearable<any /* silverpelt.PermissionChecks */>; // The default permission checks of the module, can be overrided by the command configuration
 }
+/**
+ * PatchGuildModuleConfiguration allows updating the guild module configuration
+ */
+export interface SettingsExecute {
+  operation: any /* silverpelt.CanonicalOperationType */;
+  module: string;
+  setting: string;
+  fields: Record<string, any>;
+}
 
 //////////
 // source: task.go

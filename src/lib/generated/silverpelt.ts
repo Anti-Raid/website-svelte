@@ -75,7 +75,6 @@ export interface CanonicalSettingsError {
     column: string;
     check: string;
     error: string;
-    value: any;
     accepted_range: string;
   };
   MissingOrInvalidField?: {
@@ -90,8 +89,8 @@ export interface CanonicalSettingsError {
     column_id: string;
   };
   MaximumCountReached?: {
-    max: number /* int64 */;
-    current: number /* int64 */;
+    max: number /* uint64 */;
+    current: number /* uint64 */;
   };
 }
 export type CanonicalInnerColumnTypeStringKind = string;

@@ -20,6 +20,7 @@
 	import ModuleInfoTab from './tab:moduleinfo/ModuleInfoTab.svelte';
 	import CommandTab from './tab:commands/CommandTab.svelte';
 	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
+	import SettingsTab from './tab:settings/SettingsTab.svelte';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;
@@ -181,9 +182,12 @@
 								bind:currentCommandConfiguration
 							/>
 						{:else if state.openModuleTab == 'settings'}
-							<p class="text-slate-200">
-								<strong>Settings for this module are not yet available.</strong>
-							</p>
+							<SettingsTab
+								{guildId}
+								module={clusterModules[state.openModule]}
+								{commonPermissionContext}
+								bind:currentModuleConfiguration
+							/>
 						{/if}
 					{/if}
 				</div>
