@@ -182,12 +182,7 @@
 								bind:currentCommandConfiguration
 							/>
 						{:else if state.openModuleTab == 'settings'}
-							<SettingsTab
-								{guildId}
-								module={clusterModules[state.openModule]}
-								{commonPermissionContext}
-								bind:currentModuleConfiguration
-							/>
+							<SettingsTab {guildId} module={clusterModules[state.openModule]} />
 						{/if}
 					{/if}
 				</div>

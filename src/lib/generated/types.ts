@@ -197,14 +197,44 @@ export interface PatchGuildModuleConfiguration {
   disabled?: Clearable<boolean>; // Whether or not the module is disabled or not. None means to use the default module configuration
   default_perms?: Clearable<any /* silverpelt.PermissionChecks */>; // The default permission checks of the module, can be overrided by the command configuration
 }
+
+//////////
+// source: settings.go
+
 /**
- * PatchGuildModuleConfiguration allows updating the guild module configuration
+ * SettingsExecute allows execution of a settings operation
  */
 export interface SettingsExecute {
   operation: any /* silverpelt.CanonicalOperationType */;
   module: string;
   setting: string;
   fields: Record<string, any>;
+}
+/**
+ * SettingsExecuteResponse is the response to a settings operation
+ */
+export interface SettingsExecuteResponse {
+  fields: Record<string, any>[];
+}
+/**
+ * SettingsGetSuggestions allows getting dynamic suggestions for a setting
+ */
+export interface SettingsGetSuggestions {
+  operation: any /* silverpelt.CanonicalOperationType */;
+  module: string;
+  setting: string;
+  column: string;
+  filter?: string;
+}
+/**
+ * SettingsGetSuggestionSuggestion is a suggestion for a setting
+ */
+export interface SettingsGetSuggestionSuggestion {
+  id: any;
+  value: any;
+}
+export interface SettingsGetSuggestionsResponse {
+  suggestions: SettingsGetSuggestionSuggestion[];
 }
 
 //////////

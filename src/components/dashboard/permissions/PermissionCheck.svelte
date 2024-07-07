@@ -20,7 +20,7 @@ type PermissionCheck struct {
 
 <section class="permission-check">
 	<div class="permission-check__content">
-		<details class="permission-check__details border p-2" open>
+		<details class="permission-check__details border p-2 bg-black hover:bg-slate-900">
 			<summary class="permission-check__summary hover:cursor-pointer">Kittycat Permissions</summary>
 			<KittycatPermSelectArray
 				{ctx}
@@ -28,14 +28,15 @@ type PermissionCheck struct {
 				id={`permission-check__ksa-${id}`}
 			/>
 		</details>
-		<details class="permission-check__details border p-2" open>
+		<details class="permission-check__details border p-2 bg-black hover:bg-slate-900">
 			<summary class="permission-check__summary hover:cursor-pointer">Native Permissions</summary>
 			<NativePermissionSelectArray
 				bind:perms={permissionCheck.native_perms}
 				id={`permission-check__na-${id}`}
 			/>
 		</details>
-		<details class="permission-check__details border p-2" open>
+		<details class="permission-check__details border p-2 bg-black hover:bg-slate-900">
+			<summary class="permission-check__details hover:cursor-pointer">Conditions</summary>
 			<BoolInput
 				id={`permission-check__outer-and-${id}`}
 				label="Outer And"

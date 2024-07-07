@@ -124,7 +124,7 @@ export class PermissionResultFormatter {
 				checksFmt = new PermissionChecksFormatter(this.result.checks);
 				return `You do not have the required permissions to perform this action. Try checking that you have the below permissions: ${checksFmt.toString()}`;
 			case 'CommandDisabled':
-				return `You cannot perform this action because the command \`\`${this.result.command_config?.command}\`\` (inherited from \`\`${this.result.command_config?.command}\`\`) is disabled on this server`;
+				return `You cannot perform this action because the command \`\`${this.result.command_config?.command}\`\` is disabled on this server`;
 			case 'UnknownModule':
 				return `The module \`\`${this.result.module_config?.module}\`\` does not exist`;
 			case 'ModuleNotFound':

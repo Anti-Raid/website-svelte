@@ -17,6 +17,7 @@
 	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
 	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
+	import Label from '../../../../components/inputs/Label.svelte';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
@@ -194,13 +195,15 @@
 			throw new Error(err);
 		}
 
+		let newConfig: GuildModuleConfiguration = await res.json();
+
 		// Update the currentModuleConfiguration with the new data from the patch
 		let moduleConfigIndex = currentModuleConfiguration.findIndex((m) => m.module === module.id);
 
 		if (moduleConfigIndex === -1) {
-			currentModuleConfiguration.push(await res.json());
+			currentModuleConfiguration.push(newConfig);
 		} else {
-			currentModuleConfiguration[moduleConfigIndex] = await res.json();
+			currentModuleConfiguration[moduleConfigIndex] = newConfig;
 		}
 
 		currentModuleConfiguration = currentModuleConfiguration;
@@ -210,6 +213,8 @@
 
 	let updateNoticeArea: NoticeProps | null;
 </script>
+
+<Label id="enable_disable_module" label="Enable/Disable Module" />
 
 <BoolInput
 	id="enabled"
@@ -234,6 +239,8 @@
 		{state.__resetFields.current.includes('enabled') ? "Don't Reset" : 'Reset'}
 	</BoxButton>
 {/if}
+
+<Label id="default_perms" label="Default Module Permissions" />
 
 <PermissionChecks
 	id={`pc-${module.id}`}

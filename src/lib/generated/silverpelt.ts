@@ -45,7 +45,7 @@ export interface CanonicalCommandData {
 
 export interface CanonicalSettingsResult {
   Ok?: {
-    fields: { [key: string]: any}[];
+    fields: Record<string, any>[];
   };
   PermissionError?: {
     res: PermissionResult;
@@ -138,8 +138,22 @@ export interface CanonicalColumnSuggestion {
     suggestions: string[];
   };
   Dynamic?: {
+    /**
+     * The table name to query
+     */
     table_name: string;
-    column_name: string;
+    /**
+     * The column name containing the ID/value to be set
+     */
+    id_column: string;
+    /**
+     * The column name containing the user-facing value
+     */
+    value_column: string;
+    /**
+     * The column name containing the guild id
+     */
+    guild_id_column: string;
   };
   None?: {
   };

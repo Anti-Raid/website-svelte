@@ -7,9 +7,11 @@ import {
 	GuildCommandConfiguration,
 	GuildModuleConfiguration
 } from '$lib/generated/silverpelt';
+import { SettingsGetSuggestions, SettingsGetSuggestionsResponse } from '$lib/generated/types';
 import logger from '$lib/ui/logger';
 
 let cachedData: Map<string, any> = new Map();
+let currentlyRunning = new Set<string>();
 
 interface SharedRequester<T> {
 	name: string;
@@ -26,19 +28,39 @@ export async function makeSharedRequest<T>(
 	requester: SharedRequester<T>,
 	opts?: SharedRequestOpts
 ): Promise<T> {
+	if (requester.shouldCache && currentlyRunning.has(requester.name)) {
+		return await new Promise((resolve) => {
+			let interval = setInterval(() => {
+				if (!currentlyRunning.has(requester.name)) {
+					clearInterval(interval);
+					resolve(cachedData.get(requester.name));
+				}
+			}, 100);
+		});
+	}
+
+	currentlyRunning.add(requester.name);
+
 	if (cachedData.has(requester.name) && !opts?.forceRefresh) {
+		currentlyRunning.delete(requester.name);
 		return cachedData.get(requester.name);
 	}
 
-	const data = await requester.requestFunc();
+	try {
+		const data = await requester.requestFunc();
 
-	logger.info('makeSharedRequest', `Fetched ${requester.name} from server`, data);
+		logger.info('makeSharedRequest', `Fetched ${requester.name} from server`, data);
 
-	if (requester.shouldCache) {
-		cachedData.set(requester.name, data);
+		if (requester.shouldCache) {
+			cachedData.set(requester.name, data);
+		}
+
+		currentlyRunning.delete(requester.name);
+		return data;
+	} catch (err) {
+		currentlyRunning.delete(requester.name);
+		throw err;
 	}
-
-	return data;
 }
 
 // Fetches the health of all clusters
@@ -174,5 +196,37 @@ export const opGetAllCommandConfigurations = (
 			return data;
 		},
 		shouldCache: false
+	};
+};
+
+export const opGetSettingsSuggestions = (
+	guildId: string,
+	opts: SettingsGetSuggestions
+): SharedRequester<SettingsGetSuggestionsResponse> => {
+	let optsId = `${opts?.column}/${opts?.filter}/${opts?.module}/${opts?.operation}/${opts?.setting}`;
+
+	let authData = getAuthCreds();
+
+	return {
+		name: `getSettingsSuggestions:${guildId}:${optsId}`,
+		requestFunc: async (): Promise<SettingsGetSuggestionsResponse> => {
+			const res = await fetchClient(
+				`${get('splashtail')}/guilds/${guildId}/settings/suggestions`,
+				{
+					method: "POST",
+					auth: authData?.token,
+					body: JSON.stringify(opts)
+				}
+			);
+			if (!res.ok) {
+				let err = await res.error('Guild Command Configurations');
+				throw new Error(err);
+			}
+
+			const data: SettingsGetSuggestionsResponse = await res.json();
+
+			return data;
+		},
+		shouldCache: true // We want to cache this data
 	};
 };

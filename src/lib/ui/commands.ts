@@ -1,5 +1,5 @@
 import { CanonicalCommandExtendedData } from "$lib/converters";
-import { CanonicalCommand, CanonicalModule, CanonicalCommandData, GuildCommandConfiguration } from "$lib/generated/silverpelt";
+import { CanonicalModule, CanonicalCommandData, GuildCommandConfiguration, CommandExtendedData } from "$lib/generated/silverpelt";
 import { permuteCommands } from "$lib/mewext/mewext";
 import logger from "./logger";
 
@@ -44,7 +44,7 @@ export interface ParsedCanonicalCommandData extends CanonicalCommandData {
     full_name: string;
 }
 
-export const extractCommandsFromModule = (module: CanonicalModule) => {
+export const extractCommandsFromModule = (module: CanonicalModule): ParsedCanonicalCommandData[] => {
     let commands: ParsedCanonicalCommandData[] = [];
 
     // Recursively parse commands
@@ -127,68 +127,18 @@ export const getCommandConfigurations = (clusterModules: Record<string, Canonica
 
         // Try falling back to the default command configuration in clusterModules
         for (let module of Object.values(clusterModules)) {
-            for (let cmd of module.commands) {
-                if (cmd.command.name == base_command || cmd.command.qualified_name == base_command) {
-                    // The key on the extended data should be everything but the base command
-                    let subcommand: string = permuted_command.split(' ').slice(1).join(' ');
+            let commands = extractCommandsFromModule(module);
+            let commandExtendedData = getCommandExtendedData(commands, command);
 
-                    logger.info('GetCommandConfigurations', 'Got subcommand from permuted command', {
-                        permuted_command,
-                        base_command,
-                        permuted_commands,
-                        subcommand
-                    });
-
-                    if (cmd.extended_data[subcommand]) {
-                        let cc: GuildCommandConfiguration = {
-                            id: '',
-                            guild_id: guildId,
-                            command: permuted_command,
-                            perms: cmd.extended_data[subcommand].default_perms,
-                            disabled: !cmd.extended_data[subcommand].is_default_enabled
-                        };
-                        ccs.push(cc);
-                        continue;
-                    }
-
-                    // The cmd itself does not exist in extended_data, add a fallback
-                    if (cmd.extended_data['']) {
-                        let cc: GuildCommandConfiguration = {
-                            id: '',
-                            guild_id: guildId,
-                            command: permuted_command,
-                            perms: cmd.extended_data[''].default_perms,
-                            disabled: !cmd.extended_data[''].is_default_enabled
-                        };
-                        ccs.push(cc);
-                        continue;
-                    } else {
-                        // No extended data for this command, add a default configuration
-                        logger.info(
-                            'GetCommandConfigurations',
-                            'Falling back to default configuration for command',
-                            {
-                                base_command,
-                                permuted_command,
-                                permuted_commands
-                            }
-                        );
-
-                        let cc: GuildCommandConfiguration = {
-                            id: '',
-                            guild_id: guildId,
-                            command: permuted_command,
-                            perms: {
-                                checks: [],
-                                checks_needed: 1
-                            },
-                            disabled: false
-                        };
-                        ccs.push(cc);
-                        continue;
-                    }
-                }
-            }
+            let cc: GuildCommandConfiguration = {
+                id: '',
+                guild_id: guildId,
+                command: permuted_command,
+                perms: commandExtendedData.default_perms,
+                disabled: !commandExtendedData.is_default_enabled
+            };
+            ccs.push(cc);
+            continue;
         }
     }
 
@@ -200,3 +150,39 @@ export const getCommandConfigurations = (clusterModules: Record<string, Canonica
 
     return ccs;
 };
+
+export const getCommandExtendedData = (parsedCommands: ParsedCanonicalCommandData[], command: string): CommandExtendedData => {
+    let permuted_commands = permuteCommands(command);
+    let base_command = permuted_commands[0];
+
+    let commands = parsedCommands.find((pc) => pc.full_name == base_command);
+
+    if (!commands) {
+        throw new Error('Command not found in parsed commands');
+    }
+
+    let subcommand = "";
+
+    if (permuted_commands.length > 1) {
+        subcommand = permuted_commands.slice(1).join(' ');
+    }
+
+    let defaultExtendedData: CommandExtendedData = {
+        default_perms: {
+            checks: [
+                {
+                    kittycat_perms: [`${base_command}.*`],
+                    native_perms: ["8"],
+                    inner_and: false,
+                    outer_and: false,
+                }
+            ],
+            checks_needed: 1,
+        },
+        is_default_enabled: true,
+        web_hidden: false,
+        virtual_command: false
+    }
+
+    return commands.extended_data_map[subcommand] || commands.extended_data_map[''] || defaultExtendedData;
+}

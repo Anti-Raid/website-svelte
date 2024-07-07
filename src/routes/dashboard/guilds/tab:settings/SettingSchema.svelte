@@ -3,13 +3,18 @@
 		CanonicalColumn,
 		CanonicalConfigOption,
 		CanonicalInnerColumnType,
-		CanonicalModule
+		CanonicalModule,
+		CanonicalOperationType
 	} from '$lib/generated/silverpelt';
+	import { SettingsExecuteResponse } from '$lib/generated/types';
+	import Label from '../../../../components/inputs/Label.svelte';
+	import SettingsSuggestionBox from './SettingsSuggestionBox.svelte';
+	import { OperationTypes } from './types';
 
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildId: string;
-	export let fields: Record<string, any>;
+	export let settings: SettingsExecuteResponse;
 
 	const getDisplayType = (fields: Record<string, any>, column: CanonicalColumn): string => {
 		// Check for __{}_displaytype
@@ -95,8 +100,47 @@ pub enum InnerColumnType {
 			return 'unknown';
 		}
 	};
+
+	const shouldColumnBeDisabled = (
+		column: CanonicalColumn,
+		operationType: OperationTypes
+	): boolean => {
+		if (operationType == 'View') {
+			return true; // View means read-only
+		}
+
+		if (column.ignored_for.includes(operationType)) {
+			return false;
+		}
+
+		return true;
+	};
 </script>
 
-{#each configOpt.columns as column}
-	<p>{column.name} - {getDisplayType(fields, column)} = {fields[column.id]}</p>
+{#each settings?.fields || [] as columnField}
+	{#each configOpt.columns as column}
+		<Label id={column.id} label={column.name} />
+
+		<SettingsSuggestionBox
+			{guildId}
+			module={module.id}
+			{configOpt}
+			{column}
+			operationType={'Update'}
+			bind:value={columnField[column.id]}
+		>
+			Value: {columnField[column.id]}
+		</SettingsSuggestionBox>
+
+		<p class="configopt__debuginfo">
+			{column.name} - {getDisplayType(columnField, column)} - View: {shouldColumnBeDisabled(
+				column,
+				'View'
+			)}, Update: {shouldColumnBeDisabled(column, 'Update')}, Create: {shouldColumnBeDisabled(
+				column,
+				'Create'
+			)}, Delete: {shouldColumnBeDisabled(column, 'Delete')}, isPkey: {column.id ==
+				configOpt.primary_key}
+		</p>
+	{/each}
 {/each}

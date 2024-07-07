@@ -1,0 +1,1 @@
+export type OperationTypes = "View" | "Create" | "Update" | "Delete";

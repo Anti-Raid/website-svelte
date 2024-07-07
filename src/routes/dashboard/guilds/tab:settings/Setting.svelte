@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
+	import { get } from '$lib/configs/functions/services';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { CanonicalConfigOption, CanonicalModule } from '$lib/generated/silverpelt';
-	import { SettingsExecute } from '$lib/generated/types';
+	import { SettingsExecute, SettingsExecuteResponse } from '$lib/generated/types';
 	import Label from '../../../../components/inputs/Label.svelte';
 	import Message from '../../../../components/Message.svelte';
 	import SettingSchema from './SettingSchema.svelte';
@@ -22,7 +23,7 @@
 			fields: {} as Record<string, any>
 		};
 
-		const res = await fetchClient(`/guilds/${guildId}/settings`, {
+		const res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
 			method: 'POST',
 			auth: creds?.token,
 			body: JSON.stringify(payload)
@@ -33,7 +34,7 @@
 			throw new Error(err);
 		}
 
-		let settings: Record<string, any> = await res.json();
+		let settings: SettingsExecuteResponse = await res.json();
 
 		return settings;
 	};
@@ -45,7 +46,7 @@
 {#await getCurrentSettings()}
 	<p>Loading...</p>
 {:then settings}
-	<SettingSchema {configOpt} {module} {guildId} fields={settings} />
+	<SettingSchema {configOpt} {module} {guildId} {settings} />
 {:catch err}
 	<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
 {/await}

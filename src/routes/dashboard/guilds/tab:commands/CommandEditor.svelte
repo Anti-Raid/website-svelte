@@ -14,10 +14,11 @@
 	import logger from '$lib/ui/logger';
 	import { Clearable } from '$lib/generated/types';
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
-	import { ParsedCanonicalCommandData } from '$lib/ui/commands';
+	import { getCommandExtendedData, ParsedCanonicalCommandData } from '$lib/ui/commands';
 	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
 	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
+	import Label from '../../../../components/inputs/Label.svelte';
 
 	export let guildId: string;
 	export let commands: ParsedCanonicalCommandData[];
@@ -36,26 +37,18 @@
 	const isCommandDefaultEnabled = (): boolean => {
 		logger.info('CommandEditor', 'isCommandDefaultEnabled', currentCommandConfiguration);
 
-		let command = commands.find((c) => c.full_name === currentCommandConfiguration.command);
+		let extendedData = getCommandExtendedData(commands, currentCommandConfiguration.command);
 
-		if (!command) {
-			throw new Error('Command not found in command list');
-		}
+		logger.info('CommandEditor', 'isCommandDefaultEnabled.extendedData', extendedData);
 
-		return command?.extended_data?.is_default_enabled;
+		return extendedData?.is_default_enabled;
 	};
 
 	const isCommandEnabled = (): boolean => {
 		logger.info('CommandEditor', 'isCommandEnabled', currentCommandConfiguration);
 
 		if (currentCommandConfiguration.disabled === undefined) {
-			let command = commands.find((c) => c.full_name === currentCommandConfiguration.command);
-
-			if (!command) {
-				throw new Error('Command not found in command list');
-			}
-
-			return command?.extended_data?.is_default_enabled;
+			return isCommandDefaultEnabled();
 		}
 
 		return !currentCommandConfiguration.disabled;
@@ -73,24 +66,22 @@
 		let cc = allCurrentCommandConfigurations.find(
 			(c) => c.command === currentCommandConfiguration.command
 		);
+
+		if (!cc) {
+			return false;
+		}
+
 		logger.info('CommandEditor', 'isCommandPermsOverriden', cc);
 		return !!cc?.perms;
 	};
 
-	const getModuleDefaultPerms = (): PCT => {
-		logger.info('CommandEditor', 'isCommandEnabled', currentCommandConfiguration);
-
-		if (currentCommandConfiguration.perms === undefined) {
-			let command = commands.find((c) => c.full_name === currentCommandConfiguration.command);
-
-			if (!command) {
-				throw new Error('Command not found in command list');
-			}
-
-			return command?.extended_data?.default_perms;
-		}
-
-		return currentCommandConfiguration.perms;
+	const getCommandDefaultPerms = (): PCT => {
+		let commandExtendedData = getCommandExtendedData(commands, currentCommandConfiguration.command);
+		return (
+			allCurrentCommandConfigurations.find(
+				(c) => c.command === currentCommandConfiguration?.command
+			)?.perms || commandExtendedData.default_perms
+		);
 	};
 
 	interface PartialPatchType {
@@ -124,8 +115,8 @@
 				}
 			},
 			perms: {
-				initial: structuredClone(getModuleDefaultPerms()),
-				current: structuredClone(getModuleDefaultPerms()),
+				initial: structuredClone(getCommandDefaultPerms()),
+				current: structuredClone(getCommandDefaultPerms()),
 				parse: (_state, snapshot, v) => {
 					let value: Clearable<PCT> = {
 						clear: false,
@@ -233,6 +224,8 @@
 	let updateNoticeArea: NoticeProps | null;
 </script>
 
+<Label id="enable_disable_command" label="Enable/Disable Command" />
+
 <BoolInput
 	id="enabled"
 	label="Command Enabled"
@@ -256,6 +249,8 @@
 		{state.__resetFields.current.includes('enabled') ? "Don't Reset" : 'Reset'}
 	</BoxButton>
 {/if}
+
+<Label id="perms" label="Command Permissions" />
 
 <PermissionChecks
 	id={`pc-${currentCommandConfiguration.command}`}

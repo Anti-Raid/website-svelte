@@ -22,24 +22,26 @@
 	{/if}
 
 	{#each perms as perm, i}
-		<PermissionCheck id={`${id}-${i}`} bind:permissionCheck={perm} {ctx} />
+		<div class="permission_check_array__check px-2 mt-2">
+			<PermissionCheck id={`${id}-${i}`} bind:permissionCheck={perm} {ctx} />
 
-		<div class="flex flex-row mt-1">
-			<BoxButton
-				onclick={() => {
-					perms = [
-						...perms.slice(0, i + 1),
-						{ kittycat_perms: [], native_perms: [], outer_and: false, inner_and: false },
-						...perms.slice(i + 1)
-					];
-				}}>Add Permission Check</BoxButton
-			>
-			<div class="mr-2" />
-			<BoxButton
-				onclick={() => {
-					perms = perms.filter((_, index) => index !== i);
-				}}>Remove Permission Check</BoxButton
-			>
+			<div class="flex flex-row mt-1">
+				<BoxButton
+					onclick={() => {
+						perms = [
+							...perms.slice(0, i + 1),
+							{ kittycat_perms: [], native_perms: [], outer_and: false, inner_and: false },
+							...perms.slice(i + 1)
+						];
+					}}>Add Permission Check</BoxButton
+				>
+				<div class="mr-2" />
+				<BoxButton
+					onclick={() => {
+						perms = perms.filter((_, index) => index !== i);
+					}}>Remove Permission Check</BoxButton
+				>
+			</div>
 		</div>
 	{/each}
 </section>
