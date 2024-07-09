@@ -151,6 +151,11 @@
 								<button
 									class="text-primary-400 hover:text-primary-500"
 									on:click={() => {
+										logger.info('CommandTab', 'Editing command', {
+											row,
+											full_name: row.full_name,
+											clusterModules
+										});
 										currentOpenCommand = row;
 										configsBeingEditted = getCommandConfigurations(
 											clusterModules,

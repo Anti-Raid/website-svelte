@@ -158,7 +158,12 @@ export const getCommandExtendedData = (parsedCommands: ParsedCanonicalCommandDat
     let commands = parsedCommands.find((pc) => pc.full_name == base_command);
 
     if (!commands) {
-        throw new Error('Command not found in parsed commands');
+        // Try one more time
+        commands = parsedCommands.find((pc) => pc.full_name.startsWith(base_command));
+
+        if (!commands) {
+            throw new Error('Command not found in parsed commands');
+        }
     }
 
     let subcommand = "";
