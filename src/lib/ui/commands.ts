@@ -128,17 +128,22 @@ export const getCommandConfigurations = (clusterModules: Record<string, Canonica
         // Try falling back to the default command configuration in clusterModules
         for (let module of Object.values(clusterModules)) {
             let commands = extractCommandsFromModule(module);
-            let commandExtendedData = getCommandExtendedData(commands, command);
 
-            let cc: GuildCommandConfiguration = {
-                id: '',
-                guild_id: guildId,
-                command: permuted_command,
-                perms: commandExtendedData.default_perms,
-                disabled: !commandExtendedData.is_default_enabled
-            };
-            ccs.push(cc);
-            continue;
+            try {
+                let commandExtendedData = getCommandExtendedData(commands, command);
+                let cc: GuildCommandConfiguration = {
+                    id: '',
+                    guild_id: guildId,
+                    command: permuted_command,
+                    perms: commandExtendedData.default_perms,
+                    disabled: !commandExtendedData.is_default_enabled
+                };
+                ccs.push(cc);
+                continue;
+            } catch (err) {
+                logger.error('GetCommandConfigurations', 'Error getting command extended data', err);
+                continue;
+            }
         }
     }
 
@@ -158,12 +163,7 @@ export const getCommandExtendedData = (parsedCommands: ParsedCanonicalCommandDat
     let commands = parsedCommands.find((pc) => pc.full_name == base_command);
 
     if (!commands) {
-        // Try one more time
-        commands = parsedCommands.find((pc) => pc.full_name.startsWith(base_command));
-
-        if (!commands) {
-            throw new Error('Command not found in parsed commands');
-        }
+        throw new Error('Command not found in parsed commands');
     }
 
     let subcommand = "";
