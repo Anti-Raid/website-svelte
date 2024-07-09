@@ -141,7 +141,7 @@ export const getCommandConfigurations = (clusterModules: Record<string, Canonica
                 ccs.push(cc);
                 continue;
             } catch (err) {
-                logger.error('GetCommandConfigurations', 'Error getting command extended data', err);
+                logger.debug('GetCommandConfigurations', 'Error getting command extended data, skipping to next module', err);
                 continue;
             }
         }
