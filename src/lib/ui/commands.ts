@@ -125,26 +125,13 @@ export const getCommandConfigurations = (clusterModules: Record<string, Canonica
             continue;
         }
 
-        // Try falling back to the default command configuration in clusterModules
-        for (let module of Object.values(clusterModules)) {
-            let commands = extractCommandsFromModule(module);
-
-            try {
-                let commandExtendedData = getCommandExtendedData(commands, command);
-                let cc: GuildCommandConfiguration = {
-                    id: '',
-                    guild_id: guildId,
-                    command: permuted_command,
-                    perms: commandExtendedData.default_perms,
-                    disabled: !commandExtendedData.is_default_enabled
-                };
-                ccs.push(cc);
-                continue;
-            } catch (err) {
-                logger.debug('GetCommandConfigurations', 'Error getting command extended data, skipping to next module', err);
-                continue;
-            }
-        }
+        // Fallback
+        let ncc: GuildCommandConfiguration = {
+            id: '',
+            guild_id: guildId,
+            command: permuted_command,
+        };
+        ccs.push(ncc);
     }
 
     logger.info('GetCommandConfigurations', 'Got command configs [ccs]', {
