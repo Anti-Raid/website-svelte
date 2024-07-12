@@ -213,10 +213,12 @@
 		);
 
 		if (index === -1) {
-			throw new Error('Command not found in command configurations');
+			// New command configuration
+			allCurrentCommandConfigurations.push(currentCommandConfiguration);
+		} else {
+			// Update existing command configuration
+			allCurrentCommandConfigurations[index] = currentCommandConfiguration;
 		}
-
-		allCurrentCommandConfigurations[index] = currentCommandConfiguration;
 
 		state = getState(); // Rederive state
 	};
