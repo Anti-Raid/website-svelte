@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { CanonicalModule, GuildCommandConfiguration } from '$lib/generated/silverpelt';
+	import {
+		CanonicalModule,
+		FullGuildCommandConfiguration,
+		GuildCommandConfiguration
+	} from '$lib/generated/silverpelt';
 	import {
 		extractCommandsFromModule,
 		getCommandConfigurations,
@@ -17,13 +21,11 @@
 	import logger from '$lib/ui/logger';
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 	import CommandEditor from './CommandEditor.svelte';
-	import NavButton from '../../../../components/inputs/button/NavButton.svelte';
-	import TabButton from '../../../../components/inputs/button/tabs/TabButton.svelte';
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 
 	export let moduleId: string;
 	export let clusterModules: Record<string, CanonicalModule>;
-	export let currentCommandConfiguration: GuildCommandConfiguration[];
+	export let currentCommandConfiguration: FullGuildCommandConfiguration[];
 	export let commonPermissionContext: CommonPermissionContext;
 	export let guildId: string;
 
@@ -158,7 +160,6 @@
 										});
 										currentOpenCommand = row;
 										configsBeingEditted = getCommandConfigurations(
-											clusterModules,
 											currentCommandConfiguration,
 											guildId,
 											row.full_name

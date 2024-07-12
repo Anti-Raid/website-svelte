@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { CanonicalModule, GuildCommandConfiguration } from '$lib/generated/silverpelt';
+	import {
+		CanonicalModule,
+		FullGuildCommandConfiguration,
+		GuildCommandConfiguration
+	} from '$lib/generated/silverpelt';
 	import PermissionChecks from '../../../../components/dashboard/permissions/PermissionChecks.svelte';
 	import { PermissionChecks as PCT } from '$lib/generated/silverpelt';
 	import BoolInput from '../../../../components/inputs/BoolInput.svelte';
@@ -19,12 +23,13 @@
 	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 	import Label from '../../../../components/inputs/Label.svelte';
+	import ObjectRender from '../../../../components/ObjectRender.svelte';
 
 	export let guildId: string;
 	export let commands: ParsedCanonicalCommandData[];
 	export let module: CanonicalModule;
 	export let commonPermissionContext: CommonPermissionContext;
-	export let allCurrentCommandConfigurations: GuildCommandConfiguration[]; // All command configurations
+	export let allCurrentCommandConfigurations: FullGuildCommandConfiguration[]; // All command configurations
 	export let currentCommandConfiguration: GuildCommandConfiguration; // Guild command configuration being editted
 
 	$: logger.info(
@@ -73,6 +78,21 @@
 
 		logger.info('CommandEditor', 'isCommandPermsOverriden', cc);
 		return !!cc?.perms;
+	};
+
+	const getCurrentFullCommandConfiguration = (
+		currentCommandConfiguration: GuildCommandConfiguration
+	): FullGuildCommandConfiguration | null => {
+		let cc = allCurrentCommandConfigurations.find(
+			(c) => c.command === currentCommandConfiguration.command
+		);
+
+		if (!cc) {
+			return null;
+		}
+
+		logger.info('CommandEditor', 'isCommandPermsOverriden', cc);
+		return cc;
 	};
 
 	const getCommandDefaultPerms = (): PCT => {
@@ -166,10 +186,15 @@
 	// Ensure manuallyOverriden is updated whenever moduleId changes
 	let toggleManuallyOverriden: boolean;
 	let defaultPermsManuallyOverriden: boolean;
+	let currentFullCommandConfiguration: FullGuildCommandConfiguration | null;
 	$: commandFullName,
 		(toggleManuallyOverriden = isCommandDisabledOverriden(currentCommandConfiguration));
 	$: commandFullName,
 		(defaultPermsManuallyOverriden = isCommandPermsOverriden(currentCommandConfiguration));
+	$: commandFullName,
+		(currentFullCommandConfiguration = getCurrentFullCommandConfiguration(
+			currentCommandConfiguration
+		));
 
 	const updateCommandConfiguration = async () => {
 		let authCreds = getAuthCreds();
@@ -205,7 +230,15 @@
 			throw new Error(err);
 		}
 
-		currentCommandConfiguration = await res.json();
+		let fcc: FullGuildCommandConfiguration = await res.json();
+
+		currentCommandConfiguration = {
+			id: fcc.id,
+			guild_id: fcc.guild_id,
+			command: fcc.command,
+			disabled: fcc.disabled,
+			perms: fcc.perms
+		};
 
 		// Find index in allCurrentCommandConfigurations
 		let index = allCurrentCommandConfigurations.findIndex(
@@ -214,10 +247,10 @@
 
 		if (index === -1) {
 			// New command configuration
-			allCurrentCommandConfigurations.push(currentCommandConfiguration);
+			allCurrentCommandConfigurations.push(fcc);
 		} else {
 			// Update existing command configuration
-			allCurrentCommandConfigurations[index] = currentCommandConfiguration;
+			allCurrentCommandConfigurations[index] = fcc;
 		}
 
 		state = getState(); // Rederive state
@@ -305,6 +338,17 @@
 	value={isCommandDefaultEnabled()}
 	onChange={() => {}}
 />
+
+{#if currentFullCommandConfiguration}
+	<ObjectRender
+		object={{
+			'Created At': currentFullCommandConfiguration.created_at,
+			'Last Updated At': currentFullCommandConfiguration.last_updated_at,
+			'Created By': currentFullCommandConfiguration.created_by,
+			'Last Updated By': currentFullCommandConfiguration.last_updated_by
+		}}
+	/>
+{/if}
 
 <UnorderedList>
 	<ListItem>

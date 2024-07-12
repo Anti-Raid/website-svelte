@@ -4,6 +4,7 @@ import { fetchClient } from '$lib/fetch/fetch';
 import { InstanceList } from '$lib/generated/mewld/proc';
 import {
 	CanonicalModule,
+	FullGuildCommandConfiguration,
 	GuildCommandConfiguration,
 	GuildModuleConfiguration
 } from '$lib/generated/silverpelt';
@@ -144,42 +145,14 @@ export const opGetModuleConfiguration = (
 	};
 };
 
-export const opGetCommandConfigurations = (
-	guildId: string,
-	command: string
-): SharedRequester<GuildCommandConfiguration[]> => {
-	let authData = getAuthCreds();
-
-	return {
-		name: `guildCommandConfigurations:${guildId}:${command}`,
-		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
-			const res = await fetchClient(
-				`${get('splashtail')}/guilds/${guildId}/commands/${command}/configurations`,
-				{
-					auth: authData?.token
-				}
-			);
-			if (!res.ok) {
-				let err = await res.error('Guild Command Configuration');
-				throw new Error(err);
-			}
-
-			const data: GuildCommandConfiguration[] = await res.json();
-
-			return data;
-		},
-		shouldCache: false
-	};
-};
-
 export const opGetAllCommandConfigurations = (
 	guildId: string
-): SharedRequester<GuildCommandConfiguration[]> => {
+): SharedRequester<FullGuildCommandConfiguration[]> => {
 	let authData = getAuthCreds();
 
 	return {
 		name: `guildCommandConfigurations:${guildId}`,
-		requestFunc: async (): Promise<GuildCommandConfiguration[]> => {
+		requestFunc: async (): Promise<FullGuildCommandConfiguration[]> => {
 			const res = await fetchClient(
 				`${get('splashtail')}/guilds/${guildId}/command-configurations`,
 				{
@@ -191,7 +164,7 @@ export const opGetAllCommandConfigurations = (
 				throw new Error(err);
 			}
 
-			const data: GuildCommandConfiguration[] = await res.json();
+			const data: FullGuildCommandConfiguration[] = await res.json();
 
 			return data;
 		},

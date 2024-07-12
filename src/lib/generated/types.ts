@@ -309,4 +309,5 @@ export interface UserGuildBaseData {
   roles: { [key: string]: any /* ext.SerenityRole */ | undefined};
   user_roles: string[];
   bot_roles: string[];
+  channels: (any /* discordgo.Channel */ | undefined)[];
 }

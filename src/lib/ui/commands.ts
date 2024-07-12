@@ -102,7 +102,7 @@ export const extractCommandsFromModule = (module: CanonicalModule): ParsedCanoni
  * @param command The command to get configurations for
  * @returns 
  */
-export const getCommandConfigurations = (clusterModules: Record<string, CanonicalModule>, currentCommandConfiguration: GuildCommandConfiguration[], guildId: string, command: string): GuildCommandConfiguration[] => {
+export const getCommandConfigurations = (currentCommandConfiguration: GuildCommandConfiguration[], guildId: string, command: string): GuildCommandConfiguration[] => {
     let ccs = []; // List of command configurations to return
 
     let permuted_commands = permuteCommands(command);

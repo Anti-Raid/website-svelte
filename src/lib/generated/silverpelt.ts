@@ -95,6 +95,7 @@ export interface CanonicalSettingsError {
 }
 export type CanonicalInnerColumnTypeStringKind = string;
 export const CanonicalInnerColumnTypeStringKindNormal: CanonicalInnerColumnTypeStringKind = "Normal";
+export const CanonicalInnerColumnTypeStringKindTemplate: CanonicalInnerColumnTypeStringKind = "Template";
 export const CanonicalInnerColumnTypeStringKindUser: CanonicalInnerColumnTypeStringKind = "User";
 export const CanonicalInnerColumnTypeStringKindChannel: CanonicalInnerColumnTypeStringKind = "Channel";
 export const CanonicalInnerColumnTypeStringKindRole: CanonicalInnerColumnTypeStringKind = "Role";
@@ -161,6 +162,7 @@ export interface CanonicalColumnSuggestion {
 export interface CanonicalColumn {
   id: string;
   name: string;
+  description: string;
   column_type: CanonicalColumnType;
   nullable: boolean;
   suggestions: CanonicalColumnSuggestion;
@@ -187,6 +189,11 @@ export interface CanonicalConfigOption {
   columns: CanonicalColumn[];
   operations: Record<CanonicalOperationType, CanonicalOperationSpecific>;
 }
+
+//////////
+// source: db__interface.go
+
+export type DbConn = any;
 
 //////////
 // source: mod.go
@@ -228,6 +235,20 @@ export interface GuildCommandConfiguration {
   command: string; // The command name
   perms?: PermissionChecks; // The permission checks on the command, if unset, will revert to either the modules default_perms and if that is unset, the default perms set on the command itself
   disabled?: boolean; // Whether or not the command is disabled
+}
+/**
+ * FullGuildCommandConfiguration represents the full guild command configuration data including audit info etc.
+ */
+export interface FullGuildCommandConfiguration {
+  id: string; // The ID
+  guild_id: string; // The guild id (from db)
+  command: string; // The command name
+  perms?: PermissionChecks; // The permission checks on the command, if unset, will revert to either the modules default_perms and if that is unset, the default perms set on the command itself
+  disabled?: boolean; // Whether or not the command is disabled
+  created_at: string /* RFC3339 */; // The time the command configuration was created
+  created_by: string; // The user who created the command configuration
+  last_updated_at: string /* RFC3339 */; // The time the command configuration was last updated
+  last_updated_by: string; // The user who last updated the command configuration
 }
 /**
  * GuildModuleConfiguration represents guild module configuration data.
