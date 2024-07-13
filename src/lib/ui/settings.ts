@@ -87,9 +87,9 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
         return dispatchType;
     };
 
-    // First handle dynamic
+    // First handle dynamic (and nested dynamic too!)
     let columnType = column.column_type;
-    if (columnType.Dynamic) {
+    while (columnType.Dynamic) {
         for (let clause of columnType.Dynamic.clauses) {
             let value = templateToStringLite(clause.field, fields);
             if (value == clause.value) {
