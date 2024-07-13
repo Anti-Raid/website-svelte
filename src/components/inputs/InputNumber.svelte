@@ -5,10 +5,11 @@
 	export let label: string;
 	export let placeholder: string;
 	export let minlength: number;
+	export let maxlength: number | undefined = undefined;
 	export let value: number = 0;
 	export let showErrors: boolean = true;
 	export let description: string = '';
-	export let inpClass: string = 'mb-4';
+	export let inpClass: string = '';
 	export let required: boolean = true;
 	export let disabled: boolean = false;
 
@@ -27,6 +28,9 @@
 		if (value < 10 ** minlength) {
 			success = false;
 			errorMsg = `Must be at least ${minlength} characters long`;
+		} else if (maxlength && value > 10 ** maxlength) {
+			success = false;
+			errorMsg = `Must be at most ${maxlength} characters long`;
 		} else {
 			success = true;
 		}
@@ -34,7 +38,9 @@
 </script>
 
 <div class={inpClass}>
-	<Label {id} {label} />
+	{#if label}
+		<Label {id} {label} />
+	{/if}
 	{#if description}
 		<p class="text-md mb-2 opacity-80">{@html description}</p>
 	{/if}
@@ -42,6 +48,7 @@
 	<input
 		on:change={checkLength}
 		{minlength}
+		{maxlength}
 		type="number"
 		{id}
 		class={disabled

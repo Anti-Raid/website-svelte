@@ -16,7 +16,7 @@
 <select
 	{id}
 	class={disabled
-		? 'w-full mx-auto flex bg-black bg-opacity-50 text-gray-100 rounded-xl border border-white/10 focus:outline-none py-4 px-6'
+		? 'w-full mx-auto flex bg-black bg-opacity-50 text-gray-100 rounded-xl border border-primary-200 focus:outline-none py-4 px-6'
 		: 'w-full mx-auto flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-primary-400 rounded-xl border border-primary-200 focus:border-primary-400 focus:outline-none py-4 px-6'}
 	bind:value
 	{required}

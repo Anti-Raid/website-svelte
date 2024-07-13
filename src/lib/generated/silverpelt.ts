@@ -101,12 +101,20 @@ export const CanonicalInnerColumnTypeStringKindChannel: CanonicalInnerColumnType
 export const CanonicalInnerColumnTypeStringKindRole: CanonicalInnerColumnTypeStringKind = "Role";
 export const CanonicalInnerColumnTypeStringKindEmoji: CanonicalInnerColumnTypeStringKind = "Emoji";
 export const CanonicalInnerColumnTypeStringKindMessage: CanonicalInnerColumnTypeStringKind = "Message";
+export interface CanonicalColumnTypeDynamicClause {
+  field: string;
+  value: any;
+  column_type: CanonicalColumnType;
+}
 export interface CanonicalColumnType {
   Scalar?: {
     column_type: CanonicalInnerColumnType;
   };
   Array?: {
     inner: CanonicalInnerColumnType;
+  };
+  Dynamic?: {
+    clauses: CanonicalColumnTypeDynamicClause[];
   };
 }
 export interface CanonicalInnerColumnType {
@@ -186,6 +194,7 @@ export interface CanonicalConfigOption {
   table: string;
   guild_id: string;
   primary_key: string;
+  title_template: string;
   columns: CanonicalColumn[];
   operations: Record<CanonicalOperationType, CanonicalOperationSpecific>;
 }

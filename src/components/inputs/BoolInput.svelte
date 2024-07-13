@@ -18,8 +18,8 @@
 		on:change={() => {
 			if (onChange) onChange(value);
 		}}
-		aria-disabled={disabled}
 		{disabled}
+		aria-disabled={disabled}
 		{required}
 		aria-required={required}
 		class="rounded-full cursor-pointer checked:bg-blue-500 disabled:checked:bg-blue-500 disabled:checked:opacity-70 disabled:cursor-not-allowed disabled:bg-slate-500"

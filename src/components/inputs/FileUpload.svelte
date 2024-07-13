@@ -14,12 +14,20 @@
 	export let fileName: string = '';
 	export let fileMimeType: string = '';
 	export let fileUploaded: boolean = false;
+	export let disabled: boolean = false;
 
 	// Notice area to store errors in
 	let noticeArea: NoticeProps | null;
 
 	let fileList: FileList;
 	const readFile = () => {
+		if (disabled) {
+			noticeArea = {
+				level: 'error',
+				text: 'This input is disabled'
+			};
+			return;
+		}
 		logger.info('FileUpload', 'Reading file');
 		fileUploaded = false;
 
@@ -68,5 +76,7 @@
 		name={id}
 		type="file"
 		multiple={false}
+		{disabled}
+		aria-disabled={disabled}
 	/>
 </div>

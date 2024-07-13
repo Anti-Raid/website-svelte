@@ -11,7 +11,7 @@
 	export let required: boolean = true;
 	export let disabled: boolean = false;
 	export let disabledDefaultInput = false;
-	export let inpClass: string = 'mb-4';
+	export let inpClass: string = '';
 	export let defaultLabel: string = 'Select an action';
 	export let value: string = '';
 	export let onChange: ChangeEventHandler<HTMLSelectElement> | undefined = undefined;
