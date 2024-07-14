@@ -166,6 +166,10 @@
 		</button>
 	</div>
 
+	{#if columnField['__message']}
+		<NoticeArea props={getNoticePropsOfField('__message')} />
+	{/if}
+
 	{#each configOpt.columns as column}
 		{#await getDataAsync(settings.fields[index], column, configOpt, currentOperationType)}
 			<Message type="loading">Loading column data for {column.id}</Message>
