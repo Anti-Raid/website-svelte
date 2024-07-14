@@ -25,6 +25,8 @@
 	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
 	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
 	import Spacer from '../../../../components/inputs/Spacer.svelte';
+	import { marked } from 'marked';
+	import { sanitize } from 'dompurify';
 
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
@@ -130,6 +132,14 @@
 		settings = settings;
 	};
 
+	const getNoticePropsOfField = (field: string): NoticeProps => {
+		let parsed: string = marked.parse(columnField['__message'], {
+			async: false,
+			breaks: true
+		}) as string;
+		return { text: sanitize(parsed), level: 'info', disable_html: true };
+	};
+
 	let noticeProps: NoticeProps | null = null;
 </script>
 
@@ -180,7 +190,7 @@
 	{/each}
 
 	{#if columnField['__message']}
-		<NoticeArea props={{ text: columnField['__message'], level: 'info', disable_html: true }} />
+		<NoticeArea props={getNoticePropsOfField('__message')} />
 	{/if}
 
 	{#if currentOperationType === 'Update' && !isEqual(columnField, settings.fields[index])}
