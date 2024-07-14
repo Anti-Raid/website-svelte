@@ -92,7 +92,14 @@
 			throw new Error(err);
 		}
 
-		settings.fields[index] = structuredClone(columnField);
+		let fieldData: SettingsExecuteResponse = await res.json();
+
+		settings.fields[index] = {
+			...settings.fields[index],
+			...fieldData.fields[0]
+		};
+		columnField = structuredClone(settings.fields[index]);
+		settings = settings;
 	};
 
 	const deleteRow = async () => {
