@@ -19,6 +19,6 @@
 		{guildId}
 		{configOpt}
 		{currentOperationType}
-		bind:settings
+		{settings}
 	/>
 {/each}

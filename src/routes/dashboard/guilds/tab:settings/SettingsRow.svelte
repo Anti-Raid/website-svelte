@@ -88,7 +88,7 @@
 			throw new Error(err);
 		}
 
-		settings.fields[index] = columnField;
+		settings.fields[index] = structuredClone(columnField);
 	};
 
 	let noticeProps: NoticeProps | null = null;
@@ -115,7 +115,7 @@
 	</div>
 
 	{#each configOpt.columns as column}
-		{#await getDataAsync(columnField, column, configOpt, currentOperationType)}
+		{#await getDataAsync(settings.fields[index], column, configOpt, currentOperationType)}
 			<Message type="loading">Loading column data for {column.id}</Message>
 		{:then data}
 			{#if data.columnState != ColumnState.Hidden}
@@ -129,7 +129,7 @@
 					{column}
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
-					{allDerivedData}
+					bind:allDerivedData
 				/>
 			{/if}
 		{:catch err}
