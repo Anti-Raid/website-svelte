@@ -5,6 +5,7 @@ export interface NoticeProps {
     text: string;
     level: NoticeAreaLevels;
     disabled?: boolean;
+    allowHtml?: boolean;
 }
 
 export type NoticeAreaLevels = 'loading' | 'info' | 'warn' | 'error' | 'success'

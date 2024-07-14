@@ -179,6 +179,10 @@
 		{/await}
 	{/each}
 
+	{#if columnField['__message']}
+		<NoticeArea props={{ text: columnField['__message'], level: 'info' }} />
+	{/if}
+
 	{#if currentOperationType === 'Update' && !isEqual(columnField, settings.fields[index])}
 		<!--TODO: Only show the buttonreact when theres an actual change-->
 		<ButtonReact
