@@ -27,15 +27,14 @@
 	import Spacer from '../../../../components/inputs/Spacer.svelte';
 
 	export let configOpt: CanonicalConfigOption;
+	export let settings: SettingsExecuteResponse;
 	export let module: CanonicalModule;
 	export let guildId: string;
-	export let columnField: Record<string, any>;
-	export let index: number;
-	export let settings: SettingsExecuteResponse;
+	export let columnField: Record<string, any> = {};
 	export let debugMode: boolean;
 
 	// The current operation type this row is under
-	let currentOperationType: OperationTypes = 'Update';
+	let currentOperationType: OperationTypes = 'Create';
 
 	let allDerivedData: { [key: string]: DerivedData } = {};
 	const getDataAsync = async (
@@ -54,7 +53,10 @@
 		return result;
 	};
 
-	const editRow = async () => {
+	let noticeProps: NoticeProps | null = null;
+
+	let createRowElement: HTMLDetailsElement;
+	const createRow = async () => {
 		const creds = getAuthCreds();
 		if (!creds) throw new Error('No auth credentials found');
 
@@ -75,7 +77,7 @@
 		});
 
 		let payload: SettingsExecute = {
-			operation: 'Update',
+			operation: 'Create',
 			module: module.id,
 			setting: configOpt.id,
 			fields
@@ -88,69 +90,69 @@
 		});
 
 		if (!res.ok) {
-			let err = await res.error('Failed to update settings for this module');
+			let err = await res.error('Failed to create new setting entry for this module');
 			throw new Error(err);
 		}
 
-		settings.fields[index] = structuredClone(columnField);
-	};
+		let newEntry: SettingsExecuteResponse = await res.json();
 
-	const deleteRow = async () => {
-		const creds = getAuthCreds();
-		if (!creds) throw new Error('No auth credentials found');
-
-		let payload: SettingsExecute = {
-			operation: 'Delete',
-			module: module.id,
-			setting: configOpt.id,
-			fields: {
-				[configOpt.primary_key]: settings.fields[index][configOpt.primary_key]
-			}
-		};
-
-		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
-			method: 'POST',
-			auth: creds.token,
-			body: JSON.stringify(payload)
+		let newLength = settings.fields.push({
+			...columnField,
+			...newEntry.fields[0]
 		});
+		settings = settings;
+		columnField = {}; // Clear the column field after creating a new entry
 
-		if (!res.ok) {
-			let err = await res.error('Failed to delete settings for this module');
-			throw new Error(err);
+		// Keep looking for the newly created details element
+		let newlyCreatedDetails = null;
+		while (!newlyCreatedDetails) {
+			// Sleep for 100ms
+			await new Promise((r) => setTimeout(r, 100));
+			newlyCreatedDetails = document.querySelector(
+				`#setting-schema-details-${settings.fields[newLength - 1][configOpt.primary_key]}`
+			);
 		}
 
-		settings.fields.splice(index, 1);
-		settings = settings;
-	};
+		if (newlyCreatedDetails) {
+			newlyCreatedDetails.setAttribute('open', 'true');
+			newlyCreatedDetails.scrollIntoView({ behavior: 'smooth' });
+		}
 
-	let noticeProps: NoticeProps | null = null;
+		if (createRowElement) {
+			createRowElement.setAttribute('open', 'false');
+		} else {
+			let details = null;
+			while (!details) {
+				// Sleep for 100ms
+				await new Promise((r) => setTimeout(r, 100));
+				details = document.querySelector(
+					`#setting-schema-details-${settings.fields[newLength - 1][configOpt.primary_key]}`
+				);
+			}
+
+			if (details) {
+				details.setAttribute('open', 'false');
+			}
+		}
+	};
 </script>
 
 <details
-	id={`setting-schema-details-${settings.fields[index][configOpt.primary_key]}`}
-	class="setting-schema__details border p-2 bg-black hover:bg-slate-900"
+	id="setting-schema-createrowelement"
+	class="setting-schema-create__details border p-2 bg-black hover:bg-slate-900"
+	bind:this={createRowElement}
 >
-	<summary class="setting-schema__summary hover:cursor-pointer"
-		>{templateToStringLite(configOpt.title_template, columnField)}</summary
+	<summary
+		class="setting-schema-create__summary hover:cursor-pointer font-semibold text-xl items-center align-middle justify-center"
 	>
-	<div id="action-box" class="mb-3 border rounded-md">
-		<button
-			on:click={() => {
-				if (currentOperationType === 'Update') {
-					currentOperationType = 'View';
-				} else {
-					currentOperationType = 'Update';
-				}
-			}}
-			class="text-white hover:text-gray-300 focus:outline-none px-2 py-3 border-r"
-		>
-			<Icon icon={'mdi:pen'} class={'text-2xl inline-block align-bottom'} />
-			{currentOperationType === 'Update' ? 'Close Editor' : 'Edit'}
-		</button>
-	</div>
+		<Icon
+			icon="fa6-solid:plus"
+			class="inline-block m-0 p-0 font-semibold mr-1 align-middle"
+		/>Create New Entry
+	</summary>
 
 	{#each configOpt.columns as column}
-		{#await getDataAsync(settings.fields[index], column, configOpt, currentOperationType)}
+		{#await getDataAsync({}, column, configOpt, currentOperationType)}
 			<Message type="loading">Loading column data for {column.id}</Message>
 		{:then data}
 			{#if data.columnState != ColumnState.Hidden}
@@ -172,41 +174,27 @@
 		{/await}
 	{/each}
 
-	{#if currentOperationType === 'Update' && !isEqual(columnField, settings.fields[index])}
-		<!--TODO: Only show the buttonreact when theres an actual change-->
-		<ButtonReact
-			color={Color.Themable}
-			icon="mdi:edit"
-			text="Save Changes"
-			states={{
-				loading: 'Saving...',
-				success: 'Saved!',
-				error: 'Failed to save'
-			}}
-			onClick={editRow}
-			bind:noticeProps
-		/>
+	<Spacer typ="extSpacing" />
+
+	{#if debugMode}
+		<p>{JSON.stringify(columnField)}</p>
 	{/if}
 
 	<Spacer typ="extSpacing" />
 
-	{#if currentOperationType === 'Update'}
+	{#if currentOperationType === 'Create'}
 		<ButtonReact
-			color={Color.Red}
-			icon="mdi:delete"
-			text="Delete"
+			color={Color.Themable}
+			icon="fa6-solid:plus"
+			text={`Add ${configOpt.name}`}
 			states={{
-				loading: 'Deleting...',
-				success: 'Deleted!',
-				error: 'Failed to delete'
+				loading: 'Creating entry...',
+				success: 'Created entry!',
+				error: 'Failed to create entry!'
 			}}
-			onClick={deleteRow}
+			onClick={createRow}
 			bind:noticeProps
 		/>
-	{/if}
-
-	{#if debugMode}
-		<p>{JSON.stringify(settings.fields[index])} {JSON.stringify(columnField)}</p>
 	{/if}
 
 	{#if noticeProps}

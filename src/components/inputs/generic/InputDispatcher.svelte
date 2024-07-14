@@ -46,14 +46,17 @@ Note: this may be less performant than using the concrete input components direc
 	};
 
 	const deleteValue = (i: number) => {
+		if (!value) return;
 		value = (value || []).filter((_: any, index: number) => index !== i);
 	};
 
 	const addValue = (i: number) => {
+		if (!value) value = [];
 		value = [...value.slice(0, i + 1), defaultValue(), ...value.slice(i + 1)];
 	};
 
 	const appendValue = () => {
+		if (!value) value = [];
 		value = [...value, defaultValue()];
 	};
 </script>
@@ -63,12 +66,12 @@ Note: this may be less performant than using the concrete input components direc
 		<Label {id} {label} />
 
 		{#if !disabled}
-			<button class="text-lg" type="button" on:click|preventDefault={() => appendValue()}>
-				<Icon inline={true} icon="ant-design:plus-circle-outlined" class="mr-1 text-white" />
-				Add Other
+			<button class="text-lg mr-2" type="button" on:click|preventDefault={() => appendValue()}>
+				<Icon icon="ant-design:plus-circle-outlined" class="inline-block mr-1 text-white" />Add
+				Other
 			</button>
 			<button
-				class="text-lg"
+				class="text-lg mr-2"
 				type="button"
 				on:click|preventDefault={() => {
 					let i = prompt('Enter the position to add the new value');
@@ -77,8 +80,8 @@ Note: this may be less performant than using the concrete input components direc
 					}
 				}}
 			>
-				<Icon inline={true} icon="ant-design:plus-circle-outlined" class="mr-1 text-white" />
-				Add At Position
+				<Icon icon="ant-design:plus-circle-outlined" class="inline-block mr-1 text-white" />Add At
+				Position
 			</button>
 		{/if}
 	</div>

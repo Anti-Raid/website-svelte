@@ -16,6 +16,7 @@
 	import { DerivedData, OperationTypes } from './types';
 	import logger from '$lib/ui/logger';
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
+	import Spacer from '../../../../components/inputs/Spacer.svelte';
 
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
@@ -24,6 +25,7 @@
 	export let value: any;
 	export let currentOperationType: OperationTypes;
 	export let column: CanonicalColumn;
+	export let debugMode: boolean;
 	export let columnState: ColumnState;
 	export let columnDispatchType: DispatchType;
 
@@ -31,24 +33,19 @@
 	export let allDerivedData: { [key: string]: DerivedData };
 
 	// On column field change
-	let referencedByCache: string[] | undefined = undefined;
+	let fieldList: string[] | undefined = undefined;
 	const flagRerenders = () => {
-		if (!referencedByCache) {
-			let referencedBy: string[] = [];
+		logger.debug('flagRerenders', 'Checking for rerenders for', column.id, allDerivedData);
+		if (!fieldList) {
+			fieldList = [];
 			for (let key in allDerivedData) {
-				if (allDerivedData[key].dispatchType.dynamic_on.includes(column.id)) {
-					referencedBy.push(key);
+				if (key != column.id) {
+					fieldList.push(key);
 				}
 			}
-
-			referencedByCache = referencedBy;
 		}
 
-		if (referencedByCache.length > 0) {
-			logger.info('flagRerenders', 'Referenced by', referencedByCache);
-		}
-
-		referencedByCache.forEach((key) => {
+		fieldList.forEach((key) => {
 			allDerivedData[key].forceRederive = true;
 		});
 	};
@@ -61,7 +58,7 @@
 
 	const rederiveIfForced = () => {
 		if (allDerivedData[column.id].forceRederive) {
-			logger.info('rederiveIfForced', 'Rederiving for', column.id);
+			logger.debug('rederiveIfForced', 'Rederiving for', column.id);
 			rederive();
 		}
 	};
@@ -114,6 +111,7 @@
 	/>
 
 	{#if column.nullable}
+		<Spacer typ="smallSpacing" />
 		<BoxButton
 			onclick={(e) => {
 				e.preventDefault();
@@ -123,16 +121,18 @@
 	{/if}
 {/if}
 
-<p class="configopt__debuginfo">
-	{currentOperationType},
-	{column.name} - {JSON.stringify(columnDispatchType)} - View: {deriveColumnState(
-		configOpt,
-		column,
-		'View'
-	)}, Update: {deriveColumnState(configOpt, column, 'Update')}, Create: {deriveColumnState(
-		configOpt,
-		column,
-		'Create'
-	)}, Delete: {deriveColumnState(configOpt, column, 'Delete')}, isPkey: {column.id ==
-		configOpt.primary_key}, isNullable: {column.nullable}
-</p>
+{#if debugMode}
+	<p class="configopt__debuginfo">
+		{currentOperationType},
+		{column.name} - {JSON.stringify(columnDispatchType)} - View: {deriveColumnState(
+			configOpt,
+			column,
+			'View'
+		)}, Update: {deriveColumnState(configOpt, column, 'Update')}, Create: {deriveColumnState(
+			configOpt,
+			column,
+			'Create'
+		)}, Delete: {deriveColumnState(configOpt, column, 'Delete')}, isPkey: {column.id ==
+			configOpt.primary_key}, isNullable: {column.nullable}
+	</p>
+{/if}

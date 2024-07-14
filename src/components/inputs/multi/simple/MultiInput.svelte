@@ -40,12 +40,11 @@
 	{/if}
 
 	{#if !disabled}
-		<button class="text-lg" type="button" on:click|preventDefault={() => appendValue()}>
-			<Icon inline={true} icon="ant-design:plus-circle-outlined" class="mr-1 text-white" />
-			Add Other
+		<button class="text-lg mr-2" type="button" on:click|preventDefault={() => appendValue()}>
+			<Icon icon="ant-design:plus-circle-outlined" class="inline-block mr-1 text-white" />Add Other
 		</button>
 		<button
-			class="text-lg"
+			class="text-lg mr-2"
 			type="button"
 			on:click|preventDefault={() => {
 				let i = prompt('Enter the position to add the new value');
@@ -54,8 +53,8 @@
 				}
 			}}
 		>
-			<Icon inline={true} icon="ant-design:plus-circle-outlined" class="mr-1 text-white" />
-			Add At Position
+			<Icon icon="ant-design:plus-circle-outlined" class="inline-block mr-1 text-white" />Add At
+			Position
 		</button>
 	{/if}
 </div>

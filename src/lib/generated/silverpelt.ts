@@ -196,6 +196,7 @@ export interface CanonicalConfigOption {
   primary_key: string;
   title_template: string;
   columns: CanonicalColumn[];
+  max_entries: number /* uint64 */;
   operations: Record<CanonicalOperationType, CanonicalOperationSpecific>;
 }
 

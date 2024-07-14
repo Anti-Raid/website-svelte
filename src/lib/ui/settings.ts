@@ -15,10 +15,6 @@ export interface DispatchType {
     bitflag_values: { [label: string]: bigint } | undefined;
     // Resolves column type
     resolved_column_type: CanonicalColumnType;
-    // If a dynamic column type, which column ids is it dynamic on (e.g. which columns, when they change, should change this column)
-    //
-    // This is useful for rederiving the dispatch type when any linked fields change
-    dynamic_on: string[];
 }
 
 // Returns the type to be dispatched to InputDispatcher
@@ -42,7 +38,6 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
         allowed_values: undefined,
         bitflag_values: undefined,
         resolved_column_type: column.column_type,
-        dynamic_on: []
     };
 
     const handleInner = (
@@ -97,24 +92,19 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
 
     // First handle dynamic (and nested dynamic too!)
     while (dispatchType.resolved_column_type.Dynamic) {
-        let found = false
+        let found = false;
         for (let clause of dispatchType.resolved_column_type.Dynamic.clauses) {
             let value = templateToStringLite(clause.field, fields);
             if (value == clause.value) {
                 dispatchType.resolved_column_type = clause.column_type;
-                dispatchType.dynamic_on = dispatchType.dynamic_on.concat(getReferencedVariables(clause.field));
                 found = true;
-                break;
             }
         }
 
         if (!found) {
-            throw new Error("DYNAMIC_CLAUSE_NOT_FOUND");
+            break;
         }
     }
-
-    // Fix rare bug where dynamic is set to null after resolving
-    delete dispatchType.resolved_column_type.Dynamic
 
     if (dispatchType.resolved_column_type.Scalar) {
         return handleInner(dispatchType, dispatchType.resolved_column_type.Scalar.column_type);
@@ -195,7 +185,7 @@ export const templateToStringLite = (template: string, fields: Record<string, an
 
     let nt = template;
     for (const key in fields) {
-        logger.info('Setting.templateToStringLite', 'Replacing', key, fields[key], fields);
+        logger.debug('Setting.templateToStringLite', 'Replacing', key, fields[key], fields);
         nt = nt.replaceAll(`{${key}}`, fields[key]);
     }
 
