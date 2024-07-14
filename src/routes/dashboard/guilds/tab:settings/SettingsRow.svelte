@@ -180,7 +180,7 @@
 	{/each}
 
 	{#if columnField['__message']}
-		<NoticeArea props={{ text: columnField['__message'], level: 'info' }} />
+		<NoticeArea props={{ text: columnField['__message'], level: 'info', disable_html: true }} />
 	{/if}
 
 	{#if currentOperationType === 'Update' && !isEqual(columnField, settings.fields[index])}

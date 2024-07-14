@@ -21,6 +21,6 @@
 			(display.iconColor ? ' ' + display.iconColor : '')}
 	/>
 	<div class="text-slate-100">
-		{#if props.allowHtml}{@html props.text}{:else}{props.text}{/if}
+		{#if props.disable_html}{props.text}{:else}{@html props.text}{/if}
 	</div>
 </div>
