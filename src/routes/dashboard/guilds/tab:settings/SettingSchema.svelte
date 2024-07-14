@@ -11,6 +11,14 @@
 	export let currentOperationType: OperationTypes = 'View';
 </script>
 
-{#each settings?.fields || [] as columnField}
-	<SettingsRow {columnField} {module} {guildId} {configOpt} {currentOperationType} />
+{#each settings?.fields || [] as columnField, i}
+	<SettingsRow
+		columnField={structuredClone(columnField)}
+		index={i}
+		{module}
+		{guildId}
+		{configOpt}
+		{currentOperationType}
+		bind:settings
+	/>
 {/each}

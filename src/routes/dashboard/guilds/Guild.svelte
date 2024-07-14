@@ -2,6 +2,7 @@
 	import { InstanceList } from '$lib/generated/mewld/proc';
 	import {
 		CanonicalModule,
+		FullGuildCommandConfiguration,
 		GuildCommandConfiguration,
 		GuildModuleConfiguration
 	} from '$lib/generated/silverpelt';
@@ -12,7 +13,7 @@
 
 	export let guildId: string;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
-	export let currentCommandConfiguration: GuildCommandConfiguration[];
+	export let currentCommandConfiguration: FullGuildCommandConfiguration[];
 	export let guildData: UserGuildBaseData;
 	export let instanceList: InstanceList;
 	export let guildShardId: number;

@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { CanonicalConfigOption, CanonicalModule } from '$lib/generated/silverpelt';
+	import {
+		CanonicalColumn,
+		CanonicalConfigOption,
+		CanonicalModule
+	} from '$lib/generated/silverpelt';
 	import {
 		getDispatchType,
 		deriveColumnState,
@@ -7,15 +11,87 @@
 		ColumnState
 	} from '$lib/ui/settings';
 	import Icon from '@iconify/svelte';
-	import InputDispatcher from '../../../../components/inputs/generic/InputDispatcher.svelte';
-	import SettingsSuggestionBox from './SettingsSuggestionBox.svelte';
-	import { OperationTypes } from './types';
+	import { DerivedData, OperationTypes } from './types';
+	import InputText from '../../../../components/inputs/InputText.svelte';
+	import Message from '../../../../components/Message.svelte';
+	import SettingsColumn from './SettingsColumn.svelte';
+	import { fetchClient } from '$lib/fetch/fetch';
+	import { get } from '$lib/configs/functions/services';
+	import { getAuthCreds } from '$lib/auth/getAuthCreds';
+	import { SettingsExecute, SettingsExecuteResponse } from '$lib/generated/types';
+	import ButtonReact from '../../../../components/inputs/button/ButtonReact.svelte';
+	import isEqual from 'lodash.isequal';
+	import { Color } from '../../../../components/inputs/button/colors';
+	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
+	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
 
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildId: string;
 	export let columnField: Record<string, any>;
+	export let index: number;
+	export let settings: SettingsExecuteResponse;
 	export let currentOperationType: OperationTypes = 'View';
+
+	let allDerivedData: { [key: string]: DerivedData } = {};
+	const getDataAsync = async (
+		columnField: Record<string, any>,
+		column: CanonicalColumn,
+		configOpt: CanonicalConfigOption,
+		currentOperationType: OperationTypes
+	): Promise<DerivedData> => {
+		let result = {
+			dispatchType: getDispatchType(columnField, column),
+			columnState: deriveColumnState(configOpt, column, currentOperationType)
+		};
+
+		allDerivedData[column.id] = result;
+
+		return result;
+	};
+
+	const editRow = async () => {
+		const creds = getAuthCreds();
+		if (!creds) throw new Error('No auth credentials found');
+
+		let fields: Record<string, any> = {};
+
+		Object.keys(columnField).forEach((k) => {
+			let column = configOpt.columns.find((c) => c.id === k);
+
+			if (!column) {
+				return;
+			}
+
+			if (column.ignored_for.includes('Update')) {
+				return;
+			}
+
+			fields[k] = columnField[k];
+		});
+
+		let payload: SettingsExecute = {
+			operation: 'Update',
+			module: module.id,
+			setting: configOpt.id,
+			fields
+		};
+
+		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
+			method: 'POST',
+			auth: creds.token,
+			body: JSON.stringify(payload)
+		});
+
+		if (!res.ok) {
+			let err = await res.error('Failed to update settings for this module');
+			throw new Error(err);
+		}
+
+		settings.fields[index] = columnField;
+	};
+
+	let noticeProps: NoticeProps | null = null;
 </script>
 
 <details class="setting-schema__details border p-2 bg-black hover:bg-slate-900">
@@ -25,74 +101,70 @@
 	<div id="action-box" class="mb-3 border rounded-md">
 		<button
 			on:click={() => {
-				currentOperationType = 'Update';
+				if (currentOperationType === 'Update') {
+					currentOperationType = 'View';
+				} else {
+					currentOperationType = 'Update';
+				}
 			}}
 			class="text-white hover:text-gray-300 focus:outline-none px-2 py-3 border-r"
 		>
 			<Icon icon={'mdi:pen'} class={'text-2xl inline-block align-bottom'} />
-			Edit
+			{currentOperationType === 'Update' ? 'Close Editor' : 'Edit'}
 		</button>
 	</div>
 
 	{#each configOpt.columns as column}
-		{#if deriveColumnState(configOpt, column, currentOperationType) != ColumnState.Hidden}
-			{#if column?.column_type?.Scalar}
-				<InputDispatcher
-					id={column.id}
-					label={column.name}
-					placeholder={column.description}
-					description={column.description}
-					minlength={getDispatchType(columnField, column)?.minlength}
-					maxlength={getDispatchType(columnField, column)?.maxlength}
-					type={getDispatchType(columnField, column)?.type}
-					disabled={deriveColumnState(configOpt, column, currentOperationType) ==
-						ColumnState.Disabled}
-					bind:value={columnField[column.id]}
-					showErrors={true}
-					choices={getDispatchType(columnField, column)?.allowed_values}
-				/>
-			{:else if column?.column_type?.Array}
-				<InputDispatcher
-					id={column.id}
-					label={column.name}
-					placeholder={column.description}
-					description={column.description}
-					minlength={getDispatchType(columnField, column)?.minlength}
-					maxlength={getDispatchType(columnField, column)?.maxlength}
-					type={getDispatchType(columnField, column)?.type}
-					disabled={deriveColumnState(configOpt, column, currentOperationType) ==
-						ColumnState.Disabled}
-					bind:value={columnField[column.id]}
-					showErrors={true}
-					choices={getDispatchType(columnField, column)?.allowed_values}
-					multiple={true}
-				/>
-			{/if}
-
-			{#if deriveColumnState(configOpt, column, currentOperationType) == ColumnState.Enabled}
-				<SettingsSuggestionBox
-					{guildId}
-					module={module.id}
+		{#await getDataAsync(columnField, column, configOpt, currentOperationType)}
+			<Message type="loading">Loading column data for {column.id}</Message>
+		{:then data}
+			{#if data.columnState != ColumnState.Hidden}
+				<SettingsColumn
 					{configOpt}
-					{column}
-					operationType={'Update'}
+					{module}
+					{guildId}
+					{columnField}
 					bind:value={columnField[column.id]}
+					{currentOperationType}
+					{column}
+					columnState={data.columnState}
+					columnDispatchType={data.dispatchType}
+					{allDerivedData}
 				/>
 			{/if}
-
-			<p class="configopt__debuginfo">
-				{currentOperationType},
-				{column.name} - {JSON.stringify(getDispatchType(columnField, column))} - View: {deriveColumnState(
-					configOpt,
-					column,
-					'View'
-				)}, Update: {deriveColumnState(configOpt, column, 'Update')}, Create: {deriveColumnState(
-					configOpt,
-					column,
-					'Create'
-				)}, Delete: {deriveColumnState(configOpt, column, 'Delete')}, isPkey: {column.id ==
-					configOpt.primary_key}
-			</p>
-		{/if}
+		{:catch err}
+			<InputText
+				id={`column-${column.id}-placeholder`}
+				label={column.name}
+				placeholder={column.description}
+				disabled={true}
+				minlength={0}
+				maxlength={0}
+				value={columnField[column.id]}
+			/>
+			<span class="text-sm">Rendering error: {err?.toString()}</span>
+		{/await}
 	{/each}
+
+	{#if currentOperationType === 'Update' && !isEqual(columnField, settings.fields[index])}
+		<!--TODO: Only show the buttonreact when theres an actual change-->
+		<ButtonReact
+			color={Color.Themable}
+			icon="mdi:edit"
+			text="Save Changes"
+			states={{
+				loading: 'Saving...',
+				success: 'Saved!',
+				error: 'Failed to save'
+			}}
+			onClick={editRow}
+			bind:noticeProps
+		/>
+	{/if}
+
+	<p>{JSON.stringify(settings.fields[index])} {JSON.stringify(columnField)}</p>
+
+	{#if noticeProps}
+		<NoticeArea props={noticeProps} />
+	{/if}
 </details>

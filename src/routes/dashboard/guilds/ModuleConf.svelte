@@ -1,6 +1,7 @@
 <script lang="ts">
 	import {
 		CanonicalModule,
+		FullGuildCommandConfiguration,
 		GuildCommandConfiguration,
 		GuildModuleConfiguration
 	} from '$lib/generated/silverpelt';
@@ -26,7 +27,7 @@
 	export let commonPermissionContext: CommonPermissionContext;
 	export let guildId: string;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
-	export let currentCommandConfiguration: GuildCommandConfiguration[];
+	export let currentCommandConfiguration: FullGuildCommandConfiguration[];
 	export let guildData: UserGuildBaseData;
 	export let guildClusterId: number;
 	export let guildShardId: number;
@@ -38,7 +39,7 @@
 		searchedCommands: LookedUpCommand[];
 		clusterFinderOpen: boolean;
 		commandEditOpen?: ParsedCanonicalCommandData;
-		commandEditConfigs: GuildCommandConfiguration[];
+		commandEditConfigs: FullGuildCommandConfiguration[];
 		commandEditorOpen: boolean;
 		clusterFinderByGuildIdExpectedData: {
 			cluster: number;

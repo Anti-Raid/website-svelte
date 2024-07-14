@@ -1,4 +1,4 @@
-import { CanonicalColumn, CanonicalConfigOption, CanonicalInnerColumnType } from "$lib/generated/silverpelt";
+import { CanonicalColumn, CanonicalColumnType, CanonicalConfigOption, CanonicalInnerColumnType } from "$lib/generated/silverpelt";
 import { OperationTypes } from "../../routes/dashboard/guilds/tab:settings/types";
 import logger from "./logger";
 
@@ -13,6 +13,12 @@ export interface DispatchType {
     allowed_values: { [label: string]: string } | undefined;
     // If bitflag, then the values of the bitflag
     bitflag_values: { [label: string]: bigint } | undefined;
+    // Resolves column type
+    resolved_column_type: CanonicalColumnType;
+    // If a dynamic column type, which column ids is it dynamic on (e.g. which columns, when they change, should change this column)
+    //
+    // This is useful for rederiving the dispatch type when any linked fields change
+    dynamic_on: string[];
 }
 
 // Returns the type to be dispatched to InputDispatcher
@@ -34,7 +40,9 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
         minlength: undefined,
         maxlength: undefined,
         allowed_values: undefined,
-        bitflag_values: undefined
+        bitflag_values: undefined,
+        resolved_column_type: column.column_type,
+        dynamic_on: []
     };
 
     const handleInner = (
@@ -88,21 +96,30 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
     };
 
     // First handle dynamic (and nested dynamic too!)
-    let columnType = column.column_type;
-    while (columnType.Dynamic) {
-        for (let clause of columnType.Dynamic.clauses) {
+    while (dispatchType.resolved_column_type.Dynamic) {
+        let found = false
+        for (let clause of dispatchType.resolved_column_type.Dynamic.clauses) {
             let value = templateToStringLite(clause.field, fields);
             if (value == clause.value) {
-                columnType = clause.column_type;
+                dispatchType.resolved_column_type = clause.column_type;
+                dispatchType.dynamic_on = dispatchType.dynamic_on.concat(getReferencedVariables(clause.field));
+                found = true;
                 break;
             }
         }
+
+        if (!found) {
+            throw new Error("DYNAMIC_CLAUSE_NOT_FOUND");
+        }
     }
 
-    if (columnType.Scalar) {
-        return handleInner(dispatchType, columnType.Scalar.column_type);
-    } else if (columnType.Array) {
-        return handleInner(dispatchType, columnType.Array.inner);
+    // Fix rare bug where dynamic is set to null after resolving
+    delete dispatchType.resolved_column_type.Dynamic
+
+    if (dispatchType.resolved_column_type.Scalar) {
+        return handleInner(dispatchType, dispatchType.resolved_column_type.Scalar.column_type);
+    } else if (dispatchType.resolved_column_type.Array) {
+        return handleInner(dispatchType, dispatchType.resolved_column_type.Array.inner);
     } else {
         return dispatchType;
     }
@@ -140,7 +157,35 @@ export const deriveColumnState = (
 };
 
 /**
- * Lite version of the Rust template_to_string. In particular, this implementation does not handle special variables or anything extra beyond basic variable replacement.
+ * Returns a list of variables that were referenced in a template
+ */
+export const getReferencedVariables = (template: string): string[] => {
+    let variables: string[] = [];
+    let inVariable = false;
+    let variable = '';
+    for (let i = 0; i < template.length; i++) {
+        if (template[i] == '{') {
+            inVariable = true;
+            continue;
+        }
+
+        if (template[i] == '}') {
+            inVariable = false;
+            variables.push(variable);
+            variable = '';
+            continue;
+        }
+
+        if (inVariable) {
+            variable += template[i];
+        }
+    }
+
+    return variables;
+}
+
+/**
+ * Lite version of the Rust template_to_string. In particular, this implementation does not provide special variables
  */
 export const templateToStringLite = (template: string, fields: Record<string, any>) => {
     if (template.startsWith("{") && template.endsWith("}")) {
