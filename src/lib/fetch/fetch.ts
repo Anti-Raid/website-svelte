@@ -4,7 +4,7 @@ import { PermissionCheck, PermissionChecks, PermissionResult } from '$lib/genera
 import dompurify from 'dompurify';
 import * as marked from 'marked';
 import { BitFlag } from '$lib/bitflag';
-import serenityPermissions from '$lib/generated/rust/serenity_perms.json';
+import serenityPermissions from '$lib/generated/build_assets/serenity_perms.json';
 
 const { sanitize } = dompurify;
 
@@ -47,7 +47,7 @@ class PermissionCheckFormatter {
 					result += ' ';
 				}
 				let permsBf = new BitFlag(serenityPermissions, perm);
-				result += `${perm} (${Object.keys(permsBf.getSetFlags())})`;
+				result += `${Object.keys(permsBf.getSetFlags())} (${perm})`;
 				if (index < this.nativePerms.length - 1) {
 					result += this.innerAnd ? ' AND' : ' OR';
 				}
@@ -96,6 +96,7 @@ class PermissionChecksFormatter {
 			.join(' ');
 
 		checks += `\n\n**Checks Needed**: ${this.checksNeeded}`;
+		return checks
 	}
 }
 
@@ -119,23 +120,30 @@ export class PermissionResultFormatter {
 			case 'MissingKittycatPerms':
 			case 'MissingNativePerms':
 			case 'MissingAnyPerms':
-				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
+				if (!this.result.checks) throw new Error('Missing checks for permission result');
+				checksFmt = new PermissionChecksFormatter(this.result.checks);
 				return `You do not have the required permissions to perform this action. Try checking that you have the below permissions: ${checksFmt.toString()}`;
 			case 'CommandDisabled':
-				return `You cannot perform this action because the command \`\`${this.result.command_config?.command}\`\` (inherited from \`\`${this.result.command_config?.command}\`\`) is disabled on this server`;
+				return `You cannot perform this action because the command \`\`${this.result.command_config?.command}\`\` is disabled on this server`;
 			case 'UnknownModule':
 				return `The module \`\`${this.result.module_config?.module}\`\` does not exist`;
+			case 'ModuleNotFound':
+				return `The module corresponding to this command could not be determined!`;
 			case 'ModuleDisabled':
 				return `The module \`\`${this.result.module_config?.module}\`\` is disabled on this server`;
 			case 'NoChecksSucceeded':
-				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
+				if (!this.result.checks) throw new Error('Missing checks for permission result');
+				checksFmt = new PermissionChecksFormatter(this.result.checks);
 				return `You do not have the required permissions to perform this action. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'MissingMinChecks':
-				checksFmt = new PermissionChecksFormatter(this.result.checks as PermissionChecks);
+				if (!this.result.checks) throw new Error('Missing checks for permission result');
+				checksFmt = new PermissionChecksFormatter(this.result.checks);
 				return `You do not have the required permissions to perform this action. You need at least ${checksFmt.checksNeeded
 					} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'DiscordError':
 				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
+			case 'SudoNotGranted':
+				return 'This module is only available for root (staff) and/or developers of the bot'
 			case 'GenericError':
 				return this.result.error;
 		}
@@ -150,7 +158,7 @@ export class PermissionResultFormatter {
 	async format(type: 'markdown' | 'html'): Promise<string> {
 		let md = `${this.toMarkdown()}\n\n\n\n**Code:** ${this.result.var}`;
 
-		logger.info("PermissionResultFormatter", "Formatting", md)
+		logger.info('PermissionResultFormatter', 'Formatting', md);
 
 		if (!md) {
 			throw new Error('Failed to format permission result, md is null/undefined');
@@ -159,7 +167,7 @@ export class PermissionResultFormatter {
 		if (type === 'html') {
 			let outHtml = await marked.parse(md, {
 				async: true,
-				breaks: true,
+				breaks: true
 			});
 
 			return outHtml;
@@ -204,10 +212,10 @@ export class ClientResponse {
 			throw new Error(`Cannot call error() when response.ok is true`);
 		}
 
-		logger.info("ClientResponse", "Error", this.errorType)
+		logger.info('ClientResponse', 'Error', this.errorType);
 
 		if (!type) {
-			type = 'html'
+			type = 'html';
 		}
 
 		if (this.errorType) {
@@ -222,8 +230,8 @@ export class ClientResponse {
 
 					// Add some formatting for ol/ul
 					outHtml = outHtml
-						.replaceAll("<ol", "<ol class='list-decimal pl-6 mb-2'")
-						.replaceAll("<ul", "<ul class='pl-1'");
+						.replaceAll('<ol', "<ol class='list-decimal pl-6 mb-2'")
+						.replaceAll('<ul', "<ul class='pl-1'");
 
 					return outHtml;
 			}
@@ -232,13 +240,13 @@ export class ClientResponse {
 		try {
 			let json: ApiError = await this.response.json();
 
-			if (type == "html") {
+			if (type == 'html') {
 				let htmlOut = await marked.parse(this.formatApiError(base || 'Error', json));
 				let sanitized = sanitize(htmlOut);
 
 				// Ensure that the error message is wrapped in a paragraph
-				if (!sanitized.startsWith("<p")) {
-					sanitized = `<p class="mb-2">${sanitized}</p>`
+				if (!sanitized.startsWith('<p')) {
+					sanitized = `<p class="mb-2">${sanitized}</p>`;
 				}
 
 				return sanitized;
@@ -285,7 +293,7 @@ export async function fetchClient(
 	if (options.headers) {
 		headers = {
 			...headers,
-			...options.headers as Record<string, string>
+			...(options.headers as Record<string, string>)
 		};
 	}
 
@@ -296,7 +304,7 @@ export async function fetchClient(
 		modifier += ' (authorized)';
 	} else {
 		if (headers['Authorization']) {
-			logger.error('FetchClient', 'options.auth must be used for auth');
+			throw new Error('options.auth must be used for auth');
 		}
 	}
 

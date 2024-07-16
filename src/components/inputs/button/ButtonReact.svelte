@@ -9,7 +9,7 @@ Converted to SvelteKit from NextJS for panel use
 -->
 
 <script lang="ts">
-	import { error } from '$lib/toast';
+	import { NoticeProps } from '../../common/noticearea/noticearea';
 	import ButtonInner from './ButtonInner.svelte';
 	import type { Color } from './colors';
 	import type { States } from './states';
@@ -21,9 +21,9 @@ Converted to SvelteKit from NextJS for panel use
 	export let text: string;
 	export let type: 'button' | 'submit' = 'submit';
 	export let states: States;
-	export let noRevertState: boolean = false;
 	export let disableBtnAfter: string = '';
-	export let onClick: () => Promise<boolean>;
+	export let onClick: () => Promise<void>;
+	export let noticeProps: NoticeProps | null;
 
 	// Internal state
 	enum ReactState {
@@ -41,7 +41,7 @@ Converted to SvelteKit from NextJS for panel use
 	}
 
 	let state: ReactState = ReactState.Normal; // Current state of the button
-	let display: Display = { icon, text, className, disabled: false }; // Current display of the button
+	export let display: Display = { icon, text, className, disabled: false }; // Current display of the button
 
 	$: {
 		switch (state) {
@@ -99,46 +99,35 @@ Converted to SvelteKit from NextJS for panel use
 	aria-disabled={display.disabled}
 	{type}
 	on:click|preventDefault
-	on:click={() => {
-		display.disabled = true; // Disable the button
-		if (state == ReactState.Loading) return;
+	on:click={async () => {
+		if (state == ReactState.Loading || display.disabled) return;
 
 		state = ReactState.Loading;
 
-		setTimeout(() => {
-			let resp = onClick().catch((e) => {
-				error(`${e}`);
-				state = ReactState.Error;
+		try {
+			await onClick();
+			state = ReactState.Clicked;
+			noticeProps = null; // Clear any previous errors
+		} catch (err) {
+			noticeProps = {
+				level: 'error',
+				text: err?.toString() || 'An error occurred'
+			};
+			state = ReactState.Error;
+		}
 
-				// Wait 2 seconds
-				if (!noRevertState && !disableBtnAfter) {
-					setTimeout(() => {
-						state = ReactState.Normal;
-						display.disabled = false;
-					}, 4000);
-				}
-			});
-
-			// Check if Promise
-			if (resp && resp.then) {
-				resp.then((out) => {
-					state = out ? ReactState.Clicked : ReactState.Error;
-
-					// Wait 2 seconds
-					if (!noRevertState && !disableBtnAfter) {
-						setTimeout(() => {
-							state = ReactState.Normal;
-							display.disabled = false;
-						}, 4000);
-					}
-				});
-			} else {
-				if (!noRevertState && !disableBtnAfter) {
+		// Wait 2 seconds
+		if (!disableBtnAfter) {
+			setTimeout(() => {
+				if (states) {
 					state = ReactState.Normal;
-					display.disabled = false;
 				}
-			}
-		}, 300);
+				display.disabled = false;
+			}, 4000);
+		} else {
+			display.disabled = true;
+			display.text = disableBtnAfter;
+		}
 	}}
 >
 	<ButtonInner {color} icon={display.icon} text={display.text} class={display.className} />

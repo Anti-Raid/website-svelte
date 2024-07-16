@@ -61,6 +61,6 @@ Converted to SvelteKit from NextJS for panel use
 		class={(state?.colorClass ? state?.colorClass + ' ' : '') +
 			' w-full px-4 py-2 rounded-r-lg text-white text-left'}
 	>
-		<p class="line-clamp-1">{text}</p>
+		<p class="line-clamp-1 text-white">{text}</p>
 	</div>
 </div>

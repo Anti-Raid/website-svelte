@@ -9,6 +9,8 @@
 	import InputText from '../../components/inputs/InputText.svelte';
 	import ButtonReact from '../../components/inputs/button/ButtonReact.svelte';
 	import { Color } from '../../components/inputs/button/colors';
+	import { NoticeProps } from '../../components/common/noticearea/noticearea';
+	import NoticeArea from '../../components/common/noticearea/NoticeArea.svelte';
 
 	let currentState = 'Loading dashboard data';
 	let guilds: DashboardGuildData;
@@ -25,25 +27,21 @@
 
 		currentState = 'Fetching user guild list';
 
-		let res = await fetchClient(
-			`${get('splashtail')}/users/${authCreds?.user_id}/guilds?refresh=${refresh}`,
-			{
-				auth: authCreds?.token,
-				onRatelimit: (n, err) => {
-					if (!n) {
-						currentState = 'Retrying fetching of user guild list';
-					} else {
-						currentState = `Ratelimited, retrying user guild list fetch in ${n / 1000} seconds (${
-							err?.message
-						})`;
-					}
+		let res = await fetchClient(`${get('splashtail')}/guilds?refresh=${refresh}`, {
+			auth: authCreds?.token,
+			onRatelimit: (n, err) => {
+				if (!n) {
+					currentState = 'Retrying fetching of user guild list';
+				} else {
+					currentState = `Ratelimited, retrying user guild list fetch in ${n / 1000} seconds (${
+						err?.message
+					})`;
 				}
 			}
-		);
+		});
 
 		if (!res.ok) {
-			let err: ApiError = await res.json();
-			throw new Error(`Failed to fetch user guild list: ${err?.message} (${err?.context})`);
+			throw new Error(await res.error('User Guild List', 'markdown'));
 		}
 
 		guilds = await res.json();
@@ -67,13 +65,11 @@
 	};
 
 	const recacheForce = async () => {
-		try {
-			await loadIndexDashPage(true);
-			return true;
-		} catch (e) {
-			return false;
-		}
+		await loadIndexDashPage(true);
 	};
+
+	let topNoticeArea: NoticeProps | null;
+	let bottomNoticeArea: NoticeProps | null;
 </script>
 
 {#await loadIndexDashPage(false)}
@@ -83,6 +79,10 @@
 		{currentState}
 	</small>
 {:then}
+	{#if topNoticeArea}
+		<NoticeArea props={topNoticeArea} />
+	{/if}
+
 	<ButtonReact
 		color={Color.Themable}
 		text="Refresh Server List"
@@ -93,6 +93,7 @@
 			error: 'Failed to refresh',
 			success: 'Refreshed'
 		}}
+		bind:noticeProps={topNoticeArea}
 	/>
 
 	<h1 class="text-white font-semibold text-2xl">Servers With AntiRaid ({hasBot?.length})</h1>
@@ -191,7 +192,12 @@
 			error: 'Failed to refresh',
 			success: 'Refreshed'
 		}}
+		bind:noticeProps={bottomNoticeArea}
 	/>
+
+	{#if bottomNoticeArea}
+		<NoticeArea props={bottomNoticeArea} />
+	{/if}
 {:catch error}
 	<Message type="error">
 		{error?.toString() || 'Failed to load dashboard'}

@@ -6,11 +6,13 @@
 	import { logoutUser } from '../lib/auth/logoutUser';
 	import { getUser } from '../lib/auth/getUser';
 	import { User } from '../lib/generated/types';
-	import logger from '../lib/ui/logger';
 	import Icon from '@iconify/svelte';
 	import NavButton from './inputs/button/NavButton.svelte';
 	import { loginUser } from '$lib/auth/loginUser';
-	import { error } from '$lib/toast';
+	import { LSAuthData } from '$lib/auth/core';
+	import { browser } from '$app/environment';
+	import Themer from './Themer.svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	let navigation = [
 		{ name: 'Home', href: '/' },
@@ -22,67 +24,100 @@
 
 	let open = '';
 
-	let mobileMenuOpen: boolean = false;
-	let profileMenuOpen: boolean = false;
+	interface OpenElements {
+		[key: string]: {
+			open: boolean;
+			bind: HTMLElement | null;
+		};
+	}
+
+	let openElements: OpenElements = {
+		mobileMenu: {
+			open: false,
+			bind: null
+		},
+		profileMenu: {
+			open: false,
+			bind: null
+		},
+		themeMenu: {
+			open: false,
+			bind: null
+		}
+	};
+
+	// Handles clicks outside an open element
+	const handleOutsideOpenElementClicks = (e: MouseEvent) => {
+		for (let key in openElements) {
+			if (openElements[key].open) {
+				if (!openElements[key].bind?.contains(e.target as Node)) {
+					openElements[key].open = false;
+				}
+			}
+		}
+	};
+
+	onMount(() => {
+		if (browser) {
+			document.addEventListener('mousedown', handleOutsideOpenElementClicks);
+		}
+	});
+
+	onDestroy(() => {
+		if (browser) {
+			document.removeEventListener('mousedown', handleOutsideOpenElementClicks);
+		}
+	});
 
 	type LoginData = null | {
 		profileNavigation: {
 			name: string;
 			href: string;
 		}[];
-		user: User | undefined;
+		user: User;
+	};
+
+	const checkUserAuth = async (authCreds: LSAuthData) => {
+		// Check auth
+		if (!authCreds) {
+			throw new Error('No auth credentials found');
+		}
+
+		try {
+			let check = await checkAuthCreds(authCreds);
+
+			if (!check) {
+				logoutUser();
+				return;
+			}
+		} catch {
+			return;
+		}
 	};
 
 	const getLoginData = async () => {
 		let authCreds = getAuthCreds();
 
-		if (!authCreds) return;
-
-		let authCheck = false;
-		let user: User | undefined;
-
-		let cachedAuthUser = localStorage.getItem('authUser');
-		if (cachedAuthUser) {
-			setTimeout(async () => {
-				// Check auth
-				if (!authCreds) {
-					throw new Error('No auth credentials found');
-				}
-
-				try {
-					let check = await checkAuthCreds(authCreds);
-
-					if (!check) {
-						logoutUser();
-						return;
-					}
-				} catch {
-					return;
-				}
-			}, 1000 * 60 * 5);
-			user = JSON.parse(cachedAuthUser);
-			authCheck = true;
-		} else {
-			try {
-				authCheck = await checkAuthCreds(authCreds);
-			} catch {
-				return;
-			}
-
-			if (!authCheck) {
-				logoutUser();
-				return;
-			}
-
-			user = await getUser(authCreds);
-
-			if (!user) {
-				logger.error('Auth', 'Failed to get user data');
-				return;
-			}
+		if (!authCreds) {
+			return null;
 		}
 
-		localStorage.setItem('authUser', JSON.stringify(user));
+		let cachedAuthUser = localStorage.getItem('authUser');
+
+		if (!cachedAuthUser) {
+			let userRes = await getUser(authCreds.user_id);
+			cachedAuthUser = JSON.stringify(userRes);
+			localStorage.setItem('authUser', cachedAuthUser);
+		}
+
+		let user: User = JSON.parse(cachedAuthUser);
+
+		if (!user) {
+			logoutUser();
+			return;
+		}
+
+		setInterval(checkUserAuth, 1000 * 60 * 5);
 
 		let data: LoginData = {
 			profileNavigation: [
@@ -99,14 +134,6 @@
 		};
 
 		return data;
-	};
-
-	const loginDiscord = async () => {
-		try {
-			await loginUser();
-		} catch (err) {
-			error(err?.toString() || 'Failed to login');
-		}
 	};
 
 	$: {
@@ -140,30 +167,48 @@
 						href={item.href}
 						current={item.name === open}
 						onClick={() => {
-							mobileMenuOpen = false;
+							openElements.mobileMenu.open = false;
 						}}
 						extClass="hidden md:block"
 					/>
 				{/each}
 			</div>
 		</div>
-		<div class="flex items-center space-x-4">
+		<div class="flex items-center space-x-2">
 			<button
 				type="button"
 				class="block md:hidden rounded-md p-2 font-medium text-left text-gray-300 hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-1 focus:ring-inset focus:ring-white"
-				on:click={() => (mobileMenuOpen = !mobileMenuOpen)}
+				on:click={() => (openElements.mobileMenu.open = !openElements.mobileMenu.open)}
 				aria-controls="mobile-menu"
 				aria-expanded="false"
 			>
 				<span class="sr-only">Open main menu</span>
-				{#if mobileMenuOpen}
+				{#if openElements.mobileMenu.open}
 					<Icon icon="fa-solid:times" width="12px" />
 				{:else}
 					<Icon icon="fa-solid:bars" width="16px" />
 				{/if}
 			</button>
+
+			<span class="relative">
+				<button
+					name="themer-pane"
+					aria-label="View Themes"
+					on:click={() => (openElements.themeMenu.open = !openElements.themeMenu.open)}
+					class={openElements.themeMenu.open
+						? 'px-3 py-2 text-center text-white rounded-md bg-primary-500 bg-opacity-20'
+						: 'px-3 py-2 text-center text-white bg-transparent rounded-md hover:bg-primary-500 hover:bg-opacity-20'}
+				>
+					<Icon icon="mdi:palette" class="text-3xl text-white-900" />
+				</button>
+				<div bind:this={openElements.themeMenu.bind} class="themer-div text-left">
+					<Themer bind:isOpen={openElements.themeMenu.open} />
+				</div>
+			</span>
+
 			{#await getLoginData()}
 				<Icon icon="fa-solid:yin-yang" width="32px" class="animate-spin text-white" />
+				<span class="animate-pulse text-white">...</span>
 			{:then data}
 				{#if data && data?.user}
 					<div class="w-full">
@@ -173,14 +218,15 @@
 							id="user-menu-button"
 							aria-expanded="false"
 							aria-haspopup="true"
-							on:click={() => (profileMenuOpen = !profileMenuOpen)}
+							on:click={() => (openElements.profileMenu.open = !openElements.profileMenu.open)}
 						>
 							<span class="sr-only">Open user menu</span>
 							<img class="h-8 w-8 rounded-full" src={data?.user?.user?.avatar} alt="" />
 						</button>
 
-						{#if profileMenuOpen}
+						{#if openElements.profileMenu.open}
 							<div
+								bind:this={openElements.profileMenu.bind}
 								role="menu"
 								aria-orientation="vertical"
 								aria-labelledby="user-menu-button"
@@ -208,13 +254,13 @@
 				{:else}
 					<button
 						type="button"
-						on:click={loginDiscord}
+						on:click={loginUser}
 						class="px-4 py-2 text-sm font-medium text-left text-gray-50 rounded-lg cursor-pointer bg-indigo-600 hover:bg-indigo-800 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-white"
 					>
 						Login
 					</button>
 				{/if}
-			{:catch}
+			{:catch err}
 				<button
 					type="button"
 					on:click={() => {
@@ -222,14 +268,14 @@
 					}}
 					class="text-red-500"
 				>
-					Reload?
+					Reload? {err}
 				</button>
 			{/await}
 		</div>
 	</div>
 
-	{#if mobileMenuOpen}
-		<div id="mobile-menu" class="md:hidden">
+	{#if openElements.mobileMenu.open}
+		<div id="mobile-menu" class="md:hidden" bind:this={openElements.mobileMenu.bind}>
 			<div class="space-y-1 px-2 pt-2 pb-3">
 				{#each navigation as item}
 					<NavButton
@@ -237,7 +283,7 @@
 						href={item.href}
 						current={item.name === open}
 						onClick={() => {
-							mobileMenuOpen = false;
+							openElements.mobileMenu.open = false;
 						}}
 						extClass="block"
 					/>

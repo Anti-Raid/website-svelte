@@ -4,23 +4,35 @@
 	import { get } from '$lib/configs/functions/services';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import {
-		ApiError,
 		CreateUserSession,
 		CreateUserSessionResponse,
 		UserSession,
 		UserSessionList
 	} from '$lib/generated/types';
-	import { error, success } from '$lib/toast';
 	import Message from '../../../components/Message.svelte';
-	import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
+	import { DataHandler, Datatable, Th } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import Select from '../../../components/inputs/select/Select.svelte';
 	import InputNumber from '../../../components/inputs/InputNumber.svelte';
-	import KittycatPermSelectArray from '../../../components/dashboard/KittycatPermSelectArray.svelte';
+	import KittycatPermSelectArray from '../../../components/dashboard/permissions/KittycatPermSelectArray.svelte';
 	import Label from '../../../components/inputs/Label.svelte';
 	import ButtonReact from '../../../components/inputs/button/ButtonReact.svelte';
 	import { Color } from '../../../components/inputs/button/colors';
+	import Pagination from '../../../components/common/datatable/Pagination.svelte';
+	import RowCount from '../../../components/common/datatable/RowCount.svelte';
+	import RowsPerPage from '../../../components/common/datatable/RowsPerPage.svelte';
+	import Search from '../../../components/common/datatable/Search.svelte';
+	import ThFilter from '../../../components/common/datatable/ThFilter.svelte';
+	import ThSort from '../../../components/common/datatable/ThSort.svelte';
+	import { NoticeProps } from '../../../components/common/noticearea/noticearea';
+	import NoticeArea from '../../../components/common/noticearea/NoticeArea.svelte';
+	import { makeSharedRequest, opGetClusterModules } from '$lib/fetch/ext';
+	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
+	import {
+		extractKnownPermissionsFromModules,
+		makeKittycatPermissionMapperFromPermissions
+	} from '$lib/ui/permMap';
 
 	let sessionRows: Readable<UserSession[]>;
 	let otherSessionRows: Readable<UserSession[]>;
@@ -34,7 +46,7 @@
 
 		currentState = 'Fetching session data';
 
-		let res = await fetchClient(`${get('splashtail')}/users/${authCreds?.user_id}/sessions`, {
+		let res = await fetchClient(`${get('splashtail')}/sessions`, {
 			auth: authCreds?.token,
 			onRatelimit: (n, err) => {
 				if (!n) {
@@ -46,7 +58,7 @@
 		});
 
 		if (!res.ok) {
-			let err = await res.error("Session Data", "markdown")
+			let err = await res.error('Session Data', 'markdown');
 			throw new Error(err);
 		}
 
@@ -64,9 +76,20 @@
 		sessionRows = sessionHandler.getRows();
 		otherSessionRows = otherSessionHandler.getRows();
 
+		// Get list of cluster modules
+		currentState = 'Fetching all available cluster modules';
+		let clusterModules = await makeSharedRequest(opGetClusterModules(0));
+
+		let commonPermissionContext: CommonPermissionContext = {
+			kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
+				extractKnownPermissionsFromModules(Object.values(clusterModules))
+			)
+		};
+
 		return {
 			otherSessionHandler,
-			sessionHandler
+			sessionHandler,
+			commonPermissionContext
 		};
 	};
 
@@ -76,22 +99,28 @@
 
 			if (!authCreds) throw new Error('No auth credentials found');
 
-			let res = await fetchClient(
-				`${get('splashtail')}/users/${authCreds?.user_id}/sessions/${sessionId}`,
-				{
-					method: 'DELETE',
-					auth: authCreds?.token
-				}
-			);
+			let res = await fetchClient(`${get('splashtail')}/sessions/${sessionId}`, {
+				method: 'DELETE',
+				auth: authCreds?.token
+			});
 
 			if (res.ok) {
-				success(`Successfully revoked session ${sessionId}`);
+				sessionTopNoticeArea = {
+					level: 'success',
+					text: `Successfully revoked session ${sessionId}`
+				};
 			} else {
-				let err = await res.error("Revoke session", "markdown");
-				error(err);
+				let err = await res.error('Revoke session', 'markdown');
+				sessionTopNoticeArea = {
+					level: 'error',
+					text: err
+				};
 			}
 		} catch (err) {
-			error(`Failed to revoke session: ${err}`);
+			sessionTopNoticeArea = {
+				level: 'error',
+				text: `Failed to revoke session: ${err}`
+			};
 		}
 	};
 
@@ -109,21 +138,21 @@
 
 		if (!creds) throw new Error('No auth credentials found');
 
-		let res = await fetchClient(`${get('splashtail')}/users/${creds?.user_id}/sessions`, {
+		let res = await fetchClient(`${get('splashtail')}/sessions`, {
 			method: 'POST',
 			auth: creds?.token,
 			body: JSON.stringify(createSession)
 		});
 
-		if (res.ok) {
-			success('Session created');
-			createSessionResp = await res.json();
-			return true;
-		} else {
-			let err = await res.error("Create session", "markdown");
-			throw new Error(err)
+		if (!res.ok) {
+			throw new Error(await res.error('Create session', 'markdown'));
 		}
+
+		createSessionResp = await res.json();
 	};
+
+	let createSessionNoticeArea: NoticeProps | null = null;
+	let sessionTopNoticeArea: NoticeProps | null = null;
 </script>
 
 {#await loadGuildData()}
@@ -146,17 +175,31 @@
 		<em class="opacity-70">{testAuthData?.data?.session_id}</em>
 	</p>
 
-	<Datatable handler={data.sessionHandler} search={false}>
-		<table class="overflow-x-auto">
+	{#if sessionTopNoticeArea}
+		<NoticeArea props={sessionTopNoticeArea} />
+	{/if}
+
+	<div class="overflow-x-auto space-y-4">
+		<!-- Header -->
+		<header class="flex justify-between gap-4">
+			<Search handler={data.sessionHandler} />
+			<RowsPerPage handler={data.sessionHandler} />
+		</header>
+
+		<div class="p-1" />
+
+		<!-- Table -->
+		<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
 			<thead>
-				<tr>
-					<Th handler={data.sessionHandler} orderBy={'id'}>ID</Th>
-					<Th handler={data.sessionHandler} orderBy={'type'}>Type</Th>
-					<Th handler={data.sessionHandler} orderBy={'expiry'}>Expiry</Th>
-					<Th handler={data.sessionHandler} orderBy={'created_at'}>Created At</Th>
-					<Th handler={data.sessionHandler} orderBy={'id'}>Actions</Th>
+				<tr class="bg-surface-800">
+					<ThSort handler={data.sessionHandler} orderBy={'id'}>ID</ThSort>
+					<ThSort handler={data.sessionHandler} orderBy={'type'}>Type</ThSort>
+					<ThSort handler={data.sessionHandler} orderBy={'expiry'}>Expiry</ThSort>
+					<ThSort handler={data.sessionHandler} orderBy={'created_at'}>Created At</ThSort>
+					<ThSort handler={data.sessionHandler} orderBy={'id'}>Actions</ThSort>
 				</tr>
-				<tr>
+
+				<tr class="bg-surface-800">
 					<ThFilter handler={data.sessionHandler} filterBy={'id'} />
 					<ThFilter handler={data.sessionHandler} filterBy={'type'} />
 					<ThFilter handler={data.sessionHandler} filterBy={'expiry'} />
@@ -189,22 +232,38 @@
 				{/each}
 			</tbody>
 		</table>
-	</Datatable>
+
+		<!-- Footer -->
+		<footer class="flex justify-between">
+			<RowCount handler={data.sessionHandler} />
+			<Pagination handler={data.sessionHandler} />
+		</footer>
+	</div>
 
 	<h1 class="font-semibold text-2xl">API Tokens</h1>
 
-	<Datatable handler={data.otherSessionHandler} search={false}>
-		<table class="overflow-x-auto">
+	<div class="overflow-x-auto space-y-4">
+		<!-- Header -->
+		<header class="flex justify-between gap-4">
+			<Search handler={data.otherSessionHandler} />
+			<RowsPerPage handler={data.otherSessionHandler} />
+		</header>
+
+		<div class="p-1" />
+
+		<!-- Table -->
+		<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
 			<thead>
-				<tr>
-					<Th handler={data.otherSessionHandler} orderBy={'id'}>ID</Th>
-					<Th handler={data.otherSessionHandler} orderBy={'name'}>Name</Th>
-					<Th handler={data.otherSessionHandler} orderBy={'type'}>Type</Th>
-					<Th handler={data.otherSessionHandler} orderBy={'expiry'}>Expiry</Th>
-					<Th handler={data.otherSessionHandler} orderBy={'created_at'}>Created At</Th>
-					<Th handler={data.otherSessionHandler} orderBy={'id'}>Actions</Th>
+				<tr class="bg-surface-800">
+					<ThSort handler={data.otherSessionHandler} orderBy={'id'}>ID</ThSort>
+					<ThSort handler={data.otherSessionHandler} orderBy={'name'}>Name</ThSort>
+					<ThSort handler={data.otherSessionHandler} orderBy={'type'}>Type</ThSort>
+					<ThSort handler={data.otherSessionHandler} orderBy={'expiry'}>Expiry</ThSort>
+					<ThSort handler={data.otherSessionHandler} orderBy={'created_at'}>Created At</ThSort>
+					<ThSort handler={data.otherSessionHandler} orderBy={'id'}>Actions</ThSort>
 				</tr>
-				<tr>
+
+				<tr class="bg-surface-800">
 					<ThFilter handler={data.otherSessionHandler} filterBy={'id'} />
 					<ThFilter handler={data.otherSessionHandler} filterBy={'name'} />
 					<ThFilter handler={data.otherSessionHandler} filterBy={'type'} />
@@ -233,7 +292,13 @@
 				{/each}
 			</tbody>
 		</table>
-	</Datatable>
+
+		<!-- Footer -->
+		<footer class="flex justify-between">
+			<RowCount handler={data.otherSessionHandler} />
+			<Pagination handler={data.otherSessionHandler} />
+		</footer>
+	</div>
 
 	<h1 class="font-semibold text-2xl">Create Session</h1>
 
@@ -272,7 +337,11 @@
 
 	<Label id="session-perms" label="Permission Limits" />
 	<div class="mb-3" />
-	<KittycatPermSelectArray id="session-perms" bind:perms={createSession.perm_limits} />
+	<KittycatPermSelectArray
+		id="session-perms"
+		bind:perms={createSession.perm_limits}
+		ctx={data.commonPermissionContext}
+	/>
 
 	<ButtonReact
 		color={Color.Themable}
@@ -284,7 +353,12 @@
 			error: 'Failed to create session'
 		}}
 		onClick={createSessionFunc}
+		bind:noticeProps={createSessionNoticeArea}
 	/>
+
+	{#if createSessionNoticeArea}
+		<NoticeArea props={createSessionNoticeArea} />
+	{/if}
 
 	{#if createSessionResp}
 		<h2 class="font-semibold text-2xl">Session Created</h2>
@@ -302,20 +376,3 @@
 {:catch err}
 	<Message type="error">{@html err}</Message>
 {/await}
-
-<style>
-	table {
-		color: white;
-		margin: 0 !important;
-	}
-	tbody td {
-		border: 1px solid #f5f5f5;
-		padding: 4px 20px;
-	}
-	tbody tr {
-		transition: all, 0.2s;
-	}
-	tbody tr:hover {
-		background: #252323;
-	}
-</style>

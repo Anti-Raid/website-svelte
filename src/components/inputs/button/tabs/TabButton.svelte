@@ -9,6 +9,8 @@ Converted to SvelteKit from NextJS for panel use
 -->
 
 <script lang="ts">
+	import logger from '$lib/ui/logger';
+
 	export let visible: boolean;
 	export let text: string;
 	export let onClick: () => void;
@@ -17,6 +19,7 @@ Converted to SvelteKit from NextJS for panel use
 <button
 	type="button"
 	on:click={(evt) => {
+		logger.info('TabButton.switchImpl', text);
 		if (evt && evt.preventDefault) evt.preventDefault();
 
 		onClick();

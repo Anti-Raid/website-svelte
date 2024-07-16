@@ -1,11 +1,7 @@
 <script lang="ts">
 	import { makeSharedRequest, opGetClusterModules } from '$lib/fetch/ext';
 	import { InstanceList } from '$lib/generated/mewld/proc';
-	import {
-		CanonicalCommand,
-		CanonicalCommandData,
-		CanonicalModule
-	} from '$lib/generated/silverpelt';
+	import { CanonicalModule } from '$lib/generated/silverpelt';
 	import logger from '$lib/ui/logger';
 	import Message from '../Message.svelte';
 	import Modal from '../Modal.svelte';
@@ -17,13 +13,20 @@
 	import { DataHandler } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
 	import BoolInput from '../inputs/BoolInput.svelte';
-	import { CanonicalCommandExtendedData } from '$lib/converters';
 	import Pagination from './datatable/Pagination.svelte';
 	import RowCount from './datatable/RowCount.svelte';
 	import RowsPerPage from './datatable/RowsPerPage.svelte';
 	import Search from './datatable/Search.svelte';
 	import ThFilter from './datatable/ThFilter.svelte';
 	import ThSort from './datatable/ThSort.svelte';
+	import {
+		LookedUpCommand,
+		ParsedCanonicalCommandData,
+		commandLookup,
+		extractCommandsFromModule
+	} from '$lib/ui/commands';
+	import { NoticeProps } from './noticearea/noticearea';
+	import NoticeArea from './noticearea/NoticeArea.svelte';
 
 	export let instanceList: InstanceList;
 
@@ -34,6 +37,7 @@
 		clusterModuleData: Record<number, Record<string, CanonicalModule>>;
 		searchedCommands: LookedUpCommand[];
 		clusterFinderOpen: boolean;
+		clusterFinderNoticeArea: NoticeProps | null;
 		clusterFinderByGuildIdExpectedData: {
 			cluster: number;
 			shard: number;
@@ -47,47 +51,8 @@
 		commandSearch: '',
 		searchedCommands: [],
 		clusterFinderOpen: false,
-		clusterFinderByGuildIdExpectedData: null
-	};
-
-	interface LookedUpCommand {
-		command: CanonicalCommand;
-		module: CanonicalModule;
-	}
-	const commandLookup = (): LookedUpCommand[] => {
-		if (state?.openCluster == undefined) return [];
-		let moduleData = state.clusterModuleData[state.openCluster];
-		if (!moduleData) return [];
-
-		let commands: LookedUpCommand[] = [];
-
-		for (let module of Object.values(moduleData)) {
-			if (module?.web_hidden) continue; // Skip web_hidden modules, they are internal and are not publicly usable anyways
-
-			for (let command of module?.commands) {
-				let checkProps = [
-					command?.command?.name,
-					command?.command?.qualified_name,
-					command?.command?.description,
-					...command?.command?.subcommands?.map((subcommand) => subcommand?.name),
-					...command?.command?.subcommands?.map((subcommand) => subcommand?.qualified_name),
-					...command?.command?.subcommands?.map((subcommand) => subcommand?.description)
-				];
-
-				if (
-					checkProps.some((prop) =>
-						prop?.toLowerCase()?.includes(state.commandSearch?.toLowerCase())
-					)
-				) {
-					commands.push({
-						command,
-						module
-					});
-				}
-			}
-		}
-
-		return commands;
+		clusterFinderByGuildIdExpectedData: null,
+		clusterFinderNoticeArea: null
 	};
 
 	const fetchCluster = async (_: number | undefined) => {
@@ -98,17 +63,13 @@
 			state.clusterModuleData[state?.openCluster || 0] = resp;
 	};
 
-	$: if (state?.commandSearch) {
-		state.searchedCommands = commandLookup();
+	$: if (state?.commandSearch && state.clusterModuleData[state.openCluster]) {
+		state.searchedCommands = commandLookup(
+			state.clusterModuleData[state.openCluster],
+			state.commandSearch
+		);
 	} else {
 		state.searchedCommands = [];
-	}
-
-	interface ParsedCanonicalCommandData extends CanonicalCommandData {
-		subcommand_depth: number;
-		parent_command?: CanonicalCommandData;
-		extended_data: CanonicalCommandExtendedData;
-		search_permissions: string;
 	}
 
 	let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
@@ -116,48 +77,7 @@
 	const createCmdDataTable = async (_: string) => {
 		let module = state.clusterModuleData[state.openCluster][state.openModule];
 
-		let commands: ParsedCanonicalCommandData[] = [];
-
-		// Recursively parse commands
-		const parseCommand = (
-			command: CanonicalCommandData,
-			extended_data: Record<string, CanonicalCommandExtendedData>,
-			depth: number = 0,
-			parent: CanonicalCommandData | undefined
-		) => {
-			let extData = extended_data[depth == 0 ? '' : command?.name] || extended_data[''];
-			logger.info('ParseCommand', 'Parsing command', command?.name, depth, parent, extData);
-			commands.push({
-				...command,
-				subcommand_depth: depth,
-				parent_command: parent,
-				extended_data: extData,
-				search_permissions: extData?.default_perms?.checks
-					?.map((check) => check?.kittycat_perms)
-					?.join(', ')
-			});
-
-			if (command?.subcommands) {
-				for (let subcommand of command?.subcommands) {
-					parseCommand(subcommand, extended_data, depth + 1, command);
-				}
-			}
-		};
-
-		for (let command of module?.commands) {
-			let extData: Record<string, CanonicalCommandExtendedData> = {};
-
-			for (let id in command?.extended_data) {
-				extData[id] = {
-					id,
-					...command?.extended_data[id]
-				};
-			}
-
-			logger.info('ParseCommand.ExtData', 'Got extended data', extData);
-
-			parseCommand(command?.command, extData, 0, undefined);
-		}
+		let commands: ParsedCanonicalCommandData[] = extractCommandsFromModule(module);
 
 		const handler = new DataHandler(commands, { rowsPerPage: 20 });
 		cmdDataTable = handler.getRows();
@@ -222,10 +142,10 @@
 				<ul>
 					{#each state.searchedCommands as searchedCommand}
 						<li class="cluster-search-command mb-7">
-							<h3 class="text-xl font-bold">{searchedCommand?.command?.command?.name}</h3>
+							<h3 class="text-xl font-bold">{searchedCommand?.command?.full_name}</h3>
 
-							{#if searchedCommand?.command?.command?.description}
-								<p class="text-slate-200">{searchedCommand?.command?.command?.description}</p>
+							{#if searchedCommand?.command?.description}
+								<p class="text-slate-200">{searchedCommand?.command?.description}</p>
 							{/if}
 
 							<p class="text-slate-200"><strong>Module:</strong> {searchedCommand?.module?.name}</p>
@@ -272,13 +192,15 @@
 								</p>
 							{/if}
 
-							{#if state.clusterModuleData[state?.openCluster][state?.openModule].commands_configurable}
+							{#if state.clusterModuleData[state?.openCluster][state?.openModule].commands_toggleable}
 								<p class="text-green-500 mt-2">
-									<strong>You can configure the commands within this module!</strong>
+									<strong>You can turn ON/OFF (toggle) the commands within this module!</strong>
 								</p>
 							{:else}
 								<p class="text-red-500 mt-2">
-									<strong>You CANNOT configure the commands within this module!</strong>
+									<strong
+										>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
+									>
 								</p>
 							{/if}
 
@@ -313,18 +235,18 @@
 									</header>
 
 									<!-- Table -->
-									<table class="table table-hover table-compact bg-surface-400 w-full table-auto">
-										<thead class="bg-surface-500">
-											<tr>
-												<ThSort handler={data.handler} orderBy={'qualified_name'}>Name</ThSort>
+									<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
+										<thead>
+											<tr class="bg-surface-800">
+												<ThSort handler={data.handler} orderBy={'full_name'}>Name</ThSort>
 												<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
 												<ThSort handler={data.handler} orderBy={'arguments'}>Arguments</ThSort>
 												<ThSort handler={data.handler} orderBy={'search_permissions'}
 													>Permissions</ThSort
 												>
 											</tr>
-											<tr>
-												<ThFilter handler={data.handler} filterBy={'qualified_name'} />
+											<tr class="bg-surface-800">
+												<ThFilter handler={data.handler} filterBy={'full_name'} />
 												<ThFilter handler={data.handler} filterBy={'description'} />
 												<ThFilter handler={data.handler} filterBy={'arguments'} />
 												<ThFilter handler={data.handler} filterBy={'search_permissions'} />
@@ -418,7 +340,7 @@
 	</details>
 
 	{#if state.clusterFinderOpen}
-		<Modal title="Help" bind:showModal={state.clusterFinderOpen}>
+		<Modal title="Help" logo="/logo.webp" bind:showModal={state.clusterFinderOpen}>
 			<h1 class="font-semibold text-xl">Server Lookup</h1>
 			<p class="text-gray-300 font-semibold">
 				If you're planning to add AntiRaid to a specific server, please enter the Server's ID below.
@@ -445,17 +367,23 @@
 					icon="mdi:forward"
 					text="Take Me There!"
 					onClick={async () => {
-						if (!state.clusterFinderByGuildIdExpectedData) return false;
+						if (!state.clusterFinderByGuildIdExpectedData) {
+							throw new Error('No cluster data found');
+						}
 						state.openCluster = state.clusterFinderByGuildIdExpectedData.cluster;
 						state.clusterFinderOpen = false;
-						return true;
 					}}
 					states={{
 						loading: 'Loading...',
 						error: 'Failed to find cluster',
 						success: 'Found cluster!'
 					}}
+					bind:noticeProps={state.clusterFinderNoticeArea}
 				/>
+
+				{#if state.clusterFinderNoticeArea}
+					<NoticeArea props={state.clusterFinderNoticeArea} />
+				{/if}
 			{/if}
 		</Modal>
 	{/if}

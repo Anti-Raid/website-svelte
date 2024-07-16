@@ -2,7 +2,7 @@
 	import Icon from '@iconify/svelte';
 
 	export let big = false;
-	export let type: 'loading' | 'error' | 'success';
+	export let type: 'loading' | 'info' | 'error' | 'success';
 </script>
 
 {#if type == 'loading'}
@@ -14,6 +14,18 @@
 	{:else}
 		<div class="text-white text-2xl">
 			<Icon icon="mdi:loading" class="animate-spin inline-block text-2xl" />
+			<slot />
+		</div>
+	{/if}
+{:else if type == 'info'}
+	{#if big}
+		<div class="text-blue-500 text-4xl text-center">
+			<Icon icon="mdi:information" class="inline-block text-2xl" />
+			<slot />
+		</div>
+	{:else}
+		<div class="text-blue-500 text-2xl">
+			<Icon icon="mdi:information" class="inline-block text-3xl align-top" />
 			<slot />
 		</div>
 	{/if}

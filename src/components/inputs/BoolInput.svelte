@@ -9,7 +9,7 @@
 	export let onChange: undefined | ((value: boolean) => void);
 </script>
 
-<div class="mt-4 col-span-9 pt-2 lg:pt-0 justify-middle items-center align-bottom text-lg flex">
+<div class="col-span-9 pt-2 lg:pt-0 justify-middle items-center align-bottom text-lg flex">
 	<input
 		{id}
 		name={id}
@@ -18,8 +18,8 @@
 		on:change={() => {
 			if (onChange) onChange(value);
 		}}
-		aria-disabled={disabled}
 		{disabled}
+		aria-disabled={disabled}
 		{required}
 		aria-required={required}
 		class="rounded-full cursor-pointer checked:bg-blue-500 disabled:checked:bg-blue-500 disabled:checked:opacity-70 disabled:cursor-not-allowed disabled:bg-slate-500"

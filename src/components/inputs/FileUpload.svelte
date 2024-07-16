@@ -1,6 +1,7 @@
 <script lang="ts">
 	import logger from '$lib/ui/logger';
-	import { error } from '$lib/toast';
+	import { NoticeProps } from '../common/noticearea/noticearea';
+	import NoticeArea from '../common/noticearea/NoticeArea.svelte';
 	import Label from './Label.svelte';
 
 	// Needed props
@@ -13,21 +14,38 @@
 	export let fileName: string = '';
 	export let fileMimeType: string = '';
 	export let fileUploaded: boolean = false;
+	export let disabled: boolean = false;
+
+	// Notice area to store errors in
+	let noticeArea: NoticeProps | null;
 
 	let fileList: FileList;
 	const readFile = () => {
+		if (disabled) {
+			noticeArea = {
+				level: 'error',
+				text: 'This input is disabled'
+			};
+			return;
+		}
 		logger.info('FileUpload', 'Reading file');
 		fileUploaded = false;
 
 		if (fileList.length > 1) {
-			error('Please only upload one file');
+			noticeArea = {
+				level: 'error',
+				text: 'Please only upload one file'
+			};
 			return;
 		}
 
 		let fileTmp = fileList[0];
 
 		if (acceptableTypes.length > 0 && !acceptableTypes.includes(fileTmp.type)) {
-			error(`Please upload an ${acceptableTypes}`);
+			noticeArea = {
+				level: 'error',
+				text: `Please upload an ${acceptableTypes}`
+			};
 			return;
 		}
 
@@ -43,7 +61,11 @@
 	}
 </script>
 
-<div class="file-upload mb-3">
+<div class="file-upload">
+	{#if noticeArea}
+		<NoticeArea props={noticeArea} />
+	{/if}
+
 	<Label {id} {label} />
 	<br />
 	<input
@@ -54,5 +76,7 @@
 		name={id}
 		type="file"
 		multiple={false}
+		{disabled}
+		aria-disabled={disabled}
 	/>
 </div>

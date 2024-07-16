@@ -6,8 +6,9 @@
 
 	export let id: string;
 	export let values: [string, string][] = [];
-	export let title: string;
-	export let label: string = title;
+	export let kvFunc: (i: number, isKey: boolean) => string;
+	export let label: string;
+	export let newButtonText: string;
 	export let placeholder: string;
 	export let minlength: number;
 	export let showErrors: boolean = false;
@@ -27,7 +28,7 @@
 <div {id}>
 	{#each values as value, i}
 		<KvMultiInputElement
-			{title}
+			{kvFunc}
 			{placeholder}
 			{minlength}
 			{showErrors}
@@ -41,6 +42,6 @@
 	{/each}
 
 	{#if values.length == 0}
-		<ButtonReact onclick={() => addValue(-1)}>New {title}</ButtonReact>
+		<ButtonReact onclick={() => addValue(-1)}>{newButtonText}</ButtonReact>
 	{/if}
 </div>

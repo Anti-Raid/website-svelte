@@ -48,7 +48,7 @@
 	});
 </script>
 
-<section class="rounded-lg p-2 card bg-themable-600/50 shadow-white/50 text-white">
+<section class="rounded-lg p-2 card bg-primary-600/50 shadow-white/50 text-white">
 	<div class="h-16 rounded-t" id="{id}_banner" />
 
 	<div class="bg-slate-900 dark:bg-gray-800 pt-6 px-6 pb-2 rounded-b">

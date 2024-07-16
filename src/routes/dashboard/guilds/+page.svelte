@@ -6,11 +6,17 @@
 		makeSharedRequest,
 		opGetClusterHealth,
 		opGetClusterModules,
+		opGetAllCommandConfigurations,
 		opGetModuleConfiguration
 	} from '$lib/fetch/ext';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import { getClusterOfShard, getShardIDFromGuildID } from '$lib/mewext/mewext';
+	import {
+		extractKnownPermissionsFromModules,
+		makeKittycatPermissionMapperFromPermissions
+	} from '$lib/ui/permMap';
+	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
 	import Message from '../../../components/Message.svelte';
 	import Guild from './Guild.svelte';
 
@@ -32,19 +38,16 @@
 
 		currentState = 'Fetching guild data';
 
-		let res = await fetchClient(
-			`${get('splashtail')}/users/${authCreds?.user_id}/guilds/${guildId}`,
-			{
-				auth: authCreds?.token,
-				onRatelimit: (n, err) => {
-					if (!n) {
-						currentState = 'Retrying fetching of guild data';
-					} else {
-						currentState = `${err?.message} [retrying again in ${n / 1000} seconds]`;
-					}
+		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}`, {
+			auth: authCreds?.token,
+			onRatelimit: (n, err) => {
+				if (!n) {
+					currentState = 'Retrying fetching of guild data';
+				} else {
+					currentState = `${err?.message} [retrying again in ${n / 1000} seconds]`;
 				}
 			}
-		);
+		});
 
 		if (!res.ok) {
 			let err = await res.error('Base Guild Data');
@@ -73,14 +76,28 @@
 
 		let currentModuleConfiguration = await makeSharedRequest(opGetModuleConfiguration(guildId));
 
+		currentState = 'Fetching current command configuration';
+
+		let currentCommandConfiguration = await makeSharedRequest(
+			opGetAllCommandConfigurations(guildId)
+		);
+
+		let commonPermissionContext: CommonPermissionContext = {
+			kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
+				extractKnownPermissionsFromModules(Object.values(clusterModules))
+			)
+		};
+
 		return {
 			guildId,
 			currentModuleConfiguration,
+			currentCommandConfiguration,
 			guildData,
 			instanceList,
 			guildShardId,
 			guildClusterId,
-			clusterModules
+			clusterModules,
+			commonPermissionContext
 		};
 	};
 </script>
@@ -96,15 +113,17 @@
 		<Guild
 			guildId={r.guildId}
 			currentModuleConfiguration={r.currentModuleConfiguration}
+			currentCommandConfiguration={r.currentCommandConfiguration}
 			guildData={r.guildData}
 			instanceList={r.instanceList}
 			guildShardId={r.guildShardId}
 			guildClusterId={r.guildClusterId}
 			clusterModules={r.clusterModules}
+			commonPermissionContext={r.commonPermissionContext}
 		/>
 	{:else}
 		<Message type="loading">Please wait</Message>
 	{/if}
 {:catch err}
-	<Message type="error"><strong>Error</strong>{@html (err?.message || err)}</Message>
+	<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
 {/await}

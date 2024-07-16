@@ -6,13 +6,13 @@
 {#if object}
 	{#each Object.entries(object) as [key, value]}
 		{#if typeof value === 'object' && value !== null}
-			<span class="font-semibold">{key}:</span>
+			<span class="text-primary-400 font-semibold">{key}:</span>
 			<div class="ml-4">
 				<svelte:self object={value} />
 			</div>
 		{:else}
-			<p>
-				<span class="font-semibold">{key}:</span>
+			<p class="text-primary-400 font-semibold">
+				<span class="text-primary-400 font-semibold">{key}:</span>
 				{value}
 			</p>
 		{/if}

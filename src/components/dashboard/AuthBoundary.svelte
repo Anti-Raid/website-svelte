@@ -45,17 +45,6 @@
 			return false;
 		}
 
-		setInterval(async () => {
-			if (!authCreds) return;
-			let r = await checkAuth(authCreds);
-
-			if (!r) {
-				logoutUser();
-				window.location.reload();
-				return;
-			}
-		}, 1000 * 60 * 5);
-
 		return true;
 	};
 </script>

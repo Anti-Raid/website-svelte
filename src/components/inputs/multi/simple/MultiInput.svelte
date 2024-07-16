@@ -4,6 +4,8 @@
 	import Input from '../../InputTextArea.svelte';
 	import InputSm from '../../InputText.svelte';
 	import Label from '../../Label.svelte';
+	import Icon from '@iconify/svelte';
+	import Spacer from '../../Spacer.svelte';
 
 	export let id: string;
 	export let values: string[];
@@ -24,55 +26,74 @@
 	const addValue = (i: number) => {
 		values = [...values.slice(0, i + 1), '', ...values.slice(i + 1)];
 	};
+
+	const appendValue = () => {
+		values = [...values, ''];
+	};
 </script>
 
-{#if showLabel || values.length == 0}
-	<Label {id} {label} />
-{:else}
-	<label for={id} class="sr-only">{label}</label>
-{/if}
-<div {id} class="mt-2 mb-2">
-	<div class="ml-4">
-		{#each values as value, i}
-			{#if small}
-				<InputSm
-					id={i.toString()}
-					inpClass="mb-1"
-					label={title + ' ' + (i + 1)}
-					{placeholder}
-					bind:value
-					{minlength}
-					{showErrors}
-					{required}
-					{disabled}
-				>
-					<div class="mt-1">
-						<DangerButton onclick={() => deleteValue(i)}>Delete</DangerButton>
-						<ButtonReact onclick={() => addValue(i)}>Add</ButtonReact>
-					</div>
-				</InputSm>
-			{:else}
-				<Input
-					id={i.toString()}
-					inpClass="mb-1"
-					label={title + ' ' + (i + 1)}
-					{placeholder}
-					bind:value
-					{minlength}
-					{showErrors}
-					{required}
-					{disabled}
-				>
-					<div class="mt-1">
-						<DangerButton onclick={() => deleteValue(i)}>Delete</DangerButton>
-						<ButtonReact onclick={() => addValue(i)}>Add</ButtonReact>
-					</div>
-				</Input>
-			{/if}
-		{/each}
-	</div>
+<div class="items-center justify-center col-span-9">
+	{#if showLabel || values.length == 0}
+		<Label {id} {label} />
+	{:else}
+		<label for={id} class="sr-only">{label}</label>
+	{/if}
 
-	{#if values.length == 0}
-		<ButtonReact onclick={() => addValue(-1)}>New {title}</ButtonReact>
+	{#if !disabled}
+		<button class="text-lg mr-2" type="button" on:click|preventDefault={() => appendValue()}>
+			<Icon icon="ant-design:plus-circle-outlined" class="inline-block mr-1 text-white" />Add Other
+		</button>
+		<button
+			class="text-lg mr-2"
+			type="button"
+			on:click|preventDefault={() => {
+				let i = prompt('Enter the position to add the new value');
+				if (i) {
+					addValue(parseInt(i));
+				}
+			}}
+		>
+			<Icon icon="ant-design:plus-circle-outlined" class="inline-block mr-1 text-white" />Add At
+			Position
+		</button>
 	{/if}
 </div>
+<Spacer typ="extSpacing" />
+{#each values as value, i}
+	<div class="flex flex-row items-center justify-center multi-input align-items">
+		{#if small}
+			<InputSm
+				id={i.toString()}
+				label={''}
+				{placeholder}
+				bind:value
+				{minlength}
+				{showErrors}
+				{required}
+				{disabled}
+			/>
+		{:else}
+			<Input
+				id={i.toString()}
+				label={title + ' ' + (i + 1)}
+				{placeholder}
+				bind:value
+				{minlength}
+				{showErrors}
+				{required}
+				{disabled}
+			/>
+		{/if}
+
+		<div class="inline-block mt-2 ml-1 text-red-400 align-bottom hover:text-red-500">
+			<button type="button" on:click|preventDefault={() => deleteValue(i)} aria-label="Delete">
+				<Icon icon="ant-design:delete-outlined" class="text-2xl text-white" />
+				Delete
+			</button>
+		</div>
+	</div>
+{/each}
+
+{#if values.length == 0}
+	<p class="text-sm text-gray-200">No values added</p>
+{/if}

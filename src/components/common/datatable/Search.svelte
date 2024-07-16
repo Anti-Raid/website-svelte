@@ -5,7 +5,7 @@
 </script>
 
 <input
-	class="bg-surface-700 rounded-md text-primary-600 font-semibold border-none text-base focus:outline-none sm:w-64 w-36"
+	class="bg-surface-100 rounded-md text-secondary-600 font-semibold border-none text-base focus:outline-none sm:w-64 w-36"
 	type="search"
 	placeholder="Search..."
 	bind:value
