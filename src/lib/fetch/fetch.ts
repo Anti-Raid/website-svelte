@@ -4,7 +4,7 @@ import { PermissionCheck, PermissionChecks, PermissionResult } from '$lib/genera
 import dompurify from 'dompurify';
 import * as marked from 'marked';
 import { BitFlag } from '$lib/bitflag';
-import serenityPermissions from '$lib/generated/rust/serenity_perms.json';
+import serenityPermissions from '$lib/generated/build_assets/serenity_perms.json';
 
 const { sanitize } = dompurify;
 
