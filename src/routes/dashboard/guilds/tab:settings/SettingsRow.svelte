@@ -26,7 +26,9 @@
 	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
 	import Spacer from '../../../../components/inputs/Spacer.svelte';
 	import { marked } from 'marked';
-	import { sanitize } from 'dompurify';
+	import dompurify from 'dompurify';
+
+	const { sanitize } = dompurify;
 
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
