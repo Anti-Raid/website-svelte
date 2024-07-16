@@ -27,7 +27,7 @@
 		if (value.length < minlength) {
 			success = false;
 			errorMsg = `Must be at least ${minlength} characters long`;
-		} else if (value.length > minlength) {
+		} else if (maxlength && value.length > maxlength) {
 			success = false;
 			errorMsg = `Must be at most ${maxlength} characters long`;
 		} else {

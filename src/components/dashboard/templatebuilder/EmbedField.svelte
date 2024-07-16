@@ -1,14 +1,13 @@
 <script lang="ts">
-	import Label from '../../Label.svelte';
-	import ButtonReact from '../Button.svelte';
-	import DangerButton from '../DangerButton.svelte';
-	import KvMultiInputElement from './KVMultiInputElement.svelte';
+	import Label from '../../inputs/Label.svelte';
+	import ButtonReact from '../../inputs/multi/Button.svelte';
+	import DangerButton from '../../inputs/multi/DangerButton.svelte';
+	import EmbedFieldElement from './EmbedFieldElement.svelte';
+	import KvMultiInputElement from './EmbedFieldElement.svelte';
+	import { EmbedField } from './types';
 
 	export let id: string;
-	export let values: [string, string][] = [];
-	export let kvFunc: (i: number, isKey: boolean) => string;
-	export let label: string;
-	export let newButtonText: string;
+	export let values: EmbedField[] = [];
 	export let placeholder: string;
 	export let minlength: number;
 	export let showErrors: boolean = false;
@@ -20,15 +19,18 @@
 	};
 
 	const addValue = (i: number) => {
-		values = [...values.slice(0, i + 1), '', ...values.slice(i + 1)] as [string, string][];
+		values = [
+			...values.slice(0, i + 1),
+			{ name: '', value: '', inline: false },
+			...values.slice(i + 1)
+		];
 	};
 </script>
 
-<Label {id} {label} />
+<Label {id} label="Embed Field" />
 <div {id}>
 	{#each values as value, i}
-		<KvMultiInputElement
-			{kvFunc}
+		<EmbedFieldElement
 			{placeholder}
 			{minlength}
 			{showErrors}
@@ -42,6 +44,6 @@
 	{/each}
 
 	{#if values.length == 0}
-		<ButtonReact onclick={() => addValue(-1)}>{newButtonText}</ButtonReact>
+		<ButtonReact onclick={() => addValue(-1)}>New Embed Field</ButtonReact>
 	{/if}
 </div>

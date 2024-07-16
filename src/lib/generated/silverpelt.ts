@@ -95,6 +95,7 @@ export interface CanonicalSettingsError {
 }
 export type CanonicalInnerColumnTypeStringKind = string;
 export const CanonicalInnerColumnTypeStringKindNormal: CanonicalInnerColumnTypeStringKind = "Normal";
+export const CanonicalInnerColumnTypeStringKindTextarea: CanonicalInnerColumnTypeStringKind = "Textarea";
 export const CanonicalInnerColumnTypeStringKindTemplate: CanonicalInnerColumnTypeStringKind = "Template";
 export const CanonicalInnerColumnTypeStringKindUser: CanonicalInnerColumnTypeStringKind = "User";
 export const CanonicalInnerColumnTypeStringKindChannel: CanonicalInnerColumnTypeStringKind = "Channel";
@@ -129,6 +130,8 @@ export interface CanonicalInnerColumnType {
   Timestamp?: {
   };
   TimestampTz?: {
+  };
+  Interval?: {
   };
   Integer?: {
   };
