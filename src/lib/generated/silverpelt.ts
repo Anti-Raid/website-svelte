@@ -93,15 +93,6 @@ export interface CanonicalSettingsError {
     current: number /* uint64 */;
   };
 }
-export type CanonicalInnerColumnTypeStringKind = string;
-export const CanonicalInnerColumnTypeStringKindNormal: CanonicalInnerColumnTypeStringKind = "Normal";
-export const CanonicalInnerColumnTypeStringKindTextarea: CanonicalInnerColumnTypeStringKind = "Textarea";
-export const CanonicalInnerColumnTypeStringKindTemplate: CanonicalInnerColumnTypeStringKind = "Template";
-export const CanonicalInnerColumnTypeStringKindUser: CanonicalInnerColumnTypeStringKind = "User";
-export const CanonicalInnerColumnTypeStringKindChannel: CanonicalInnerColumnTypeStringKind = "Channel";
-export const CanonicalInnerColumnTypeStringKindRole: CanonicalInnerColumnTypeStringKind = "Role";
-export const CanonicalInnerColumnTypeStringKindEmoji: CanonicalInnerColumnTypeStringKind = "Emoji";
-export const CanonicalInnerColumnTypeStringKindMessage: CanonicalInnerColumnTypeStringKind = "Message";
 export interface CanonicalColumnTypeDynamicClause {
   field: string;
   value: any;
@@ -116,6 +107,32 @@ export interface CanonicalColumnType {
   };
   Dynamic?: {
     clauses: CanonicalColumnTypeDynamicClause[];
+  };
+}
+export interface CanonicalInnerColumnTypeStringKindTemplateKind {
+  /**
+   * Template for formatting messages
+   */
+  Message?: {
+  };
+}
+export interface CanonicalInnerColumnTypeStringKind {
+  Normal?: {
+  };
+  Textarea?: {
+  };
+  Template?: {
+    kind: CanonicalInnerColumnTypeStringKindTemplateKind;
+  };
+  User?: {
+  };
+  Channel?: {
+  };
+  Role?: {
+  };
+  Emoji?: {
+  };
+  Message?: {
   };
 }
 export interface CanonicalInnerColumnType {

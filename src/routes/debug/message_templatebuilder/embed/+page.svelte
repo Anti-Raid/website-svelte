@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { Embed } from '../../../../components/dashboard/templatebuilder/types';
-	import TemplateBuilderEmbed from '../../../../components/dashboard/templatebuilder/TemplateBuilderEmbed.svelte';
-	import { generateTemplateFragmentForEmbed } from '../../../../components/dashboard/templatebuilder/common';
+	import { Embed } from '../../../../components/dashboard/message_templatebuilder/types';
+	import TemplateBuilderEmbed from '../../../../components/dashboard/message_templatebuilder/TemplateBuilderEmbed.svelte';
+	import { generateTemplateFragmentForEmbed } from '../../../../components/dashboard/message_templatebuilder/common';
 
 	let embed: Embed = {
 		title: '',

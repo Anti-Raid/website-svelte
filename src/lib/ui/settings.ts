@@ -61,12 +61,27 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
                     _setOnDispatchType(dispatchType, 'allowed_values', allowedValues);
                 }
 
+                if (!inner.String.kind) {
+                    _setOnDispatchType(dispatchType, 'type', 'string');
+                    break;
+                }
+
+                if (Object.keys(inner.String.kind).length < 1) {
+                    _setOnDispatchType(dispatchType, 'type', 'string');
+                    break;
+                }
+
                 // Handle the kind
-                if (inner.String.kind == 'Normal') _setOnDispatchType(dispatchType, 'type', 'string');
+                if (inner.String.kind.Normal) _setOnDispatchType(dispatchType, 'type', 'string');
+                else if (inner.String.kind.Template) _setOnDispatchType(
+                    dispatchType,
+                    'type',
+                    inner.String.kind ? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}:${Object.keys(inner.String.kind.Template.kind)[0]?.toLowerCase()}` : 'string'
+                );
                 else _setOnDispatchType(
                     dispatchType,
                     'type',
-                    inner.String.kind ? `string:${inner.String.kind?.toLowerCase()}` : 'string'
+                    inner.String.kind ? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}` : 'string'
                 );
                 break;
             case "BitFlag":

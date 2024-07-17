@@ -65,8 +65,6 @@
 
 	$: value, flagRerenders();
 	$: allDerivedData[column.id].forceRederive, rederiveIfForced();
-
-	// Stores the set of fields that have been cleared [will be set to null explicitly]
 </script>
 
 {#if columnDispatchType?.resolved_column_type?.Scalar}

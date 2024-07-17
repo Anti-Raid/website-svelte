@@ -11,6 +11,8 @@ Note: this may be less performant than using the concrete input components direc
 	import Label from '../Label.svelte';
 	import Select from '../select/Select.svelte';
 	import Spacer from '../Spacer.svelte';
+	import TemplateBuilder from '../../dashboard/message_templatebuilder/TemplateBuilder.svelte';
+	import { defaultData } from '../../dashboard/message_templatebuilder/types';
 
 	export let type: string;
 
@@ -59,6 +61,17 @@ Note: this may be less performant than using the concrete input components direc
 		if (!value) value = [];
 		value = [...value, defaultValue()];
 	};
+
+	// Needed for templatebuilder
+	let extState: any;
+
+	$: if (value == null) {
+		if (type == 'string:template:message') {
+			extState = defaultData();
+		}
+	} else if (value == '' && type == 'string:template:message') {
+		value = null;
+	}
 </script>
 
 {#if multiple}
@@ -148,7 +161,13 @@ Note: this may be less performant than using the concrete input components direc
 		{showErrors}
 		{disabled}
 	/>
-{:else if type == 'string:template'}
+{:else if type == 'string:template:message'}
+	<Label {id} {label} />
+	<TemplateBuilder bind:rawTemplateOutput={value} bind:templateBuilderData={extState} />
+	<small class="text-white font-semibold">templateBuilderData: {JSON.stringify(extState)}</small><br
+	/>
+	<code class="text-white whitespace-pre-wrap">templateFragment: {value}</code>
+{:else if type.startsWith('string:template')}
 	<InputTextArea
 		{id}
 		{label}
