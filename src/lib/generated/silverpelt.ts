@@ -127,6 +127,8 @@ export interface CanonicalInnerColumnTypeStringKind {
   User?: {
   };
   Channel?: {
+    allowed_types: any /* discordgo.ChannelType */[];
+    needed_bot_permissions: any /* ext.Permissions */;
   };
   Role?: {
   };
