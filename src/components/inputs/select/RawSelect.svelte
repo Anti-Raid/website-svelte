@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { ChangeEventHandler } from 'svelte/elements';
-	import Label from '../Label.svelte';
 	import type { SMOption } from './select';
 
 	export let id: string;
@@ -27,6 +26,8 @@
 >
 	<option value="" disabled={disabledDefaultInput}>{defaultLabel}</option>
 	{#each choices as choice}
-		<option id={choice.id} value={choice.value}>{choice.label}</option>
+		<option id={choice.id} value={choice.value} disabled={choice.disabled || false}
+			>{choice.label}</option
+		>
 	{/each}
 </select>

@@ -46,7 +46,7 @@ export class BitFlag {
 		}
 
 		if (flagValue === undefined) {
-			throw new Error(`Unknown flag: ${flag}`);
+			flagValue = BigInt(flag)
 		}
 
 		return (this.flags & flagValue) == flagValue;

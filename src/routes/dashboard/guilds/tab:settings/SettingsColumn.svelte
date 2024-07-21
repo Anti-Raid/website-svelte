@@ -4,22 +4,18 @@
 		CanonicalConfigOption,
 		CanonicalModule
 	} from '$lib/generated/silverpelt';
-	import {
-		getDispatchType,
-		deriveColumnState,
-		templateToStringLite,
-		ColumnState,
-		DispatchType
-	} from '$lib/ui/settings';
+	import { getDispatchType, deriveColumnState, ColumnState, DispatchType } from '$lib/ui/settings';
 	import InputDispatcher from '../../../../components/inputs/generic/InputDispatcher.svelte';
 	import SettingsSuggestionBox from './SettingsSuggestionBox.svelte';
 	import { DerivedData, OperationTypes } from './types';
 	import logger from '$lib/ui/logger';
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 	import Spacer from '../../../../components/inputs/Spacer.svelte';
+	import { UserGuildBaseData } from '$lib/generated/types';
 
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
+	export let guildData: UserGuildBaseData;
 	export let guildId: string;
 	export let columnField: Record<string, any>;
 	export let value: any;
@@ -65,12 +61,11 @@
 
 	$: value, flagRerenders();
 	$: allDerivedData[column.id].forceRederive, rederiveIfForced();
-
-	// Stores the set of fields that have been cleared [will be set to null explicitly]
 </script>
 
 {#if columnDispatchType?.resolved_column_type?.Scalar}
 	<InputDispatcher
+		{guildData}
 		id={column.id}
 		label={column.name}
 		placeholder={column.description}
@@ -82,9 +77,11 @@
 		bind:value
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
+		channelConstraints={columnDispatchType?.channel_constraints}
 	/>
 {:else if columnDispatchType?.resolved_column_type?.Array}
 	<InputDispatcher
+		{guildData}
 		id={column.id}
 		label={column.name}
 		placeholder={column.description}
@@ -96,6 +93,7 @@
 		bind:value
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
+		channelConstraints={columnDispatchType?.channel_constraints}
 		multiple={true}
 	/>
 {/if}

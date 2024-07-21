@@ -18,7 +18,11 @@
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
-	import { SettingsExecute, SettingsExecuteResponse } from '$lib/generated/types';
+	import {
+		SettingsExecute,
+		SettingsExecuteResponse,
+		UserGuildBaseData
+	} from '$lib/generated/types';
 	import ButtonReact from '../../../../components/inputs/button/ButtonReact.svelte';
 	import isEqual from 'lodash.isequal';
 	import { Color } from '../../../../components/inputs/button/colors';
@@ -32,6 +36,7 @@
 
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
+	export let guildData: UserGuildBaseData;
 	export let guildId: string;
 	export let columnField: Record<string, any>;
 	export let index: number;
@@ -180,6 +185,7 @@
 				<SettingsColumn
 					{configOpt}
 					{module}
+					{guildData}
 					{guildId}
 					{columnField}
 					bind:value={columnField[column.id]}

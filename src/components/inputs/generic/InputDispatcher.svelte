@@ -11,9 +11,15 @@ Note: this may be less performant than using the concrete input components direc
 	import Label from '../Label.svelte';
 	import Select from '../select/Select.svelte';
 	import Spacer from '../Spacer.svelte';
+	import TemplateBuilder from '../../dashboard/message_templatebuilder/TemplateBuilder.svelte';
+	import { defaultData } from '../../dashboard/message_templatebuilder/types';
+	import { UserGuildBaseData } from '$lib/generated/types';
+	import ChannelInput from '../ChannelInput.svelte';
+	import { ChannelConstraints } from '$lib/inputconstraints';
 
 	export let type: string;
 
+	export let guildData: UserGuildBaseData;
 	export let id: string;
 	export let label: string;
 	export let placeholder: string;
@@ -25,6 +31,9 @@ Note: this may be less performant than using the concrete input components direc
 	export let disabled: boolean = false;
 	export let choices: { [label: string]: string } | undefined;
 	export let multiple: boolean = false;
+
+	// Channel data
+	export let channelConstraints: ChannelConstraints | undefined;
 
 	// Needed for choices
 	// choices must be in format label:value
@@ -59,6 +68,17 @@ Note: this may be less performant than using the concrete input components direc
 		if (!value) value = [];
 		value = [...value, defaultValue()];
 	};
+
+	// Needed for templatebuilder
+	let extState: any;
+
+	$: if (value == null) {
+		if (type == 'string:template:message') {
+			extState = defaultData();
+		}
+	} else if (value == '' && type == 'string:template:message') {
+		value = null;
+	}
 </script>
 
 {#if multiple}
@@ -148,7 +168,23 @@ Note: this may be less performant than using the concrete input components direc
 		{showErrors}
 		{disabled}
 	/>
-{:else if type == 'string:template'}
+{:else if type == 'string:channel'}
+	<ChannelInput
+		channels={guildData.channels}
+		channelConstraints={channelConstraints || {
+			allowed_types: [],
+			needed_bot_permissions: '0'
+		}}
+		bind:value
+		{disabled}
+	/>
+{:else if type == 'string:template:message'}
+	<Label {id} {label} />
+	<TemplateBuilder bind:rawTemplateOutput={value} bind:templateBuilderData={extState} />
+	<small class="text-white font-semibold">templateBuilderData: {JSON.stringify(extState)}</small><br
+	/>
+	<code class="text-white whitespace-pre-wrap">templateFragment: {value}</code>
+{:else if type.startsWith('string:template')}
 	<InputTextArea
 		{id}
 		{label}
