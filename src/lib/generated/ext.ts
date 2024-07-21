@@ -64,3 +64,55 @@ export interface GuildChannelWithPermissions {
   bot: Permissions;
   channel?: discordgo.Channel;
 }
+
+//////////
+// source: tasks.go
+
+export interface TaskCreateResponse {
+  task_id: string;
+}
+/**
+ * @ci table=tasks unfilled=1
+ * Tasks are background processes that can be run on a coordinator server.
+ * A PartialTask represents a partial representation of a task.
+ */
+export interface PartialTask {
+  task_id: string;
+  task_name: string;
+  expiry?: any /* time.Duration */;
+  state: string;
+  created_at: string /* RFC3339 */;
+}
+export interface TaskListResponse {
+  tasks: PartialTask[];
+}
+/**
+ * @ci table=tasks
+ * Tasks are background processes that can be run on a coordinator server.
+ */
+export interface Task {
+  task_id: string;
+  task_name: string;
+  output?: TaskOutput;
+  task_fields: { [key: string]: any};
+  statuses: { [key: string]: any}[];
+  task_for?: TaskFor;
+  expiry?: any /* time.Duration */;
+  state: string;
+  resumable: boolean;
+  created_at: string /* RFC3339 */;
+}
+/**
+ * TaskFor is a struct containing the internal representation of who a task is for
+ */
+export interface TaskFor {
+  id: string;
+  target_type: string;
+}
+/**
+ * TaskOutput is the output of a task
+ */
+export interface TaskOutput {
+  filename: string;
+  segregated: boolean; // If this flag is set, then the stored output will be stored in $taskForSimplexFormat/$taskName/$taskId/$filename instead of $taskId/$filename
+}

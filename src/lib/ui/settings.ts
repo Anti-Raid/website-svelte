@@ -1,4 +1,5 @@
 import { CanonicalColumn, CanonicalColumnType, CanonicalConfigOption, CanonicalInnerColumnType } from "$lib/generated/silverpelt";
+import { ChannelConstraints } from "$lib/inputconstraints";
 import { OperationTypes } from "../../routes/dashboard/guilds/tab:settings/types";
 import logger from "./logger";
 
@@ -13,6 +14,8 @@ export interface DispatchType {
     allowed_values: { [label: string]: string } | undefined;
     // If bitflag, then the values of the bitflag
     bitflag_values: { [label: string]: bigint } | undefined;
+    // If channel, then the channelConstraints
+    channel_constraints: ChannelConstraints | undefined;
     // Resolves column type
     resolved_column_type: CanonicalColumnType;
 }
@@ -37,6 +40,7 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
         maxlength: undefined,
         allowed_values: undefined,
         bitflag_values: undefined,
+        channel_constraints: undefined,
         resolved_column_type: column.column_type,
     };
 
@@ -76,8 +80,23 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
                 else if (inner.String.kind.Template) _setOnDispatchType(
                     dispatchType,
                     'type',
-                    inner.String.kind ? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}:${Object.keys(inner.String.kind.Template.kind)[0]?.toLowerCase()}` : 'string'
+                    inner.String.kind.Template.kind ? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}:${Object.keys(inner.String.kind.Template.kind)[0]?.toLowerCase()}` : 'string:template'
                 );
+                else if (inner.String.kind.Channel) {
+                    _setOnDispatchType(
+                        dispatchType,
+                        'type',
+                        "string:channel"
+                    );
+                    _setOnDispatchType(
+                        dispatchType,
+                        'channel_constraints',
+                        {
+                            allowed_types: inner.String.kind.Channel.allowed_types,
+                            needed_bot_permissions: inner.String.kind.Channel.needed_bot_permissions
+                        }
+                    );
+                }
                 else _setOnDispatchType(
                     dispatchType,
                     'type',

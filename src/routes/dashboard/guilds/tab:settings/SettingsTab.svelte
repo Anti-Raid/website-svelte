@@ -2,9 +2,11 @@
 	import { CanonicalModule } from '$lib/generated/silverpelt';
 	import Setting from './Setting.svelte';
 	import Message from '../../../../components/Message.svelte';
+	import { UserGuildBaseData } from '$lib/generated/types';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
+	export let guildData: UserGuildBaseData;
 
 	// Svelte workaround to workaround state
 	//
@@ -20,7 +22,7 @@
 	<Message type="info">No settings found for this module</Message>
 {:else}
 	{#each module.config_options as configOpt}
-		<Setting {module} {configOpt} {guildId} />
+		<Setting {module} {configOpt} {guildId} {guildData} />
 		<hr />
 	{/each}
 {/if}

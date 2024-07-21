@@ -13,9 +13,13 @@ Note: this may be less performant than using the concrete input components direc
 	import Spacer from '../Spacer.svelte';
 	import TemplateBuilder from '../../dashboard/message_templatebuilder/TemplateBuilder.svelte';
 	import { defaultData } from '../../dashboard/message_templatebuilder/types';
+	import { UserGuildBaseData } from '$lib/generated/types';
+	import ChannelInput from '../ChannelInput.svelte';
+	import { ChannelConstraints } from '$lib/inputconstraints';
 
 	export let type: string;
 
+	export let guildData: UserGuildBaseData;
 	export let id: string;
 	export let label: string;
 	export let placeholder: string;
@@ -27,6 +31,9 @@ Note: this may be less performant than using the concrete input components direc
 	export let disabled: boolean = false;
 	export let choices: { [label: string]: string } | undefined;
 	export let multiple: boolean = false;
+
+	// Channel data
+	export let channelConstraints: ChannelConstraints | undefined;
 
 	// Needed for choices
 	// choices must be in format label:value
@@ -159,6 +166,16 @@ Note: this may be less performant than using the concrete input components direc
 		{description}
 		bind:value
 		{showErrors}
+		{disabled}
+	/>
+{:else if type == 'string:channel'}
+	<ChannelInput
+		channels={guildData.channels}
+		channelConstraints={channelConstraints || {
+			allowed_types: [],
+			needed_bot_permissions: '0'
+		}}
+		bind:value
 		{disabled}
 	/>
 {:else if type == 'string:template:message'}

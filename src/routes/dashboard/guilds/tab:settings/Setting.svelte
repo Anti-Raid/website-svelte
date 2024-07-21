@@ -3,13 +3,18 @@
 	import { get } from '$lib/configs/functions/services';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { CanonicalConfigOption, CanonicalModule } from '$lib/generated/silverpelt';
-	import { SettingsExecute, SettingsExecuteResponse } from '$lib/generated/types';
+	import {
+		SettingsExecute,
+		SettingsExecuteResponse,
+		UserGuildBaseData
+	} from '$lib/generated/types';
 	import Label from '../../../../components/inputs/Label.svelte';
 	import Message from '../../../../components/Message.svelte';
 	import SettingSchema from './SettingSchema.svelte';
 
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
+	export let guildData: UserGuildBaseData;
 	export let guildId: string;
 
 	const getCurrentSettings = async () => {
@@ -46,7 +51,7 @@
 {#await getCurrentSettings()}
 	<p>Loading...</p>
 {:then settings}
-	<SettingSchema {configOpt} {module} {guildId} {settings} />
+	<SettingSchema {configOpt} {module} {guildId} {settings} {guildData} />
 {:catch err}
 	<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
 {/await}

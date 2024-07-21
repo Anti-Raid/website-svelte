@@ -98,8 +98,6 @@ export interface PatchGuildCommandConfiguration {
 //////////
 // source: common.go
 
-export const TargetTypeUser = "User";
-export const TargetTypeServer = "Server";
 /**
  * A link is any extra link
  */
@@ -239,58 +237,6 @@ export interface SettingsGetSuggestionsResponse {
 }
 
 //////////
-// source: task.go
-
-export interface TaskCreateResponse {
-  task_id: string;
-}
-/**
- * @ci table=tasks unfilled=1
- * Tasks are background processes that can be run on a coordinator server.
- * A PartialTask represents a partial representation of a task.
- */
-export interface PartialTask {
-  task_id: string;
-  task_name: string;
-  expiry?: any /* time.Duration */;
-  state: string;
-  created_at: string /* RFC3339 */;
-}
-export interface TaskListResponse {
-  tasks: PartialTask[];
-}
-/**
- * @ci table=tasks
- * Tasks are background processes that can be run on a coordinator server.
- */
-export interface Task {
-  task_id: string;
-  task_name: string;
-  output?: TaskOutput;
-  task_fields: { [key: string]: any};
-  statuses: { [key: string]: any}[];
-  task_for?: TaskFor;
-  expiry?: any /* time.Duration */;
-  state: string;
-  resumable: boolean;
-  created_at: string /* RFC3339 */;
-}
-/**
- * TaskFor is a struct containing the internal representation of who a task is for
- */
-export interface TaskFor {
-  id: string;
-  target_type: string;
-}
-/**
- * TaskOutput is the output of a task
- */
-export interface TaskOutput {
-  filename: string;
-  segregated: boolean; // If this flag is set, then the stored output will be stored in $taskForSimplexFormat/$taskName/$taskId/$filename instead of $taskId/$filename
-}
-
-//////////
 // source: users.go
 
 /**
@@ -307,8 +253,8 @@ export interface UserGuildBaseData {
   owner_id: string;
   name: string;
   icon?: string;
-  roles: (ext.SerenityRole | undefined)[];
+  roles: ext.SerenityRole[];
   user_roles: string[];
   bot_roles: string[];
-  channels: (ext.GuildChannelWithPermissions | undefined)[];
+  channels: ext.GuildChannelWithPermissions[];
 }
