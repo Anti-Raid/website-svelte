@@ -9,6 +9,8 @@ export interface LookedUpCommand {
 }
 
 export const commandLookup = (clusterModules: Record<string, CanonicalModule>, query: string): LookedUpCommand[] => {
+    if (!query) return [];
+
     let moduleData = clusterModules;
     if (!moduleData) return [];
 

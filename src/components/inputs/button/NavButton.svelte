@@ -21,10 +21,10 @@
 
 {#if href}
 	<a aria-current={current ? 'page' : undefined} {href} on:click={onClick} class={classes}>
-		{title}
+		<slot />{title}
 	</a>
 {:else}
 	<button aria-current={current} {disabled} on:click={onClick} class={classes}>
-		{title}
+		<slot />{title}
 	</button>
 {/if}
