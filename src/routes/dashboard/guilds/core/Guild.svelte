@@ -102,7 +102,7 @@
 			<!--Module list-->
 			<section class="cluster-module-list flex flex-grow">
 				<!--Bar-->
-				<nav class="cluster-map flex-none w-52">
+				<nav class="cluster-map flex-none w-32 lg:w-52">
 					<section class="guild-basic-details">
 						<!--Avatar-->
 						<img loading="lazy" src={guildData.icon} class="h-10 m-0 align-middle inline" alt="" />
