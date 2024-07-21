@@ -41,7 +41,7 @@
 
 <!--Content-->
 {#if state.openedEntity.indexPage}
-	<div class="index-page px-2 mb-auto w-[90vw]">
+	<div class="index-page px-2 mb-auto mx-auto w-[90vw]">
 		<h1 class="text-2xl font-semibold">Welcome!</h1>
 		<p class="text-slate-200">
 			Using the dashboard, you can control almost all aspects of Anti-Raid and its operation on your
