@@ -10,7 +10,6 @@
 	import { InstanceList } from '$lib/generated/mewld/proc';
 	import { State } from './types';
 	import Content from './Content.svelte';
-	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 	import Icon from '@iconify/svelte';
 
 	export let clusterModules: Record<string, CanonicalModule>;
@@ -27,7 +26,6 @@
 		openedEntity: { indexPage: {} },
 		commandSearch: '',
 		searchedCommands: [],
-		sidebarOpen: false,
 		commandEditorOpen: false,
 		commandEditConfigs: [],
 		clusterFinderByGuildIdExpectedData: null
@@ -42,7 +40,9 @@
 	<section class="module-list flex">
 		<!--Bar-->
 		<nav
-			class="module-map flex-none hidden md:block w-32 lg:w-52 mt-1 border border-gray-600 p-2 border-solid rounded-sm"
+			class={state.openedEntity.mobileSidebar
+				? 'nav block w-full mt-1 border border-gray-600 p-2 border-solid rounded-sm'
+				: 'nav hidden md:block nav flex-none w-32 lg:w-52 mt-1 border border-gray-600 p-2 border-solid rounded-sm'}
 		>
 			<section class="guild-basic-details">
 				<!--Avatar-->
@@ -90,18 +90,33 @@
 		</nav>
 
 		<!--Content-->
-		<Content
-			{clusterModules}
-			{commonPermissionContext}
-			{guildId}
-			{instanceList}
-			{currentModuleConfiguration}
-			{currentCommandConfiguration}
-			{guildData}
-			{guildClusterId}
-			{guildShardId}
-			bind:state
-		/>
+		<section class={!state.openedEntity.mobileSidebar ? 'block ' : 'hidden md:block '}>
+			<div class="menu-area w-[90vw] block md:hidden text-white">
+				<button
+					class="float-right hover:opacity-80 sticky top-0 right-0"
+					title="Sidebar"
+					on:click|preventDefault={() => {
+						state.openedEntity = { mobileSidebar: {} };
+					}}
+				>
+					<span class="sr-only">Open Sidebar</span>
+					<Icon icon="bx:bx-menu" class="inline-block text-2xl m-auto" />
+				</button>
+			</div>
+
+			<Content
+				{clusterModules}
+				{commonPermissionContext}
+				{guildId}
+				{instanceList}
+				{currentModuleConfiguration}
+				{currentCommandConfiguration}
+				{guildData}
+				{guildClusterId}
+				{guildShardId}
+				bind:state
+			/>
+		</section>
 	</section>
 </article>
 

@@ -5,13 +5,13 @@ export interface OpenedEntity {
     indexPage?: {};
     module?: { id: string; tab: string };
     quickAction?: { id: string };
+    mobileSidebar?: {};
 }
 
 export interface State {
     openedEntity: OpenedEntity;
     commandSearch: string;
     searchedCommands: LookedUpCommand[];
-    sidebarOpen: boolean;
     commandEditOpen?: ParsedCanonicalCommandData;
     commandEditConfigs: FullGuildCommandConfiguration[];
     commandEditorOpen: boolean;

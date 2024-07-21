@@ -17,6 +17,8 @@
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 	import InputText from '../../../../components/inputs/InputText.svelte';
 	import { commandLookup } from '$lib/ui/commands';
+	import NavButton from '../../../../components/inputs/button/NavButton.svelte';
+	import { onMount } from 'svelte';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;
@@ -39,7 +41,6 @@
 	let showingAllClusters: boolean = false;
 </script>
 
-<!--Content-->
 {#if state.openedEntity.indexPage}
 	<div class="index-page px-2 mb-auto mx-auto w-[90vw]">
 		<h1 class="text-2xl font-semibold">Welcome!</h1>
