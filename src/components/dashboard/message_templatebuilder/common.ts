@@ -29,11 +29,12 @@ export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilde
 
     if (tbd.embeds.length > 0) {
         let embeds: string[] = []
-        tbd.embeds.forEach((embed, i) => {
+
+        for (let embed of tbd.embeds) {
             let fragment = generateTemplateFragmentForEmbed(embed);
 
             if (fragment) embeds.push(fragment);
-        });
+        }
 
         templateStr += embeds.join(`\n{{ new_embed() }}\n\n`)
     }

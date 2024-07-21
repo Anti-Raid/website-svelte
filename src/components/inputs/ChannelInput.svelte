@@ -30,45 +30,26 @@
 		let voiceChannels: GuildChannelWithPermissions[] = [];
 		let textChannels: GuildChannelWithPermissions[] = [];
 
-		channels.forEach((channel) => {
-			if (!channel.channel) {
-				return;
-			}
+		for (let channel of channels) {
+			if (!channel.channel) continue;
 
-			switch (channel.channel.type) {
-				case ChannelTypeGuildCategory:
-					categories.push(channel);
-					break;
-				case ChannelTypeGuildVoice:
-					voiceChannels.push(channel);
-					break;
-				case ChannelTypeGuildStageVoice:
-					voiceChannels.push(channel);
-					break;
-				default:
-					textChannels.push(channel);
-					break;
-			}
-		});
+			const type = channel.channel.type;
+			if (type === ChannelTypeGuildCategory) categories.push(channel);
+			else if (type === ChannelTypeGuildVoice || type === ChannelTypeGuildStageVoice)
+				voiceChannels.push(channel);
+			else textChannels.push(channel);
+		}
 
 		const sort = (a: GuildChannelWithPermissions, b: GuildChannelWithPermissions) => {
-			if (!a.channel || !b.channel) {
-				return 0;
-			}
+			if (!a.channel || !b.channel) return 0;
 
-			if (a.channel.position < b.channel.position) {
-				return -1;
-			} else if (a.channel.position > b.channel.position) {
-				return 1;
-			} else {
+			if (a.channel.position < b.channel.position) return -1;
+			else if (a.channel.position > b.channel.position) return 1;
+			else {
 				// Compare by id
-				if (a.channel.id < b.channel.id) {
-					return -1;
-				} else if (a.channel.id > b.channel.id) {
-					return 1;
-				} else {
-					return 0;
-				}
+				if (a.channel.id < b.channel.id) return -1;
+				else if (a.channel.id > b.channel.id) return 1;
+				else return 0;
 			}
 		};
 
@@ -79,11 +60,7 @@
 		let sorted: GuildChannelWithPermissions[] = [];
 
 		// First add all channels not in categories
-		for (let channel of textChannels) {
-			if (!channel.channel?.parent_id) {
-				sorted.push(channel);
-			}
-		}
+		for (let channel of textChannels) if (!channel.channel?.parent_id) sorted.push(channel);
 
 		// Then add categorized
 		for (let category of categories) {
@@ -116,14 +93,13 @@
 	label="Channel"
 	description="Select the channel you want to use"
 	choices={sortChannels(channels).map((channel) => {
-		if (!channel?.channel) {
+		if (!channel?.channel)
 			return {
 				id: '',
 				value: '',
 				label: 'Unknown Channel',
 				disabled: true
 			};
-		}
 
 		let botPerms = new BitFlag(serenityPermissions, channel.bot);
 
@@ -133,15 +109,8 @@
 		// @ts-ignore
 		let channelType = channelTypesInv[channel.channel.type.toString()];
 
-		// We only need the core types here
-		switch (channel.channel.type) {
-			case ChannelTypeDM:
-				channelType = 'DM';
-				break;
-		}
-
 		return {
-			id: channel.channel.id || '',
+			id: channel.channel.id,
 			value: channel.channel.id,
 			label: `${channel.channel.name} (${channelType})`,
 			disabled: !isAllowedType || !hasRequiredPermission
