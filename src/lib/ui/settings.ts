@@ -16,6 +16,8 @@ export interface DispatchType {
     bitflag_values: { [label: string]: bigint } | undefined;
     // If channel, then the channelConstraints
     channel_constraints: ChannelConstraints | undefined;
+    // Referenced variables (for dynamic columns)
+    referenced_variables: string[];
     // Resolves column type
     resolved_column_type: CanonicalColumnType;
 }
@@ -41,6 +43,7 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
         allowed_values: undefined,
         bitflag_values: undefined,
         channel_constraints: undefined,
+        referenced_variables: [],
         resolved_column_type: column.column_type,
     };
 
@@ -130,6 +133,7 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
         for (let clause of dispatchType.resolved_column_type.Dynamic.clauses) {
             let value = templateToStringLite(clause.field, fields);
             if (value == clause.value) {
+                dispatchType.referenced_variables.concat(getReferencedVariables(clause.field));
                 dispatchType.resolved_column_type = clause.column_type;
                 found = true;
             }

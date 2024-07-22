@@ -69,6 +69,7 @@
 
 		let fields: Record<string, any> = {};
 
+		let dependencyFields: string[] = [];
 		Object.keys(columnField).forEach((k) => {
 			let column = configOpt.columns.find((c) => c.id === k);
 
@@ -80,6 +81,8 @@
 				return;
 			}
 
+			let referencedVariables = allDerivedData[k].dispatchType.referenced_variables;
+
 			// Ignore unchanged fields that are not the primary key
 			if (isEqual(columnField[k], settings.fields[index][k]) && k != configOpt.primary_key) {
 				return;
@@ -89,10 +92,43 @@
 				// Check if isCleared
 				if (allDerivedData[k]?.isCleared) {
 					fields[k] = null;
+
+					// Add to dependencyFields
+					if (referencedVariables) {
+						dependencyFields.push(
+							...referencedVariables.filter((v) => !dependencyFields.includes(v))
+						);
+					}
 				}
 
 				// Otherwise, omit the field entirely from the edit
 				return;
+			} else {
+				fields[k] = columnField[k];
+
+				// Add to dependencyFields
+				if (referencedVariables) {
+					dependencyFields.push(
+						...referencedVariables.filter((v) => !dependencyFields.includes(v))
+					);
+				}
+			}
+		});
+
+		// Add all dependency fields to the edit
+		dependencyFields.forEach((k) => {
+			let column = configOpt.columns.find((c) => c.id === k);
+
+			if (!column) {
+				return;
+			}
+
+			if (column.ignored_for.includes('Update')) {
+				return;
+			}
+
+			if (columnField[k]) {
+				fields[k] = null;
 			} else {
 				fields[k] = columnField[k];
 			}
