@@ -132,8 +132,8 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
         let found = false;
         for (let clause of dispatchType.resolved_column_type.Dynamic.clauses) {
             let value = templateToStringLite(clause.field, fields);
+            dispatchType.referenced_variables = dispatchType.referenced_variables.concat(getReferencedVariables(clause.field));
             if (value == clause.value) {
-                dispatchType.referenced_variables.concat(getReferencedVariables(clause.field));
                 dispatchType.resolved_column_type = clause.column_type;
                 found = true;
             }

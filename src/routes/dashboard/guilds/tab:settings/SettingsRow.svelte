@@ -30,6 +30,7 @@
 	import Spacer from '../../../../components/inputs/Spacer.svelte';
 	import { marked } from 'marked';
 	import dompurify from 'dompurify';
+	import logger from '$lib/ui/logger';
 
 	const { sanitize } = dompurify;
 
@@ -81,7 +82,11 @@
 				return;
 			}
 
-			let referencedVariables = allDerivedData[k].dispatchType.referenced_variables;
+			let dispatchType = getDispatchType(columnField, column);
+
+			let referencedVariables = dispatchType.referenced_variables;
+
+			logger.info('editRow', 'Referenced variables', referencedVariables, k);
 
 			// Ignore unchanged fields that are not the primary key
 			if (isEqual(columnField[k], settings.fields[index][k]) && k != configOpt.primary_key) {
@@ -115,6 +120,8 @@
 			}
 		});
 
+		logger.info('editRow', 'Dependency fields', dependencyFields);
+
 		// Add all dependency fields to the edit
 		dependencyFields.forEach((k) => {
 			let column = configOpt.columns.find((c) => c.id === k);
@@ -127,7 +134,7 @@
 				return;
 			}
 
-			if (columnField[k]) {
+			if (!columnField[k]) {
 				fields[k] = null;
 			} else {
 				fields[k] = columnField[k];
