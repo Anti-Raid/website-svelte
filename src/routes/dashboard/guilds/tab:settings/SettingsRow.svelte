@@ -80,6 +80,11 @@
 				return;
 			}
 
+			// Ignore unchanged fields that are not the primary key
+			if (isEqual(columnField[k], settings.fields[index][k]) && k != configOpt.primary_key) {
+				return;
+			}
+
 			if (!columnField[k]) {
 				// Check if isCleared
 				if (allDerivedData[k]?.isCleared) {
@@ -87,6 +92,7 @@
 				}
 
 				// Otherwise, omit the field entirely from the edit
+				return;
 			} else {
 				fields[k] = columnField[k];
 			}
