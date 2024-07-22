@@ -42,7 +42,7 @@
 </script>
 
 {#if state.openedEntity.indexPage}
-	<div class="index-page px-2 mb-auto mx-auto w-[90vw]">
+	<div class="index-page px-2 mb-auto mx-auto">
 		<h1 class="text-2xl font-semibold">Welcome!</h1>
 		<p class="text-slate-200">
 			Using the dashboard, you can control almost all aspects of Anti-Raid and its operation on your
@@ -58,7 +58,7 @@
 
 		<div class="mb-2" />
 
-		<div class="col-span-8 grid grid-cols-1 gap-6 lg:grid-cols-2 h-full max-w-[90vw] w-full">
+		<div class="col-span-8 grid grid-cols-1 gap-6 lg:grid-cols-2 h-full">
 			<button
 				on:click={() => {
 					state.openedEntity = { quickAction: { id: 'welcome-messages' } };
@@ -87,7 +87,7 @@
 
 		<div class="mb-2" />
 
-		<div class="col-span-8 grid grid-cols-1 gap-6 lg:grid-cols-3 h-full max-w-[90vw] w-full">
+		<div class="col-span-8 grid grid-cols-1 gap-6 lg:grid-cols-3 h-full">
 			{#each Object.values(clusterModules) as clusterModule}
 				<button
 					class="block top-0 text-left items-start index-page-button p-4 border rounded-sm bg-slate-800 hover:bg-transparent shadow"
@@ -161,7 +161,7 @@
 		</BoxButton>
 	</div>
 {:else if state.openedEntity.module}
-	<div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
+	<div class="module px-2 mb-auto mx-auto">
 		<h1 class="text-2xl font-semibold">
 			{clusterModules[state.openedEntity.module.id]?.name}
 		</h1>
