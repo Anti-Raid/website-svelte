@@ -121,6 +121,9 @@ export interface CanonicalInnerColumnTypeStringKindTemplateKind {
 export interface CanonicalInnerColumnTypeStringKind {
   Normal?: {
   };
+  Token?: {
+    default_length: number /* uint64 */;
+  };
   Textarea?: {
   };
   Template?: {
@@ -199,6 +202,7 @@ export interface CanonicalColumn {
   nullable: boolean;
   suggestions: CanonicalColumnSuggestion;
   unique: boolean;
+  secret: boolean;
   ignored_for: CanonicalOperationType[];
 }
 export interface CanonicalOperationSpecific {

@@ -12,7 +12,6 @@
 	} from '$lib/ui/settings';
 	import Icon from '@iconify/svelte';
 	import { DerivedData, OperationTypes } from './types';
-	import InputText from '../../../../components/inputs/InputText.svelte';
 	import Message from '../../../../components/Message.svelte';
 	import SettingsColumn from './SettingsColumn.svelte';
 	import { fetchClient } from '$lib/fetch/fetch';
@@ -48,9 +47,10 @@
 		configOpt: CanonicalConfigOption,
 		currentOperationType: OperationTypes
 	): Promise<DerivedData> => {
-		let result = {
+		let result: DerivedData = {
 			dispatchType: getDispatchType(columnField, column),
-			columnState: deriveColumnState(configOpt, column, currentOperationType)
+			columnState: deriveColumnState(configOpt, column, currentOperationType),
+			isCleared: false
 		};
 
 		allDerivedData[column.id] = result;
@@ -78,7 +78,11 @@
 				return;
 			}
 
-			fields[k] = columnField[k];
+			if (!columnField[k]) {
+				fields[k] = null;
+			} else {
+				fields[k] = columnField[k];
+			}
 		});
 
 		let payload: SettingsExecute = {

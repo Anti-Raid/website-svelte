@@ -6,4 +6,5 @@ export interface DerivedData {
     dispatchType: DispatchType;
     columnState: ColumnState;
     forceRederive?: boolean;
+    isCleared: boolean;
 }

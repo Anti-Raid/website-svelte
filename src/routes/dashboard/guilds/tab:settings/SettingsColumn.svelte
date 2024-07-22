@@ -73,7 +73,7 @@
 		minlength={columnDispatchType?.minlength}
 		maxlength={columnDispatchType?.maxlength}
 		type={columnDispatchType?.type}
-		disabled={columnState == ColumnState.Disabled}
+		disabled={columnState == ColumnState.Disabled || allDerivedData[column.id].isCleared}
 		bind:value
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
@@ -89,7 +89,7 @@
 		minlength={columnDispatchType?.minlength}
 		maxlength={columnDispatchType?.maxlength}
 		type={columnDispatchType?.type}
-		disabled={columnState == ColumnState.Disabled}
+		disabled={columnState == ColumnState.Disabled || allDerivedData[column.id].isCleared}
 		bind:value
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
@@ -99,23 +99,27 @@
 {/if}
 
 {#if columnState == ColumnState.Enabled}
-	<SettingsSuggestionBox
-		{guildId}
-		module={module.id}
-		{configOpt}
-		{column}
-		operationType={'Update'}
-		bind:value
-	/>
+	{#if !allDerivedData[column.id].isCleared}
+		<SettingsSuggestionBox
+			{guildId}
+			module={module.id}
+			{configOpt}
+			{column}
+			operationType={currentOperationType}
+			bind:value
+		/>
+	{/if}
 
-	{#if column.nullable}
+	{#if column.nullable && currentOperationType == 'Update'}
 		<Spacer typ="smallSpacing" />
 		<BoxButton
 			onclick={(e) => {
 				e.preventDefault();
-				value = null;
-			}}>Clear</BoxButton
+				allDerivedData[column.id].isCleared = true;
+			}}
 		>
+			{allDerivedData[column.id].isCleared ? "Don't Clear" : 'Clear'}
+		</BoxButton>
 	{/if}
 {/if}
 
