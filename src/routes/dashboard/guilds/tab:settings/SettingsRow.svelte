@@ -159,7 +159,7 @@
 			async: false,
 			breaks: true
 		}) as string;
-		return { text: sanitize(parsed), level: 'info', disable_html: true };
+		return { text: sanitize(parsed), level: 'info', disable_html: false };
 	};
 
 	let noticeProps: NoticeProps | null = null;
