@@ -86,7 +86,7 @@
 
 			let referencedVariables = dispatchType.referenced_variables;
 
-			logger.info('editRow', 'Referenced variables', referencedVariables, k);
+			logger.debug('editRow', 'Referenced variables', referencedVariables, k);
 
 			// Ignore unchanged fields that are not the primary key
 			if (isEqual(columnField[k], settings.fields[index][k]) && k != configOpt.primary_key) {
