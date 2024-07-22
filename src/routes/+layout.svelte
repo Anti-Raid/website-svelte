@@ -7,7 +7,7 @@
 <Header />
 
 <article class="min-h-screen flex-col justify-between overflow-x-hidden">
-	<main class="mt-9 p-3 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full min-h-screen">
+	<main class="mt-9 p-1 w-full md:max-w-7xl mx-auto h-full min-h-screen">
 		<slot />
 	</main>
 

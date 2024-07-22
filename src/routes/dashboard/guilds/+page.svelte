@@ -19,6 +19,7 @@
 	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
 	import Message from '../../../components/Message.svelte';
 	import Guild from './core/Guild.svelte';
+	import { defaultState, stringToOpenedEntity } from './core/types';
 
 	let currentState = 'Loading dashboard data';
 
@@ -88,6 +89,16 @@
 			)
 		};
 
+		currentState = 'Taking you into the future...';
+
+		// Check for state
+		let state = defaultState();
+
+		let openedEntityStr = searchParams.get('in');
+		if (openedEntityStr) {
+			state.openedEntity = stringToOpenedEntity(openedEntityStr);
+		}
+
 		return {
 			guildId,
 			currentModuleConfiguration,
@@ -97,6 +108,7 @@
 			guildShardId,
 			guildClusterId,
 			clusterModules,
+			state,
 			commonPermissionContext
 		};
 	};
@@ -120,6 +132,7 @@
 			guildClusterId={r.guildClusterId}
 			clusterModules={r.clusterModules}
 			commonPermissionContext={r.commonPermissionContext}
+			state={r.state}
 		/>
 	{:else}
 		<Message type="loading">Please wait</Message>

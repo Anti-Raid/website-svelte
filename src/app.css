@@ -69,6 +69,10 @@
 	div {
 		@apply text-primary-600;
 	}
+
+	.table tr td {
+		@apply max-sm:max-w-52 max-sm:break-all max-sm:overflow-scroll;
+	}
 }
 
 tbody tr:hover {

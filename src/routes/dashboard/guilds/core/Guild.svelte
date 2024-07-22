@@ -21,25 +21,19 @@
 	export let guildData: UserGuildBaseData;
 	export let guildClusterId: number;
 	export let guildShardId: number;
-
-	let state: State = {
-		openedEntity: { indexPage: {} },
-		commandSearch: '',
-		searchedCommands: [],
-		commandEditorOpen: false,
-		commandEditConfigs: [],
-		clusterFinderByGuildIdExpectedData: null
-	};
+	export let state: State;
 </script>
 
 <!--Cluster Menu at the right of the page-->
-<article class="guild-menu md:grid md:gap-1 md:grid-cols-5 md:grid-flow-dense">
+<article class="guild-menu grid grid-cols-1 md:gap-1 md:grid-cols-5 md:grid-flow-dense">
 	<!--Search bar-->
 
 	<!--Module list-->
 	<!--Bar-->
 	<nav
-		class={'nav md:col-span-1 hidden md:block flex-none w-full mt-1 border border-gray-600 p-2 border-solid rounded-sm'}
+		class={state.openedEntity.mobileSidebar
+			? 'nav md:col-span-1 block w-full mt-1 border border-gray-600 p-2 border-solid rounded-sm'
+			: 'nav md:col-span-1 hidden md:block w-full mt-1 border border-gray-600 p-2 border-solid rounded-sm'}
 	>
 		<section class="guild-basic-details">
 			<!--Avatar-->
@@ -89,7 +83,7 @@
 	<!--Content-->
 	<section
 		class={(!state.openedEntity.mobileSidebar ? 'block ' : 'hidden md:block ') +
-			'content col-span-4'}
+			'content col-span-1 md:col-span-4'}
 	>
 		<div class="menu-area block md:hidden text-white">
 			<button

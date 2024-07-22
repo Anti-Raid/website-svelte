@@ -8,6 +8,24 @@ export interface OpenedEntity {
     mobileSidebar?: {};
 }
 
+export const openedEntityToString = (openedEntity: OpenedEntity): string => {
+    if (openedEntity.indexPage) return "indexPage";
+    if (openedEntity.module) return `module:${openedEntity.module.id}-${openedEntity.module.tab}`;
+    if (openedEntity.quickAction) return `quickAction:${openedEntity.quickAction.id}`;
+    if (openedEntity.mobileSidebar) return "mobileSidebar";
+    return "none";
+}
+
+export const stringToOpenedEntity = (str: string): OpenedEntity => {
+    if (str === "indexPage") return { indexPage: {} };
+    if (str === "mobileSidebar") return { mobileSidebar: {} };
+    const moduleMatch = str.match(/^module:(.+)-(.+)$/);
+    if (moduleMatch) return { module: { id: moduleMatch[1], tab: moduleMatch[2] } };
+    const quickActionMatch = str.match(/^quickAction:(.+)$/);
+    if (quickActionMatch) return { quickAction: { id: quickActionMatch[1] } };
+    return { indexPage: {} }; // default to index page
+}
+
 export interface State {
     openedEntity: OpenedEntity;
     commandSearch: string;
@@ -15,8 +33,14 @@ export interface State {
     commandEditOpen?: ParsedCanonicalCommandData;
     commandEditConfigs: FullGuildCommandConfiguration[];
     commandEditorOpen: boolean;
-    clusterFinderByGuildIdExpectedData: {
-        cluster: number;
-        shard: number;
-    } | null;
+}
+
+export const defaultState = (): State => {
+    return {
+        openedEntity: { indexPage: {} },
+        commandSearch: '',
+        searchedCommands: [],
+        commandEditorOpen: false,
+        commandEditConfigs: []
+    };
 }
