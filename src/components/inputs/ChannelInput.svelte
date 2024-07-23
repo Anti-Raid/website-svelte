@@ -21,12 +21,15 @@
 
 	let selectedChannel: GuildChannelWithPermissions;
 
+	/**
+	 * Within each category, sort based on the following principle:
+	 * 1. Voice channels at bottom
+	 * 2. Position value used to sort both text and voice [but voice still appears below text]
+	 * 3. If category, type and position are all the same, earlier ID is first
+	 * @param channels Channels to sort
+	 * @returns Sorted channels
+	 */
 	const sortChannels = (channels: GuildChannelWithPermissions[]): GuildChannelWithPermissions[] => {
-		// Within each category, sort based on the following principle:
-		//
-		// 1. Voice channels at bottom
-		// 2. Position value used to sort both text and voice [but voice still appears below text]
-		// 3. If category, type and position are all the same, earlier ID is first
 		let categories: GuildChannelWithPermissions[] = [];
 		let voiceChannels: GuildChannelWithPermissions[] = [];
 		let textChannels: GuildChannelWithPermissions[] = [];
@@ -78,9 +81,9 @@
 		}
 
 		return sorted;
-		2;
 	};
 
+	// Set selected channel if value is set
 	$: if (value) {
 		let chan = channels.find((channel) => channel?.channel?.id === value);
 
@@ -89,7 +92,9 @@
 		}
 	}
 
-	// ts workaround: bypass cant index type
+	/**
+	 * ts workaround: bypass cant index type
+	 */
 	const _indexInv = (type: number): string => {
 		// @ts-ignore
 		return channelTypesInv[type];
