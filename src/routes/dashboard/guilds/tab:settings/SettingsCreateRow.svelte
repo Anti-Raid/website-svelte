@@ -78,11 +78,7 @@
 				return;
 			}
 
-			if (!columnField[k]) {
-				fields[k] = null;
-			} else {
-				fields[k] = columnField[k];
-			}
+			fields[k] = columnField[k];
 		});
 
 		let payload: SettingsExecute = {

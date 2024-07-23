@@ -93,21 +93,16 @@
 				return;
 			}
 
-			if (!columnField[k]) {
+			if (allDerivedData[k]?.isCleared) {
 				// Check if isCleared
-				if (allDerivedData[k]?.isCleared) {
-					fields[k] = null;
+				fields[k] = null;
 
-					// Add to dependencyFields
-					if (referencedVariables) {
-						dependencyFields.push(
-							...referencedVariables.filter((v) => !dependencyFields.includes(v))
-						);
-					}
+				// Add to dependencyFields
+				if (referencedVariables) {
+					dependencyFields.push(
+						...referencedVariables.filter((v) => !dependencyFields.includes(v))
+					);
 				}
-
-				// Otherwise, omit the field entirely from the edit
-				return;
 			} else {
 				fields[k] = columnField[k];
 
