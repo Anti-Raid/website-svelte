@@ -73,11 +73,13 @@
 </script>
 
 {#await loadIndexDashPage(false)}
-	<Message type="loading">Loading dashboard</Message>
-	<small>
-		<span class="font-semibold">Current State: </span>
-		{currentState}
-	</small>
+	<div class="p-4">
+		<Message type="loading">Loading dashboard</Message>
+		<small>
+			<span class="font-semibold">Current State: </span>
+			{currentState}
+		</small>
+	</div>
 {:then}
 	{#if topNoticeArea}
 		<NoticeArea props={topNoticeArea} />
@@ -199,7 +201,9 @@
 		<NoticeArea props={bottomNoticeArea} />
 	{/if}
 {:catch error}
-	<Message type="error">
-		{error?.toString() || 'Failed to load dashboard'}
-	</Message>
+	<div class="p-4">
+		<Message type="error">
+			{error?.toString() || 'Failed to load dashboard'}
+		</Message>
+	</div>
 {/await}

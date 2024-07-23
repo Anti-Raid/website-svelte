@@ -115,11 +115,13 @@
 </script>
 
 {#await loadGuildData()}
-	<Message type="loading">Loading dashboard</Message>
-	<small>
-		<span class="font-semibold">Current State: </span>
-		{currentState}
-	</small>
+	<div class="p-4">
+		<Message type="loading">Loading dashboard</Message>
+		<small>
+			<span class="font-semibold">Current State: </span>
+			{currentState}
+		</small>
+	</div>
 {:then r}
 	{#if r}
 		<Guild
@@ -135,8 +137,12 @@
 			state={r.state}
 		/>
 	{:else}
-		<Message type="loading">Please wait</Message>
+		<div class="p-4">
+			<Message type="loading">Please wait</Message>
+		</div>
 	{/if}
 {:catch err}
-	<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
+	<div class="p-4">
+		<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
+	</div>
 {/await}
