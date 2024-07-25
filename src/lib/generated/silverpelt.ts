@@ -252,8 +252,12 @@ export interface PermissionCheck {
  * PermissionChecks represents a list of permission checks.
  */
 export interface PermissionChecks {
-  checks: PermissionCheck[]; // The list of permission checks
-  checks_needed: number /* int */; // Number of checks that need to be true
+  Simple?: {
+    checks: PermissionCheck[]; // The list of permission checks
+  }; // The list of permission checks, if Simple
+  Template?: {
+    template: string; // The template to use
+  }; // The template to use, if using Templates
 }
 /**
  * CommandExtendedData represents the default permissions needed to run a command.

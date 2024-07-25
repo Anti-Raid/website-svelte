@@ -18,6 +18,7 @@
 	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 	import Label from '../../../../components/inputs/Label.svelte';
+	import { isPermissionCheckEmpty } from '$lib/ui/commands';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
@@ -69,8 +70,9 @@
 	const getModuleDefaultPerms = (): PCT => {
 		return (
 			currentModuleConfiguration.find((m) => m.module === module.id)?.default_perms || {
-				checks: [],
-				checks_needed: 1
+				Simple: {
+					checks: []
+				}
 			}
 		);
 	};
@@ -121,6 +123,16 @@
 						};
 					}
 
+					// Check and restore backup
+					if (
+						value.value &&
+						isPermissionCheckEmpty(value.value) &&
+						permCheck_backupTab !== '' &&
+						permCheck_backupPermissionChecks
+					) {
+						value.value = structuredClone(permCheck_backupPermissionChecks);
+					}
+
 					return {
 						key: 'default_perms',
 						value
@@ -160,6 +172,12 @@
 	$: moduleId, (toggleManuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration));
 	$: moduleId,
 		(defaultPermsManuallyOverriden = isModuleDefaultPermsOverriden(currentModuleConfiguration));
+
+	// Backup fields
+	let permCheck_backupPermissionChecks: PCT | undefined = undefined;
+	let permCheck_backupTab: string = '';
+	$: moduleId, (permCheck_backupPermissionChecks = structuredClone(getModuleDefaultPerms()));
+	$: moduleId, (permCheck_backupTab = '');
 
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
@@ -209,6 +227,8 @@
 		currentModuleConfiguration = currentModuleConfiguration;
 
 		state = getState(); // Rederive state
+		permCheck_backupTab = '';
+		permCheck_backupPermissionChecks = undefined;
 	};
 
 	let updateNoticeArea: NoticeProps | null;
@@ -245,6 +265,8 @@
 <PermissionChecks
 	id={`pc-${module.id}`}
 	bind:permissionChecks={state.default_perms.current}
+	bind:backupPermissionChecks={permCheck_backupPermissionChecks}
+	bind:backupTab={permCheck_backupTab}
 	ctx={commonPermissionContext}
 />
 

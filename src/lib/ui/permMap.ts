@@ -17,9 +17,13 @@ export interface KittycatPermissionMapper {
  * @returns The permissions extracted from the permission checks
  */
 const extractPermissionsFromPermissionChecks = (permissionChecks: PermissionChecks) => {
+	if (!permissionChecks?.Simple) {
+		return [];
+	}
+
 	let permissions: string[] = [];
 
-	for (let check of permissionChecks?.checks) {
+	for (let check of permissionChecks?.Simple?.checks) {
 		for (let permission of check?.kittycat_perms) {
 			permissions.push(permission);
 		}

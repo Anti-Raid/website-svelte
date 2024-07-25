@@ -77,26 +77,25 @@ class PermissionChecksFormatter {
 		this.checks = checks;
 	}
 
-	get checksNeeded() {
-		return this.checks.checks_needed;
-	}
-
 	toString() {
-		let checks = this.checks.checks
-			.map((c, index) => {
-				let check = new PermissionCheckFormatter(c);
+		if (this.checks.Simple) {
+			return this.checks.Simple.checks
+				.map((c, index) => {
+					let check = new PermissionCheckFormatter(c);
 
-				let result = `${index + 1}.\n${check.toString()}`;
-				let empty = check.kittycatPerms.length === 0 && check.nativePerms.length === 0;
-				if (index < this.checks.checks.length - 1 && !empty) {
-					result += check.outerAnd ? ' AND ' : ' OR ';
-				}
-				return result;
-			})
-			.join(' ');
-
-		checks += `\n\n**Checks Needed**: ${this.checksNeeded}`;
-		return checks
+					let result = `${index + 1}.\n${check.toString()}`;
+					let empty = check.kittycatPerms.length === 0 && check.nativePerms.length === 0;
+					if (index < (this.checks.Simple?.checks.length || 0) - 1 && !empty) {
+						result += check.outerAnd ? ' AND ' : ' OR ';
+					}
+					return result;
+				})
+				.join(' ');
+		} else if (this.checks.Template) {
+			return `Template: ${this.checks.Template.template}`;
+		} else {
+			return `Unknown format: ${JSON.stringify(this.checks)}`;
+		}
 	}
 }
 
@@ -135,11 +134,6 @@ export class PermissionResultFormatter {
 				if (!this.result.checks) throw new Error('Missing checks for permission result');
 				checksFmt = new PermissionChecksFormatter(this.result.checks);
 				return `You do not have the required permissions to perform this action. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
-			case 'MissingMinChecks':
-				if (!this.result.checks) throw new Error('Missing checks for permission result');
-				checksFmt = new PermissionChecksFormatter(this.result.checks);
-				return `You do not have the required permissions to perform this action. You need at least ${checksFmt.checksNeeded
-					} of the following permissions to perform this action:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
 			case 'DiscordError':
 				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
 			case 'SudoNotGranted':
