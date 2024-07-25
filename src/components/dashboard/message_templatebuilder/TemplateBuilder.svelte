@@ -88,7 +88,7 @@
 	let openTab: string;
 	let noticeProps: NoticeProps | null = null;
 	let switchTab: string | null = null;
-	let showModal: boolean = false;
+	let showModal: boolean;
 
 	$: setupInitialState();
 	$: {
@@ -112,6 +112,7 @@
 
 			if (template != rawTemplateOutput) {
 				switchTab = 'builder';
+				showModal = true;
 			} else {
 				openTab = 'builder';
 				switchTab = null;
