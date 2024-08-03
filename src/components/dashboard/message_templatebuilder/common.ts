@@ -1,11 +1,42 @@
 import { builderVersion, Embed, TemplateBuilderData, TemplateBuilderDataComment } from "./types";
 
-export const parseString = (s: string): string => {
-    // If it starts with $expr:, then it's a raw string
-    if (s.startsWith("$expr")) {
-        return s.substring(5).trim();
-    }
+type Snippet = (current: string) => string;
 
+export const defaultSnippets: Record<string, Snippet> = {
+    "Lua Template": function (_current: string): string {
+        return String.raw`@pragma {"lang":"lua"}
+function (args) 
+    local message_plugin = require "@antiraid/message"
+
+    -- Make the embed
+    local embed = message_plugin.new_message_embed()
+    embed.title = args.event_titlename
+    embed.description = "" -- Start with an empty description
+
+    -- Add the fields to the description
+    for key, value in pairs(args.fields) do
+        local should_set = false
+
+        if value ~= nil and value.field.type ~= "None" then
+            should_set = true
+        end
+    
+        if should_set then
+            local formatted_value = message_plugin.format_gwevent_categorized_field(value)
+            embed.description = embed.description .. "**" .. key:gsub("_", " "):upper() .. "**: " .. formatted_value .. "\n"
+        end
+    end
+
+    local message = message_plugin.new_message()
+
+    table.insert(message.embeds, embed)
+
+    return message
+end`
+    }
+}
+
+export const parseString = (s: string): string => {
     return `"${s}"`;
 }
 

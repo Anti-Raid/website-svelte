@@ -12,11 +12,13 @@
 	import DangerButton from '../../inputs/multi/DangerButton.svelte';
 	import Spacer from '../../inputs/Spacer.svelte';
 	import {
+		defaultSnippets,
 		generateTemplateForTemplateBuilderData,
 		parseTemplateBuilderDataCommentFromTemplate
 	} from './common';
 	import TemplateBuilderEmbed from './TemplateBuilderEmbed.svelte';
 	import { defaultData, TemplateBuilderData } from './types';
+	import { title } from '$lib/strings';
 
 	export let templateBuilderData: TemplateBuilderData = defaultData();
 	export let rawTemplateOutput: string;
@@ -200,6 +202,18 @@
 		showErrors={false}
 	/>
 {:else if openTab == 'advanced'}
+	<div class="default-snips">
+		<h3 class="text-2xl">Need inspiration?</h3>
+		<p>Check out some templates/snippets</p>
+		{#each Object.entries(defaultSnippets) as [key, value]}
+			<ButtonReact
+				onclick={() => {
+					rawTemplateOutput = value(rawTemplateOutput);
+				}}>{title(key)}</ButtonReact
+			>
+		{/each}
+	</div>
+
 	<InputTextArea
 		id="templatebuilder-raw"
 		label="Raw Template"
