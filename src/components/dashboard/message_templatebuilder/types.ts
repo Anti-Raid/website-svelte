@@ -1,7 +1,11 @@
 /**
  * In order for builder to parse its own template, it is needed to insert a comment with the data in the following format:
  */
+
+export const builderVersion = 1;
+
 export interface TemplateBuilderDataComment {
+    ver: number;
     data: TemplateBuilderData;
     checksum: string; // SHA256 checksum to ensure that users using advanced mode wont have older versions of the template
 }

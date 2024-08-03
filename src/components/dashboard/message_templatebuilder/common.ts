@@ -1,4 +1,4 @@
-import { Embed, TemplateBuilderData, TemplateBuilderDataComment } from "./types";
+import { builderVersion, Embed, TemplateBuilderData, TemplateBuilderDataComment } from "./types";
 
 export const parseString = (s: string): string => {
     // If it starts with $expr:, then it's a raw string
@@ -25,34 +25,40 @@ const sha256 = async (message: string) => {
 }
 
 export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilderData) => {
-    let templateStr = '';
+    let templateStr = `
+function (args) {
+    local message_plugin = require "@antiraid/message"
+    local message = message_plugin.new_message()
+`;
 
     if (tbd.embeds.length > 0) {
-        let embeds: string[] = []
-
         for (let embed of tbd.embeds) {
             let fragment = generateTemplateFragmentForEmbed(embed);
 
-            if (fragment) embeds.push(fragment);
+            if (fragment) {
+                templateStr += `${fragment}\n\ttable.insert(message, embed)\n\t`;
+            }
         }
-
-        templateStr += embeds.join(`\n{{ new_embed() }}\n\n`)
     }
 
     if (tbd.content) {
-        templateStr += `{% filter content %}\n${tbd.content}\n{% endfilter %}`;
+        templateStr += `message.content = ${parseString(tbd.content)}\n\t`;
     }
 
     if (templateStr) {
         // Get sha256 checksum of the template
         const checksum = await sha256(templateStr.trim());
 
-        let data: TemplateBuilderDataComment = {
-            data: tbd,
-            checksum
+        let pragma: TemplatePragma = {
+            lang: "lua",
+            builderInfo: {
+                ver: builderVersion,
+                data: tbd,
+                checksum
+            }
         }
 
-        templateStr += `\n\n{# BUILDER: ${JSON.stringify(data)} #}`;
+        templateStr = `@pragma ${JSON.stringify(pragma)}\n${templateStr}`;
     }
 
     return templateStr;
@@ -64,46 +70,66 @@ export interface ParsedTemplateBuilderComment {
     template: string;
 }
 
+export interface TemplatePragma {
+    lang: string,
+    builderInfo?: TemplateBuilderDataComment // Website specific field 
+}
+
 export const parseTemplateBuilderDataCommentFromTemplate = async (template: string): Promise<ParsedTemplateBuilderComment | null> => {
-    const regex = /{# BUILDER: (.*) #}/;
-    const match = template.match(regex);
+    let templateFirstLine = template.split('\n')[0];
+    template = template.slice(1); // Rest of template is the actual template
 
-    if (match) {
-        let comment: TemplateBuilderDataComment = JSON.parse(match[1]);
-        let newTemplate = template.replace(regex, '').trim();
-
-        // Check if the checksum is correct
-        let checksumOk = await sha256(newTemplate) == comment.checksum;
-
-        return {
-            comment,
-            checksumOk,
-            template: newTemplate
-        }
+    if (!templateFirstLine.startsWith("@pragma ")) {
+        return null;
     }
 
-    return null;
+    let pragma = templateFirstLine.substring(8).trim();
+
+    try {
+        let pragmaObj: TemplatePragma = JSON.parse(pragma);
+
+        if (!pragmaObj.builderInfo) {
+            return null;
+        }
+
+        // Check if the checksum is correct
+        let checksumOk = await sha256(template) == pragmaObj.builderInfo.checksum;
+
+        return {
+            comment: pragmaObj.builderInfo,
+            checksumOk,
+            template
+        }
+    } catch {
+        return null;
+    }
 }
 
 export const generateTemplateFragmentForEmbed = (embed: Embed) => {
-    let baseFragment = '';
+    let baseFragment = 'local embed = message_plugin.new_message_embed()\n\t';
 
     if (embed.title) {
-        baseFragment += `{{ embed_title(title=${parseString(embed.title)}) }}\n\n`;
+        baseFragment += `embed.title = ${parseString(embed.title)}\n\t`;
     }
 
     if (embed.description) {
-        baseFragment += `{% filter embed_description %}\n${embed.description}\n{% endfilter %}\n\n`;
+        baseFragment += `embed.description = ${parseString(embed.description)}\n\t`;
     }
 
     if (embed.fields.length > 0) {
-        embed.fields.forEach((field, _) => {
+        embed.fields.forEach((field, i) => {
             if (field.name == "" || field.value == "") {
                 return
             }
-            baseFragment += `{{ embed_field(name=${parseString(field.name)}, value=${parseString(
-                field.value
-            )}, inline=${field.inline}) }}\n`;
+
+            baseFragment += `
+    -- Field ${i + 1}
+    local field = message_plugin.new_message_embed_field()\n
+    field.name = ${parseString(field.name)}\n
+    field.value = ${parseString(field.value)}\n
+    field.inline = ${field.inline}\n
+    table.insert(embed.fields, field)\n
+            `;
         });
     }
 
