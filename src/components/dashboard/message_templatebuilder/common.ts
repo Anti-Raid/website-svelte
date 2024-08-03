@@ -25,11 +25,7 @@ const sha256 = async (message: string) => {
 }
 
 export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilderData) => {
-    let templateStr = `
-function (args) {
-    local message_plugin = require "@antiraid/message"
-    local message = message_plugin.new_message()
-`;
+    let templateStr = ``;
 
     if (tbd.embeds.length > 0) {
         for (let embed of tbd.embeds) {
@@ -46,6 +42,14 @@ function (args) {
     }
 
     if (templateStr) {
+        templateStr = `function (args) {
+    local message_plugin = require "@antiraid/message"
+    local message = message_plugin.new_message()
+    -- Create the message
+    ${templateStr.trim()}
+}
+    `
+
         // Get sha256 checksum of the template
         const checksum = await sha256(templateStr.trim());
 
@@ -106,7 +110,7 @@ export const parseTemplateBuilderDataCommentFromTemplate = async (template: stri
 }
 
 export const generateTemplateFragmentForEmbed = (embed: Embed) => {
-    let baseFragment = 'local embed = message_plugin.new_message_embed()\n\t';
+    let baseFragment = '';
 
     if (embed.title) {
         baseFragment += `embed.title = ${parseString(embed.title)}\n\t`;
@@ -133,5 +137,9 @@ export const generateTemplateFragmentForEmbed = (embed: Embed) => {
         });
     }
 
-    return baseFragment;
+    if (baseFragment) {
+        return `local embed = message_plugin.new_message_embed()\n\t${baseFragment}`
+    }
+
+    return '';
 };
