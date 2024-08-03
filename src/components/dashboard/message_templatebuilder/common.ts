@@ -32,7 +32,7 @@ export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilde
             let fragment = generateTemplateFragmentForEmbed(embed);
 
             if (fragment) {
-                templateStr += `${fragment}\n\ttable.insert(message, embed)\n\t`;
+                templateStr += `${fragment}table.insert(message, embed)\n\t`;
             }
         }
     }
@@ -47,8 +47,7 @@ export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilde
     local message = message_plugin.new_message()
     -- Create the message
     ${templateStr.trim()}
-}
-    `
+}`
 
         // Get sha256 checksum of the template
         const checksum = await sha256(templateStr.trim());
