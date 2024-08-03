@@ -3,7 +3,7 @@ import { builderVersion, Embed, TemplateBuilderData, TemplateBuilderDataComment 
 type Snippet = (current: string) => string;
 
 export const defaultSnippets: Record<string, Snippet> = {
-    "Lua Template": function (_current: string): string {
+    "Lua Example": function (_current: string): string {
         return String.raw`@pragma {"lang":"lua"}
 function (args) 
     local message_plugin = require "@antiraid/message"
