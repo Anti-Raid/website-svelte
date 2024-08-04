@@ -48,7 +48,6 @@ export const parseString = (s: string): string => {
     if (match) {
         for (let m of match) {
             m = `{${m}}` // We want the brackets for now
-            console.log("Match: ", m)
             // We need to escape the quotes and then use ~ to concat them
             let escaped = m.replaceAll("{", "").replaceAll("}", "").trim()
 
