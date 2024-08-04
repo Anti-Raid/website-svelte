@@ -64,6 +64,11 @@ export const parseString = (s: string): string => {
         s = s.replaceAll(" .. \"\"", "")
     }
 
+    // If the string starts with "", remove it
+    if (s.includes(`\"\" .. `)) {
+        s = s.replaceAll("\"\" .. ", "")
+    }
+
     return s;
 }
 
