@@ -61,7 +61,7 @@ export const parseString = (s: string): string => {
     }
 
     // If the string ends with "", remove it
-    if (s.endsWith(`""`)) {
+    if (s.includes(` .. \"\"`)) {
         s = s.replaceAll(" .. \"\"", "")
     }
 
