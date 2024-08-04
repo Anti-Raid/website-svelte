@@ -105,6 +105,7 @@ export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilde
     local message = message_plugin.new_message()
     -- Create the message
     ${templateStr.trim()}
+    return message
 }`
 
         // Get sha256 checksum of the template
