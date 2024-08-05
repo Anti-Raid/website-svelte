@@ -110,7 +110,6 @@ export class PermissionResultFormatter {
 	}
 
 	toMarkdown() {
-		let checksFmt: PermissionChecksFormatter;
 		switch (this.result.var) {
 			case 'Ok':
 				return 'No message/context available';
@@ -119,9 +118,9 @@ export class PermissionResultFormatter {
 			case 'MissingKittycatPerms':
 			case 'MissingNativePerms':
 			case 'MissingAnyPerms':
-				if (!this.result.checks) throw new Error('Missing checks for permission result');
-				checksFmt = new PermissionChecksFormatter(this.result.checks);
-				return `You do not have the required permissions to perform this action. Try checking that you have the below permissions: ${checksFmt.toString()}`;
+				if (!this.result.check) throw new Error('Missing checks for permission result');
+				let checksFmt1 = new PermissionCheckFormatter(this.result.check);
+				return `You do not have the required permissions to perform this action. Try checking that you have the below permissions: ${checksFmt1.toString()}`;
 			case 'CommandDisabled':
 				return `You cannot perform this action because the command \`\`${this.result.command_config?.command}\`\` is disabled on this server`;
 			case 'UnknownModule':
@@ -131,9 +130,9 @@ export class PermissionResultFormatter {
 			case 'ModuleDisabled':
 				return `The module \`\`${this.result.module_config?.module}\`\` is disabled on this server`;
 			case 'NoChecksSucceeded':
-				if (!this.result.checks) throw new Error('Missing checks for permission result');
-				checksFmt = new PermissionChecksFormatter(this.result.checks);
-				return `You do not have the required permissions to perform this action. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt.toString()}`;
+				if (!this.result.check) throw new Error('Missing checks for permission result');
+				let checksFmt2 = new PermissionCheckFormatter(this.result.check);
+				return `You do not have the required permissions to perform this action. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt2.toString()}`;
 			case 'DiscordError':
 				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
 			case 'SudoNotGranted':
