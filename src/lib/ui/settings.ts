@@ -1,6 +1,6 @@
 import { CanonicalColumn, CanonicalColumnType, CanonicalConfigOption, CanonicalInnerColumnType } from "$lib/generated/silverpelt";
 import { ChannelConstraints } from "$lib/inputconstraints";
-import { OperationTypes } from "../../routes/dashboard/guilds/tab:settings/types";
+import { OperationTypes } from "../../components/settings/types";
 import logger from "./logger";
 
 export interface DispatchType {

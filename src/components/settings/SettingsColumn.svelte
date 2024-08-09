@@ -5,14 +5,15 @@
 		CanonicalModule
 	} from '$lib/generated/silverpelt';
 	import { getDispatchType, deriveColumnState, ColumnState, DispatchType } from '$lib/ui/settings';
-	import InputDispatcher from '../../../../components/inputs/generic/InputDispatcher.svelte';
+	import InputDispatcher from '../inputs/generic/InputDispatcher.svelte';
 	import SettingsSuggestionBox from './SettingsSuggestionBox.svelte';
 	import { DerivedData, OperationTypes } from './types';
 	import logger from '$lib/ui/logger';
-	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
-	import Spacer from '../../../../components/inputs/Spacer.svelte';
+	import BoxButton from '../inputs/button/BoxButton.svelte';
+	import Spacer from '../inputs/Spacer.svelte';
 	import { UserGuildBaseData } from '$lib/generated/types';
 
+	export let clusterModules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
@@ -102,10 +103,11 @@
 	{#if !allDerivedData[column.id].isCleared}
 		<SettingsSuggestionBox
 			{guildId}
-			module={module.id}
+			{module}
 			{configOpt}
 			{column}
 			operationType={currentOperationType}
+			{clusterModules}
 			bind:value
 		/>
 	{/if}

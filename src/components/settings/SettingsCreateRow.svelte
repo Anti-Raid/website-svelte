@@ -12,7 +12,7 @@
 	} from '$lib/ui/settings';
 	import Icon from '@iconify/svelte';
 	import { DerivedData, OperationTypes } from './types';
-	import Message from '../../../../components/Message.svelte';
+	import Message from '../Message.svelte';
 	import SettingsColumn from './SettingsColumn.svelte';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
@@ -22,13 +22,13 @@
 		SettingsExecuteResponse,
 		UserGuildBaseData
 	} from '$lib/generated/types';
-	import ButtonReact from '../../../../components/inputs/button/ButtonReact.svelte';
-	import isEqual from 'lodash.isequal';
-	import { Color } from '../../../../components/inputs/button/colors';
-	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
-	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
-	import Spacer from '../../../../components/inputs/Spacer.svelte';
+	import ButtonReact from '../inputs/button/ButtonReact.svelte';
+	import { Color } from '../inputs/button/colors';
+	import { NoticeProps } from '../common/noticearea/noticearea';
+	import NoticeArea from '../common/noticearea/NoticeArea.svelte';
+	import Spacer from '../inputs/Spacer.svelte';
 
+	export let clusterModules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let settings: SettingsExecuteResponse;
 	export let module: CanonicalModule;
@@ -173,6 +173,7 @@
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
 					{debugMode}
+					{clusterModules}
 					bind:allDerivedData
 				/>
 				<Spacer typ="extSpacing" />

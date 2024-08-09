@@ -8,14 +8,17 @@
 		SettingsExecuteResponse,
 		UserGuildBaseData
 	} from '$lib/generated/types';
-	import Label from '../../../../components/inputs/Label.svelte';
-	import Message from '../../../../components/Message.svelte';
+	import Label from '../inputs/Label.svelte';
+	import Message from '../Message.svelte';
 	import SettingSchema from './SettingSchema.svelte';
+	import { cachedSettings } from './types';
 
+	export let clusterModules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
 	export let guildId: string;
+	export let filters: Record<string, any> = {}; // Any filters to apply
 
 	const getCurrentSettings = async () => {
 		const creds = getAuthCreds();
@@ -25,7 +28,7 @@
 			operation: 'View',
 			module: module.id,
 			setting: configOpt.id,
-			fields: {} as Record<string, any>
+			fields: filters
 		};
 
 		const res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
@@ -41,6 +44,8 @@
 
 		let settings: SettingsExecuteResponse = await res.json();
 
+		cachedSettings.set(`${module.id}.${configOpt.id}`, settings);
+
 		return settings;
 	};
 </script>
@@ -51,7 +56,7 @@
 {#await getCurrentSettings()}
 	<p>Loading...</p>
 {:then settings}
-	<SettingSchema {configOpt} {module} {guildId} {settings} {guildData} />
+	<SettingSchema {configOpt} {module} {guildId} {settings} {guildData} {clusterModules} />
 {:catch err}
 	<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
 {/await}

@@ -173,23 +173,19 @@ export interface CanonicalColumnSuggestion {
   Static?: {
     suggestions: string[];
   };
-  Dynamic?: {
+  /**
+   * A reference to another setting
+   * The primary key of the referred setting is used as the value
+   */
+  SettingsReference?: {
     /**
-     * The table name to query
+     * The module of the referenced setting
      */
-    table_name: string;
+    module: string;
     /**
-     * The column name containing the ID/value to be set
+     * The setting of the referenced setting
      */
-    id_column: string;
-    /**
-     * The column name containing the user-facing value
-     */
-    value_column: string;
-    /**
-     * The column name containing the guild id
-     */
-    guild_id_column: string;
+    setting: string;
   };
   None?: {
   };
@@ -220,7 +216,8 @@ export interface CanonicalConfigOption {
   name: string;
   description: string;
   table: string;
-  guild_id: string;
+  common_filters: Record<CanonicalOperationType, Record<string, string>>;
+  default_common_filters: Record<string, string>;
   primary_key: string;
   title_template: string;
   columns: CanonicalColumn[];

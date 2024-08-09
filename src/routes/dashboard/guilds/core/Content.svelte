@@ -193,7 +193,12 @@
 				bind:currentCommandConfiguration
 			/>
 		{:else if state.openedEntity.module.tab == 'settings'}
-			<SettingsTab {guildId} module={clusterModules[state.openedEntity.module.id]} {guildData} />
+			<SettingsTab
+				{guildId}
+				module={clusterModules[state.openedEntity.module.id]}
+				{guildData}
+				{clusterModules}
+			/>
 		{/if}
 	</div>
 {/if}
