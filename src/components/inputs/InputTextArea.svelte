@@ -48,7 +48,7 @@
 	{maxlength}
 	{id}
 	class={disabled
-		? 'w-full mx-auto flex bg-black bg-opacity-30 text-gray-100 rounded-xl border border-primary-200 opacity-75 py-4 px-6 disabled'
+		? 'w-full mx-auto flex bg-black bg-opacity-30 text-gray-100 rounded-xl border border-primary-200 opacity-75 py-4 px-6 disabled cursor-not-allowed'
 		: 'w-full flex transition duration-200 hover:bg-opacity-50 bg-black bg-opacity-30 text-white focus:text-primary-400 rounded-xl border border-primary-200 focus:border-primary-400 focus:outline-none py-4 px-6'}
 	{placeholder}
 	{required}
