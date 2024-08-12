@@ -203,7 +203,7 @@ Note: this may be less performant than using the concrete input components direc
 	<small class="text-gray-500 dark:text-gray-400"
 		>See our documentation to learn more about templating</small
 	>
-{:else if type == 'bitflags'}
+{:else if type == 'bitflag'}
 	{#if bitflagValues}
 		<BitflagInput flagDescriptors={bitflagValues} bind:selectedFlags={value} {id} />
 	{:else}
