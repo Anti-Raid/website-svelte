@@ -17,7 +17,7 @@
 
 			for (let choice of choices) {
 				if (labelValues.length > maxLabels) {
-					labelValues.push(`and ${choices.length - maxLabels} more`);
+					labelValues.push(`and ${value.length - maxLabels} more`);
 					break;
 				}
 
