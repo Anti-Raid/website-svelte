@@ -46,8 +46,8 @@
 			isOpen = !isOpen;
 		}}
 		class={disabled
-			? 'w-full text-left mx-auto flex bg-black bg-opacity-50 text-gray-100 border border-primary-200 focus:outline-none py-4 px-6 rounded-md'
-			: 'w-full text-left mx-auto flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-primary-400 border border-primary-200 focus:border-primary-400 focus:outline-none py-4 px-6 rounded-md'}
+			? 'w-full text-left mx-auto flex bg-black bg-opacity-50 text-gray-100 border border-primary-200 focus:outline-none py-4 px-6 rounded-xl'
+			: 'w-full text-left mx-auto flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-primary-400 border border-primary-200 focus:border-primary-400 focus:outline-none py-4 px-6 rounded-xl'}
 	>
 		{getLabel(value)}
 
@@ -67,13 +67,13 @@
 
 	{#if isOpen}
 		<div
-			class="z-10 w-full bg-black bg-opacity-100 border border-primary-200 focus:border-primary-400 focus:outline-none rounded-md"
+			class="z-10 w-full bg-black bg-opacity-100 border border-primary-200 focus:border-primary-400 focus:outline-none rounded-xl"
 		>
 			{#each choices as choice}
 				<button
 					class={value.includes(choice.value)
-						? 'w-full mx-auto flex bg-primary-400 text-black border border-primary-400 focus:border-primary-400 focus:outline-none py-4 px-6 rounded-md'
-						: 'w-full mx-auto flex transition duration-200 hover:bg-slate-900 text-white focus:text-primary-400 focus:border-primary-400 focus:outline-none py-4 px-6 rounded-md'}
+						? 'w-full mx-auto flex bg-primary-400 text-black border border-primary-400 focus:border-primary-400 focus:outline-none py-4 px-6 rounded-xl'
+						: 'w-full mx-auto flex transition duration-200 hover:bg-slate-900 text-white focus:text-primary-400 focus:border-primary-400 focus:outline-none py-4 px-6 rounded-xl'}
 					on:click={() => {
 						if (value.includes(choice.value)) {
 							value = value.filter((v) => v !== choice.value);
