@@ -13,7 +13,7 @@ export interface DispatchType {
     // The allowed values of the input
     allowed_values: { [label: string]: string } | undefined;
     // If bitflag, then the values of the bitflag
-    bitflag_values: { [label: string]: bigint } | undefined;
+    bitflag_values: { [label: string]: string } | undefined;
     // If channel, then the channelConstraints
     channel_constraints: ChannelConstraints | undefined;
     // Referenced variables (for dynamic columns)
@@ -111,11 +111,11 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
                 _setOnDispatchType(dispatchType, 'type', 'bitflag');
 
                 // Until the rust server code can handle bigint correctly, convert them here ourselves
-                let values: { [label: string]: bigint } = {};
+                let values: { [label: string]: string } = {};
 
                 Object.keys(inner.BitFlag.values).forEach((value) => {
                     if (!inner.BitFlag) return; // TS can't infer that inner.BitFlag is still not null here
-                    values[value] = BigInt(inner.BitFlag.values[value]);
+                    values[value] = inner.BitFlag.values[value].toString();
                 });
 
                 _setOnDispatchType(dispatchType, 'bitflag_values', values);

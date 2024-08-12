@@ -2,10 +2,10 @@
  * Basic bitflag wrapper to manage bitflags decently
  */
 export class BitFlag {
-	private flagDescriptors: { [key: string]: number } = {};
+	private flagDescriptors: { [key: string]: number | string } = {};
 	private flags: bigint;
 
-	constructor(flagDescriptors: { [key: string]: number }, initialFlags: string) {
+	constructor(flagDescriptors: { [key: string]: number | string }, initialFlags: string) {
 		this.flagDescriptors = flagDescriptors;
 		this.flags = BigInt(initialFlags);
 	}
@@ -89,24 +89,6 @@ export class BitFlag {
 		return unsetFlags;
 	}
 
-	/**
-	 * Returns the flag value
-	 */
-	public getFlagValue(flag: string | number): number {
-		let flagValue: number | undefined = undefined;
-		for (let flagKey of Object.keys(this.flagDescriptors)) {
-			if (flagKey == flag || this.flagDescriptors[flagKey] == flag) {
-				flagValue = this.flagDescriptors[flagKey];
-				break;
-			}
-		}
-
-		if (flagValue === undefined) {
-			throw new Error(`Unknown flag: ${flag}`);
-		}
-
-		return flagValue;
-	}
 
 	/**
 	 * Returns the flag key
@@ -124,7 +106,7 @@ export class BitFlag {
 	/**
 	 * Returns the flag descriptors
 	 */
-	public getFlagDescriptors(): { [key: string]: number } {
+	public getFlagDescriptors(): { [key: string]: string | number } {
 		return this.flagDescriptors;
 	}
 }

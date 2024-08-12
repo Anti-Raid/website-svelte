@@ -79,6 +79,7 @@
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
 		channelConstraints={columnDispatchType?.channel_constraints}
+		bitflagValues={columnDispatchType?.bitflag_values}
 	/>
 {:else if columnDispatchType?.resolved_column_type?.Array}
 	<InputDispatcher
@@ -95,6 +96,7 @@
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
 		channelConstraints={columnDispatchType?.channel_constraints}
+		bitflagValues={columnDispatchType?.bitflag_values}
 		multiple={true}
 	/>
 {/if}

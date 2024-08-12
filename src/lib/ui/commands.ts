@@ -1,5 +1,4 @@
-import { CanonicalCommandExtendedData } from "$lib/converters";
-import { CanonicalModule, CanonicalCommandData, GuildCommandConfiguration, CommandExtendedData, PermissionChecks } from "$lib/generated/silverpelt";
+import { CanonicalModule, CanonicalCommandData, GuildCommandConfiguration, CommandExtendedData, PermissionChecks, CommandExtendedDataMap } from "$lib/generated/silverpelt";
 import { permuteCommands } from "$lib/mewext/mewext";
 import logger from "./logger";
 
@@ -191,3 +190,18 @@ export const isPermissionCheckEmpty = (pc: PermissionChecks) => {
         return true;
     }
 }
+
+export interface CanonicalCommandExtendedData extends CommandExtendedData {
+    id: string;
+}
+
+export const mapToCanonicalCommandExtendedData = (
+    data: CommandExtendedDataMap
+): CanonicalCommandExtendedData[] => {
+    return Object.entries(data).map(([id, value]) => {
+        return {
+            id,
+            ...value
+        };
+    });
+};

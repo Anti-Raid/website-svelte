@@ -3,7 +3,7 @@
 	import logger from '$lib/ui/logger';
 	import SelectMulti from './select/SelectMulti.svelte';
 
-	export let flagDescriptors: { [key: string]: number };
+	export let flagDescriptors: { [key: string]: string | number };
 	export let selectedFlags: string;
 	export let id: string;
 

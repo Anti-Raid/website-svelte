@@ -16,6 +16,7 @@ Note: this may be less performant than using the concrete input components direc
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import ChannelInput from '../ChannelInput.svelte';
 	import { ChannelConstraints } from '$lib/inputconstraints';
+	import BitflagInput from '../BitflagInput.svelte';
 
 	export let type: string;
 
@@ -34,6 +35,9 @@ Note: this may be less performant than using the concrete input components direc
 
 	// Channel data
 	export let channelConstraints: ChannelConstraints | undefined;
+
+	// Bitflag data
+	export let bitflagValues: { [key: string]: string } | undefined;
 
 	// Needed for choices
 	// choices must be in format label:value
@@ -199,6 +203,12 @@ Note: this may be less performant than using the concrete input components direc
 	<small class="text-gray-500 dark:text-gray-400"
 		>See our documentation to learn more about templating</small
 	>
+{:else if type == 'bitflags'}
+	{#if bitflagValues}
+		<BitflagInput flagDescriptors={bitflagValues} bind:selectedFlags={value} {id} />
+	{:else}
+		<p class="text-red-400">No bitflag values provided</p>
+	{/if}
 {:else}
 	{#if choices}
 		<Select
