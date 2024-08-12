@@ -6,4 +6,9 @@
 	export let id: string;
 </script>
 
-<BitflagInput {id} bind:selectedFlags={nativePerms} flagDescriptors={serenityPermissions} />
+<BitflagInput
+	label="Select Permissions"
+	{id}
+	bind:selectedFlags={nativePerms}
+	flagDescriptors={serenityPermissions}
+/>

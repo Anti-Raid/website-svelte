@@ -205,7 +205,7 @@ Note: this may be less performant than using the concrete input components direc
 	>
 {:else if type == 'bitflag'}
 	{#if bitflagValues}
-		<BitflagInput flagDescriptors={bitflagValues} bind:selectedFlags={value} {id} />
+		<BitflagInput flagDescriptors={bitflagValues} bind:selectedFlags={value} {id} {label} />
 	{:else}
 		<p class="text-red-400">No bitflag values provided</p>
 	{/if}
