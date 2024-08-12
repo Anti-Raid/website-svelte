@@ -26,7 +26,7 @@
 
 	const updateSelectedFlags = () => {
 		logger.info('updateSelectedFlags', selectedFlags);
-		let bitflagClass = new BitFlag(flagDescriptors, selectedFlags);
+		let bitflagClass = new BitFlag(flagDescriptors, selectedFlags || '0');
 
 		let flags = bitflagClass.getSetFlags();
 
