@@ -79,7 +79,7 @@
 				return;
 			}
 
-			if (column.ignored_for.includes('Update')) {
+			if (configOpt.primary_key != column.id && column.ignored_for.includes('Update')) {
 				return;
 			}
 
@@ -126,7 +126,7 @@
 				return;
 			}
 
-			if (column.ignored_for.includes('Update')) {
+			if (configOpt.primary_key != column.id && column.ignored_for.includes('Update')) {
 				return;
 			}
 
