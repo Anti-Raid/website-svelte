@@ -24,17 +24,20 @@
 	export let state: State;
 
 	const setIn = () => {
+		let currentUrl = new URL(window.location.href);
+
 		let inQuery = openedEntityToString(state.openedEntity);
 
 		if (inQuery) {
-			history.pushState({}, '', `${location.pathname}?in=${inQuery}`);
+			currentUrl.searchParams.set('in', inQuery);
+			history.pushState({}, '', currentUrl);
 		} else {
-			history.pushState({}, '', `${location.pathname}`);
+			currentUrl.searchParams.delete('in');
+			history.pushState({}, '', currentUrl);
 		}
 	};
 
-	$: state.openedEntity,
-		history.pushState({}, '', `?in=${openedEntityToString(state.openedEntity)}`);
+	$: state.openedEntity, setIn();
 </script>
 
 <!--Cluster Menu at the right of the page-->
