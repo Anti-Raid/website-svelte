@@ -10,20 +10,30 @@ export interface OpenedEntity {
 
 export const openedEntityToString = (openedEntity: OpenedEntity): string => {
     if (openedEntity.indexPage) return "indexPage";
-    if (openedEntity.module) return `module:${openedEntity.module.id}-${openedEntity.module.tab}`;
-    if (openedEntity.quickAction) return `quickAction:${openedEntity.quickAction.id}`;
+    if (openedEntity.module) return `module/${openedEntity.module.id}/${openedEntity.module.tab}`;
+    if (openedEntity.quickAction) return `quickAction/${openedEntity.quickAction.id}`;
     if (openedEntity.mobileSidebar) return "mobileSidebar";
     return "none";
 }
 
 export const stringToOpenedEntity = (str: string): OpenedEntity => {
-    if (str === "indexPage") return { indexPage: {} };
-    if (str === "mobileSidebar") return { mobileSidebar: {} };
-    const moduleMatch = str.match(/^module:(.+)-(.+)$/);
-    if (moduleMatch) return { module: { id: moduleMatch[1], tab: moduleMatch[2] } };
-    const quickActionMatch = str.match(/^quickAction:(.+)$/);
-    if (quickActionMatch) return { quickAction: { id: quickActionMatch[1] } };
-    return { indexPage: {} }; // default to index page
+    let split = str.split("/")
+
+    switch (split[0]) {
+        case "indexPage":
+            return { indexPage: {} };
+        case "mobileSidebar":
+            return { mobileSidebar: {} };
+        case "module":
+            if (split.length === 1) return { indexPage: {} };
+            if (split.length === 2) return { module: { id: split[1], tab: "info" } };
+            return { module: { id: split[1], tab: split[2] } };
+        case "quickAction":
+            if (split.length === 1) return { indexPage: {} };
+            return { quickAction: { id: split[1] } };
+        default:
+            return { indexPage: {} }; // Default to index page
+    }
 }
 
 export interface State {
