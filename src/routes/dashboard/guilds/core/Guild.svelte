@@ -8,7 +8,7 @@
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 	import { InstanceList } from '$lib/generated/mewld/proc';
-	import { State } from './types';
+	import { openedEntityToString, State } from './types';
 	import Content from './Content.svelte';
 	import Icon from '@iconify/svelte';
 
@@ -22,6 +22,19 @@
 	export let guildClusterId: number;
 	export let guildShardId: number;
 	export let state: State;
+
+	const setIn = () => {
+		let inQuery = openedEntityToString(state.openedEntity);
+
+		if (inQuery) {
+			history.pushState({}, '', `${location.pathname}?in=${inQuery}`);
+		} else {
+			history.pushState({}, '', `${location.pathname}`);
+		}
+	};
+
+	$: state.openedEntity,
+		history.pushState({}, '', `?in=${openedEntityToString(state.openedEntity)}`);
 </script>
 
 <!--Cluster Menu at the right of the page-->
