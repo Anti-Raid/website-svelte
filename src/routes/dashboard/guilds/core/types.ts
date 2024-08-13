@@ -10,14 +10,14 @@ export interface OpenedEntity {
 
 export const openedEntityToString = (openedEntity: OpenedEntity): string => {
     if (openedEntity.indexPage) return "indexPage";
-    if (openedEntity.module) return `module/${openedEntity.module.id}/${openedEntity.module.tab}`;
-    if (openedEntity.quickAction) return `quickAction/${openedEntity.quickAction.id}`;
+    if (openedEntity.module) return `module.${openedEntity.module.id}.${openedEntity.module.tab}`;
+    if (openedEntity.quickAction) return `quickAction.${openedEntity.quickAction.id}`;
     if (openedEntity.mobileSidebar) return "mobileSidebar";
     return "none";
 }
 
 export const stringToOpenedEntity = (str: string): OpenedEntity => {
-    let split = str.split("/")
+    let split = str.split(".")
 
     switch (split[0]) {
         case "indexPage":
