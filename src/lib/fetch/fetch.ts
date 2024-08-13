@@ -1,6 +1,6 @@
 import { ApiError } from '$lib/generated/types';
 import logger from '../ui/logger';
-import { PermissionCheck, PermissionChecks, PermissionResult } from '$lib/generated/silverpelt';
+import { CanonicalSettingsError, PermissionCheck, PermissionChecks, PermissionResult } from '$lib/generated/silverpelt';
 import dompurify from 'dompurify';
 import * as marked from 'marked';
 import { BitFlag } from '$lib/bitflag';
@@ -71,34 +71,6 @@ class PermissionCheckFormatter {
 	}
 }
 
-class PermissionChecksFormatter {
-	public checks: PermissionChecks;
-	constructor(checks: PermissionChecks) {
-		this.checks = checks;
-	}
-
-	toString() {
-		if (this.checks.Simple) {
-			return this.checks.Simple.checks
-				.map((c, index) => {
-					let check = new PermissionCheckFormatter(c);
-
-					let result = `${index + 1}.\n${check.toString()}`;
-					let empty = check.kittycatPerms.length === 0 && check.nativePerms.length === 0;
-					if (index < (this.checks.Simple?.checks.length || 0) - 1 && !empty) {
-						result += check.outerAnd ? ' AND ' : ' OR ';
-					}
-					return result;
-				})
-				.join(' ');
-		} else if (this.checks.Template) {
-			return `Template: ${this.checks.Template.template}`;
-		} else {
-			return `Unknown format: ${JSON.stringify(this.checks)}`;
-		}
-	}
-}
-
 /**
  * A wrapper to help format a permission result
  */
@@ -150,6 +122,141 @@ export class PermissionResultFormatter {
 	 */
 	async format(type: 'markdown' | 'html'): Promise<string> {
 		let md = `${this.toMarkdown()}\n\n\n\n**Code:** ${this.result.var}`;
+
+		logger.info('PermissionResultFormatter', 'Formatting', md);
+
+		if (!md) {
+			throw new Error('Failed to format permission result, md is null/undefined');
+		}
+
+		if (type === 'html') {
+			let outHtml = await marked.parse(md, {
+				async: true,
+				breaks: true
+			});
+
+			return outHtml;
+		}
+
+		return md;
+	}
+}
+
+export class SettingsErrorFormatter {
+	/*
+		match self {
+			SettingsError::Generic { message, src, typ } => {
+				write!(f, "`{}` from src `{}` of type `{}`", message, src, typ)
+			}
+			SettingsError::OperationNotSupported { operation } => {
+				write!(f, "Operation `{}` is not supported", operation)
+			}
+			SettingsError::SchemaTypeValidationError {
+				column,
+				expected_type,
+				got_type,
+			} => write!(
+				f,
+				"Column `{}` expected type `{}`, got type `{}`",
+				column, expected_type, got_type
+			),
+			SettingsError::SchemaNullValueValidationError { column } => {
+				write!(f, "Column `{}` is not nullable, yet value is null", column)
+			}
+			SettingsError::SchemaCheckValidationError {
+				column,
+				check,
+				error,
+				accepted_range,
+			} => {
+				write!(
+					f,
+					"Column `{}` failed check `{}`, accepted range: `{}`, error: `{}`",
+					column, check, accepted_range, error
+				)
+			}
+			SettingsError::MissingOrInvalidField { field, src } => write!(f, "Missing (or invalid) field `{}` with src: `{}`", field, src),
+			SettingsError::RowExists { column_id, count } => write!(
+				f,
+				"A row with the same column `{}` already exists. Count: `{}`",
+				column_id, count
+			),
+			SettingsError::RowDoesNotExist { column_id } => {
+				write!(f, "A row with the same column `{}` does not exist", column_id)
+			}
+			SettingsError::MaximumCountReached { max, current } => write!(
+				f,
+				"The maximum number of entities this server may have (`{}`) has been reached. This server currently has `{}`.",
+				max, current
+			),
+		}
+	*/
+
+	private error: CanonicalSettingsError;
+
+	constructor(error: CanonicalSettingsError) {
+		this.error = error;
+	}
+
+	toMarkdown() {
+		if (this.error.Generic) {
+			return `An error occurred: \`${this.error.Generic.message}\` from src \`${this.error.Generic.src}\` of type \`${this.error.Generic.typ}\``;
+		} else if (this.error.OperationNotSupported) {
+			return `Operation \`${this.error.OperationNotSupported.operation}\` is not supported`;
+		} else if (this.error.SchemaTypeValidationError) {
+			return `Column \`${this.error.SchemaTypeValidationError.column}\` expected type \`${this.error.SchemaTypeValidationError.expected_type}\`, got type \`${this.error.SchemaTypeValidationError.got_type}\``;
+		} else if (this.error.SchemaNullValueValidationError) {
+			return `Column \`${this.error.SchemaNullValueValidationError.column}\` is not nullable, yet value is null`;
+		} else if (this.error.SchemaCheckValidationError) {
+			return `Column \`${this.error.SchemaCheckValidationError.column}\` failed check \`${this.error.SchemaCheckValidationError.check}\`, accepted range: \`${this.error.SchemaCheckValidationError.accepted_range}\`, error: \`${this.error.SchemaCheckValidationError.error}\``;
+		} else if (this.error.MissingOrInvalidField) {
+			return `Missing (or invalid) field \`${this.error.MissingOrInvalidField.field}\` with src: \`${this.error.MissingOrInvalidField.src}\``;
+		} else if (this.error.RowExists) {
+			return `A row with the same column \`${this.error.RowExists.column_id}\` already exists. Count: \`${this.error.RowExists.count}\``;
+		} else if (this.error.RowDoesNotExist) {
+			return `A row with the same column \`${this.error.RowDoesNotExist.column_id}\` does not exist`;
+		} else if (this.error.MaximumCountReached) {
+			return `The maximum number of entities this server may have (\`${this.error.MaximumCountReached.max}\`) has been reached. This server currently has \`${this.error.MaximumCountReached.current}\`.`;
+		} else {
+			return `Unknown error: ${JSON.stringify(this.error)}`;
+		}
+	}
+
+	get code() {
+		if (this.error.Generic) {
+			return 'Generic';
+		} else if (this.error.OperationNotSupported) {
+			return 'OperationNotSupported';
+		} else if (this.error.SchemaTypeValidationError) {
+			return 'SchemaTypeValidationError';
+		} else if (this.error.SchemaNullValueValidationError) {
+			return 'SchemaNullValueValidationError';
+		} else if (this.error.SchemaCheckValidationError) {
+			return 'SchemaCheckValidationError';
+		} else if (this.error.MissingOrInvalidField) {
+			return 'MissingOrInvalidField';
+		} else if (this.error.RowExists) {
+			return 'RowExists';
+		} else if (this.error.RowDoesNotExist) {
+			return 'RowDoesNotExist';
+		} else if (this.error.MaximumCountReached) {
+			return 'MaximumCountReached';
+		} else {
+			if (Object.keys(this.error).length === 0) {
+				return 'Unknown';
+			}
+			return Object.keys(this.error)[0];
+		}
+	}
+
+	/**
+	 * Formats the permission result
+	 *
+	 * @param type The type of formatting to use, either markdown or html
+	 * @returns The formatted permission result
+	 */
+	async format(type: 'markdown' | 'html'): Promise<string> {
+		let md = `${this.toMarkdown()}\n\n\n\n**Code:** ${this.code}`;
 
 		logger.info('PermissionResultFormatter', 'Formatting', md);
 
@@ -227,6 +334,19 @@ export class ClientResponse {
 						.replaceAll('<ul', "<ul class='pl-1'");
 
 					return outHtml;
+				case 'settings_error':
+					let settingsErr: CanonicalSettingsError = await this.response.json();
+					let settingsFmt = new SettingsErrorFormatter(settingsErr);
+					let settingsFormatted = await settingsFmt.format(type);
+
+					let settingsHtml = sanitize(settingsFormatted);
+
+					// Add some formatting for ol/ul
+					settingsHtml = settingsHtml
+						.replaceAll('<ol', "<ol class='list-decimal pl-6 mb-2'")
+						.replaceAll('<ul', "<ul class='pl-1'");
+
+					return settingsHtml;
 			}
 		}
 

@@ -83,11 +83,17 @@
 			opGetAllCommandConfigurations(guildId)
 		);
 
-		let commonPermissionContext: CommonPermissionContext = {
-			kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
-				extractKnownPermissionsFromModules(Object.values(clusterModules))
-			)
-		};
+		let commonPermissionContext: CommonPermissionContext;
+
+		try {
+			commonPermissionContext = {
+				kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
+					extractKnownPermissionsFromModules(Object.values(clusterModules))
+				)
+			};
+		} catch (err) {
+			throw new Error(`Failed to create permission context: ${err}`);
+		}
 
 		currentState = 'Taking you into the future...';
 
