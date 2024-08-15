@@ -11,6 +11,7 @@
 	import { openedEntityToString, State } from './types';
 	import Content from './Content.svelte';
 	import Icon from '@iconify/svelte';
+	import { quickActions } from '../quickactions/actions';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;
@@ -70,14 +71,16 @@
 		<details id="quick-actions-pane" class="summary-expand-close-right" open>
 			<summary class="hover:cursor-pointer font-semibold">Quick Actions</summary>
 
-			<NavButton
-				current={state.openedEntity.quickAction?.id == 'welcome-messages'}
-				title={'Welcome Messages'}
-				onClick={() => {
-					state.openedEntity = { quickAction: { id: 'welcome-messages' } };
-				}}
-				extClass="block mb-2 w-full"
-			/>
+			{#each quickActions as action}
+				<NavButton
+					current={state.openedEntity.quickAction?.id == action.id}
+					title={action.name}
+					onClick={() => {
+						state.openedEntity = { quickAction: { id: action.id } };
+					}}
+					extClass="block mb-2 w-full"
+				/>
+			{/each}
 		</details>
 
 		<details id="modules-pane" class="summary-expand-close-right" open>

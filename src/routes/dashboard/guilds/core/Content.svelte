@@ -17,8 +17,9 @@
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 	import InputText from '../../../../components/inputs/InputText.svelte';
 	import { commandLookup } from '$lib/ui/commands';
-	import NavButton from '../../../../components/inputs/button/NavButton.svelte';
-	import { onMount } from 'svelte';
+	import { defaultComponent, quickActions } from '../quickactions/actions';
+	import Message from '../../../../components/Message.svelte';
+	import SleekButton from '../../../../components/inputs/button/SleekButton.svelte';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;
@@ -31,6 +32,10 @@
 	export let guildData: UserGuildBaseData;
 
 	export let state: State;
+
+	const _setState = (newState: State) => {
+		state = newState;
+	};
 
 	const filterInstanceListToGuild = (il: InstanceList, guildClusterId: number): InstanceList => {
 		return {
@@ -59,21 +64,16 @@
 		<div class="mb-2" />
 
 		<div class="col-span-8 grid grid-cols-1 gap-6 lg:grid-cols-2 h-full">
-			<button
-				on:click={() => {
-					state.openedEntity = { quickAction: { id: 'welcome-messages' } };
-				}}
-				class="block top-0 text-left items-start index-page-button p-4 border rounded-sm bg-slate-800 hover:bg-transparent shadow"
-			>
-				<div class="h-full text-white">
-					<Icon icon="bx:bx-message-square-detail" class="block text-4xl m-auto" />
-					<span class="block font-semibold m-auto text-center">Welcome Messages</span>
-					<small class="mt-0.5 block opacity-80 text-left">
-						Set up a welcome message for new members joining your server. This can help increase
-						engagement while letting moderators know exactly who's coming!
-					</small>
-				</div>
-			</button>
+			{#each quickActions as action}
+				<SleekButton
+					onclick={() => {
+						state.openedEntity = { quickAction: { id: action.id } };
+					}}
+					icon={action.icon}
+					name={action.name}
+					description={action.description}
+				/>
+			{/each}
 		</div>
 
 		<h2 class="mt-5 text-xl font-semibold">Modules</h2>
@@ -89,20 +89,14 @@
 
 		<div class="col-span-8 grid grid-cols-1 gap-6 lg:grid-cols-3 h-full">
 			{#each Object.values(clusterModules) as clusterModule}
-				<button
-					class="block top-0 text-left items-start index-page-button p-4 border rounded-sm bg-slate-800 hover:bg-transparent shadow"
-					on:click={() => {
+				<SleekButton
+					onclick={() => {
 						state.openedEntity = { module: { id: clusterModule.id, tab: 'moduleInfo' } };
 					}}
-				>
-					<div class="h-full text-white">
-						<Icon icon="bx:book" class="block text-4xl m-auto" />
-						<span class="block font-semibold m-auto text-center">{clusterModule.name}</span>
-						<small class="block opacity-80 text-left">
-							{clusterModule.description}
-						</small>
-					</div>
-				</button>
+					icon="bx:book"
+					name={clusterModule.name}
+					description={clusterModule.description}
+				/>
 			{/each}
 		</div>
 
@@ -201,15 +195,29 @@
 			/>
 		{/if}
 	</div>
+{:else if state.openedEntity.quickAction}
+	{#await quickActions
+		.find((a) => a.id == state.openedEntity.quickAction?.id)
+		?.component() || defaultComponent()}
+		<div class="p-4">
+			<Message type="loading">Loading quick action</Message>
+		</div>
+	{:then module}
+		<svelte:component
+			this={module}
+			props={{
+				clusterModules,
+				commonPermissionContext,
+				guildId,
+				instanceList,
+				guildShardId,
+				guildClusterId,
+				currentModuleConfiguration,
+				currentCommandConfiguration,
+				guildData,
+				setState: _setState
+			}}
+			{state}
+		/>
+	{/await}
 {/if}
-
-<style>
-	.index-page-button {
-		transition: all 0.1s;
-		box-shadow: 0 4px 8px 0 #23272a, 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-	}
-
-	.index-page-button:hover {
-		transform: translate(0px, -1px);
-	}
-</style>

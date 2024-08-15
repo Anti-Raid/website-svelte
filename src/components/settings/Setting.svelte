@@ -56,7 +56,9 @@
 {#await getCurrentSettings()}
 	<p>Loading...</p>
 {:then settings}
-	<SettingSchema {configOpt} {module} {guildId} {settings} {guildData} {clusterModules} />
+	<div class="setting" id={configOpt.id}>
+		<SettingSchema {configOpt} {module} {guildId} {settings} {guildData} {clusterModules} />
+	</div>
 {:catch err}
 	<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
 {/await}
