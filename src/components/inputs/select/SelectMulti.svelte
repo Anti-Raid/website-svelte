@@ -2,6 +2,7 @@
 	import Label from '../Label.svelte';
 	import type { SMOption } from './select';
 	import RawSelectMulti from './RawSelectMulti.svelte';
+	import InputDescription from '../InputDescription.svelte';
 
 	export let id: string;
 	export let label: string;
@@ -17,8 +18,6 @@
 
 <div class={inpClass}>
 	<Label {id} {label} />
-	{#if description}
-		<p class="text-md mb-2 opacity-80">{@html description}</p>
-	{/if}
+	<InputDescription {description} />
 	<RawSelectMulti {id} {choices} {required} {disabled} {defaultLabel} {maxLabels} bind:value />
 </div>

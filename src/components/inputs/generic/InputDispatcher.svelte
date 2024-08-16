@@ -17,6 +17,7 @@ Note: this may be less performant than using the concrete input components direc
 	import ChannelInput from '../ChannelInput.svelte';
 	import { ChannelConstraints } from '$lib/inputconstraints';
 	import BitflagInput from '../BitflagInput.svelte';
+	import InputDescription from '../InputDescription.svelte';
 
 	export let type: string;
 
@@ -173,6 +174,8 @@ Note: this may be less performant than using the concrete input components direc
 		{disabled}
 	/>
 {:else if type == 'string:channel'}
+	<Label {id} {label} />
+	<InputDescription {description} />
 	<ChannelInput
 		channels={guildData.channels}
 		channelConstraints={channelConstraints || {
@@ -205,7 +208,9 @@ Note: this may be less performant than using the concrete input components direc
 	>
 {:else if type == 'bitflag'}
 	{#if bitflagValues}
-		<BitflagInput flagDescriptors={bitflagValues} bind:selectedFlags={value} {id} {label} />
+		<Label {id} {label} />
+		<InputDescription {description} />
+		<BitflagInput flagDescriptors={bitflagValues} bind:selectedFlags={value} {id} />
 	{:else}
 		<p class="text-red-400">No bitflag values provided</p>
 	{/if}

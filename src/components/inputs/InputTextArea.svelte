@@ -1,4 +1,5 @@
 <script lang="ts">
+	import InputDescription from './InputDescription.svelte';
 	import Label from './Label.svelte';
 
 	export let id: string;
@@ -36,12 +37,8 @@
 	}
 </script>
 
-{#if label}
-	<Label {id} {label} />
-{/if}
-{#if description}
-	<p class="text-md mb-2 opacity-80">{@html description}</p>
-{/if}
+<Label {id} {label} />
+<InputDescription {description} />
 <textarea
 	on:change={checkLength}
 	{minlength}

@@ -7,7 +7,7 @@
 	export let disabled: boolean = false;
 	export let defaultLabel: string = 'Select an action';
 	export let value: string[] = [];
-	export let maxLabels: number;
+	export let maxLabels = 5;
 
 	const getLabel = (value: string[]) => {
 		if (value.length == 0) {

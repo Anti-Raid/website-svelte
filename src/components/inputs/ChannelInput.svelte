@@ -2,17 +2,17 @@
 	import serenityPermissions from '$lib/generated/build_assets/serenity_perms.json';
 	import channelTypesInv from '$lib/generated/build_assets/channel_types_inv.json';
 	import { BitFlag } from '$lib/bitflag';
-	import Select from './select/Select.svelte';
 	import { GuildChannelWithPermissions } from '$lib/generated/ext';
 	import {
-		ChannelTypeDM,
 		ChannelTypeGuildCategory,
 		ChannelTypeGuildStageVoice,
 		ChannelTypeGuildVoice
 	} from '$lib/generated/discordgo';
 	import { ChannelConstraints } from '$lib/inputconstraints';
 	import { title } from '$lib/strings';
+	import RawSelect from './select/RawSelect.svelte';
 
+	export let style: 'normal' | 'simplified' = 'normal';
 	export let channels: GuildChannelWithPermissions[];
 	export let channelConstraints: ChannelConstraints;
 	export let value: string;
@@ -101,10 +101,8 @@
 	};
 </script>
 
-<Select
+<RawSelect
 	id="channel"
-	label="Channel"
-	description="Select the channel you want to use"
 	choices={sortChannels(channels).map((channel) => {
 		if (!channel?.channel)
 			return {
@@ -156,7 +154,7 @@
 			{#each Object.entries(new BitFlag(serenityPermissions, channelConstraints.needed_bot_permissions).getSetFlags()) as [name, permission], i}
 				{#if name != ''}
 					<li class="inline text-slate-200">
-						<span class="font-semibold">{name} </span>({permission})
+						<span class="font-semibold">{name} </span>{#if style != 'simplified'}({permission}){/if}
 						{#if i != Object.entries(new BitFlag(serenityPermissions, channelConstraints.needed_bot_permissions).getSetFlags()).length - 1}
 							<span class="inline text-slate-200"> AND </span>
 						{/if}
@@ -167,11 +165,11 @@
 	</div>
 </fieldset>
 
-{#if selectedChannel}
+{#if style == 'normal' && selectedChannel}
 	<p>Selected Channel: {selectedChannel?.channel?.name || 'Unknown Channel'}</p>
 
 	<details>
-		<summary>Debug</summary>
+		<summary class="hover:cursor-pointer">Debug</summary>
 		<p>Bot Permissions</p>
 		<ul>
 			{#each Object.entries(new BitFlag(serenityPermissions, selectedChannel.bot).getSetFlags()) as [name, permission]}

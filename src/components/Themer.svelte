@@ -18,7 +18,7 @@
 	];
 
 	// Temporary
-	let theme: string = 'crimson';
+	let theme: string = 'vintage';
 	const changeColor = (th: string) => {
 		theme = th;
 		document.querySelector('#antiraid')?.setAttribute('data-theme', th);
@@ -27,7 +27,7 @@
 
 	$: {
 		if (browser) {
-			theme = localStorage.getItem('theme->antiraid') || 'crimson';
+			theme = localStorage.getItem('theme->antiraid') || 'vintage';
 			document.querySelector('#antiraid')?.setAttribute('data-theme', theme);
 		}
 	}

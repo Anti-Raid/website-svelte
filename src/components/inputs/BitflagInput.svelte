@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { BitFlag } from '$lib/bitflag';
 	import logger from '$lib/ui/logger';
-	import SelectMulti from './select/SelectMulti.svelte';
+	import RawSelectMulti from './select/RawSelectMulti.svelte';
 
-	export let label: string;
 	export let flagDescriptors: { [key: string]: string | number };
 	export let selectedFlags: string;
 	export let id: string;
@@ -38,9 +37,8 @@
 	$: selectedOptions, setNewFlags();
 </script>
 
-<SelectMulti
+<RawSelectMulti
 	{id}
-	{label}
 	choices={Object.entries(flagDescriptors).map(([name, permission]) => ({
 		id: permission.toString(),
 		value: permission.toString(),
