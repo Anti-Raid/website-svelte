@@ -45,17 +45,6 @@ export interface CanonicalCommandData {
 //////////
 // source: config_opts.go
 
-export interface CanonicalSettingsResult {
-  Ok?: {
-    fields: Record<string, any>[];
-  };
-  PermissionError?: {
-    res: PermissionResult;
-  };
-  Err?: {
-    error: CanonicalSettingsError;
-  };
-}
 export interface CanonicalSettingsError {
   OperationNotSupported?: {
     operation: CanonicalOperationType;
@@ -221,6 +210,7 @@ export interface CanonicalConfigOption {
   primary_key: string;
   title_template: string;
   columns: CanonicalColumn[];
+  max_return: number /* int */;
   max_entries: number /* uint64 */;
   operations: Record<CanonicalOperationType, CanonicalOperationSpecific>;
 }

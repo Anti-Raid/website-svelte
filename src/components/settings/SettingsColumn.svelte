@@ -32,11 +32,13 @@
 	// On column field change
 	let fieldList: string[] | undefined = undefined;
 	const flagRerenders = () => {
-		logger.debug('flagRerenders', 'Checking for rerenders for', column.id, allDerivedData);
 		if (!fieldList) {
 			fieldList = [];
 			for (let key in allDerivedData) {
-				if (key != column.id) {
+				if (
+					key != column.id &&
+					allDerivedData[key].dispatchType.referenced_variables?.includes(column.id)
+				) {
 					fieldList.push(key);
 				}
 			}
@@ -64,7 +66,7 @@
 	$: allDerivedData[column.id].forceRederive, rederiveIfForced();
 </script>
 
-{#if columnDispatchType?.resolved_column_type?.Scalar}
+{#if columnDispatchType?.resolved_column_type?.Scalar || columnDispatchType?.resolved_column_type?.Array}
 	<InputDispatcher
 		{guildData}
 		id={column.id}
@@ -80,40 +82,23 @@
 		choices={columnDispatchType?.allowed_values}
 		channelConstraints={columnDispatchType?.channel_constraints}
 		bitflagValues={columnDispatchType?.bitflag_values}
+		multiple={!!columnDispatchType?.resolved_column_type?.Array}
 	/>
-{:else if columnDispatchType?.resolved_column_type?.Array}
-	<InputDispatcher
-		{guildData}
-		id={column.id}
-		label={column.name}
-		placeholder={column.description}
-		description={column.description}
-		minlength={columnDispatchType?.minlength}
-		maxlength={columnDispatchType?.maxlength}
-		type={columnDispatchType?.type}
-		disabled={columnState == ColumnState.Disabled || allDerivedData[column.id].isCleared}
+{/if}
+
+{#if columnState == ColumnState.Enabled && !!column.suggestions.None}
+	<SettingsSuggestionBox
+		{guildId}
+		{module}
+		{configOpt}
+		{column}
+		operationType={currentOperationType}
+		{clusterModules}
 		bind:value
-		showErrors={true}
-		choices={columnDispatchType?.allowed_values}
-		channelConstraints={columnDispatchType?.channel_constraints}
-		bitflagValues={columnDispatchType?.bitflag_values}
-		multiple={true}
 	/>
 {/if}
 
 {#if columnState == ColumnState.Enabled}
-	{#if !allDerivedData[column.id].isCleared}
-		<SettingsSuggestionBox
-			{guildId}
-			{module}
-			{configOpt}
-			{column}
-			operationType={currentOperationType}
-			{clusterModules}
-			bind:value
-		/>
-	{/if}
-
 	{#if column.nullable && currentOperationType == 'Update'}
 		<Spacer typ="smallSpacing" />
 		<BoxButton

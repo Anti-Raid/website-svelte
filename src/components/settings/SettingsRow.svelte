@@ -208,7 +208,7 @@
 	id={`setting-schema-details-${settings.fields[index][configOpt.primary_key]}`}
 	class="setting-schema__details border p-2 bg-black hover:bg-slate-900"
 >
-	<summary class="setting-schema__summary hover:cursor-pointer"
+	<summary class="setting-schema__summary hover:cursor-pointer break-words"
 		>{templateToStringLite(configOpt.title_template, columnField)}</summary
 	>
 	<div id="action-box" class="mb-3 border rounded-md">

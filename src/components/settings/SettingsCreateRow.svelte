@@ -148,7 +148,7 @@
 	bind:this={createRowElement}
 >
 	<summary
-		class="setting-schema-create__summary hover:cursor-pointer font-semibold text-xl items-center align-middle justify-center"
+		class="setting-schema-create__summary hover:cursor-pointer font-semibold text-xl items-center align-middle justify-center break-words"
 	>
 		<Icon
 			icon="fa6-solid:plus"
