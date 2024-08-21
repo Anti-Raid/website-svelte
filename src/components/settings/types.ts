@@ -43,7 +43,7 @@ class SettingsFetchQueue {
 
     private createKey(settingsExecute: SettingsExecute): string | null {
         if (settingsExecute.operation === "View") {
-            return `${settingsExecute.module}.${settingsExecute.setting}`;
+            return JSON.stringify(settingsExecute);
         }
         return null
     }
