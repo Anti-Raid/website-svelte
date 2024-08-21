@@ -11,7 +11,7 @@
 	import Label from '../inputs/Label.svelte';
 	import Message from '../Message.svelte';
 	import SettingSchema from './SettingSchema.svelte';
-	import { cachedSettings } from './types';
+	import { settingsFetchQueue } from './types';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
@@ -21,9 +21,6 @@
 	export let filters: Record<string, any> = {}; // Any filters to apply
 
 	const getCurrentSettings = async () => {
-		const creds = getAuthCreds();
-		if (!creds) throw new Error('No auth credentials found');
-
 		let payload: SettingsExecute = {
 			operation: 'View',
 			module: module.id,
@@ -31,20 +28,7 @@
 			fields: filters
 		};
 
-		const res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
-			method: 'POST',
-			auth: creds?.token,
-			body: JSON.stringify(payload)
-		});
-
-		if (!res.ok) {
-			let err = await res.error('Failed to fetch settings for this module');
-			throw new Error(err);
-		}
-
-		let settings: SettingsExecuteResponse = await res.json();
-
-		cachedSettings.set(`${module.id}.${configOpt.id}`, settings);
+		const settings = await settingsFetchQueue.addToQueue(guildId, payload);
 
 		return settings;
 	};

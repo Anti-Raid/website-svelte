@@ -13,7 +13,7 @@
 	import NoticeArea from '../common/noticearea/NoticeArea.svelte';
 	import Message from '../Message.svelte';
 	import SettingsSuggestionInput from './SettingsSuggestionInput.svelte';
-	import { cachedSettings, OperationTypes } from './types';
+	import { OperationTypes, settingsFetchQueue } from './types';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let guildId: string;
@@ -35,38 +35,16 @@
 			throw new Error(`Config option ${configOpt} not found in module ${moduleId}`);
 		}
 
-		// Check for reference in sessionStorage
-		let settingsReference = cachedSettings.get(`${moduleId}.${configOpt}`);
+		let payload: SettingsExecute = {
+			operation: 'View',
+			module: module.id,
+			setting: configOpt,
+			fields: {} // TODO: Add filters
+		};
 
-		if (!settingsReference) {
-			const creds = getAuthCreds();
-			if (!creds) throw new Error('No auth credentials found');
+		const settings = await settingsFetchQueue.addToQueue(guildId, payload);
 
-			let payload: SettingsExecute = {
-				operation: 'View',
-				module: module.id,
-				setting: configOpt,
-				fields: {} // TODO: Add filters
-			};
-
-			const res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
-				method: 'POST',
-				auth: creds?.token,
-				body: JSON.stringify(payload)
-			});
-
-			if (!res.ok) {
-				let err = await res.error('Failed to fetch settings for this module');
-				throw new Error(err);
-			}
-
-			let settings: SettingsExecuteResponse = await res.json();
-
-			cachedSettings.set(`${module.id}.${configOpt}`, settings); // Cache the fetched settings
-			settingsReference = settings; // Set the reference to the fetched settings
-		}
-
-		let suggestions = settingsReference?.fields?.map((fields) => {
+		let suggestions = settings?.fields?.map((fields) => {
 			return {
 				id: fields[referredConfigOpt.primary_key],
 				label: templateToStringLite(referredConfigOpt.title_template, fields),
