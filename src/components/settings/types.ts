@@ -86,6 +86,8 @@ class SettingsFetchQueue {
             return; // Ensure we only have one queue running at a time
         }
 
+        this.hasStartedQueue = true;
+
         while (true) {
             let entry = this.fetchQueue.shift();
             if (!entry) {
