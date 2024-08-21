@@ -32,7 +32,7 @@
 	// On column field change
 	let fieldList: string[] | undefined = undefined;
 	const flagRerenders = () => {
-		if (!fieldList) {
+		if (fieldList === undefined) {
 			fieldList = [];
 			for (let key in allDerivedData) {
 				if (
