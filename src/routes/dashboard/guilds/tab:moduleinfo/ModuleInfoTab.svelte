@@ -25,6 +25,25 @@
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 	export let commonPermissionContext: CommonPermissionContext;
 
+	let state: PartialPatchRecord<PartialPatchType>;
+	let moduleId: string;
+	let changes: any;
+	let toggleManuallyOverriden: boolean;
+	let defaultPermsManuallyOverriden: boolean;
+	let permCheck_backupPermissionChecks: PCT | undefined = undefined;
+	let permCheck_backupTab: string = '';
+	let updateNoticeArea: NoticeProps | null;
+
+	// Initialize or update state and other dependent variables
+	const initializeState = () => {
+		state = getState();
+		changes = createPartialPatch(state);
+		toggleManuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration);
+		defaultPermsManuallyOverriden = isModuleDefaultPermsOverriden(currentModuleConfiguration);
+		permCheck_backupPermissionChecks = structuredClone(getModuleDefaultPerms());
+		permCheck_backupTab = '';
+	};
+
 	const isModuleEnabled = (): boolean => {
 		logger.info('ModuleInfoTab', 'isModuleEnabled', module.id, currentModuleConfiguration);
 
@@ -149,36 +168,15 @@
 		};
 	};
 
-	let state = getState();
+	// Call to initialize state when the component is first loaded or when moduleId changes
+	const handleModuleIdChange = (newModuleId: string) => {
+		if (newModuleId !== moduleId) {
+			moduleId = newModuleId;
+			initializeState();
+		}
+	};
 
-	// Svelte workaround to workaround state
-	//
-	// If and only if the module id changes do we need to rederive the state
-	let moduleId: string;
-
-	$: if (module.id != moduleId) {
-		moduleId = module.id;
-	}
-
-	$: moduleId, (state = getState());
-	// end of workaround
-
-	// Ensure changes is updated whenever state changes
-	$: changes = createPartialPatch(state);
-
-	// Ensure manuallyOverriden is updated whenever moduleId changes
-	let toggleManuallyOverriden: boolean;
-	let defaultPermsManuallyOverriden: boolean;
-	$: moduleId, (toggleManuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration));
-	$: moduleId,
-		(defaultPermsManuallyOverriden = isModuleDefaultPermsOverriden(currentModuleConfiguration));
-
-	// Backup fields
-	let permCheck_backupPermissionChecks: PCT | undefined = undefined;
-	let permCheck_backupTab: string = '';
-	$: moduleId, (permCheck_backupPermissionChecks = structuredClone(getModuleDefaultPerms()));
-	$: moduleId, (permCheck_backupTab = '');
-
+	// Update module configuration
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
 
@@ -231,7 +229,8 @@
 		permCheck_backupPermissionChecks = undefined;
 	};
 
-	let updateNoticeArea: NoticeProps | null;
+	// Initial call to set up the state
+	handleModuleIdChange(module.id);
 </script>
 
 <Label id="enable_disable_module" label="Enable/Disable Module" />
@@ -242,7 +241,6 @@
 	description="Is this module enabled or not?"
 	disabled={!module.toggleable}
 	bind:value={state.enabled.current}
-	onChange={(_) => {}}
 />
 
 {#if toggleManuallyOverriden}
@@ -252,7 +250,7 @@
 				state.__resetFields.current = state.__resetFields.current.filter((f) => f !== 'enabled');
 			} else {
 				state.__resetFields.current.push('enabled');
-				state = state; // Force re-render
+				initializeState(); // Reinitialize state to reflect changes
 			}
 		}}
 	>
@@ -281,9 +279,10 @@
 				state.__resetFields.current.push('default_perms');
 			}
 
-			state = state; // Force re-render
+			initializeState(); // Reinitialize state to reflect changes
 		}}
 	>
+>
 		{state.__resetFields.current.includes('default_perms') ? "Don't Reset" : 'Reset'}
 	</BoxButton>
 {/if}
@@ -315,7 +314,6 @@
 	description="Whether this module is enabled by default"
 	disabled={true}
 	value={module.is_default_enabled}
-	onChange={() => {}}
 />
 
 <UnorderedList>
