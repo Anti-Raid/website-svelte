@@ -27,21 +27,24 @@
 
 	let state: PartialPatchRecord<PartialPatchType>;
 	let moduleId: string;
-	let changes: any;
+	let changes: any = {};
 	let toggleManuallyOverriden: boolean;
 	let defaultPermsManuallyOverriden: boolean;
 	let permCheck_backupPermissionChecks: PCT | undefined = undefined;
 	let permCheck_backupTab: string = '';
 	let updateNoticeArea: NoticeProps | null;
 
-	// Initialize or update state and other dependent variables
 	const initializeState = () => {
 		state = getState();
-		changes = createPartialPatch(state);
+		updateChanges(); // Initialize changes based on the current state
 		toggleManuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration);
 		defaultPermsManuallyOverriden = isModuleDefaultPermsOverriden(currentModuleConfiguration);
 		permCheck_backupPermissionChecks = structuredClone(getModuleDefaultPerms());
 		permCheck_backupTab = '';
+	};
+
+	const updateChanges = () => {
+		changes = createPartialPatch(state);
 	};
 
 	const isModuleEnabled = (): boolean => {
@@ -168,7 +171,6 @@
 		};
 	};
 
-	// Call to initialize state when the component is first loaded or when moduleId changes
 	const handleModuleIdChange = (newModuleId: string) => {
 		if (newModuleId !== moduleId) {
 			moduleId = newModuleId;
@@ -176,7 +178,6 @@
 		}
 	};
 
-	// Update module configuration
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
 
@@ -213,7 +214,6 @@
 
 		let newConfig: GuildModuleConfiguration = await res.json();
 
-		// Update the currentModuleConfiguration with the new data from the patch
 		let moduleConfigIndex = currentModuleConfiguration.findIndex((m) => m.module === module.id);
 
 		if (moduleConfigIndex === -1) {
@@ -227,6 +227,7 @@
 		state = getState(); // Rederive state
 		permCheck_backupTab = '';
 		permCheck_backupPermissionChecks = undefined;
+		updateChanges(); // Ensure changes are re-calculated after the update
 	};
 
 	// Initial call to set up the state
@@ -241,6 +242,7 @@
 	description="Is this module enabled or not?"
 	disabled={!module.toggleable}
 	bind:value={state.enabled.current}
+	on:change={updateChanges}
 />
 
 {#if toggleManuallyOverriden}
@@ -252,6 +254,7 @@
 				state.__resetFields.current.push('enabled');
 				initializeState(); // Reinitialize state to reflect changes
 			}
+			updateChanges(); // Detect changes after the reset
 		}}
 	>
 		{state.__resetFields.current.includes('enabled') ? "Don't Reset" : 'Reset'}
@@ -266,6 +269,7 @@
 	bind:backupPermissionChecks={permCheck_backupPermissionChecks}
 	bind:backupTab={permCheck_backupTab}
 	ctx={commonPermissionContext}
+	on:change={updateChanges}
 />
 
 {#if defaultPermsManuallyOverriden}
@@ -278,11 +282,10 @@
 			} else {
 				state.__resetFields.current.push('default_perms');
 			}
-
 			initializeState(); // Reinitialize state to reflect changes
+			updateChanges(); // Detect changes after the reset
 		}}
 	>
->
 		{state.__resetFields.current.includes('default_perms') ? "Don't Reset" : 'Reset'}
 	</BoxButton>
 {/if}
@@ -320,70 +323,65 @@
 	<ListItem>
 		{#if module.commands_toggleable}
 			<small class="text-green-500 mt-2">
-				<strong>You can turn ON/OFF (toggle) the commands within this module!</strong>
-			</small>
-		{:else}
-			<small class="text-red-500 mt-2">
-				<strong
-					>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
-				>
-			</small>
-		{/if}
-	</ListItem>
+			<strong>You can turn ON/OFF (toggle) the commands within this module!</strong>
+		</small>
+	{:else}
+		<small class="text-red-500 mt-2">
+			<strong>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong>
+		</small>
+	{/if}
+</ListItem>
 
-	<ListItem>
-		{#if module.web_hidden}
-			<small class="text-red-500 mt-2">
-				<strong>This module is HIDDEN on the website and dashboard</strong>
-			</small>
-		{:else}
-			<small class="text-green-500 mt-2">
-				<strong>This module is VISIBLE on the website and dashboard</strong>
-			</small>
-		{/if}
-	</ListItem>
+<ListItem>
+	{#if module.web_hidden}
+		<small class="text-red-500 mt-2">
+			<strong>This module is HIDDEN on the website and dashboard</strong>
+		</small>
+	{:else}
+		<small class="text-green-500 mt-2">
+			<strong>This module is VISIBLE on the website and dashboard</strong>
+		</small>
+	{/if}
+</ListItem>
 
-	<ListItem>
-		{#if module.toggleable}
-			<small class="text-green-500 mt-2">
-				<strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
-			</small>
-		{:else}
-			<small class="text-red-500 mt-2">
-				<strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
-			</small>
-		{/if}
-	</ListItem>
+<ListItem>
+	{#if module.toggleable}
+		<small class="text-green-500 mt-2">
+			<strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
+		</small>
+	{:else}
+		<small class="text-red-500 mt-2">
+			<strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
+		</small>
+	{/if}
+</ListItem>
 
-	<ListItem>
-		{#if toggleManuallyOverriden}
-			<small class="text-green-500 mt-2">
-				<strong
-					>The disabled/enabled state of this module has been manually modified and will no longer
-					follow the default enabled/disabled state defined for it.</strong
-				>
-			</small>
-		{:else}
-			<small class="text-green-500 mt-2">
-				<strong
-					>This module will use the default enabled/disabled state defined for it unless manually
-					modified.</strong
-				>
-			</small>
-		{/if}
-	</ListItem>
+<ListItem>
+	{#if toggleManuallyOverriden}
+		<small class="text-green-500 mt-2">
+			<strong>
+				The disabled/enabled state of this module has been manually modified and will no longer
+				follow the default enabled/disabled state defined for it.
+			</strong>
+		</small>
+	{:else}
+		<small class="text-green-500 mt-2">
+			<strong>
+				This module will use the default enabled/disabled state defined for it unless manually modified.
+			</strong>
+		</small>
+	{/if}
+</ListItem>
 
-	<ListItem>
-		{#if defaultPermsManuallyOverriden}
-			<small class="text-green-500 mt-2">
-				<strong>The default permissions of this module have been manually modified.</strong>
-			</small>
-		{:else}
-			<small class="text-green-500 mt-2">
-				<strong
-					>This module will use the default permissions defined for it unless manually modified.</strong
-				>
-			</small>
-		{/if}
-	</ListItem>
+<ListItem>
+	{#if defaultPermsManuallyOverriden}
+		<small class="text-green-500 mt-2">
+			<strong>The default permissions of this module have been manually modified.</strong>
+		</small>
+	{:else}
+		<small class="text-green-500 mt-2">
+			<strong>This module will use the default permissions defined for it unless manually modified.</strong>
+		</small>
+	{/if}
+</ListItem>
 </UnorderedList>
