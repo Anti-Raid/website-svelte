@@ -34,20 +34,14 @@
 	let permCheck_backupTab: string = '';
 	let updateNoticeArea: NoticeProps | null;
 
-	// Initialize state and detect changes
-	const initializeState = () => {
-		state = getState();
-		toggleManuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration);
-		defaultPermsManuallyOverriden = isModuleDefaultPermsOverriden(currentModuleConfiguration);
-		permCheck_backupPermissionChecks = structuredClone(getModuleDefaultPerms());
-		permCheck_backupTab = '';
-		updateChanges(); // Call the change detection function
-	};
-
-	const updateChanges = () => {
-		// Recalculate changes based on the current state
-		changes = createPartialPatch(state);
-	};
+	// Define reactive variables
+	$: moduleId = module.id;
+	$: state = getState();
+	$: toggleManuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration);
+	$: defaultPermsManuallyOverriden = isModuleDefaultPermsOverriden(currentModuleConfiguration);
+	$: permCheck_backupPermissionChecks = structuredClone(getModuleDefaultPerms());
+	$: permCheck_backupTab = '';
+	$: changes = createPartialPatch(state);
 
 	const isModuleEnabled = (): boolean => {
 		let cmc = currentModuleConfiguration.find((m) => m.module === module.id);
@@ -147,19 +141,11 @@
 		};
 	};
 
-	const handleModuleIdChange = (newModuleId: string) => {
-		if (newModuleId !== moduleId) {
-			moduleId = newModuleId;
-			initializeState();
-		}
-	};
-
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
 
 		if (!authCreds) throw new Error('No auth credentials found');
 
-		updateChanges(); // Ensure changes are updated before saving
 		if (Object.keys(changes).length == 0) {
 			throw new Error('No changes to save');
 		}
@@ -169,7 +155,7 @@
 			method: 'PATCH',
 			body: JSON.stringify({
 				module: module.id,
-				...createPartialPatch(state)
+				...changes
 			})
 		});
 
@@ -188,16 +174,10 @@
 			currentModuleConfiguration[moduleConfigIndex] = newConfig;
 		}
 
-		currentModuleConfiguration = currentModuleConfiguration;
-
 		state = getState(); // Rederive state
 		permCheck_backupTab = '';
 		permCheck_backupPermissionChecks = undefined;
-		updateChanges(); // Ensure changes are re-calculated after the update
 	};
-
-	// Initial call to set up the state
-	handleModuleIdChange(module.id);
 </script>
 
 <Label id="enable_disable_module" label="Enable/Disable Module" />
@@ -208,7 +188,6 @@
 	description="Is this module enabled or not?"
 	disabled={!module.toggleable}
 	bind:value={state.enabled.current}
-	on:change={updateChanges}
 />
 
 {#if toggleManuallyOverriden}
@@ -218,9 +197,8 @@
 				state.__resetFields.current = state.__resetFields.current.filter((f) => f !== 'enabled');
 			} else {
 				state.__resetFields.current.push('enabled');
-				initializeState(); // Reinitialize state to reflect changes
+				state = getState(); // Rederive state to reflect changes
 			}
-			updateChanges(); // Detect changes after the reset
 		}}
 	>
 		{state.__resetFields.current.includes('enabled') ? "Don't Reset" : 'Reset'}
@@ -235,7 +213,6 @@
 	bind:backupPermissionChecks={permCheck_backupPermissionChecks}
 	bind:backupTab={permCheck_backupTab}
 	ctx={commonPermissionContext}
-	on:change={updateChanges}
 />
 
 {#if defaultPermsManuallyOverriden}
@@ -247,9 +224,8 @@
 				);
 			} else {
 				state.__resetFields.current.push('default_perms');
+				state = getState(); // Rederive state to reflect changes
 			}
-			initializeState(); // Reinitialize state to reflect changes
-			updateChanges(); // Detect changes after the reset
 		}}
 	>
 		{state.__resetFields.current.includes('default_perms') ? "Don't Reset" : 'Reset'}
@@ -294,7 +270,7 @@
 		{:else}
 			<small class="text-red-500 mt-2">
 				<strong>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong>
-			</small>
+		</small>
 		{/if}
 	</ListItem>
 
