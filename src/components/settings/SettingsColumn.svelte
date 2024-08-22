@@ -23,20 +23,25 @@
 	export let currentOperationType: OperationTypes;
 	export let column: CanonicalColumn;
 	export let debugMode: boolean;
-	export let columnState: ColumnState;
-	export let columnDispatchType: DispatchType;
-
-	// Used to force re-render of dynamic_on columns
 	export let allDerivedData: { [key: string]: DerivedData };
 
-	// On column field change
+	let columnState: ColumnState;
+	let columnDispatchType: DispatchType;
 	let fieldList: string[] | undefined = undefined;
+
+	// Function to initialize or update column state and dispatch type
+	const initialize = () => {
+		columnState = deriveColumnState(configOpt, column, currentOperationType);
+		columnDispatchType = getDispatchType(columnField, column);
+	};
+
+	// Function to flag columns that need to be re-rendered
 	const flagRerenders = () => {
 		if (fieldList === undefined) {
 			fieldList = [];
 			for (let key in allDerivedData) {
 				if (
-					key != column.id &&
+					key !== column.id &&
 					allDerivedData[key].dispatchType.referenced_variables?.includes(column.id)
 				) {
 					fieldList.push(key);
@@ -49,21 +54,29 @@
 		});
 	};
 
-	const rederive = () => {
-		columnState = deriveColumnState(configOpt, column, currentOperationType);
-		columnDispatchType = getDispatchType(columnField, column);
-		allDerivedData[column.id].forceRederive = false;
-	};
-
+	// Function to rederive column state and dispatch type if forced
 	const rederiveIfForced = () => {
 		if (allDerivedData[column.id].forceRederive) {
 			logger.debug('rederiveIfForced', 'Rederiving for', column.id);
-			rederive();
+			columnState = deriveColumnState(configOpt, column, currentOperationType);
+			columnDispatchType = getDispatchType(columnField, column);
+			allDerivedData[column.id].forceRederive = false;
 		}
 	};
 
-	$: value, flagRerenders();
-	$: allDerivedData[column.id].forceRederive, rederiveIfForced();
+	// Watcher-like function to simulate reactive behavior
+	const updateState = () => {
+		flagRerenders();
+		rederiveIfForced();
+	};
+
+	// Call initialize on component mount
+	initialize();
+
+	// Simulate reactive behavior by calling updateState when value or forceRederive changes
+	$: {
+		updateState();
+	}
 </script>
 
 {#if columnDispatchType?.resolved_column_type?.Scalar || columnDispatchType?.resolved_column_type?.Array}
@@ -105,6 +118,7 @@
 			onclick={(e) => {
 				e.preventDefault();
 				allDerivedData[column.id].isCleared = true;
+				updateState(); // Manually trigger update after clearing
 			}}
 		>
 			{allDerivedData[column.id].isCleared ? "Don't Clear" : 'Clear'}
