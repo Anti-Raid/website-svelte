@@ -4,10 +4,12 @@
 	import BotFeatures from '../../components/common/BotFeatures.svelte';
 	import { makeSharedRequest, opGetApiConfig, opGetGuildStaffTeam } from '$lib/fetch/ext';
 	import Message from '../../components/Message.svelte';
+	import { GuildStaffRoles } from '$lib/generated/types';
 
 	interface TeamMember {
 		Name: string;
 		Role: string;
+		DisplayRoles: [string, number][];
 		Avatar: string | undefined;
 	}
 
@@ -34,9 +36,35 @@
 			teamMembers.push({
 				Name: `${member.user?.display_name} (${member.user?.username})`,
 				Role: display_roles.map((x) => x[0]).join(', '),
+				DisplayRoles: display_roles,
 				Avatar: member?.user?.avatar
 			});
 		}
+
+		// Sort team members on two criteria:
+		// 1. Lowest role index
+		// 2. Number of display roles
+		teamMembers.sort((a, b) => {
+			// Get lowest role index of a
+			let highestIndexA = a.DisplayRoles[0][1];
+			let highestIndexB = b.DisplayRoles[0][1];
+
+			for (let i = 1; i < a.DisplayRoles.length; i++) {
+				if (a.DisplayRoles[i][1] < highestIndexA) {
+					highestIndexA = a.DisplayRoles[i][1];
+				}
+			}
+
+			for (let i = 1; i < b.DisplayRoles.length; i++) {
+				if (b.DisplayRoles[i][1] < highestIndexB) {
+					highestIndexB = b.DisplayRoles[i][1];
+				}
+			}
+
+			// It is expected to return a negative value if the first argument is less than the second argument, zero if they're equal, and a positive value otherwise
+
+			return 10 * (highestIndexA - highestIndexB) + (a.DisplayRoles.length - b.DisplayRoles.length);
+		});
 
 		return teamMembers;
 	};
