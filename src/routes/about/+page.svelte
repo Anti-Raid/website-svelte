@@ -63,7 +63,7 @@
 
 			// It is expected to return a negative value if the first argument is less than the second argument, zero if they're equal, and a positive value otherwise
 
-			return 10 * (highestIndexA - highestIndexB) + (a.DisplayRoles.length - b.DisplayRoles.length);
+			return 10 * (highestIndexA - highestIndexB) - (a.DisplayRoles.length - b.DisplayRoles.length);
 		});
 
 		return teamMembers;
@@ -127,7 +127,7 @@
 				<h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">Meet the Team!</h2>
 				<p class="mt-3 text-lg leading-8 text-white">
 					Interested in joining our team? Join our <a
-						href="https://discord.gg/v9qRYthfHf"
+						href="/discord"
 						class="block text-indigo-600 font-bold xl:inline hover:text-red-600">Discord Server</a
 					>
 				</p>

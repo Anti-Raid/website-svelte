@@ -28,7 +28,8 @@
 {#await getInvite()}
 	<Message type="loading" big={true}>Fetching you an *exclusive* invite!</Message>
 {:then invite}
-	<Message type="success" big={true}>Please wai...</Message>
+	<Message type="success" big={true}>Please wait while we <a href={invite}>redirect you</a></Message
+	>
 {:catch error}
 	<Message type="error" big={true}>
 		{@html error}
