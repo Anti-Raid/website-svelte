@@ -241,7 +241,13 @@
 									>
 										<div class="relative w-full">
 											{#each data?.profileNavigation || [] as item}
-												<a href={item.href} class="block hover:bg-slate-800 p-7">
+												<a
+													on:click={() => {
+														openElements.profileMenu.open = false;
+													}}
+													href={item.href}
+													class="block hover:bg-slate-800 p-7"
+												>
 													{item.name}
 												</a>
 											{/each}

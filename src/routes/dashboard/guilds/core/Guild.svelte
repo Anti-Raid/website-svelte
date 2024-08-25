@@ -8,9 +8,10 @@
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 	import { InstanceList } from '$lib/generated/mewld/proc';
-	import { State } from './types';
+	import { openedEntityToString, State } from './types';
 	import Content from './Content.svelte';
 	import Icon from '@iconify/svelte';
+	import { quickActions } from '../quickactions/actions';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;
@@ -21,102 +22,113 @@
 	export let guildData: UserGuildBaseData;
 	export let guildClusterId: number;
 	export let guildShardId: number;
+	export let state: State;
 
-	let state: State = {
-		openedEntity: { indexPage: {} },
-		commandSearch: '',
-		searchedCommands: [],
-		commandEditorOpen: false,
-		commandEditConfigs: [],
-		clusterFinderByGuildIdExpectedData: null
+	const setIn = () => {
+		let currentUrl = new URL(window.location.href);
+
+		let inQuery = openedEntityToString(state.openedEntity);
+
+		if (inQuery) {
+			currentUrl.searchParams.set('in', inQuery);
+			history.pushState({}, '', currentUrl);
+		} else {
+			currentUrl.searchParams.delete('in');
+			history.pushState({}, '', currentUrl);
+		}
 	};
+
+	$: state.openedEntity, setIn();
 </script>
 
 <!--Cluster Menu at the right of the page-->
-<article class="guild overflow-x-auto overflow-y-hidden w-full h-full">
+<article class="guild-menu grid grid-cols-1 md:gap-1 md:grid-cols-5 md:grid-flow-dense">
 	<!--Search bar-->
 
 	<!--Module list-->
-	<section class="module-list flex">
-		<!--Bar-->
-		<nav
-			class={state.openedEntity.mobileSidebar
-				? 'nav block w-full mt-1 border border-gray-600 p-2 border-solid rounded-sm'
-				: 'nav hidden md:block nav flex-none w-32 lg:w-52 mt-1 border border-gray-600 p-2 border-solid rounded-sm'}
-		>
-			<section class="guild-basic-details">
-				<!--Avatar-->
-				<img loading="lazy" src={guildData.icon} class="h-10 m-0 align-middle inline" alt="" />
-				<!--Guild Name-->
-				<span class="font-semibold align-middle m-0">{guildData.name}</span>
-			</section>
+	<!--Bar-->
+	<nav
+		class={state.openedEntity.mobileSidebar
+			? 'nav md:col-span-1 block w-full mt-1 border border-gray-600 p-2 border-solid rounded-sm'
+			: 'nav md:col-span-1 hidden md:block w-full mt-1 border border-gray-600 p-2 border-solid rounded-sm'}
+	>
+		<section class="guild-basic-details">
+			<!--Avatar-->
+			<img loading="lazy" src={guildData.icon} class="h-10 m-0 align-middle inline" alt="" />
+			<!--Guild Name-->
+			<span class="font-semibold align-middle m-0">{guildData.name}</span>
+		</section>
 
-			<NavButton
-				current={!!state.openedEntity.indexPage}
-				title={'⌂ Home'}
-				onClick={() => {
-					state.openedEntity = { indexPage: {} };
-				}}
-				extClass="block mb-2 w-full"
-			/>
+		<NavButton
+			current={!!state.openedEntity.indexPage}
+			title={'⌂ Home'}
+			onClick={() => {
+				state.openedEntity = { indexPage: {} };
+			}}
+			extClass="block mb-2 w-full"
+		/>
 
-			<details id="quick-actions-pane" class="summary-expand-close-right" open>
-				<summary class="hover:cursor-pointer font-semibold">Quick Actions</summary>
+		<details id="quick-actions-pane" class="summary-expand-close-right" open>
+			<summary class="hover:cursor-pointer font-semibold">Quick Actions</summary>
 
+			{#each quickActions as action}
 				<NavButton
-					current={state.openedEntity.quickAction?.id == 'welcome-messages'}
-					title={'Welcome Messages'}
+					current={state.openedEntity.quickAction?.id == action.id}
+					title={action.name}
 					onClick={() => {
-						state.openedEntity = { quickAction: { id: 'welcome-messages' } };
+						state.openedEntity = { quickAction: { id: action.id } };
 					}}
 					extClass="block mb-2 w-full"
 				/>
-			</details>
+			{/each}
+		</details>
 
-			<details id="modules-pane" class="summary-expand-close-right" open>
-				<summary class="hover:cursor-pointer font-semibold">Modules</summary>
+		<details id="modules-pane" class="summary-expand-close-right" open>
+			<summary class="hover:cursor-pointer font-semibold">Modules</summary>
 
-				{#each Object.entries(clusterModules) as [_, module]}
-					<NavButton
-						current={state.openedEntity?.module?.id == module?.id}
-						title={module?.name}
-						onClick={() => {
-							state.openedEntity = { module: { id: module?.id, tab: 'moduleInfo' } };
-						}}
-						extClass="block mb-2 w-full"
-					/>
-				{/each}
-			</details>
-		</nav>
-
-		<!--Content-->
-		<section class={!state.openedEntity.mobileSidebar ? 'block ' : 'hidden md:block '}>
-			<div class="menu-area w-[90vw] block md:hidden text-white">
-				<button
-					class="float-right hover:opacity-80 sticky top-0 right-0"
-					title="Sidebar"
-					on:click|preventDefault={() => {
-						state.openedEntity = { mobileSidebar: {} };
+			{#each Object.entries(clusterModules) as [_, module]}
+				<NavButton
+					current={state.openedEntity?.module?.id == module?.id}
+					title={module?.name}
+					onClick={() => {
+						state.openedEntity = { module: { id: module?.id, tab: 'moduleInfo' } };
 					}}
-				>
-					<span class="sr-only">Open Sidebar</span>
-					<Icon icon="bx:bx-menu" class="inline-block text-2xl m-auto" />
-				</button>
-			</div>
+					extClass="block mb-2 w-full"
+				/>
+			{/each}
+		</details>
+	</nav>
 
-			<Content
-				{clusterModules}
-				{commonPermissionContext}
-				{guildId}
-				{instanceList}
-				{currentModuleConfiguration}
-				{currentCommandConfiguration}
-				{guildData}
-				{guildClusterId}
-				{guildShardId}
-				bind:state
-			/>
-		</section>
+	<!--Content-->
+	<section
+		class={(!state.openedEntity.mobileSidebar ? 'block ' : 'hidden md:block ') +
+			'content col-span-1 md:col-span-4'}
+	>
+		<div class="menu-area block md:hidden text-white">
+			<button
+				class="float-right hover:opacity-80 sticky top-0 right-0"
+				title="Sidebar"
+				on:click|preventDefault={() => {
+					state.openedEntity = { mobileSidebar: {} };
+				}}
+			>
+				<span class="sr-only">Open Sidebar</span>
+				<Icon icon="bx:bx-menu" class="inline-block text-2xl m-auto" />
+			</button>
+		</div>
+
+		<Content
+			{clusterModules}
+			{commonPermissionContext}
+			{guildId}
+			{instanceList}
+			{currentModuleConfiguration}
+			{currentCommandConfiguration}
+			{guildData}
+			{guildClusterId}
+			{guildShardId}
+			bind:state
+		/>
 	</section>
 </article>
 

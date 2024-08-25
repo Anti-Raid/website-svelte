@@ -1,5 +1,4 @@
-import { CanonicalCommandExtendedData } from "$lib/converters";
-import { CanonicalModule, CanonicalCommandData, GuildCommandConfiguration, CommandExtendedData } from "$lib/generated/silverpelt";
+import { CanonicalModule, CanonicalCommandData, GuildCommandConfiguration, CommandExtendedData, PermissionChecks, CommandExtendedDataMap } from "$lib/generated/silverpelt";
 import { permuteCommands } from "$lib/mewext/mewext";
 import logger from "./logger";
 
@@ -64,9 +63,9 @@ export const extractCommandsFromModule = (module: CanonicalModule): ParsedCanoni
             parent_command: parent,
             extended_data: extData,
             extended_data_map: extended_data,
-            search_permissions: extData?.default_perms?.checks
+            search_permissions: extData?.default_perms?.Simple ? extData.default_perms.Simple.checks
                 ?.map((check) => check?.kittycat_perms)
-                ?.join(', '),
+                ?.join(', ') : '',
             full_name: depth == 0 ? command?.name : `${parent?.name} ${command?.name}`
         });
 
@@ -163,15 +162,16 @@ export const getCommandExtendedData = (parsedCommands: ParsedCanonicalCommandDat
 
     let defaultExtendedData: CommandExtendedData = {
         default_perms: {
-            checks: [
-                {
-                    kittycat_perms: [`${base_command}.*`],
-                    native_perms: ["8"],
-                    inner_and: false,
-                    outer_and: false,
-                }
-            ],
-            checks_needed: 1,
+            Simple: {
+                checks: [
+                    {
+                        kittycat_perms: [`${base_command}.*`],
+                        native_perms: ["8"],
+                        inner_and: false,
+                        outer_and: false,
+                    }
+                ],
+            }
         },
         is_default_enabled: true,
         web_hidden: false,
@@ -180,3 +180,28 @@ export const getCommandExtendedData = (parsedCommands: ParsedCanonicalCommandDat
 
     return commands.extended_data_map[subcommand] || commands.extended_data_map[''] || defaultExtendedData;
 }
+
+export const isPermissionCheckEmpty = (pc: PermissionChecks) => {
+    if (pc?.Simple) {
+        return pc.Simple.checks.length == 0;
+    } else if (pc?.Template) {
+        return pc.Template.template.length == 0;
+    } else {
+        return true;
+    }
+}
+
+export interface CanonicalCommandExtendedData extends CommandExtendedData {
+    id: string;
+}
+
+export const mapToCanonicalCommandExtendedData = (
+    data: CommandExtendedDataMap
+): CanonicalCommandExtendedData[] => {
+    return Object.entries(data).map(([id, value]) => {
+        return {
+            id,
+            ...value
+        };
+    });
+};

@@ -163,6 +163,27 @@ export interface DashboardGuildData {
   has_bot: string[];
   unknown_guilds: string[];
 }
+export interface GuildStaffTeam {
+  members: GuildStaffMember[];
+  roles: GuildStaffRoles[];
+}
+/**
+ * Note: not all fields in `guild_members` are included
+ */
+export interface GuildStaffRoles {
+  role_id: string;
+  perms: string[];
+  index: number /* int */;
+  display_name?: string;
+}
+/**
+ * Note: not all fields in `guild_members` are included
+ */
+export interface GuildStaffMember {
+  user?: PlatformUser /* from eureka-dovewing.ts */;
+  role: string[];
+  public: boolean;
+}
 
 //////////
 // source: ioauth.go

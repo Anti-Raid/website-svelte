@@ -4,6 +4,7 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { NoticeProps } from '../../common/noticearea/noticearea';
 	import NoticeArea from '../../common/noticearea/NoticeArea.svelte';
+	import Modal from '../../Modal.svelte';
 	import TabButton from '../../inputs/button/tabs/TabButton.svelte';
 	import InputTextArea from '../../inputs/InputTextArea.svelte';
 	import Label from '../../inputs/Label.svelte';
@@ -11,11 +12,13 @@
 	import DangerButton from '../../inputs/multi/DangerButton.svelte';
 	import Spacer from '../../inputs/Spacer.svelte';
 	import {
+		defaultSnippets,
 		generateTemplateForTemplateBuilderData,
 		parseTemplateBuilderDataCommentFromTemplate
 	} from './common';
 	import TemplateBuilderEmbed from './TemplateBuilderEmbed.svelte';
 	import { defaultData, TemplateBuilderData } from './types';
+	import { title } from '$lib/strings';
 
 	export let templateBuilderData: TemplateBuilderData = defaultData();
 	export let rawTemplateOutput: string;
@@ -84,32 +87,10 @@
 		openTab = tab;
 	};
 
-	// This is a hack to allow component html to switch tabs
-
-	$: if (browser) {
-		// @ts-ignore
-		window.__messageTemplateBuilderSwitchImplYes = () => {
-			logger.info('TemplateBuilder#Message.switchTab', switchTab);
-			if (switchTab) {
-				openTab = switchTab;
-				switchTab = null;
-				noticeProps = null;
-			}
-		};
-
-		// @ts-ignore
-		window.__messageTemplateBuilderSwitchImplNo = () => {
-			if (switchTab) {
-				switchTab = null;
-				noticeProps = null;
-			}
-		};
-	}
-
 	let openTab: string;
-
 	let noticeProps: NoticeProps | null = null;
 	let switchTab: string | null = null;
+	let showModal: boolean;
 
 	$: setupInitialState();
 	$: {
@@ -132,22 +113,15 @@
 			let template = await generateTemplateForTemplateBuilderData(templateBuilderData);
 
 			if (template != rawTemplateOutput) {
-				noticeProps = {
-					level: 'warn',
-					text: `You have unsaved changes. Are you sure you want to switch tabs?
-					
-<button class="text-red-500" onclick="__messageTemplateBuilderSwitchImplYes()">Yes</button>
-<button class="text-green-500" onclick="__messageTemplateBuilderSwitchImplNo()">No</button>
-					`
-				};
 				switchTab = 'builder';
+				showModal = true;
 			} else {
 				openTab = 'builder';
-				noticeProps = null;
+				switchTab = null;
 			}
 		} else {
 			openTab = 'builder';
-			noticeProps = null;
+			switchTab = null;
 		}
 	}}
 />
@@ -157,9 +131,32 @@
 	text={'Advanced'}
 	onClick={() => {
 		openTab = 'advanced';
-		noticeProps = null;
+		switchTab = null;
 	}}
 />
+
+{#if switchTab}
+	<Modal title="Unsaved Changes" bind:showModal logo="/logo.webp">
+		<p>You have unsaved changes. Are you sure you want to switch tabs?</p>
+
+		<ButtonReact
+			onclick={() => {
+				if (!switchTab) return;
+				openTab = switchTab;
+				switchTab = null;
+				showModal = false;
+			}}>Yes</ButtonReact
+		>
+
+		<ButtonReact
+			onclick={() => {
+				if (!switchTab) return;
+				switchTab = null;
+				showModal = false;
+			}}>No</ButtonReact
+		>
+	</Modal>
+{/if}
 
 {#if noticeProps}
 	<NoticeArea props={noticeProps} />
@@ -205,6 +202,18 @@
 		showErrors={false}
 	/>
 {:else if openTab == 'advanced'}
+	<div class="default-snips">
+		<h3 class="text-2xl">Need inspiration?</h3>
+		<p>Check out some templates/snippets</p>
+		{#each Object.entries(defaultSnippets) as [key, value]}
+			<ButtonReact
+				onclick={() => {
+					rawTemplateOutput = value(rawTemplateOutput);
+				}}>{title(key)}</ButtonReact
+			>
+		{/each}
+	</div>
+
 	<InputTextArea
 		id="templatebuilder-raw"
 		label="Raw Template"

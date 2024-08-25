@@ -12,8 +12,7 @@
 	} from '$lib/ui/settings';
 	import Icon from '@iconify/svelte';
 	import { DerivedData, OperationTypes } from './types';
-	import InputText from '../../../../components/inputs/InputText.svelte';
-	import Message from '../../../../components/Message.svelte';
+	import Message from '../Message.svelte';
 	import SettingsColumn from './SettingsColumn.svelte';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
@@ -23,17 +22,19 @@
 		SettingsExecuteResponse,
 		UserGuildBaseData
 	} from '$lib/generated/types';
-	import ButtonReact from '../../../../components/inputs/button/ButtonReact.svelte';
+	import ButtonReact from '../inputs/button/ButtonReact.svelte';
 	import isEqual from 'lodash.isequal';
-	import { Color } from '../../../../components/inputs/button/colors';
-	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
-	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
-	import Spacer from '../../../../components/inputs/Spacer.svelte';
+	import { Color } from '../inputs/button/colors';
+	import { NoticeProps } from '../common/noticearea/noticearea';
+	import NoticeArea from '../common/noticearea/NoticeArea.svelte';
+	import Spacer from '../inputs/Spacer.svelte';
 	import { marked } from 'marked';
 	import dompurify from 'dompurify';
+	import logger from '$lib/ui/logger';
 
 	const { sanitize } = dompurify;
 
+	export let clusterModules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
@@ -53,9 +54,10 @@
 		configOpt: CanonicalConfigOption,
 		currentOperationType: OperationTypes
 	): Promise<DerivedData> => {
-		let result = {
+		let result: DerivedData = {
 			dispatchType: getDispatchType(columnField, column),
-			columnState: deriveColumnState(configOpt, column, currentOperationType)
+			columnState: deriveColumnState(configOpt, column, currentOperationType),
+			isCleared: false
 		};
 
 		allDerivedData[column.id] = result;
@@ -69,6 +71,7 @@
 
 		let fields: Record<string, any> = {};
 
+		let dependencyFields: string[] = [];
 		Object.keys(columnField).forEach((k) => {
 			let column = configOpt.columns.find((c) => c.id === k);
 
@@ -76,11 +79,62 @@
 				return;
 			}
 
-			if (column.ignored_for.includes('Update')) {
+			if (configOpt.primary_key != column.id && column.ignored_for.includes('Update')) {
 				return;
 			}
 
-			fields[k] = columnField[k];
+			let dispatchType = getDispatchType(columnField, column);
+
+			let referencedVariables = dispatchType.referenced_variables;
+
+			logger.debug('editRow', 'Referenced variables', referencedVariables, k);
+
+			// Ignore unchanged fields that are not the primary key
+			if (isEqual(columnField[k], settings.fields[index][k]) && k != configOpt.primary_key) {
+				return;
+			}
+
+			if (allDerivedData[k]?.isCleared) {
+				// Check if isCleared
+				fields[k] = null;
+
+				// Add to dependencyFields
+				if (referencedVariables) {
+					dependencyFields.push(
+						...referencedVariables.filter((v) => !dependencyFields.includes(v))
+					);
+				}
+			} else {
+				fields[k] = columnField[k];
+
+				// Add to dependencyFields
+				if (referencedVariables) {
+					dependencyFields.push(
+						...referencedVariables.filter((v) => !dependencyFields.includes(v))
+					);
+				}
+			}
+		});
+
+		logger.info('editRow', 'Dependency fields', dependencyFields);
+
+		// Add all dependency fields to the edit
+		dependencyFields.forEach((k) => {
+			let column = configOpt.columns.find((c) => c.id === k);
+
+			if (!column) {
+				return;
+			}
+
+			if (configOpt.primary_key != column.id && column.ignored_for.includes('Update')) {
+				return;
+			}
+
+			if (!columnField[k]) {
+				fields[k] = null;
+			} else {
+				fields[k] = columnField[k];
+			}
 		});
 
 		let payload: SettingsExecute = {
@@ -144,7 +198,7 @@
 			async: false,
 			breaks: true
 		}) as string;
-		return { text: sanitize(parsed), level: 'info', disable_html: true };
+		return { text: sanitize(parsed), level: 'info', disable_html: false };
 	};
 
 	let noticeProps: NoticeProps | null = null;
@@ -154,7 +208,7 @@
 	id={`setting-schema-details-${settings.fields[index][configOpt.primary_key]}`}
 	class="setting-schema__details border p-2 bg-black hover:bg-slate-900"
 >
-	<summary class="setting-schema__summary hover:cursor-pointer"
+	<summary class="setting-schema__summary hover:cursor-pointer break-words"
 		>{templateToStringLite(configOpt.title_template, columnField)}</summary
 	>
 	<div id="action-box" class="mb-3 border rounded-md">
@@ -194,6 +248,7 @@
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
 					{debugMode}
+					{clusterModules}
 					bind:allDerivedData
 				/>
 				<Spacer typ="extSpacing" />

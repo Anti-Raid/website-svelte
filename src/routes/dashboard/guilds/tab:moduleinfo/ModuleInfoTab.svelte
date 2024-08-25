@@ -18,59 +18,56 @@
 	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 	import Label from '../../../../components/inputs/Label.svelte';
+	import { isPermissionCheckEmpty } from '$lib/ui/commands';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 	export let commonPermissionContext: CommonPermissionContext;
 
+	let state: PartialPatchRecord<PartialPatchType>;
+	let moduleId: string;
+	let changes: any = {};
+	let toggleManuallyOverriden: boolean;
+	let defaultPermsManuallyOverriden: boolean;
+	let permCheck_backupPermissionChecks: PCT | undefined = undefined;
+	let permCheck_backupTab: string = '';
+	let updateNoticeArea: NoticeProps | null;
+
+	// Define reactive variables
+	$: moduleId = module.id;
+	$: state = getState();
+	$: toggleManuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration);
+	$: defaultPermsManuallyOverriden = isModuleDefaultPermsOverriden(currentModuleConfiguration);
+	$: permCheck_backupPermissionChecks = structuredClone(getModuleDefaultPerms());
+	$: permCheck_backupTab = '';
+	$: changes = createPartialPatch(state);
+
 	const isModuleEnabled = (): boolean => {
-		logger.info('ModuleInfoTab', 'isModuleEnabled', module.id, currentModuleConfiguration);
-
 		let cmc = currentModuleConfiguration.find((m) => m.module === module.id);
-
-		if (!cmc) {
-			logger.info(
-				'ModuleInfoTab',
-				'isModuleEnabled',
-				module.id,
-				'not found in currentModuleConfiguration'
-			);
-			return module?.is_default_enabled;
-		}
-
-		return cmc.disabled === undefined ? module?.is_default_enabled : !cmc.disabled;
+		return cmc ? !cmc.disabled : module?.is_default_enabled;
 	};
 
 	const isModuleDisabledOverriden = (
 		currentModuleConfiguration: GuildModuleConfiguration[]
 	): boolean => {
 		let cmc = currentModuleConfiguration.find((m) => m.module === module.id);
-
-		if (!cmc) {
-			return false;
-		}
-
-		return cmc.disabled !== undefined;
+		return cmc ? cmc.disabled !== undefined : false;
 	};
 
 	const isModuleDefaultPermsOverriden = (
 		currentModuleConfiguration: GuildModuleConfiguration[]
 	): boolean => {
 		let cmc = currentModuleConfiguration.find((m) => m.module === module.id);
-
-		if (!cmc) {
-			return false;
-		}
-
-		return !!cmc.default_perms;
+		return cmc ? !!cmc.default_perms : false;
 	};
 
 	const getModuleDefaultPerms = (): PCT => {
 		return (
 			currentModuleConfiguration.find((m) => m.module === module.id)?.default_perms || {
-				checks: [],
-				checks_needed: 1
+				Simple: {
+					checks: []
+				}
 			}
 		);
 	};
@@ -92,7 +89,6 @@
 						value: !v
 					};
 
-					// Clear the value if the field is in the reset list
 					if (snapshot?.__resetFields?.includes('enabled')) {
 						value = {
 							clear: true
@@ -114,11 +110,19 @@
 						value: v
 					};
 
-					// Clear the value if the field is in the reset list
 					if (snapshot?.__resetFields?.includes('default_perms')) {
 						value = {
 							clear: true
 						};
+					}
+
+					if (
+						value.value &&
+						isPermissionCheckEmpty(value.value) &&
+						permCheck_backupTab !== '' &&
+						permCheck_backupPermissionChecks
+					) {
+						value.value = structuredClone(permCheck_backupPermissionChecks);
 					}
 
 					return {
@@ -137,56 +141,21 @@
 		};
 	};
 
-	let state = getState();
-
-	// Svelte workaround to workaround state
-	//
-	// If and only if the module id changes do we need to rederive the state
-	let moduleId: string;
-
-	$: if (module.id != moduleId) {
-		moduleId = module.id;
-	}
-
-	$: moduleId, (state = getState());
-	// end of workaround
-
-	// Ensure changes is updated whenever state changes
-	$: changes = createPartialPatch(state);
-
-	// Ensure manuallyOverriden is updated whenever moduleId changes
-	let toggleManuallyOverriden: boolean;
-	let defaultPermsManuallyOverriden: boolean;
-	$: moduleId, (toggleManuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration));
-	$: moduleId,
-		(defaultPermsManuallyOverriden = isModuleDefaultPermsOverriden(currentModuleConfiguration));
-
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
 
 		if (!authCreds) throw new Error('No auth credentials found');
 
-		const createPatch = createPartialPatch(state);
-
 		if (Object.keys(changes).length == 0) {
 			throw new Error('No changes to save');
 		}
-
-		logger.info(
-			'ModuleInfoTab',
-			'updateModuleConfiguration',
-			guildId,
-			module.id,
-			createPatch,
-			state
-		);
 
 		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/module-configurations`, {
 			auth: authCreds?.token,
 			method: 'PATCH',
 			body: JSON.stringify({
 				module: module.id,
-				...createPatch
+				...changes
 			})
 		});
 
@@ -197,7 +166,6 @@
 
 		let newConfig: GuildModuleConfiguration = await res.json();
 
-		// Update the currentModuleConfiguration with the new data from the patch
 		let moduleConfigIndex = currentModuleConfiguration.findIndex((m) => m.module === module.id);
 
 		if (moduleConfigIndex === -1) {
@@ -206,12 +174,10 @@
 			currentModuleConfiguration[moduleConfigIndex] = newConfig;
 		}
 
-		currentModuleConfiguration = currentModuleConfiguration;
-
 		state = getState(); // Rederive state
+		permCheck_backupTab = '';
+		permCheck_backupPermissionChecks = undefined;
 	};
-
-	let updateNoticeArea: NoticeProps | null;
 </script>
 
 <Label id="enable_disable_module" label="Enable/Disable Module" />
@@ -222,7 +188,6 @@
 	description="Is this module enabled or not?"
 	disabled={!module.toggleable}
 	bind:value={state.enabled.current}
-	onChange={(_) => {}}
 />
 
 {#if toggleManuallyOverriden}
@@ -232,7 +197,7 @@
 				state.__resetFields.current = state.__resetFields.current.filter((f) => f !== 'enabled');
 			} else {
 				state.__resetFields.current.push('enabled');
-				state = state; // Force re-render
+				state = getState(); // Rederive state to reflect changes
 			}
 		}}
 	>
@@ -245,6 +210,8 @@
 <PermissionChecks
 	id={`pc-${module.id}`}
 	bind:permissionChecks={state.default_perms.current}
+	bind:backupPermissionChecks={permCheck_backupPermissionChecks}
+	bind:backupTab={permCheck_backupTab}
 	ctx={commonPermissionContext}
 />
 
@@ -257,9 +224,8 @@
 				);
 			} else {
 				state.__resetFields.current.push('default_perms');
+				state = getState(); // Rederive state to reflect changes
 			}
-
-			state = state; // Force re-render
 		}}
 	>
 		{state.__resetFields.current.includes('default_perms') ? "Don't Reset" : 'Reset'}
@@ -293,7 +259,6 @@
 	description="Whether this module is enabled by default"
 	disabled={true}
 	value={module.is_default_enabled}
-	onChange={() => {}}
 />
 
 <UnorderedList>
@@ -304,10 +269,8 @@
 			</small>
 		{:else}
 			<small class="text-red-500 mt-2">
-				<strong
-					>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
-				>
-			</small>
+				<strong>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong>
+		</small>
 		{/if}
 	</ListItem>
 
@@ -338,17 +301,17 @@
 	<ListItem>
 		{#if toggleManuallyOverriden}
 			<small class="text-green-500 mt-2">
-				<strong
-					>The disabled/enabled state of this module has been manually modified and will no longer
-					follow the default enabled/disabled state defined for it.</strong
-				>
+				<strong>
+					The disabled/enabled state of this module has been manually modified and will no longer
+					follow the default enabled/disabled state defined for it.
+				</strong>
 			</small>
 		{:else}
 			<small class="text-green-500 mt-2">
-				<strong
-					>This module will use the default enabled/disabled state defined for it unless manually
-					modified.</strong
-				>
+				<strong>
+					This module will use the default enabled/disabled state defined for it unless manually
+					modified.
+				</strong>
 			</small>
 		{/if}
 	</ListItem>
@@ -360,9 +323,9 @@
 			</small>
 		{:else}
 			<small class="text-green-500 mt-2">
-				<strong
-					>This module will use the default permissions defined for it unless manually modified.</strong
-				>
+				<strong>
+					This module will use the default permissions defined for it unless manually modified.
+				</strong>
 			</small>
 		{/if}
 	</ListItem>

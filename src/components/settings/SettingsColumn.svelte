@@ -5,14 +5,15 @@
 		CanonicalModule
 	} from '$lib/generated/silverpelt';
 	import { getDispatchType, deriveColumnState, ColumnState, DispatchType } from '$lib/ui/settings';
-	import InputDispatcher from '../../../../components/inputs/generic/InputDispatcher.svelte';
+	import InputDispatcher from '../inputs/generic/InputDispatcher.svelte';
 	import SettingsSuggestionBox from './SettingsSuggestionBox.svelte';
 	import { DerivedData, OperationTypes } from './types';
 	import logger from '$lib/ui/logger';
-	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
-	import Spacer from '../../../../components/inputs/Spacer.svelte';
+	import BoxButton from '../inputs/button/BoxButton.svelte';
+	import Spacer from '../inputs/Spacer.svelte';
 	import { UserGuildBaseData } from '$lib/generated/types';
 
+	export let clusterModules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
@@ -31,11 +32,13 @@
 	// On column field change
 	let fieldList: string[] | undefined = undefined;
 	const flagRerenders = () => {
-		logger.debug('flagRerenders', 'Checking for rerenders for', column.id, allDerivedData);
-		if (!fieldList) {
+		if (fieldList === undefined) {
 			fieldList = [];
 			for (let key in allDerivedData) {
-				if (key != column.id) {
+				if (
+					key != column.id &&
+					allDerivedData[key].dispatchType.referenced_variables?.includes(column.id)
+				) {
 					fieldList.push(key);
 				}
 			}
@@ -63,7 +66,7 @@
 	$: allDerivedData[column.id].forceRederive, rederiveIfForced();
 </script>
 
-{#if columnDispatchType?.resolved_column_type?.Scalar}
+{#if columnDispatchType?.resolved_column_type?.Scalar || columnDispatchType?.resolved_column_type?.Array}
 	<InputDispatcher
 		{guildData}
 		id={column.id}
@@ -73,49 +76,39 @@
 		minlength={columnDispatchType?.minlength}
 		maxlength={columnDispatchType?.maxlength}
 		type={columnDispatchType?.type}
-		disabled={columnState == ColumnState.Disabled}
+		disabled={columnState == ColumnState.Disabled || allDerivedData[column.id].isCleared}
 		bind:value
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
 		channelConstraints={columnDispatchType?.channel_constraints}
+		bitflagValues={columnDispatchType?.bitflag_values}
+		multiple={!!columnDispatchType?.resolved_column_type?.Array}
 	/>
-{:else if columnDispatchType?.resolved_column_type?.Array}
-	<InputDispatcher
-		{guildData}
-		id={column.id}
-		label={column.name}
-		placeholder={column.description}
-		description={column.description}
-		minlength={columnDispatchType?.minlength}
-		maxlength={columnDispatchType?.maxlength}
-		type={columnDispatchType?.type}
-		disabled={columnState == ColumnState.Disabled}
+{/if}
+
+{#if columnState == ColumnState.Enabled && !!column.suggestions.None}
+	<SettingsSuggestionBox
+		{guildId}
+		{module}
+		{configOpt}
+		{column}
+		operationType={currentOperationType}
+		{clusterModules}
 		bind:value
-		showErrors={true}
-		choices={columnDispatchType?.allowed_values}
-		channelConstraints={columnDispatchType?.channel_constraints}
-		multiple={true}
 	/>
 {/if}
 
 {#if columnState == ColumnState.Enabled}
-	<SettingsSuggestionBox
-		{guildId}
-		module={module.id}
-		{configOpt}
-		{column}
-		operationType={'Update'}
-		bind:value
-	/>
-
-	{#if column.nullable}
+	{#if column.nullable && currentOperationType == 'Update'}
 		<Spacer typ="smallSpacing" />
 		<BoxButton
 			onclick={(e) => {
 				e.preventDefault();
-				value = null;
-			}}>Clear</BoxButton
+				allDerivedData[column.id].isCleared = true;
+			}}
 		>
+			{allDerivedData[column.id].isCleared ? "Don't Clear" : 'Clear'}
+		</BoxButton>
 	{/if}
 {/if}
 

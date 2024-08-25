@@ -306,7 +306,7 @@
 													</td>
 													<td>
 														<ul class="list-disc list-outside">
-															{#each row.extended_data?.default_perms?.checks || [] as check}
+															{#each row.extended_data?.default_perms?.Simple?.checks || [] as check}
 																<li class="mr-2">
 																	<pre class="command-parameter">{check.kittycat_perms}</pre>
 																</li>

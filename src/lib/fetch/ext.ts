@@ -5,10 +5,8 @@ import { InstanceList } from '$lib/generated/mewld/proc';
 import {
 	CanonicalModule,
 	FullGuildCommandConfiguration,
-	GuildCommandConfiguration,
 	GuildModuleConfiguration
 } from '$lib/generated/silverpelt';
-import { SettingsGetSuggestions, SettingsGetSuggestionsResponse } from '$lib/generated/types';
 import logger from '$lib/ui/logger';
 
 let cachedData: Map<string, any> = new Map();
@@ -169,37 +167,5 @@ export const opGetAllCommandConfigurations = (
 			return data;
 		},
 		shouldCache: false
-	};
-};
-
-export const opGetSettingsSuggestions = (
-	guildId: string,
-	opts: SettingsGetSuggestions
-): SharedRequester<SettingsGetSuggestionsResponse> => {
-	let optsId = `${opts?.column}/${opts?.filter}/${opts?.module}/${opts?.operation}/${opts?.setting}`;
-
-	let authData = getAuthCreds();
-
-	return {
-		name: `getSettingsSuggestions:${guildId}:${optsId}`,
-		requestFunc: async (): Promise<SettingsGetSuggestionsResponse> => {
-			const res = await fetchClient(
-				`${get('splashtail')}/guilds/${guildId}/settings/suggestions`,
-				{
-					method: "POST",
-					auth: authData?.token,
-					body: JSON.stringify(opts)
-				}
-			);
-			if (!res.ok) {
-				let err = await res.error('Guild Command Configurations');
-				throw new Error(err);
-			}
-
-			const data: SettingsGetSuggestionsResponse = await res.json();
-
-			return data;
-		},
-		shouldCache: true // We want to cache this data
 	};
 };

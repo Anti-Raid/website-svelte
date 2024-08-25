@@ -19,6 +19,7 @@
 	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
 	import Message from '../../../components/Message.svelte';
 	import Guild from './core/Guild.svelte';
+	import { defaultState, stringToOpenedEntity } from './core/types';
 
 	let currentState = 'Loading dashboard data';
 
@@ -82,11 +83,27 @@
 			opGetAllCommandConfigurations(guildId)
 		);
 
-		let commonPermissionContext: CommonPermissionContext = {
-			kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
-				extractKnownPermissionsFromModules(Object.values(clusterModules))
-			)
-		};
+		let commonPermissionContext: CommonPermissionContext;
+
+		try {
+			commonPermissionContext = {
+				kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
+					extractKnownPermissionsFromModules(Object.values(clusterModules))
+				)
+			};
+		} catch (err) {
+			throw new Error(`Failed to create permission context: ${err}`);
+		}
+
+		currentState = 'Taking you into the future...';
+
+		// Check for state
+		let state = defaultState();
+
+		let openedEntityStr = searchParams.get('in');
+		if (openedEntityStr) {
+			state.openedEntity = stringToOpenedEntity(openedEntityStr);
+		}
 
 		return {
 			guildId,
@@ -97,17 +114,20 @@
 			guildShardId,
 			guildClusterId,
 			clusterModules,
+			state,
 			commonPermissionContext
 		};
 	};
 </script>
 
 {#await loadGuildData()}
-	<Message type="loading">Loading dashboard</Message>
-	<small>
-		<span class="font-semibold">Current State: </span>
-		{currentState}
-	</small>
+	<div class="p-4">
+		<Message type="loading">Loading dashboard</Message>
+		<small>
+			<span class="font-semibold">Current State: </span>
+			{currentState}
+		</small>
+	</div>
 {:then r}
 	{#if r}
 		<Guild
@@ -120,10 +140,15 @@
 			guildClusterId={r.guildClusterId}
 			clusterModules={r.clusterModules}
 			commonPermissionContext={r.commonPermissionContext}
+			state={r.state}
 		/>
 	{:else}
-		<Message type="loading">Please wait</Message>
+		<div class="p-4">
+			<Message type="loading">Please wait</Message>
+		</div>
 	{/if}
 {:catch err}
-	<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
+	<div class="p-4">
+		<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
+	</div>
 {/await}

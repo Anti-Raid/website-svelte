@@ -12,8 +12,7 @@
 	} from '$lib/ui/settings';
 	import Icon from '@iconify/svelte';
 	import { DerivedData, OperationTypes } from './types';
-	import InputText from '../../../../components/inputs/InputText.svelte';
-	import Message from '../../../../components/Message.svelte';
+	import Message from '../Message.svelte';
 	import SettingsColumn from './SettingsColumn.svelte';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
@@ -23,13 +22,13 @@
 		SettingsExecuteResponse,
 		UserGuildBaseData
 	} from '$lib/generated/types';
-	import ButtonReact from '../../../../components/inputs/button/ButtonReact.svelte';
-	import isEqual from 'lodash.isequal';
-	import { Color } from '../../../../components/inputs/button/colors';
-	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
-	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
-	import Spacer from '../../../../components/inputs/Spacer.svelte';
+	import ButtonReact from '../inputs/button/ButtonReact.svelte';
+	import { Color } from '../inputs/button/colors';
+	import { NoticeProps } from '../common/noticearea/noticearea';
+	import NoticeArea from '../common/noticearea/NoticeArea.svelte';
+	import Spacer from '../inputs/Spacer.svelte';
 
+	export let clusterModules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let settings: SettingsExecuteResponse;
 	export let module: CanonicalModule;
@@ -48,9 +47,10 @@
 		configOpt: CanonicalConfigOption,
 		currentOperationType: OperationTypes
 	): Promise<DerivedData> => {
-		let result = {
+		let result: DerivedData = {
 			dispatchType: getDispatchType(columnField, column),
-			columnState: deriveColumnState(configOpt, column, currentOperationType)
+			columnState: deriveColumnState(configOpt, column, currentOperationType),
+			isCleared: false
 		};
 
 		allDerivedData[column.id] = result;
@@ -148,7 +148,7 @@
 	bind:this={createRowElement}
 >
 	<summary
-		class="setting-schema-create__summary hover:cursor-pointer font-semibold text-xl items-center align-middle justify-center"
+		class="setting-schema-create__summary hover:cursor-pointer font-semibold text-xl items-center align-middle justify-center break-words"
 	>
 		<Icon
 			icon="fa6-solid:plus"
@@ -173,6 +173,7 @@
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
 					{debugMode}
+					{clusterModules}
 					bind:allDerivedData
 				/>
 				<Spacer typ="extSpacing" />

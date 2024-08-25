@@ -45,17 +45,6 @@ export interface CanonicalCommandData {
 //////////
 // source: config_opts.go
 
-export interface CanonicalSettingsResult {
-  Ok?: {
-    fields: Record<string, any>[];
-  };
-  PermissionError?: {
-    res: PermissionResult;
-  };
-  Err?: {
-    error: CanonicalSettingsError;
-  };
-}
 export interface CanonicalSettingsError {
   OperationNotSupported?: {
     operation: CanonicalOperationType;
@@ -121,6 +110,9 @@ export interface CanonicalInnerColumnTypeStringKindTemplateKind {
 export interface CanonicalInnerColumnTypeStringKind {
   Normal?: {
   };
+  Token?: {
+    default_length: number /* uint64 */;
+  };
   Textarea?: {
   };
   Template?: {
@@ -170,23 +162,19 @@ export interface CanonicalColumnSuggestion {
   Static?: {
     suggestions: string[];
   };
-  Dynamic?: {
+  /**
+   * A reference to another setting
+   * The primary key of the referred setting is used as the value
+   */
+  SettingsReference?: {
     /**
-     * The table name to query
+     * The module of the referenced setting
      */
-    table_name: string;
+    module: string;
     /**
-     * The column name containing the ID/value to be set
+     * The setting of the referenced setting
      */
-    id_column: string;
-    /**
-     * The column name containing the user-facing value
-     */
-    value_column: string;
-    /**
-     * The column name containing the guild id
-     */
-    guild_id_column: string;
+    setting: string;
   };
   None?: {
   };
@@ -199,6 +187,7 @@ export interface CanonicalColumn {
   nullable: boolean;
   suggestions: CanonicalColumnSuggestion;
   unique: boolean;
+  secret: boolean;
   ignored_for: CanonicalOperationType[];
 }
 export interface CanonicalOperationSpecific {
@@ -216,10 +205,12 @@ export interface CanonicalConfigOption {
   name: string;
   description: string;
   table: string;
-  guild_id: string;
+  common_filters: Record<CanonicalOperationType, Record<string, string>>;
+  default_common_filters: Record<string, string>;
   primary_key: string;
   title_template: string;
   columns: CanonicalColumn[];
+  max_return: number /* int */;
   max_entries: number /* uint64 */;
   operations: Record<CanonicalOperationType, CanonicalOperationSpecific>;
 }
@@ -248,8 +239,12 @@ export interface PermissionCheck {
  * PermissionChecks represents a list of permission checks.
  */
 export interface PermissionChecks {
-  checks: PermissionCheck[]; // The list of permission checks
-  checks_needed: number /* int */; // Number of checks that need to be true
+  Simple?: {
+    checks: PermissionCheck[]; // The list of permission checks
+  }; // The list of permission checks, if Simple
+  Template?: {
+    template: string; // The template to use
+  }; // The template to use, if using Templates
 }
 /**
  * CommandExtendedData represents the default permissions needed to run a command.

@@ -2,16 +2,17 @@
 	import serenityPermissions from '$lib/generated/build_assets/serenity_perms.json';
 	import channelTypesInv from '$lib/generated/build_assets/channel_types_inv.json';
 	import { BitFlag } from '$lib/bitflag';
-	import Select from './select/Select.svelte';
 	import { GuildChannelWithPermissions } from '$lib/generated/ext';
 	import {
-		ChannelTypeDM,
 		ChannelTypeGuildCategory,
 		ChannelTypeGuildStageVoice,
 		ChannelTypeGuildVoice
 	} from '$lib/generated/discordgo';
 	import { ChannelConstraints } from '$lib/inputconstraints';
+	import { title } from '$lib/strings';
+	import RawSelect from './select/RawSelect.svelte';
 
+	export let style: 'normal' | 'simplified' = 'normal';
 	export let channels: GuildChannelWithPermissions[];
 	export let channelConstraints: ChannelConstraints;
 	export let value: string;
@@ -20,12 +21,15 @@
 
 	let selectedChannel: GuildChannelWithPermissions;
 
+	/**
+	 * Within each category, sort based on the following principle:
+	 * 1. Voice channels at bottom
+	 * 2. Position value used to sort both text and voice [but voice still appears below text]
+	 * 3. If category, type and position are all the same, earlier ID is first
+	 * @param channels Channels to sort
+	 * @returns Sorted channels
+	 */
 	const sortChannels = (channels: GuildChannelWithPermissions[]): GuildChannelWithPermissions[] => {
-		// Within each category, sort based on the following principle:
-		//
-		// 1. Voice channels at bottom
-		// 2. Position value used to sort both text and voice [but voice still appears below text]
-		// 3. If category, type and position are all the same, earlier ID is first
 		let categories: GuildChannelWithPermissions[] = [];
 		let voiceChannels: GuildChannelWithPermissions[] = [];
 		let textChannels: GuildChannelWithPermissions[] = [];
@@ -79,6 +83,7 @@
 		return sorted;
 	};
 
+	// Set selected channel if value is set
 	$: if (value) {
 		let chan = channels.find((channel) => channel?.channel?.id === value);
 
@@ -86,12 +91,18 @@
 			selectedChannel = chan;
 		}
 	}
+
+	/**
+	 * ts workaround: bypass cant index type
+	 */
+	const _indexInv = (type: number): string => {
+		// @ts-ignore
+		return channelTypesInv[type];
+	};
 </script>
 
-<Select
+<RawSelect
 	id="channel"
-	label="Channel"
-	description="Select the channel you want to use"
 	choices={sortChannels(channels).map((channel) => {
 		if (!channel?.channel)
 			return {
@@ -121,23 +132,70 @@
 	bind:value
 />
 
-{#if selectedChannel}
+<fieldset class="section grid rounded-md text-slate-200">
+	<legend class="p-1 font-semibold">Allowed Channel Types</legend>
+	<div class="content">
+		<ul>
+			{#each channelConstraints.allowed_types as type, i}
+				<li class="inline text-slate-200">
+					{`${title(_indexInv(type).replaceAll('_', ' '))}${
+						i != channelConstraints.allowed_types.length - 1 ? ' OR ' : ''
+					}`}
+				</li>
+			{/each}
+		</ul>
+	</div>
+</fieldset>
+
+<fieldset class="section grid rounded-md text-slate-200">
+	<legend class="p-1 font-semibold">Needed Bot Permissions</legend>
+	<div class="content">
+		<ul>
+			{#each Object.entries(new BitFlag(serenityPermissions, channelConstraints.needed_bot_permissions).getSetFlags()) as [name, permission], i}
+				{#if name != ''}
+					<li class="inline text-slate-200">
+						<span class="font-semibold">{name} </span>{#if style != 'simplified'}({permission}){/if}
+						{#if i != Object.entries(new BitFlag(serenityPermissions, channelConstraints.needed_bot_permissions).getSetFlags()).length - 1}
+							<span class="inline text-slate-200"> AND </span>
+						{/if}
+					</li>
+				{/if}
+			{/each}
+		</ul>
+	</div>
+</fieldset>
+
+{#if style == 'normal' && selectedChannel}
 	<p>Selected Channel: {selectedChannel?.channel?.name || 'Unknown Channel'}</p>
 
-	<p>
-		Bot Permissions:
-		{#each Object.entries(new BitFlag(serenityPermissions, selectedChannel.bot).getSetFlags()) as [name, permission]}
-			{#if name != ''}
-				<span class="font-semibold">{name}: </span>{permission}
-			{/if}
-		{/each}
-	</p>
-	<p>
-		User Permissions:
-		{#each Object.entries(new BitFlag(serenityPermissions, selectedChannel.user).getSetFlags()) as [name, permission]}
-			{#if name != ''}
-				<span class="font-semibold">{name}: </span>{permission}
-			{/if}
-		{/each}
-	</p>
+	<details>
+		<summary class="hover:cursor-pointer">Debug</summary>
+		<p>Bot Permissions</p>
+		<ul>
+			{#each Object.entries(new BitFlag(serenityPermissions, selectedChannel.bot).getSetFlags()) as [name, permission]}
+				{#if name != ''}
+					<li><span class="font-semibold">{name}: </span>{permission}</li>
+				{/if}
+			{/each}
+		</ul>
+		<p>User Permissions</p>
+		<ul>
+			{#each Object.entries(new BitFlag(serenityPermissions, selectedChannel.user).getSetFlags()) as [name, permission]}
+				{#if name != ''}
+					<li><span class="font-semibold">{name}: </span>{permission}</li>
+				{/if}
+			{/each}
+		</ul>
+	</details>
 {/if}
+
+<style>
+	fieldset {
+		border: 3px solid transparent;
+		border-color: rgb(60 60 60 / var(--tw-text-opacity));
+		box-sizing: border-box;
+		grid-area: 1 / 1; /* first row, first column */
+		width: inherit;
+		padding: 1px;
+	}
+</style>
