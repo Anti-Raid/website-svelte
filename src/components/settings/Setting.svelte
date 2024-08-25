@@ -42,7 +42,7 @@
 	<p>Loading...</p>
 {:then settings}
 	<div class="setting" id={configOpt.id}>
-		{#if settings?.fields?.length < configOpt?.max_entries && configOpt?.operations['Create']}
+		{#if (!configOpt?.max_entries || settings?.fields?.length < configOpt?.max_entries) && configOpt?.operations['Create']}
 			<SettingsCreateRow
 				{settings}
 				{configOpt}
