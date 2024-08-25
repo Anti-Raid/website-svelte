@@ -99,6 +99,14 @@ export interface PatchGuildCommandConfiguration {
 // source: common.go
 
 /**
+ * API configuration data
+ */
+export interface ApiConfig {
+  main_server: string;
+  support_server_invite: string;
+  client_id: string;
+}
+/**
  * A link is any extra link
  */
 export interface Link {

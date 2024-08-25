@@ -2,41 +2,44 @@
 	import Meta from '../../components/Meta.svelte';
 	import Divider from '../../components/Divider.svelte';
 	import BotFeatures from '../../components/common/BotFeatures.svelte';
-	import ClusterHealth from '../../components/common/ClusterHealth.svelte';
-	import support from '$lib/configs/data/support.json';
+	import { makeSharedRequest, opGetApiConfig, opGetGuildStaffTeam } from '$lib/fetch/ext';
+	import Message from '../../components/Message.svelte';
 
 	interface TeamMember {
 		Name: string;
 		Role: string;
-		Avatar: string;
+		Avatar: string | undefined;
 	}
 
-	const Members: TeamMember[] = [
-		{
-			Name: 'Ilieff',
-			Role: 'Owner / CEO',
-			Avatar:
-				'https://cdn.discordapp.com/avatars/775855009421066262/7bea9898ea29e94bd23b7645b7c578c5.webp'
-		},
-		{
-			Name: 'Select',
-			Role: 'Co-Owner / Head Developer',
-			Avatar:
-				'https://cdn.discordapp.com/avatars/564164277251080208/b14fc83f7471961f1b415a4c22517e04'
-		},
-		{
-			Name: 'Burger King',
-			Role: 'Developer',
-			Avatar:
-				'https://cdn.discordapp.com/avatars/728871946456137770/490998f80f493f3861b5d4aa6f383b5c.webp'
-		},
-		{
-			Name: 'Toxic Dev',
-			Role: 'Popular Contributor',
-			Avatar:
-				'https://cdn.discordapp.com/avatars/510065483693817867/a_5b8b978d724408fa66bc880d1ecc8d17.gif'
+	const getTeamMembers = async () => {
+		let config = await makeSharedRequest(opGetApiConfig);
+		let mainServerStaff = await makeSharedRequest(opGetGuildStaffTeam(config.main_server));
+
+		let teamMembers: TeamMember[] = [];
+
+		for (let member of mainServerStaff.members) {
+			// Find highest role
+			let display_roles: [string, number][] = [];
+
+			for (let role of member.role) {
+				let roleData = mainServerStaff.roles.find((r) => r.role_id === role);
+				if (roleData) {
+					display_roles.push([roleData.display_name?.toString() || '', roleData.index]);
+				}
+			}
+
+			// Sort with lowest index first
+			display_roles.sort((a, b) => a[1] - b[1]);
+
+			teamMembers.push({
+				Name: `${member.user?.display_name} (${member.user?.username})`,
+				Role: display_roles.map((x) => x[0]).join(', '),
+				Avatar: member?.user?.avatar
+			});
 		}
-	];
+
+		return teamMembers;
+	};
 </script>
 
 <Meta
@@ -63,9 +66,7 @@
 		<span class="text-indigo-600">AntiRaid</span> is a
 		<span class="font-extrabold">Automatic Moderation Service</span>
 		created to protect your
-		<a href={support?.discord} class="text-indigo-600 xl:inline hover:text-red-600"
-			>Discord Server</a
-		>
+		<a href="/invite" class="text-indigo-600 xl:inline hover:text-red-600">Discord Server</a>
 		from threats, unsafe bots and spamming using our advanced technology!
 	</p>
 
@@ -104,21 +105,33 @@
 				</p>
 			</div>
 
-			<ul class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
-				{#each Members as Member}
-					<li>
-						<div class="flex items-center gap-x-6">
-							<img class="h-16 w-16 rounded-full" src={Member.Avatar} alt={Member.Name} />
-							<div>
-								<h3 class="text-lg font-semibold leading-7 tracking-tight text-white">
-									{Member.Name}
-								</h3>
-								<p class="text-md font-semibold leading-6 text-indigo-600">{Member.Role}</p>
+			{#await getTeamMembers()}
+				<Message type="loading" big={true}>Fetching team members...</Message>
+			{:then members}
+				<ul class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
+					{#each members as member}
+						<li>
+							<div class="flex items-center gap-x-6">
+								<img
+									class="h-16 w-16 rounded-full"
+									src={member.Avatar || '/logo.webp'}
+									alt={member.Name}
+								/>
+								<div>
+									<h3 class="text-lg font-semibold leading-7 tracking-tight text-white">
+										{member.Name}
+									</h3>
+									<p class="text-md font-semibold leading-6 text-indigo-600">{member.Role}</p>
+								</div>
 							</div>
-						</div>
-					</li>
-				{/each}
-			</ul>
+						</li>
+					{/each}
+				</ul>
+			{:catch error}
+				<Message type="error" big={true}>
+					{@html error}
+				</Message>
+			{/await}
 		</div>
 	</div>
 </section>

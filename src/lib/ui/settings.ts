@@ -29,6 +29,7 @@ export const getDispatchType = (fields: Record<string, any>, column: CanonicalCo
         key: T,
         value: DispatchType[T]
     ) => {
+        // @ts-ignore
         if (!dispatchType[key] || (Array.isArray(dispatchType[key]) && dispatchType[key].length == 0)) {
             dispatchType[key] = value;
         }
