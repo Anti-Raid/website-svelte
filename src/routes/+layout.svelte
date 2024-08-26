@@ -1,11 +1,18 @@
 <script lang="ts">
 	import '../app.css';
 	import Header from '../components/Header.svelte';
-	import { getVersion } from '$lib/configs/functions/versioner';
+	import Loading from '../components/Loading.svelte';
+        import { getVersion } from '$lib/configs/functions/versioner';
+        import { page } from '$app/stores';
+
+        let loaded: boolean = false;
+	if ($page.url.pathname != '/') loaded = true;
 </script>
 
 <Header />
 
+<section id="content">
+{#if loaded}
 <article class="min-h-screen flex-col justify-between overflow-x-hidden">
 	<main class="mt-9 p-1 w-full md:max-w-7xl mx-auto h-full min-h-screen">
 		<slot />
@@ -18,6 +25,9 @@
 		</small>
 	</footer>
 </article>
+{:else}
+<Loading on:close={() => (loaded = true)} />
+{/if}
 
 <style>
 	main {
