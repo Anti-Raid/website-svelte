@@ -53,34 +53,36 @@
 	{/each}
 </div>
 
-<div class="grid-cols-2 grid">
-	<div class="col-span-1 border p-2 bg-black hover:bg-slate-900">
-		<button
-			disabled={offset - configOpt.max_return < 0}
-			aria-disabled={offset - configOpt.max_return < 0}
-			class={offset - configOpt.max_return >= 0
-				? 'block w-full text-left font-semibold'
-				: 'block w-full text-left italic cursor-not-allowed'}
-			on:click|preventDefault={() => {
-				if (offset - configOpt.max_return < 0) {
-					offset = 0;
-				} else {
-					offset -= configOpt.max_return;
-				}
-			}}>Back</button
-		>
+{#if !(offset - configOpt.max_return < 0) || !(settings?.fields?.length >= configOpt.max_return)}
+	<div class="grid-cols-2 grid">
+		<div class="col-span-1 border p-2 bg-black hover:bg-slate-900">
+			<button
+				disabled={offset - configOpt.max_return < 0}
+				aria-disabled={offset - configOpt.max_return < 0}
+				class={offset - configOpt.max_return >= 0
+					? 'block w-full text-left font-semibold'
+					: 'block w-full text-left italic cursor-not-allowed'}
+				on:click|preventDefault={() => {
+					if (offset - configOpt.max_return < 0) {
+						offset = 0;
+					} else {
+						offset -= configOpt.max_return;
+					}
+				}}>Back</button
+			>
+		</div>
+		<div class="col-span-1 border p-2 bg-black hover:bg-slate-900">
+			<button
+				disabled={settings?.fields?.length >= configOpt.max_return}
+				aria-disabled={settings?.fields?.length >= configOpt.max_return}
+				class={settings?.fields?.length >= configOpt.max_return
+					? 'block w-full text-left font-semibold'
+					: 'block w-full text-left italic cursor-not-allowed'}
+				on:click|preventDefault={() => {
+					if (settings?.fields?.length < configOpt.max_return) return;
+					offset += configOpt.max_return;
+				}}>Next</button
+			>
+		</div>
 	</div>
-	<div class="col-span-1 border p-2 bg-black hover:bg-slate-900">
-		<button
-			disabled={settings?.fields?.length >= configOpt.max_return}
-			aria-disabled={settings?.fields?.length >= configOpt.max_return}
-			class={settings?.fields?.length >= configOpt.max_return
-				? 'block w-full text-left font-semibold'
-				: 'block w-full text-left italic cursor-not-allowed'}
-			on:click|preventDefault={() => {
-				if (settings?.fields?.length < configOpt.max_return) return;
-				offset += configOpt.max_return;
-			}}>Next</button
-		>
-	</div>
-</div>
+{/if}
