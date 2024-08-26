@@ -16,13 +16,17 @@
 	}
 </script>
 
-{#each tabs as tab}
-	<TabButton
-		visible={tab.id == visibleTab}
-		text={tab.label}
-		onClick={() => {
-			logger.info('TabButton.switch', tab.id);
-			visibleTab = tab.id;
-		}}
-	/>
-{/each}
+<center>
+	<div class="btn-group variant-filled text-sm rounded-md">
+		{#each tabs as tab}
+			<TabButton
+				visible={tab.id == visibleTab}
+				text={tab.label}
+				onClick={() => {
+					logger.info('TabButton.switch', tab.id);
+					visibleTab = tab.id;
+				}}
+			/>
+		{/each}
+	</div>
+</center>
