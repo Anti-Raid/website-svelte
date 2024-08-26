@@ -9,10 +9,9 @@
 	if ($page.url.pathname != '/') loaded = true;
 </script>
 
-<Header />
-
 <section id="content">
 {#if loaded}
+<Header />
 <article class="min-h-screen flex-col justify-between overflow-x-hidden">
 	<main class="mt-9 p-1 w-full md:max-w-7xl mx-auto h-full min-h-screen">
 		<slot />
