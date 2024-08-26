@@ -6,6 +6,7 @@
 	import PermissionCheckArray from './PermissionCheckArray.svelte';
 	import TabButton from '../../inputs/button/tabs/TabButton.svelte';
 	import InputTextArea from '../../inputs/InputTextArea.svelte';
+	import Debug from '../../common/Debug.svelte';
 
 	export let ctx: CommonPermissionContext;
 	export let id: string;
@@ -85,6 +86,4 @@
 	{/if}
 {/if}
 
-<p>
-	{JSON.stringify(permissionChecks)}
-</p>
+<Debug data={permissionChecks} />

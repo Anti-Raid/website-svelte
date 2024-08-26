@@ -18,6 +18,7 @@ Note: this may be less performant than using the concrete input components direc
 	import { ChannelConstraints } from '$lib/inputconstraints';
 	import BitflagInput from '../BitflagInput.svelte';
 	import InputDescription from '../InputDescription.svelte';
+	import Debug from '../../common/Debug.svelte';
 
 	export let type: string;
 
@@ -188,9 +189,12 @@ Note: this may be less performant than using the concrete input components direc
 {:else if type == 'string:template:message'}
 	<Label {id} {label} />
 	<TemplateBuilder bind:rawTemplateOutput={value} bind:templateBuilderData={extState} />
-	<small class="text-white font-semibold">templateBuilderData: {JSON.stringify(extState)}</small><br
+	<Debug
+		data={{
+			templateBuilderData: extState,
+			templateFragment: value
+		}}
 	/>
-	<code class="text-white whitespace-pre-wrap">templateFragment: {value}</code>
 {:else if type.startsWith('string:template')}
 	<InputTextArea
 		{id}

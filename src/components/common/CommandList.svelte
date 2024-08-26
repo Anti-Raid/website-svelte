@@ -27,6 +27,7 @@
 	} from '$lib/ui/commands';
 	import { NoticeProps } from './noticearea/noticearea';
 	import NoticeArea from './noticearea/NoticeArea.svelte';
+	import Debug from './Debug.svelte';
 
 	export let instanceList: InstanceList;
 
@@ -334,10 +335,7 @@
 		</div>
 	</section>
 
-	<details>
-		<summary class="hover:cursor-pointer">Debug</summary>
-		<pre>{JSON.stringify(state, null, 4)}</pre>
-	</details>
+	<Debug data={state} />
 
 	{#if state.clusterFinderOpen}
 		<Modal title="Help" logo="/logo.webp" bind:showModal={state.clusterFinderOpen}>
