@@ -199,6 +199,7 @@
 				state.__resetFields.current = state.__resetFields.current.filter((f) => f !== 'enabled');
 			} else {
 				state.__resetFields.current.push('enabled');
+				state = state; // Force re-render
 			}
 		}}
 	>
@@ -225,6 +226,7 @@
 				);
 			} else {
 				state.__resetFields.current.push('default_perms');
+				state = state; // Force re-render
 			}
 		}}
 	>
