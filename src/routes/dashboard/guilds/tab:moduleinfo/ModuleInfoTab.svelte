@@ -182,12 +182,14 @@
 
 <Label id="enable_disable_module" label="Enable/Disable Module" />
 
+<!--TODO: Use onChange better-->
 <BoolInput
 	id="enabled"
 	label="Module Enabled"
 	description="Is this module enabled or not?"
 	disabled={!module.toggleable}
 	bind:value={state.enabled.current}
+	onChange={() => {}}
 />
 
 {#if toggleManuallyOverriden}
@@ -253,12 +255,14 @@
 
 <hr class="mt-5 border-[4px]" />
 
+<!--TODO: Use onchange better-->
 <BoolInput
 	id="enabled-by-default"
 	label="Enabled by default"
 	description="Whether this module is enabled by default"
 	disabled={true}
 	value={module.is_default_enabled}
+	onChange={() => {}}
 />
 
 <UnorderedList>
@@ -269,8 +273,10 @@
 			</small>
 		{:else}
 			<small class="text-red-500 mt-2">
-				<strong>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong>
-		</small>
+				<strong
+					>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
+				>
+			</small>
 		{/if}
 	</ListItem>
 

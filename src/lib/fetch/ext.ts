@@ -7,6 +7,7 @@ import {
 	FullGuildCommandConfiguration,
 	GuildModuleConfiguration
 } from '$lib/generated/silverpelt';
+import { ApiConfig, GuildStaffTeam } from '$lib/generated/types';
 import logger from '$lib/ui/logger';
 
 let cachedData: Map<string, any> = new Map();
@@ -61,6 +62,43 @@ export async function makeSharedRequest<T>(
 		throw err;
 	}
 }
+
+// Returns the API config
+export const opGetApiConfig: SharedRequester<ApiConfig> = {
+	name: 'apiConfig',
+	requestFunc: async (): Promise<ApiConfig> => {
+		const res = await fetchClient(`${get('splashtail')}/config`);
+		if (!res.ok) {
+			let err = await res.error('Api Config');
+			throw new Error(err);
+		}
+
+		const data: ApiConfig = await res.json();
+
+		return data;
+	},
+	shouldCache: true
+};
+
+// Fetches the staff team of a server
+export const opGetGuildStaffTeam = (
+	guildId: string
+): SharedRequester<GuildStaffTeam> => {
+	return {
+		name: `guildStaffTeam:${guildId}`,
+		requestFunc: async (): Promise<GuildStaffTeam> => {
+			const res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/staff-team`);
+			if (!res.ok) {
+				let err = await res.error('Guild Staff Team');
+				throw new Error(err);
+			}
+
+			let data: GuildStaffTeam = await res.json();
+			return data;
+		},
+		shouldCache: true
+	};
+};
 
 // Fetches the health of all clusters
 export const opGetClusterHealth: SharedRequester<InstanceList> = {

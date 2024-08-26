@@ -72,7 +72,8 @@
 	type LoginData = null | {
 		profileNavigation: {
 			name: string;
-			href: string;
+			href?: string;
+			onclick?: () => void;
 		}[];
 		user: User;
 	};
@@ -128,6 +129,13 @@
 				{
 					name: 'Developers',
 					href: '/dashboard/developers'
+				},
+				{
+					name: 'Logout',
+					onclick: () => {
+						logoutUser();
+						window.location.reload();
+					}
 				}
 			],
 			user
@@ -241,15 +249,26 @@
 									>
 										<div class="relative w-full">
 											{#each data?.profileNavigation || [] as item}
-												<a
-													on:click={() => {
-														openElements.profileMenu.open = false;
-													}}
-													href={item.href}
-													class="block hover:bg-slate-800 p-7"
-												>
-													{item.name}
-												</a>
+												{#if item.href}
+													<a
+														on:click={() => {
+															openElements.profileMenu.open = false;
+														}}
+														href={item.href}
+														class="block hover:bg-slate-800 p-7"
+													>
+														{item.name}
+													</a>
+												{:else}
+													<button
+														on:click={() => {
+															item.onclick?.();
+														}}
+														class="text-left block w-full hover:bg-slate-800 p-7 hover:cursor-pointer"
+													>
+														{item.name}
+													</button>
+												{/if}
 											{/each}
 										</div>
 									</div>
