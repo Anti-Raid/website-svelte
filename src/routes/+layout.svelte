@@ -28,6 +28,7 @@
 {:else}
 <Loading on:close={() => (loaded = true)} />
 {/if}
+</section>
 
 <style>
 	main {
