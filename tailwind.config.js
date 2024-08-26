@@ -9,8 +9,15 @@ module.exports = {
 		require('path').join(require.resolve('@skeletonlabs/skeleton'), '../**/*.{html,js,svelte,ts}')
 	],
 	theme: {
-		extend: {}
-	},
+        extend: {
+            fontFamily: {
+                monocraft: ['Monocraft', 'sans-serif'],
+                cursive: ['"Borel"', 'cursive'],
+                monster: ['"Montserrat"', 'sans-serif'],
+                cabin: ['"Cabin"', 'sans-serif']
+            },
+        },
+    },
 	plugins: [
 		require('@tailwindcss/forms'),
 		skeleton({
