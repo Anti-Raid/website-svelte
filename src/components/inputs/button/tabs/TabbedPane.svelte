@@ -5,6 +5,7 @@
 	interface Tab {
 		id: string;
 		label: string;
+		onClick?: () => void;
 	}
 
 	export let tabs: Tab[];
@@ -23,8 +24,13 @@
 				visible={tab.id == visibleTab}
 				text={tab.label}
 				onClick={() => {
-					logger.info('TabButton.switch', tab.id);
-					visibleTab = tab.id;
+					if (tab.onClick) {
+						tab.onClick();
+						return;
+					} else {
+						logger.info('TabButton.switch', tab.id);
+						visibleTab = tab.id;
+					}
 				}}
 			/>
 		{/each}

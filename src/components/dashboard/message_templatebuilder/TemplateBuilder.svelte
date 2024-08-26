@@ -19,6 +19,7 @@
 	import TemplateBuilderEmbed from './TemplateBuilderEmbed.svelte';
 	import { defaultData, TemplateBuilderData } from './types';
 	import { title } from '$lib/strings';
+	import TabbedPane from '../../inputs/button/tabs/TabbedPane.svelte';
 
 	export let templateBuilderData: TemplateBuilderData = defaultData();
 	export let rawTemplateOutput: string;
@@ -102,37 +103,41 @@
 	}
 </script>
 
-<TabButton
-	visible={openTab == 'builder'}
-	text={'Builder'}
-	onClick={async () => {
-		if (openTab == 'builder') return;
+<TabbedPane
+	visibleTab={openTab}
+	tabs={[
+		{
+			id: 'builder',
+			label: 'Builder',
+			onClick: async () => {
+				if (openTab == 'builder') return;
 
-		if (rawTemplateOutput) {
-			// Check if builder and raw output are the same (e.g. if someone editted something on advanced tab and then wants to switch back to builder)
-			let template = await generateTemplateForTemplateBuilderData(templateBuilderData);
+				if (rawTemplateOutput) {
+					// Check if builder and raw output are the same (e.g. if someone editted something on advanced tab and then wants to switch back to builder)
+					let template = await generateTemplateForTemplateBuilderData(templateBuilderData);
 
-			if (template != rawTemplateOutput) {
-				switchTab = 'builder';
-				showModal = true;
-			} else {
-				openTab = 'builder';
+					if (template != rawTemplateOutput) {
+						switchTab = 'builder';
+						showModal = true;
+					} else {
+						openTab = 'builder';
+						switchTab = null;
+					}
+				} else {
+					openTab = 'builder';
+					switchTab = null;
+				}
+			}
+		},
+		{
+			id: 'advanced',
+			label: 'Advanced',
+			onClick: async () => {
+				openTab = 'advanced';
 				switchTab = null;
 			}
-		} else {
-			openTab = 'builder';
-			switchTab = null;
 		}
-	}}
-/>
-
-<TabButton
-	visible={openTab == 'advanced'}
-	text={'Advanced'}
-	onClick={() => {
-		openTab = 'advanced';
-		switchTab = null;
-	}}
+	]}
 />
 
 {#if switchTab}
