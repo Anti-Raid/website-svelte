@@ -18,9 +18,7 @@ Converted to SvelteKit from NextJS for panel use
 
 <button
 	type="button"
-	class="text-sm {!visible
-		? 'text-surface-600 font-bold border-b-2 hover:opacity-80'
-		: 'text-surface-400 font-bold border-b-4 hover:opacity-80'}"
+	class={'text-surface-600 font-bold hover:opacity-80'}
 	on:click={(evt) => {
 		logger.info('TabButton.switchImpl', text);
 		if (evt && evt.preventDefault) evt.preventDefault();
