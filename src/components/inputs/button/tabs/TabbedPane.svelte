@@ -17,7 +17,7 @@
 	}
 </script>
 
-<div class="btn-group variant-filled text-sm rounded-md">
+<div class="btn-group variant-filled text-sm rounded-md mt-1 mb-1">
 	{#each tabs as tab}
 		<TabButton
 			visible={tab.id == visibleTab}
