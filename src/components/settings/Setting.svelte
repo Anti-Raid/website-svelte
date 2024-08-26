@@ -5,6 +5,7 @@
 	import Message from '../Message.svelte';
 	import SettingsCreateRow from './SettingsCreateRow.svelte';
 	import SettingsRow from './SettingsRow.svelte';
+	import SettingsView from './SettingsView.svelte';
 	import { settingsFetchQueue } from './types';
 
 	export let clusterModules: Record<string, CanonicalModule>;
@@ -41,65 +42,16 @@
 {#await getCurrentSettings(configOpt.max_return, offset)}
 	<p>Loading...</p>
 {:then settings}
-	<div class="setting" id={configOpt.id}>
-		{#if (!configOpt?.max_entries || settings?.fields?.length < configOpt?.max_entries) && configOpt?.operations['Create']}
-			<SettingsCreateRow
-				{settings}
-				{configOpt}
-				{module}
-				{guildData}
-				{guildId}
-				{debugMode}
-				{clusterModules}
-			/>
-		{/if}
-
-		{#each settings?.fields || [] as columnField, i}
-			<SettingsRow
-				columnField={structuredClone(columnField)}
-				index={i}
-				{module}
-				{guildData}
-				{guildId}
-				{configOpt}
-				{settings}
-				{debugMode}
-				{clusterModules}
-			/>
-		{/each}
-	</div>
-
-	<div class="grid-cols-2 grid">
-		<div class="col-span-1 border p-2 bg-black hover:bg-slate-900">
-			<button
-				disabled={offset - configOpt.max_return < 0}
-				aria-disabled={offset - configOpt.max_return < 0}
-				class={offset - configOpt.max_return >= 0
-					? 'block w-full text-left font-semibold'
-					: 'block w-full text-left italic cursor-not-allowed'}
-				on:click|preventDefault={() => {
-					if (offset - configOpt.max_return < 0) {
-						offset = 0;
-					} else {
-						offset -= configOpt.max_return;
-					}
-				}}>Back</button
-			>
-		</div>
-		<div class="col-span-1 border p-2 bg-black hover:bg-slate-900">
-			<button
-				disabled={settings?.fields?.length >= configOpt.max_return}
-				aria-disabled={settings?.fields?.length >= configOpt.max_return}
-				class={settings?.fields?.length >= configOpt.max_return
-					? 'block w-full text-left font-semibold'
-					: 'block w-full text-left italic cursor-not-allowed'}
-				on:click|preventDefault={() => {
-					if (settings?.fields?.length < configOpt.max_return) return;
-					offset += configOpt.max_return;
-				}}>Next</button
-			>
-		</div>
-	</div>
+	<SettingsView
+		{clusterModules}
+		{configOpt}
+		{module}
+		{guildData}
+		{guildId}
+		{debugMode}
+		{settings}
+		bind:offset
+	/>
 {:catch err}
 	<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
 {/await}
