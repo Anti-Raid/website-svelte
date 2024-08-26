@@ -260,6 +260,8 @@
 	</BoxButton>
 {/if}
 
+<div class="mt-2 mb-2" />
+
 <Label id="default_perms" label="Default Module Permissions" />
 
 <PermissionChecks
