@@ -12,7 +12,7 @@
 		>
 			<Icon {icon} class="text-2xl" />
 		</div>
-		<p class="ml-16 text-lg font-cursive font-bold leading-6 text-white">{title}</p>
+		<p class="ml-16 text-lg font-cabin font-bold leading-6 text-white">{title}</p>
 	</dt>
 	<dd class="mt-2 ml-16 text-base text-white text-monster">
 		<slot />
