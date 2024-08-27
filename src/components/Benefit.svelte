@@ -5,7 +5,8 @@
 	export let title: string;
 </script>
 
-<div class="relative px-5">
+<div class="self-auto">
+<div class="block max-w-sm p-3 border rounded-md shadow bg-surface-700 border-surface-800 hover:bg-surface-600">
 	<dt>
 		<div
 			class="absolute flex h-12 w-12 items-center justify-center rounded-md bg-indigo-500 text-white"
@@ -17,4 +18,5 @@
 	<dd class="mt-2 ml-16 text-base text-white text-monster">
 		<slot />
 	</dd>
+</div>
 </div>
