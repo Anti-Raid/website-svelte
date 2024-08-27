@@ -26,7 +26,7 @@
 		<div class="rounded-md shadow">
 			<a
 				href="/invite"
-				class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
+				class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium font-cabin text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
 			>
 				<Icon icon="mdi:plus" /> Invite
 			</a>
@@ -35,7 +35,7 @@
 		<div class="ml-2">
 			<a
 				href="/about"
-				class="flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-8 py-3 text-base font-medium text-indigo-700 hover:bg-indigo-200 md:py-4 md:px-10 md:text-lg"
+				class="flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-8 py-3 text-base font-medium font-cabin text-indigo-700 hover:bg-indigo-200 md:py-4 md:px-10 md:text-lg"
 				>Learn More <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
 			</a>
 		</div>
@@ -46,8 +46,8 @@
 
 <section id="features">
 	<div id="features-what" class="text-center">
-		<h2 class="text-lg font-cabin font-semibold text-indigo-600">Features</h2>
-		<p class="max-w-2xl font-monster text-xl text-white lg:mx-auto">What features does AntiRaid offer?</p>
+		<h2 class="text-2xl font-cabin font-semibold text-indigo-600">Features</h2>
+		<p class="max-w-2xl font-monster text-xl text-white lg:mx-auto">What do we have to offer?</p>
 	</div>
 	<div class="mt-10" />
 
