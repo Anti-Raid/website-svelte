@@ -10,12 +10,12 @@
 />
 
 <section class="text-center">
-	<h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+	<h1 class="text-4xl font-cabin font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
 		<span class="inline text-white">Protect your</span>
 		<a href="/invite" class="block text-indigo-400 xl:inline hover:text-red-600">Discord Server</a>
 	</h1>
 
-	<p class="text-xl text-white mx-auto mt-5 max-w-full">
+	<p class="text-xl font-monster text-white mx-auto mt-5 max-w-full">
 		With our services, you can easily protect your <a
 			href="/invite"
 			class="font-bold tracking-tight text-primary-400 hover:text-red-600">Discord Server</a
