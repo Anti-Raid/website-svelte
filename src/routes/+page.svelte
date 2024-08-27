@@ -46,8 +46,8 @@
 
 <section id="features">
 	<div id="features-what" class="text-center">
-		<h2 class="text-lg font-semibold text-indigo-600">Features</h2>
-		<p class="max-w-2xl text-xl text-white lg:mx-auto">What features does AntiRaid offer?</p>
+		<h2 class="text-lg font-cabin font-semibold text-indigo-600">Features</h2>
+		<p class="max-w-2xl font-monster text-xl text-white lg:mx-auto">What features does AntiRaid offer?</p>
 	</div>
 	<div class="mt-10" />
 
