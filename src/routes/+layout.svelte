@@ -11,6 +11,7 @@
 
 <section id="content">
 {#if loaded}
+<div class="min-h-screen bg-gradient-to-b from-surface-800 to-surface-500">
 <Header />
 <article class="min-h-screen flex-col justify-between overflow-x-hidden">
 	<main class="mt-9 p-1 w-full md:max-w-7xl mx-auto h-full min-h-screen">
@@ -24,6 +25,7 @@
 		</small>
 	</footer>
 </article>
+</div>
 {:else}
 <Loading on:close={() => (loaded = true)} />
 {/if}
