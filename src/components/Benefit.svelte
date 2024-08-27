@@ -5,7 +5,7 @@
 	export let title: string;
 </script>
 
-<div class="relative mx-3">
+<div class="relative px-3">
 	<dt>
 		<div
 			class="absolute flex h-12 w-12 items-center justify-center rounded-md bg-indigo-500 text-white"
