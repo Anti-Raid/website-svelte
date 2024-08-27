@@ -14,7 +14,7 @@
 		</div>
 		<p class="ml-16 text-lg font-medium leading-6 text-white">{title}</p>
 	</dt>
-	<dd class="mt-2 ml-16 text-base text-white">
+	<dd class="mx-4 text-base text-white">
 		<slot />
 	</dd>
 </div>
