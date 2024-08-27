@@ -51,7 +51,7 @@
 	</div>
 	<div class="mt-10" />
 
-        <dl class="space-y-10 grid grid-cols-2 gap-x-8 gap-y-10 space-y-0">
-	    <BotFeatures />
+        <dl class="space-y-10 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
+            <BotFeatures />
         </dl>
 </section>
