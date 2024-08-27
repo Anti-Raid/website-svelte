@@ -50,7 +50,5 @@
 		<p class="max-w-2xl text-xl text-white lg:mx-auto">What features does AntiRaid offer?</p>
 	</div>
 	<div class="mt-10" />
-	<dl class="m-3 space-y-10 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
-		<BotFeatures />
-	</dl>
+	<BotFeatures />
 </section>
