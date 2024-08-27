@@ -51,7 +51,9 @@
 	</div>
 	<div class="mt-10" />
 
-        <dl class="flex justify-center items-center space-y-10 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
+        <center>
+        <dl class="space-y-10 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
             <BotFeatures />
         </dl>
+        </center>
 </section>
