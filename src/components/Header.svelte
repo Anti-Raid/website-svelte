@@ -162,7 +162,7 @@
 		<a href="/">
 			<div class="flex items-center space-x-1">
 				<img class="h-8 w-auto" src="/logo.webp" alt="Antiraid" />
-				<p class="text-md text-white font-monster font-semibold">
+				<p class="text-md text-white font-monster font-semibold tracking-tight">
 			           AntiRaid
 				</p>
 			</div>
