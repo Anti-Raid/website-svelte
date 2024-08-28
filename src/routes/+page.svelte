@@ -16,9 +16,14 @@
 	</h1>
 
 	<p class="block mx-auto text-xl font-monster font-medium text-white mt-5 max-w-full">
-		With <img class="inline-flex mb-1 h-8 w-8 bg-surface-400/40 rounded-full" src="/logo.webp" alt="AntiRaid Logo"> AntiRaid, you can easily protect your <a
-			href="/invite"
-			class="font-bold tracking-tight text-primary-400 hover:text-red-600">Discord Server</a
+		With <img
+			class="inline-flex mb-1 h-8 w-8 bg-surface-400/40 rounded-full"
+			src="/logo.webp"
+			alt="AntiRaid Logo"
+		/>
+		AntiRaid, you can easily protect your
+		<a href="/invite" class="font-bold tracking-tight text-primary-400 hover:text-red-600"
+			>Discord Server</a
 		> in a matter of seconds!
 	</p>
 

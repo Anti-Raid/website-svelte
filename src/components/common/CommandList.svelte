@@ -92,19 +92,12 @@
 
 <!--Cluster Menu at the right of the page-->
 <article class="command-list-article overflow-x-auto overflow-y-hidden h-full">
-	<small class="text-red-600 word-wrap block mb-1">
-		Different clusters may have different available modules due to outages, A/B testing and other
-		reasons.
-	</small>
-
-	<div class="pt-3" />
-
-	<section class="command-list flex flex-grow">
+	<section class="mt-5 command-list flex flex-grow">
 		<nav class="cluster-map flex-none border-r border-slate-500 w-28">
 			{#each instanceList?.Instances as instance}
 				<NavButton
 					current={state.openCluster == instance?.ClusterID}
-					title={`Cluster ${instance?.ClusterID}`}
+					title={`${instanceList?.Map?.find((cluster) => cluster.ID == instance?.ClusterID)?.Name}`}
 					onClick={() => {
 						state.openCluster = instance?.ClusterID || 0;
 					}}
@@ -140,7 +133,7 @@
 					bind:value={state.commandSearch}
 				/>
 
-				<ul>
+				<ul class="mt-4">
 					{#each state.searchedCommands as searchedCommand}
 						<li class="cluster-search-command mb-7">
 							<h3 class="text-xl font-bold">{searchedCommand?.command?.full_name}</h3>
@@ -194,11 +187,11 @@
 							{/if}
 
 							{#if state.clusterModuleData[state?.openCluster][state?.openModule].commands_toggleable}
-								<p class="text-green-500 mt-2">
+								<p class="text-green-500">
 									<strong>You can turn ON/OFF (toggle) the commands within this module!</strong>
 								</p>
 							{:else}
-								<p class="text-red-500 mt-2">
+								<p class="text-red-500">
 									<strong
 										>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
 									>
@@ -212,6 +205,8 @@
 									>
 								</p>
 							{/if}
+
+							<div class="pt-2" />
 
 							<BoolInput
 								id="enabled-by-default"

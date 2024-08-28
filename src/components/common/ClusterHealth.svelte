@@ -47,9 +47,9 @@
 {/if}
 
 <div class="flex flex-col mt-4">
-	<div class="py-2 align-middle inline-block overflow-x-auto w-full">
-		<table class="shadow-xl sm:rounded-lg md:w-full">
-			<thead class="bg-slate-800 text-gray-50">
+	<div class="py-2 align-middle inline-block overflow-x-auto w-full rounded-md">
+		<table class="shadow-xl rounded-md md:w-full">
+			<thead class="bg-slate-800 text-gray-50 rounded-md">
 				<tr>
 					<th scope="col" class="px-4 py-3 text-xs font-medium tracking-wider text-left uppercase">
 						Cluster
@@ -79,10 +79,8 @@
 				{#each instanceList.Instances as instance}
 					<tr class="hover:bg-slate-950">
 						<td class="px-4 py-3 whitespace-nowrap">
-							<div class="text-sm font-medium">
-								<strong>{instance?.ClusterID} </strong> ({instanceList?.Map?.find(
-									(cluster) => cluster.ID == instance?.ClusterID
-								)?.Name})
+							<div class="text-md font-medium">
+								{instanceList?.Map?.find((cluster) => cluster.ID == instance?.ClusterID)?.Name}
 							</div>
 							<span class={instance?.Active ? 'text-sm text-green-500' : 'text-sm text-red-500'}>
 								{instance?.Active ? 'Active' : 'Inactive'}

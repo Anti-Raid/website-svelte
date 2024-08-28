@@ -7,9 +7,12 @@
 
 <Meta title="Status" description="View Anti-Raid's cluster status" />
 
-<h2 class="text-4xl font-bold tracking-tight text-gray-900">
-	<span class="block text-white xl:inline">Cluster Health</span>
+<h2 class="block text-4xl text-white font-semibold tracking-tight font-monster xl:inline">
+	Cluster Health
 </h2>
+<p class="text-white font-semibold font-cabin text-sm">
+	Check the health of our clusters. Are they in good shape?
+</p>
 
 {#await makeSharedRequest(opGetClusterHealth)}
 	<Message type="loading">Fetching cluster health</Message>
