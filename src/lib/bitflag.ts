@@ -46,7 +46,7 @@ export class BitFlag {
 		}
 
 		if (flagValue === undefined) {
-			flagValue = BigInt(flag)
+			flagValue = BigInt(flag);
 		}
 
 		return (this.flags & flagValue) == flagValue;
@@ -88,7 +88,6 @@ export class BitFlag {
 
 		return unsetFlags;
 	}
-
 
 	/**
 	 * Returns the flag key

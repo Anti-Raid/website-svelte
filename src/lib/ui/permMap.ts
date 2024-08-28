@@ -1,6 +1,6 @@
-import { CanonicalModule, PermissionChecks } from "$lib/generated/silverpelt";
-import { title } from "$lib/strings";
-import logger from "./logger";
+import { CanonicalModule, PermissionChecks } from '$lib/generated/silverpelt';
+import { title } from '$lib/strings';
+import logger from './logger';
 
 export interface KittycatPermissionMapper {
 	namespace_id: string; // The namespace ID (backup/limits etc.)
@@ -30,12 +30,11 @@ const extractPermissionsFromPermissionChecks = (permissionChecks: PermissionChec
 	}
 
 	return permissions;
-
-}
+};
 
 /**
  * Extract known permissions from modules for further processing
- * 
+ *
  * @param modules The modules to extract known permissions from
  * @returns The known permissions extracted from the modules
  */
@@ -45,20 +44,29 @@ export const extractKnownPermissionsFromModules = (modules: CanonicalModule[]) =
 	for (let module of modules) {
 		for (let command of module?.commands) {
 			for (let [key, value] of Object.entries(command?.extended_data)) {
-				logger.debug("extractKnownPermissionsFromModules", "Parsing permissions from command: ", key, value);
-				permissions = permissions.concat(extractPermissionsFromPermissionChecks(value?.default_perms));
+				logger.debug(
+					'extractKnownPermissionsFromModules',
+					'Parsing permissions from command: ',
+					key,
+					value
+				);
+				permissions = permissions.concat(
+					extractPermissionsFromPermissionChecks(value?.default_perms)
+				);
 			}
 		}
 	}
 
 	return permissions;
-}
+};
 
-export const makeKittycatPermissionMapperFromPermissions = (permissions: string[]): KittycatPermissionMapper[] => {
+export const makeKittycatPermissionMapperFromPermissions = (
+	permissions: string[]
+): KittycatPermissionMapper[] => {
 	let kittycatPermissionMapper: KittycatPermissionMapper[] = [];
 
 	// Map namespaces with a list of permissions
-	let namespacePermissionMap: { [key: string]: string[] } = {}
+	let namespacePermissionMap: { [key: string]: string[] } = {};
 
 	// Iterate over permissions to build the namespacePermissionMap
 	for (let permission of permissions) {
@@ -73,7 +81,7 @@ export const makeKittycatPermissionMapperFromPermissions = (permissions: string[
 
 	// Iterate over the namespacePermissionMap to build the KittycatPermissionMapper
 	for (let [namespace, permissions] of Object.entries(namespacePermissionMap)) {
-		let namespaceLabel = title(namespace.replaceAll("_", " "));
+		let namespaceLabel = title(namespace.replaceAll('_', ' '));
 
 		let namespacePermissions: {
 			id: string;
@@ -82,7 +90,7 @@ export const makeKittycatPermissionMapperFromPermissions = (permissions: string[
 
 		let addedPerms: { [key: string]: boolean } = {};
 		for (let permission of permissions) {
-			if (permission == "*") {
+			if (permission == '*') {
 				continue;
 			}
 
@@ -92,7 +100,7 @@ export const makeKittycatPermissionMapperFromPermissions = (permissions: string[
 
 			addedPerms[permission] = true;
 
-			let permissionLabel = title(permission.replaceAll("_", " "));
+			let permissionLabel = title(permission.replaceAll('_', ' '));
 
 			namespacePermissions.push({
 				id: permission,
@@ -108,7 +116,7 @@ export const makeKittycatPermissionMapperFromPermissions = (permissions: string[
 	}
 
 	return kittycatPermissionMapper;
-}
+};
 
 // Given a perm string, extract it to its components
 export const unwindPerm = (perm: string) => {

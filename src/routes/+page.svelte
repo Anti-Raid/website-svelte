@@ -51,9 +51,9 @@
 	</div>
 	<div class="mt-10" />
 
-        <center>
-        <dl class="space-y-5 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
-            <BotFeatures />
-        </dl>
-        </center>
+	<center>
+		<dl class="space-y-5 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
+			<BotFeatures />
+		</dl>
+	</center>
 </section>

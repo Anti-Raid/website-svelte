@@ -1,10 +1,10 @@
-import { builderVersion, Embed, TemplateBuilderData, TemplateBuilderDataComment } from "./types";
+import { builderVersion, Embed, TemplateBuilderData, TemplateBuilderDataComment } from './types';
 
 type Snippet = (current: string) => string;
 
 export const defaultSnippets: Record<string, Snippet> = {
-    "Lua Example": function (_current: string): string {
-        return String.raw`@pragma {"lang":"lua"}
+	'Lua Example': function (_current: string): string {
+		return String.raw`@pragma {"lang":"lua"}
 function (args) 
     local message_plugin = require "@antiraid/message"
 
@@ -32,164 +32,166 @@ function (args)
     table.insert(message.embeds, embed)
 
     return message
-end`
-    }
-}
+end`;
+	}
+};
 
 export const parseString = (s: string): string => {
-    // First escape all single and double quotes
-    s = s.replaceAll(`"`, `\\"`).replaceAll(`'`, `\\'`)
+	// First escape all single and double quotes
+	s = s.replaceAll(`"`, `\\"`).replaceAll(`'`, `\\'`);
 
-    s = `"${s}"`
+	s = `"${s}"`;
 
-    // Builder variables are in format {var}, in such cases, we need to escape the quotes and use ~ to concat them
-    // Note that the {var} must have both { and } to be considered a variable and we must escape the quotes
-    let match = s.match(/[^{\}]+(?=})/g)
-    if (match) {
-        for (let m of match) {
-            m = `{${m}}` // We want the brackets for now
-            // We need to escape the quotes and then use ~ to concat them
-            let escaped = m.replaceAll("{", "").replaceAll("}", "").trim()
+	// Builder variables are in format {var}, in such cases, we need to escape the quotes and use ~ to concat them
+	// Note that the {var} must have both { and } to be considered a variable and we must escape the quotes
+	let match = s.match(/[^{\}]+(?=})/g);
+	if (match) {
+		for (let m of match) {
+			m = `{${m}}`; // We want the brackets for now
+			// We need to escape the quotes and then use ~ to concat them
+			let escaped = m.replaceAll('{', '').replaceAll('}', '').trim();
 
-            if (!escaped) {
-                continue; // {} should not be considered as a variable
-            }
+			if (!escaped) {
+				continue; // {} should not be considered as a variable
+			}
 
-            s = s.replace(m, `" .. tostring(${escaped}) .. "`)
-        }
-    }
+			s = s.replace(m, `" .. tostring(${escaped}) .. "`);
+		}
+	}
 
-    // If the string ends with "", remove it
-    if (s.includes(` .. \"\"`)) {
-        s = s.replaceAll(" .. \"\"", "")
-    }
+	// If the string ends with "", remove it
+	if (s.includes(` .. \"\"`)) {
+		s = s.replaceAll(' .. ""', '');
+	}
 
-    // If the string starts with "", remove it
-    if (s.includes(`\"\" .. `)) {
-        s = s.replaceAll("\"\" .. ", "")
-    }
+	// If the string starts with "", remove it
+	if (s.includes(`\"\" .. `)) {
+		s = s.replaceAll('"" .. ', '');
+	}
 
-    return s;
-}
+	return s;
+};
 
 const sha256 = async (message: string) => {
-    // encode as UTF-8
-    const msgBuffer = new TextEncoder().encode(message);
+	// encode as UTF-8
+	const msgBuffer = new TextEncoder().encode(message);
 
-    // hash the message
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+	// hash the message
+	const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
 
-    // convert ArrayBuffer to Array
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
+	// convert ArrayBuffer to Array
+	const hashArray = Array.from(new Uint8Array(hashBuffer));
 
-    // convert bytes to hex string                  
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashHex;
-}
+	// convert bytes to hex string
+	const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+	return hashHex;
+};
 
 export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilderData) => {
-    let templateStr = ``;
+	let templateStr = ``;
 
-    if (tbd.embeds.length > 0) {
-        for (let embed of tbd.embeds) {
-            let fragment = generateTemplateFragmentForEmbed(embed);
+	if (tbd.embeds.length > 0) {
+		for (let embed of tbd.embeds) {
+			let fragment = generateTemplateFragmentForEmbed(embed);
 
-            if (fragment) {
-                templateStr += `${fragment}table.insert(message, embed)\n\t`;
-            }
-        }
-    }
+			if (fragment) {
+				templateStr += `${fragment}table.insert(message, embed)\n\t`;
+			}
+		}
+	}
 
-    if (tbd.content) {
-        templateStr += `message.content = ${parseString(tbd.content)}\n\t`;
-    }
+	if (tbd.content) {
+		templateStr += `message.content = ${parseString(tbd.content)}\n\t`;
+	}
 
-    if (templateStr) {
-        templateStr = `function (args) {
+	if (templateStr) {
+		templateStr = `function (args) {
     local message_plugin = require "@antiraid/message"
     local message = message_plugin.new_message()
     -- Create the message
     ${templateStr.trim()}
     return message
-}`
+}`;
 
-        // Get sha256 checksum of the template
-        const checksum = await sha256(templateStr.trim());
+		// Get sha256 checksum of the template
+		const checksum = await sha256(templateStr.trim());
 
-        let pragma: TemplatePragma = {
-            lang: "lua",
-            builderInfo: {
-                ver: builderVersion,
-                data: tbd,
-                checksum
-            }
-        }
+		let pragma: TemplatePragma = {
+			lang: 'lua',
+			builderInfo: {
+				ver: builderVersion,
+				data: tbd,
+				checksum
+			}
+		};
 
-        templateStr = `@pragma ${JSON.stringify(pragma)}\n${templateStr}`;
-    }
+		templateStr = `@pragma ${JSON.stringify(pragma)}\n${templateStr}`;
+	}
 
-    return templateStr;
-}
+	return templateStr;
+};
 
 export interface ParsedTemplateBuilderComment {
-    comment: TemplateBuilderDataComment;
-    checksumOk: boolean;
-    template: string;
+	comment: TemplateBuilderDataComment;
+	checksumOk: boolean;
+	template: string;
 }
 
 export interface TemplatePragma {
-    lang: string,
-    builderInfo?: TemplateBuilderDataComment // Website specific field 
+	lang: string;
+	builderInfo?: TemplateBuilderDataComment; // Website specific field
 }
 
-export const parseTemplateBuilderDataCommentFromTemplate = async (template: string): Promise<ParsedTemplateBuilderComment | null> => {
-    let templateFirstLine = template.split('\n')[0];
-    template = template.slice(1); // Rest of template is the actual template
+export const parseTemplateBuilderDataCommentFromTemplate = async (
+	template: string
+): Promise<ParsedTemplateBuilderComment | null> => {
+	let templateFirstLine = template.split('\n')[0];
+	template = template.slice(1); // Rest of template is the actual template
 
-    if (!templateFirstLine.startsWith("@pragma ")) {
-        return null;
-    }
+	if (!templateFirstLine.startsWith('@pragma ')) {
+		return null;
+	}
 
-    let pragma = templateFirstLine.substring(8).trim();
+	let pragma = templateFirstLine.substring(8).trim();
 
-    try {
-        let pragmaObj: TemplatePragma = JSON.parse(pragma);
+	try {
+		let pragmaObj: TemplatePragma = JSON.parse(pragma);
 
-        if (!pragmaObj.builderInfo) {
-            return null;
-        }
+		if (!pragmaObj.builderInfo) {
+			return null;
+		}
 
-        // Check if the checksum is correct
-        let checksumOk = await sha256(template) == pragmaObj.builderInfo.checksum;
+		// Check if the checksum is correct
+		let checksumOk = (await sha256(template)) == pragmaObj.builderInfo.checksum;
 
-        return {
-            comment: pragmaObj.builderInfo,
-            checksumOk,
-            template
-        }
-    } catch {
-        return null;
-    }
-}
+		return {
+			comment: pragmaObj.builderInfo,
+			checksumOk,
+			template
+		};
+	} catch {
+		return null;
+	}
+};
 
 export const generateTemplateFragmentForEmbed = (embed: Embed) => {
-    let baseFragment = '';
+	let baseFragment = '';
 
-    if (embed.title) {
-        baseFragment += `embed.title = ${parseString(embed.title)}\n\t`;
-    }
+	if (embed.title) {
+		baseFragment += `embed.title = ${parseString(embed.title)}\n\t`;
+	}
 
-    if (embed.description) {
-        baseFragment += `embed.description = ${parseString(embed.description)}\n\t`;
-    }
+	if (embed.description) {
+		baseFragment += `embed.description = ${parseString(embed.description)}\n\t`;
+	}
 
-    if (embed.fields.length > 0) {
-        embed.fields.forEach((field, i) => {
-            if (field.name == "" || field.value == "") {
-                return
-            }
+	if (embed.fields.length > 0) {
+		embed.fields.forEach((field, i) => {
+			if (field.name == '' || field.value == '') {
+				return;
+			}
 
-            baseFragment += `
+			baseFragment += `
     -- Field ${i + 1}
     local field = message_plugin.new_message_embed_field()\n
     field.name = ${parseString(field.name)}\n
@@ -197,12 +199,12 @@ export const generateTemplateFragmentForEmbed = (embed: Embed) => {
     field.inline = ${field.inline}\n
     table.insert(embed.fields, field)\n
             `;
-        });
-    }
+		});
+	}
 
-    if (baseFragment) {
-        return `local embed = message_plugin.new_message_embed()\n\t${baseFragment}`
-    }
+	if (baseFragment) {
+		return `local embed = message_plugin.new_message_embed()\n\t${baseFragment}`;
+	}
 
-    return '';
+	return '';
 };

@@ -81,9 +81,7 @@ export const opGetApiConfig: SharedRequester<ApiConfig> = {
 };
 
 // Fetches the staff team of a server
-export const opGetGuildStaffTeam = (
-	guildId: string
-): SharedRequester<GuildStaffTeam> => {
+export const opGetGuildStaffTeam = (guildId: string): SharedRequester<GuildStaffTeam> => {
 	return {
 		name: `guildStaffTeam:${guildId}`,
 		requestFunc: async (): Promise<GuildStaffTeam> => {

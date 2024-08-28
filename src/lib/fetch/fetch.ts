@@ -1,6 +1,11 @@
 import { ApiError } from '$lib/generated/types';
 import logger from '../ui/logger';
-import { CanonicalSettingsError, PermissionCheck, PermissionChecks, PermissionResult } from '$lib/generated/silverpelt';
+import {
+	CanonicalSettingsError,
+	PermissionCheck,
+	PermissionChecks,
+	PermissionResult
+} from '$lib/generated/silverpelt';
 import dompurify from 'dompurify';
 import * as marked from 'marked';
 import { BitFlag } from '$lib/bitflag';
@@ -108,7 +113,7 @@ export class PermissionResultFormatter {
 			case 'DiscordError':
 				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
 			case 'SudoNotGranted':
-				return 'This module is only available for root (staff) and/or developers of the bot'
+				return 'This module is only available for root (staff) and/or developers of the bot';
 			case 'GenericError':
 				return this.result.error;
 		}
