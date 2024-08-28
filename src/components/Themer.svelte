@@ -5,16 +5,16 @@
 	export let isOpen: boolean = false;
 
 	const themes = [
-		{ id: 'rocket', color: 'rocket', label: 'Rocket', class: 'text-white' },
-		{ id: 'skeleton', color: 'skeleton', label: 'Skeleton', class: 'text-white' },
-		{ id: 'wintry', color: 'wintry', label: 'Wintry', class: 'text-white' },
-		{ id: 'modern', color: 'modern', label: 'Modern', class: 'text-white' },
-		{ id: 'seafoam', color: 'seafoam', label: 'Seafoam', class: 'text-white' },
-		{ id: 'vintage', color: 'vintage', label: 'Vintage', class: 'text-white' },
-		{ id: 'sahara', color: 'sahara', label: 'Sahara', class: 'text-white' },
-		{ id: 'hamlindigo', color: 'hamlindigo', label: 'Hamlindigo', class: 'text-white' },
-		{ id: 'gold-nouveau', color: 'gold-nouveau', label: 'Gold Nouveau', class: 'text-white' },
-		{ id: 'crimson', color: 'crimson', label: 'Crimson', class: 'text-white' }
+		{ id: 'rocket', color: 'rocket', label: 'Rocket' },
+		{ id: 'skeleton', color: 'skeleton', label: 'Skeleton' },
+		{ id: 'wintry', color: 'wintry', label: 'Wintry' },
+		{ id: 'modern', color: 'modern', label: 'Modern' },
+		{ id: 'seafoam', color: 'seafoam', label: 'Seafoam' },
+		{ id: 'vintage', color: 'vintage', label: 'Vintage' },
+		{ id: 'sahara', color: 'sahara', label: 'Sahara' },
+		{ id: 'hamlindigo', color: 'hamlindigo', label: 'Hamlindigo' },
+		{ id: 'gold-nouveau', color: 'gold-nouveau', label: 'Gold Nouveau' },
+		{ id: 'crimson', color: 'crimson', label: 'Crimson' }
 	];
 
 	// Temporary
@@ -43,7 +43,6 @@
 			<div class="px-1 py-2 space-y-1">
 				{#each themes as th}
 					<button
-						name="some_button3"
 						on:click={() => {
 							changeColor(th.id);
 						}}
@@ -54,7 +53,7 @@
 						} `}
 					>
 						<div data-theme={th.color} class="flex items-center justify-between w-full">
-							<span class={`text-white hover:bg-${String(th.color)}-500`}>
+							<span class={`text-white font-bold font-cabin tracking-tight hover:bg-${String(th.color)}-500`}>
 								{th.label}
 							</span>
 							<Icon
