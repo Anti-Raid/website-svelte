@@ -9,6 +9,6 @@
 	</div>
 
 	<div class="relative flex justify-center">
-		<span class="px-4 bg-slate-900 text-sm text-white font-bold">{text}</span>
+		<span class="px-4 bg-surface-800 text-sm text-white font-bold">{text}</span>
 	</div>
 </div>

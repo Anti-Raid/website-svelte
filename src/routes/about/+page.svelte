@@ -77,12 +77,12 @@
 
 <section>
 	<div class="text-center lg:text-left">
-		<h1 class="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
+		<h1 class="text-4xl font-monster font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
 			<span class="block text-white xl:inline">&#128075; About Us</span>
 		</h1>
 
 		<p
-			class="mt-3 text-base text-white sm:mx-auto sm:mt-5 sm:max-w-xl sm:text-lg md:mt-5 md:text-xl lg:mx-0"
+			class="mt-3 text-base text-white font-semibold font-cabin ml-3 sm:mt-5 sm:text-lg md:ml-0 md:mt-5 md:text-xl lg:ml-0 lg:mx-0"
 		>
 			Learn more about <span class="text-indigo-600 font-bold">AntiRaid</span> and our team!
 		</p>
@@ -90,36 +90,25 @@
 
 	<div class="p-4" />
 
-	<p class="text-xl text-white font-semibold text-center">
-		<span class="text-indigo-600">AntiRaid</span> is a
-		<span class="font-extrabold">Automatic Moderation Service</span>
-		created to protect your
-		<a href="/invite" class="text-indigo-600 xl:inline hover:text-red-600">Discord Server</a>
-		from threats, unsafe bots and spamming using our advanced technology!
+	<p class="text-lg/6 text-white font-cabin font-semibold text-center">
+		AntiRaid is your ultimate solution for automated server protection on Discord. Our state-of-the-art service is engineered to shield your community from a myriad of threats, including intrusive bots, spam, and malicious activity. With AntiRaid’s cutting-edge technology, you can ensure that your server remains secure and welcoming, allowing you to focus on what matters most—engaging with your community. Our advanced moderation system works tirelessly to detect and neutralize potential dangers in real-time, providing a seamless and robust defense for your Discord environment. Invite AntiRaid today and experience unparalleled peace of mind for your server's safety and integrity.
 	</p>
 
 	<div class="p-4" />
 
-	<Divider text="Features" margin="6" />
-
-	<div class="p-2" />
-
-	<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-		<div id="features-what" class="text-center">
-			<h2 class="text-lg font-semibold text-indigo-600">Features</h2>
-			<p class="max-w-2xl text-xl text-white lg:mx-auto">What features does AntiRaid offer?</p>
-		</div>
-
-		<div class="mt-10">
-			<dl class="space-y-10 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
-				<BotFeatures />
-			</dl>
-		</div>
-	</div>
-
-	<div class="p-4" />
-
-	<Divider text="Meet the Team" margin="6" />
+	<section id="features">
+        <div id="features-what" class="text-center">
+            <h2 class="text-4xl font-cabin font-extrabold text-indigo-600">Features</h2>
+            <p class="font-monster text-xl text-white lg:mx-auto">What do we have to offer?</p>
+        </div>
+        <div class="mt-5" />
+    
+        <center>
+            <dl class="mx-2.5 space-y-4 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
+                <BotFeatures />
+            </dl>
+        </center>
+    </section>
 
 	<div class="py-10">
 		<div class="mx-auto grid max-w-7xl gap-x-6 gap-y-10 px-6 lg:px-8 xl:grid-cols-3">
@@ -136,20 +125,21 @@
 			{#await getTeamMembers()}
 				<Message type="loading" big={true}>Fetching team members...</Message>
 			{:then members}
-				<ul class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
+                <ul class="grid gap-y-2 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2 overflow-hidden">
 					{#each members as member}
-						<li>
-							<div class="flex items-center gap-x-6">
+                        <li class="inline-block p-2 max-w-sm bg-surface-800/90 overflow-hidden rounded-md">
+							<div class="flex items-center">
 								<img
 									class="h-16 w-16 rounded-full"
 									src={member.Avatar || '/logo.webp'}
-									alt={member.Name}
+									alt="{member.Name}'s Avatar"
 								/>
-								<div>
-									<h3 class="text-lg font-semibold leading-7 tracking-tight text-white">
-										{member.Name}
+                                
+								<div class="inline-block ml-3">
+									<h3 class="text-lg font-monster font-semibold leading-7 tracking-tight text-white">
+										{member.Name.replace("(", "(@")}
 									</h3>
-									<p class="text-md font-semibold leading-6 text-indigo-600">{member.Role}</p>
+									<p class="text-md font-cabin font-semibold leading-6 text-indigo-600">{member.Role}</p>
 								</div>
 							</div>
 						</li>

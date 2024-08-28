@@ -19,10 +19,10 @@
 				</main>
 
 				<footer class="mb-auto border-white border-t-2">
-					<p class="text-center text-white text-md font-semibold">
-						&copy; 2024 Anti-Raid Development
+					<p class="text-center text-white font-monster text-md font-extrabold">
+						&copy; 2024 Purrquinox
 					</p>
-					<small class="text-center text-white text-sm font-semibold">
+					<small class="text-center text-white font-monster text-sm font-extrabold">
 						{getVersion()}
 					</small>
 				</footer>

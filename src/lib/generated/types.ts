@@ -269,7 +269,7 @@ export interface SettingsGetSuggestionsResponse {
 // source: users.go
 
 /**
- * Represents a user on Antiraid
+ * Represents a user on AntiRaid
  */
 export interface User {
 	user?: PlatformUser /* from eureka-dovewing.ts */;

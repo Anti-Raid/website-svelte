@@ -5,20 +5,17 @@
 	export let title: string;
 </script>
 
-<div class="self-auto">
-	<div
-		class="block max-w-sm p-3 border rounded-md shadow bg-surface-700 border-surface-800 hover:bg-surface-600"
-	>
-		<dt>
-			<div
-				class="absolute flex h-12 w-12 items-center justify-center rounded-md bg-indigo-500 text-white"
-			>
-				<Icon {icon} class="text-2xl" />
-			</div>
-			<p class="ml-16 text-lg font-cabin font-bold leading-6 text-white">{title}</p>
-		</dt>
-		<dd class="mt-2 ml-16 text-base text-white text-monster">
-			<slot />
-		</dd>
-	</div>
+<div class="self-auto block bg-surface-800/90 px-2 py-4 rounded-md">
+	<dt>
+		<div
+			class="absolute flex h-12 w-12 items-center justify-center rounded-md bg-surface-400 text-white"
+		>
+			<Icon {icon} class="text-2xl" />
+		</div>
+		<p class="ml-16 text-xl font-cabin font-extrabold leading-6 text-white">{title}</p>    
+	</dt>
+
+	<dd class="mt-2 ml-16 text-white text-monster">
+		<slot />
+	</dd>
 </div>
