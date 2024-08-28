@@ -53,7 +53,7 @@
 								: 'text-white/75 hover:text-white/100 hover:bg-gray-800/20'
 						} `}
 					>
-						<div class="flex items-center justify-between w-full">
+						<div data-theme={th.label} class="flex items-center justify-between w-full">
 							<span class={`hover:bg-${String(th.color)}-500`}>
 								{th.label}
 							</span>
