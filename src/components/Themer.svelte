@@ -27,7 +27,7 @@
 
 	$: {
 		if (browser) {
-			theme = localStorage.getItem('theme->antiraid') || 'vintage';
+			theme = localStorage.getItem('theme->antiraid') || 'gold-nouveau';
 			document.querySelector('#antiraid')?.setAttribute('data-theme', theme);
 		}
 	}
