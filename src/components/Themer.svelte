@@ -18,7 +18,7 @@
 	];
 
 	// Temporary
-	let theme: string = 'vintage';
+	let theme: string = 'gold-nouveau';
 	const changeColor = (th: string) => {
 		theme = th;
 		document.querySelector('#antiraid')?.setAttribute('data-theme', th);
