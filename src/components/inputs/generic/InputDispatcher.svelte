@@ -141,7 +141,7 @@ Note: this may be less performant than using the concrete input components direc
 	{:else}
 		<p class="text-gray-200">No values added</p>
 	{/if}
-{:else if type == 'number'}
+{:else if type == 'number' || type == "integer"}
 	<InputNumber
 		{id}
 		{label}
