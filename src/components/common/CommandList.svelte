@@ -101,7 +101,7 @@
 					onClick={() => {
 						state.openCluster = instance?.ClusterID || 0;
 					}}
-					extClass="block mb-2 w-full"
+					extClass="block mb-2 w-full rounded-l-full rounded-r-none font-semibold font-cabin text-md"
 				/>
 			{/each}
 
@@ -112,9 +112,10 @@
 					state.clusterFinderOpen = true;
 					state.clusterFinderByGuildIdExpectedData = null;
 				}}
-				extClass="block mb-2 w-full"
+				extClass="block mb-2 w-full rounded-l-full rounded-r-none font-semibold font-cabin text-md"
 			/>
 		</nav>
+
 		<div class="cluster-map-content flex-1 flex-grow px-2">
 			{#if !state.clusterModuleData[state?.openCluster]}
 				{#await fetchCluster(state?.openCluster)}
@@ -127,9 +128,10 @@
 				<InputText
 					id="command-search-bar"
 					label="Command Lookup"
-					placeholder="Search for a command"
+					placeholder="Search for a command."
 					minlength={0}
 					showErrors={false}
+					extClass="rounded-l-full rounded-r-md"
 					bind:value={state.commandSearch}
 				/>
 
@@ -160,7 +162,7 @@
 										state.openModule =
 											module?.id || state.clusterModuleData[state?.openCluster]['core'].id;
 									}}
-									extClass="block mb-2 w-full"
+									extClass="block mb-2 w-full rounded-l-full rounded-r-none font-semibold font-cabin text-sm"
 								/>
 							{/if}
 						{/each}
@@ -169,56 +171,39 @@
 					<!--Content-->
 					<div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
 						{#if state.openModule}
-							<h1 class="text-2xl font-semibold">
+							<h1 class="text-2xl font-semibold leading-6 font-monster">
 								{state.clusterModuleData[state?.openCluster][state?.openModule]?.name}
 							</h1>
-							<p class="text-slate-200">
+							<p class="text-slate-200 text-base font-semibold font-cabin">
 								{state.clusterModuleData[state?.openCluster][state?.openModule]?.description}
 							</p>
 
-							{#if state.clusterModuleData[state?.openCluster][state?.openModule].toggleable}
-								<p class="text-green-500 mt-2">
-									<strong>This module is toggleable.</strong>
-								</p>
-							{:else}
-								<p class="text-red-500 mt-2">
-									<strong>This module is NOT toggleable.</strong>
+							<div class="pt-2" />
+
+							{#if state.clusterModuleData[state?.openCluster][state?.openModule].is_default_enabled}
+								<p class="text-green-500 font-semibold font-cabin">
+									This module is enabled by default!
 								</p>
 							{/if}
 
-							{#if state.clusterModuleData[state?.openCluster][state?.openModule].commands_toggleable}
-								<p class="text-green-500">
-									<strong>You can turn ON/OFF (toggle) the commands within this module!</strong>
-								</p>
-							{:else}
-								<p class="text-red-500">
-									<strong
-										>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
-									>
-								</p>
-							{/if}
+							<p
+								class="text-{state.clusterModuleData[state?.openCluster][state?.openModule]
+									.toggleable
+									? 'green'
+									: 'red'}-500 font-semibold font-cabin"
+							>
+								{state.clusterModuleData[state?.openCluster][state?.openModule].toggleable
+									? 'This module is toggleable.'
+									: 'This module is NOT toggleable.'}
+							</p>
 
 							{#if state.clusterModuleData[state?.openCluster][state?.openModule].web_hidden}
-								<p class="text-red-500 mt-2">
-									<strong
-										>Sorry, this module is not supported with our website/dashboard yet!</strong
-									>
+								<p class="text-red-500 font-semibold font-cabin mt-2">
+									Sorry, this module is not supported with our website/dashboard yet!
 								</p>
 							{/if}
 
 							<div class="pt-2" />
-
-							<BoolInput
-								id="enabled-by-default"
-								label="Enabled by default"
-								description="Whether this module is enabled by default"
-								disabled={true}
-								value={state.clusterModuleData[state?.openCluster][state?.openModule]
-									.is_default_enabled}
-								onChange={() => {}}
-							/>
-
-							<div class="pt-3" />
 
 							{#await createCmdDataTable(state?.openModule)}
 								<Message type="loading">Loading commands...</Message>
@@ -226,7 +211,11 @@
 								<div class="overflow-x-auto space-y-4">
 									<!-- Header -->
 									<header class="flex justify-between gap-4">
-										<Search handler={data.handler} />
+										<Search
+											handler={data.handler}
+											category={state.clusterModuleData[state?.openCluster][state?.openModule]
+												?.name}
+										/>
 										<RowsPerPage handler={data.handler} />
 									</header>
 
@@ -242,14 +231,22 @@
 												>
 											</tr>
 											<tr class="bg-surface-800">
-												<ThFilter handler={data.handler} filterBy={'full_name'} />
-												<ThFilter handler={data.handler} filterBy={'description'} />
-												<ThFilter handler={data.handler} filterBy={'arguments'} />
-												<ThFilter handler={data.handler} filterBy={'search_permissions'} />
+												<ThFilter handler={data.handler} filterBy={'full_name'} what="Name" />
+												<ThFilter
+													handler={data.handler}
+													filterBy={'description'}
+													what="Description"
+												/>
+												<ThFilter handler={data.handler} filterBy={'arguments'} what="Arguments" />
+												<ThFilter
+													handler={data.handler}
+													filterBy={'search_permissions'}
+													what="Permissions"
+												/>
 											</tr>
 										</thead>
 
-										<tbody>
+										<tbody class="bg-surface-500">
 											{#each $cmdDataTable as row}
 												<tr>
 													<td>

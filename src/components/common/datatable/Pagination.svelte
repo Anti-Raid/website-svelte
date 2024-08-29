@@ -7,10 +7,10 @@
 </script>
 
 <!-- Desktop buttons -->
-<section class="btn-group variant-ghost-surface [&>*+*]:border-surface-500 h-10 hidden lg:block">
+<section class="text-white font-semibold font-monster btn-group border-none h-10 hidden lg:block">
 	<button
 		type="button"
-		class="hover:variant-soft-primary"
+		class="bg-surface-600 border border-primary-200 rounded-md"
 		class:disabled={$pageNumber === 1}
 		on:click={() => handler.setPage('previous')}
 	>
@@ -19,7 +19,7 @@
 	{#each $pages as page}
 		<button
 			type="button"
-			class="hover:variant-soft-primary"
+			class="bg-surface-400/50 rounded-md"
 			class:active={$pageNumber === page}
 			class:ellipse={page === null}
 			on:click={() => handler.setPage(page)}
@@ -29,7 +29,7 @@
 	{/each}
 	<button
 		type="button"
-		class="hover:variant-soft-primary"
+		class="bg-surface-600 border border-primary-200 rounded-md"
 		class:disabled={$pageNumber === $pageCount}
 		on:click={() => handler.setPage('next')}
 	>

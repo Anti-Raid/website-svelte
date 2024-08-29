@@ -53,7 +53,11 @@
 						} `}
 					>
 						<div data-theme={th.color} class="flex items-center justify-between w-full">
-							<span class={`text-white font-bold font-cabin tracking-tight hover:bg-${String(th.color)}-500`}>
+							<span
+								class={`text-white font-bold font-cabin tracking-tight hover:bg-${String(
+									th.color
+								)}-500`}
+							>
 								{th.label}
 							</span>
 							<Icon

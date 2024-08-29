@@ -8,6 +8,7 @@
 	export let minlength: number;
 	export let maxlength: number | undefined = undefined;
 	export let value: string = '';
+	export let extClass: string | undefined = undefined;
 	export let showErrors: boolean = true;
 	export let description: string = '';
 	export let required: boolean = true;
@@ -51,9 +52,9 @@
 	{maxlength}
 	type="text"
 	{id}
-	class={disabled
-		? 'mt-2 w-full mx-auto flex bg-surface-600/50 bg-opacity-30 text-gray-100 rounded-xl border border-primary-200 opacity-75 py-3 px-3 disabled cursor-not-allowed'
-		: 'mt-2 w-full mx-auto flex transition duration-200 hover:bg-surface-700 bg-surface-600 bg-opacity-100 text-white focus:text-primary-400 rounded-xl border border-primary-200 focus:border-primary-400 focus:outline-none py-3 px-3'}
+	class="{disabled
+		? 'mt-2 w-[30%] flex bg-surface-600/50 bg-opacity-30 text-gray-100 rounded-xl border border-primary-200 opacity-75 py-3 px-3 disabled cursor-not-allowed'
+		: 'mt-2 w-[30%] flex transition duration-200 hover:bg-surface-700 bg-surface-600 bg-opacity-100 text-white font-semibold font-monster rounded-xl border border-primary-200 focus:outline-none py-3 px-3'} {extClass}"
 	{placeholder}
 	{required}
 	{disabled}
