@@ -61,7 +61,7 @@
 />
 
 <section>
-	<div class="text-center lg:text-left">
+	<div class="text-center md:text-left">
 		<h1
 			class="text-4xl font-monster font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl"
 		>
@@ -69,7 +69,7 @@
 		</h1>
 
 		<p
-			class="mt-3 text-base text-white font-semibold font-cabin ml-3 sm:mt-5 sm:text-lg md:ml-0 md:mt-5 md:text-xl lg:ml-0 lg:mx-0"
+			class="mt-3 text-base text-center md:text-left text-white font-semibold font-cabin ml-3 sm:mt-5 sm:text-lg md:ml-0 md:mt-5 md:text-xl lg:ml-0 lg:mx-0"
 		>
 			Learn more about <span class="text-indigo-600 font-bold">AntiRaid</span> and our team!
 		</p>
@@ -77,7 +77,7 @@
 
 	<div class="p-4" />
 
-	<p class="mx-4 text-md md:text-xl text-white font-cabin font-semibold text-center">
+	<p class="text-md md:text-xl text-white font-cabin font-semibold text-center md:text-left">
 		AntiRaid offers powerful, automated protection for your Discord server. Designed to combat spam,
 		harmful bots, and disruptive behavior, our advanced moderation technology ensures a safe and
 		welcoming environment. With AntiRaid, you can focus on engaging with your community while we
@@ -89,8 +89,12 @@
 
 	<section id="features">
 		<div id="features-what" class="text-center">
-			<h2 class="text-4xl font-cabin font-extrabold text-indigo-600">Features</h2>
-			<p class="font-monster text-xl text-white lg:mx-auto">What do we have to offer?</p>
+			<h2 class="text-4xl font-cabin font-extrabold text-center md:text-left text-indigo-600">
+				Features
+			</h2>
+			<p class="font-monster text-xl text-white text-center md:text-left lg:mx-auto">
+				What do we have to offer?
+			</p>
 		</div>
 		<div class="mt-5" />
 
@@ -104,8 +108,10 @@
 	<div class="py-10">
 		<section id="staff">
 			<div class="text-center">
-				<h2 class="text-4xl font-cabin font-extrabold text-indigo-600">Meet the Team!</h2>
-				<p class="font-monster text-xl text-white lg:mx-auto">
+				<h2 class="text-4xl font-cabin font-extrabold text-center md:text-left text-indigo-600">
+					Meet the Team!
+				</h2>
+				<p class="font-monster text-xl text-white text-center md:text-left lg:mx-auto">
 					Interested in joining our team? Join our <a
 						href="/discord"
 						class="text-indigo-600 font-bold xl:inline hover:text-red-600">Discord Server</a
