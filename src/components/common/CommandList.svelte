@@ -92,7 +92,7 @@
 
 <!--Cluster Menu at the right of the page-->
 <article class="command-list-article overflow-x-auto overflow-y-hidden h-full">
-	<section class="mt-5 command-list flex flex-grow">
+	<section class="mt-5 command-list lg:flex lg:flex-grow">
 		<nav class="cluster-map flex-none border-r border-slate-500 w-28">
 			{#each instanceList?.Instances as instance}
 				<NavButton
@@ -150,7 +150,7 @@
 				</ul>
 
 				<!--Module list-->
-				<section class="cluster-module-list flex flex-grow">
+				<section class="cluster-module-list lg:flex lg:flex-grow">
 					<!--Bar-->
 					<nav class="cluster-map flex-none border-r border-slate-500 w-40">
 						{#each Object.entries(state.clusterModuleData[state?.openCluster]) as [_, module]}
