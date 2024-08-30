@@ -171,7 +171,7 @@
 					<!--Content-->
 					<div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
 						{#if state.openModule}
-							<h1 class="text-2xl font-semibold leading-6 font-monster">
+							<h1 class="text-2xl text-white font-semibold leading-6 font-monster">
 								{state.clusterModuleData[state?.openCluster][state?.openModule]?.name}
 							</h1>
 							<p class="text-slate-200 text-base font-semibold font-cabin">
