@@ -291,7 +291,7 @@
 																		>{#if arg.required}<span
 																				class="text-red-400 font-semibold text-lg"
 																				>*<span class="sr-only">Required parameter)</span></span
-																			>{/if}{#if arg.description}: <em>{arg.description}</em>{/if}
+																			>{/if}{#if arg.description}: <em class="text-white">{arg.description}</em>{/if}
 																	</span>
 																</li>
 															{/each}
