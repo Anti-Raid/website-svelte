@@ -292,9 +292,8 @@
 																	<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
 																		<span class="font-semibold">{arg.name}</span>
 
-																		{#if arg.required}<span class="text-red-400 font-semibold"
-																				>*<span class="sr-only">(Required parameter)</span></span
-																			>
+																		{#if arg.required}
+																			<span class="text-red-400 font-semibold">*</span>
 																		{/if}
 
 																		{#if arg.description}

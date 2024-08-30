@@ -101,8 +101,8 @@ export const getDispatchType = (
 						'type',
 						inner.String.kind.Template.kind
 							? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}:${Object.keys(
-								inner.String.kind.Template.kind
-							)[0]?.toLowerCase()}`
+									inner.String.kind.Template.kind
+							  )[0]?.toLowerCase()}`
 							: 'string:template'
 					);
 				else if (inner.String.kind.Channel) {
@@ -284,7 +284,7 @@ export const createFieldsForCreate = (
 	};
 
 	return payload;
-}
+};
 
 export const createFieldsForUpdate = (
 	columnField: Record<string, any>,
@@ -325,9 +325,7 @@ export const createFieldsForUpdate = (
 
 		// Add to dependencyFields
 		if (referencedVariables) {
-			dependencyFields.push(
-				...referencedVariables.filter((v) => !dependencyFields.includes(v))
-			);
+			dependencyFields.push(...referencedVariables.filter((v) => !dependencyFields.includes(v)));
 		}
 	});
 
@@ -360,7 +358,7 @@ export const createFieldsForUpdate = (
 	};
 
 	return payload;
-}
+};
 
 interface SettingsFetchQueueEntry {
 	guildId: string;
@@ -371,7 +369,7 @@ interface SettingsFetchQueueEntry {
 
 /**
  * A queue for fetching settings from the server
- * 
+ *
  * NOTE: All settings requests should go through this queue to prevent spamming the server
  */
 class SettingsFetchQueue {
