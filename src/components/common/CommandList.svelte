@@ -171,7 +171,7 @@
 					<!--Content-->
 					<div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
 						{#if state.openModule}
-							<h1 class="text-2xl font-semibold leading-6 font-monster">
+							<h1 class="text-2xl font-semibold leading-6 text-white font-monster">
 								{state.clusterModuleData[state?.openCluster][state?.openModule]?.name}
 							</h1>
 							<p class="text-slate-200 text-base font-semibold font-cabin">
@@ -246,7 +246,7 @@
 											</tr>
 										</thead>
 
-										<tbody class="bg-surface-500">
+										<tbody class="bg-surface-500 text-white">
 											{#each $cmdDataTable as row}
 												<tr>
 													<td>
@@ -286,7 +286,7 @@
 													</td>
 													<td>
 														<span>
-															<ul class="list-disc list-outside">
+															<ul class="list-disc list-outside text-white">
 																{#each row.arguments as arg, i}
 																	<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
 																		<span class="font-semibold">{arg.name}</span>
@@ -304,7 +304,7 @@
 														</span>
 													</td>
 													<td>
-														<ul class="list-disc list-outside">
+														<ul class="list-disc list-outside text-white">
 															{#each row.extended_data?.default_perms?.Simple?.checks || [] as check}
 																<li class="mr-2">
 																	<pre class="command-parameter">{check.kittycat_perms}</pre>
