@@ -6,7 +6,7 @@
 	import SettingsCreateRow from './SettingsCreateRow.svelte';
 	import SettingsRow from './SettingsRow.svelte';
 	import SettingsView from './SettingsView.svelte';
-	import { settingsFetchQueue } from './types';
+	import { settingsFetchQueue } from '$lib/ui/settings';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
@@ -14,7 +14,6 @@
 	export let guildData: UserGuildBaseData;
 	export let guildId: string;
 	export let filters: Record<string, any> = {}; // Any filters to apply
-	export let debugMode: boolean = false;
 
 	let offset: number = 0;
 
@@ -48,7 +47,6 @@
 		{module}
 		{guildData}
 		{guildId}
-		{debugMode}
 		{settings}
 		bind:offset
 	/>

@@ -9,11 +9,10 @@
 	} from '$lib/generated/silverpelt';
 	import { SettingsExecute, SettingsExecuteResponse } from '$lib/generated/types';
 	import logger from '$lib/ui/logger';
-	import { templateToStringLite } from '$lib/ui/settings';
+	import { templateToStringLite, OperationTypes, settingsFetchQueue } from '$lib/ui/settings';
 	import NoticeArea from '../common/noticearea/NoticeArea.svelte';
 	import Message from '../Message.svelte';
 	import SettingsSuggestionInput from './SettingsSuggestionInput.svelte';
-	import { OperationTypes, settingsFetchQueue } from './types';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let guildId: string;

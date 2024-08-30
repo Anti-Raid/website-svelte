@@ -1,16 +1,6 @@
 <script lang="ts">
-	import {
-		CanonicalColumn,
-		CanonicalConfigOption,
-		CanonicalModule
-	} from '$lib/generated/silverpelt';
-	import { getDispatchType, deriveColumnState, ColumnState, DispatchType } from '$lib/ui/settings';
-	import InputDispatcher from '../inputs/generic/InputDispatcher.svelte';
-	import SettingsSuggestionBox from './SettingsSuggestionBox.svelte';
-	import { DerivedData, OperationTypes } from './types';
-	import logger from '$lib/ui/logger';
-	import BoxButton from '../inputs/button/BoxButton.svelte';
-	import Spacer from '../inputs/Spacer.svelte';
+	import { CanonicalConfigOption, CanonicalModule } from '$lib/generated/silverpelt';
+
 	import { SettingsExecuteResponse, UserGuildBaseData } from '$lib/generated/types';
 	import SettingsCreateRow from './SettingsCreateRow.svelte';
 	import SettingsRow from './SettingsRow.svelte';
@@ -20,22 +10,13 @@
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
 	export let guildId: string;
-	export let debugMode: boolean;
 	export let settings: SettingsExecuteResponse;
 	export let offset: number;
 </script>
 
 <div class="setting" id={configOpt.id}>
 	{#if (!configOpt?.max_entries || settings?.fields?.length < configOpt?.max_entries) && configOpt?.operations['Create']}
-		<SettingsCreateRow
-			{settings}
-			{configOpt}
-			{module}
-			{guildData}
-			{guildId}
-			{debugMode}
-			{clusterModules}
-		/>
+		<SettingsCreateRow {settings} {configOpt} {module} {guildData} {guildId} {clusterModules} />
 	{/if}
 
 	{#each settings?.fields || [] as columnField, i}
@@ -47,7 +28,6 @@
 			{guildId}
 			{configOpt}
 			bind:settings
-			{debugMode}
 			{clusterModules}
 		/>
 	{/each}

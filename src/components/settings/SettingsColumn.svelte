@@ -7,7 +7,7 @@
 	import { getDispatchType, deriveColumnState, ColumnState, DispatchType } from '$lib/ui/settings';
 	import InputDispatcher from '../inputs/generic/InputDispatcher.svelte';
 	import SettingsSuggestionBox from './SettingsSuggestionBox.svelte';
-	import { DerivedData, OperationTypes } from './types';
+	import { DerivedData, OperationTypes } from '$lib/ui/settings';
 	import logger from '$lib/ui/logger';
 	import BoxButton from '../inputs/button/BoxButton.svelte';
 	import Spacer from '../inputs/Spacer.svelte';
@@ -23,7 +23,6 @@
 	export let value: any;
 	export let currentOperationType: OperationTypes;
 	export let column: CanonicalColumn;
-	export let debugMode: boolean;
 	export let columnState: ColumnState;
 	export let columnDispatchType: DispatchType;
 
@@ -84,6 +83,7 @@
 		channelConstraints={columnDispatchType?.channel_constraints}
 		bitflagValues={columnDispatchType?.bitflag_values}
 		multiple={!!columnDispatchType?.resolved_column_type?.Array}
+		extClass={''}
 	/>
 {/if}
 

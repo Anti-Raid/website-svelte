@@ -8,12 +8,14 @@
 		getDispatchType,
 		deriveColumnState,
 		templateToStringLite,
-		ColumnState
+		ColumnState,
+		createFieldsForUpdate
 	} from '$lib/ui/settings';
 	import Icon from '@iconify/svelte';
-	import { DerivedData, OperationTypes } from './types';
+	import { DerivedData, OperationTypes } from '$lib/ui/settings';
 	import Message from '../Message.svelte';
 	import SettingsColumn from './SettingsColumn.svelte';
+	import Debug from '../common/Debug.svelte';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
@@ -42,7 +44,6 @@
 	export let columnField: Record<string, any>;
 	export let index: number;
 	export let settings: SettingsExecuteResponse;
-	export let debugMode: boolean;
 
 	// The current operation type this row is under
 	let currentOperationType: OperationTypes = 'Update';
@@ -69,80 +70,12 @@
 		const creds = getAuthCreds();
 		if (!creds) throw new Error('No auth credentials found');
 
-		let fields: Record<string, any> = {};
-
-		let dependencyFields: string[] = [];
-		Object.keys(columnField).forEach((k) => {
-			let column = configOpt.columns.find((c) => c.id === k);
-
-			if (!column) {
-				return;
-			}
-
-			if (configOpt.primary_key != column.id && column.ignored_for.includes('Update')) {
-				return;
-			}
-
-			let dispatchType = getDispatchType(columnField, column);
-
-			let referencedVariables = dispatchType.referenced_variables;
-
-			logger.debug('editRow', 'Referenced variables', referencedVariables, k);
-
-			// Ignore unchanged fields that are not the primary key
-			if (isEqual(columnField[k], settings.fields[index][k]) && k != configOpt.primary_key) {
-				return;
-			}
-
-			if (allDerivedData[k]?.isCleared) {
-				// Check if isCleared
-				fields[k] = null;
-
-				// Add to dependencyFields
-				if (referencedVariables) {
-					dependencyFields.push(
-						...referencedVariables.filter((v) => !dependencyFields.includes(v))
-					);
-				}
-			} else {
-				fields[k] = columnField[k];
-
-				// Add to dependencyFields
-				if (referencedVariables) {
-					dependencyFields.push(
-						...referencedVariables.filter((v) => !dependencyFields.includes(v))
-					);
-				}
-			}
-		});
-
-		logger.info('editRow', 'Dependency fields', dependencyFields);
-
-		// Add all dependency fields to the edit
-		dependencyFields.forEach((k) => {
-			let column = configOpt.columns.find((c) => c.id === k);
-
-			if (!column) {
-				return;
-			}
-
-			if (configOpt.primary_key != column.id && column.ignored_for.includes('Update')) {
-				return;
-			}
-
-			if (!columnField[k]) {
-				fields[k] = null;
-			} else {
-				fields[k] = columnField[k];
-			}
-		});
-
-		let payload: SettingsExecute = {
-			operation: 'Update',
-			module: module.id,
-			setting: configOpt.id,
-			fields
-		};
+		let payload = createFieldsForUpdate(
+			columnField,
+			configOpt,
+			settings.fields[index],
+			allDerivedData
+		);
 
 		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
 			method: 'POST',
@@ -247,7 +180,6 @@
 					{column}
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
-					{debugMode}
 					{clusterModules}
 					bind:allDerivedData
 				/>
@@ -293,9 +225,12 @@
 		/>
 	{/if}
 
-	{#if debugMode}
-		<p>{JSON.stringify(settings.fields[index])} {JSON.stringify(columnField)}</p>
-	{/if}
+	<Debug
+		data={{
+			currentOperationType: currentOperationType,
+			columnField: columnField
+		}}
+	/>
 
 	{#if noticeProps}
 		<NoticeArea props={noticeProps} />

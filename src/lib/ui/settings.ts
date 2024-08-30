@@ -5,8 +5,14 @@ import {
 	CanonicalInnerColumnType
 } from '$lib/generated/silverpelt';
 import { ChannelConstraints } from '$lib/inputconstraints';
-import { OperationTypes } from '../../components/settings/types';
 import logger from './logger';
+import { getAuthCreds } from '$lib/auth/getAuthCreds';
+import { get } from '$lib/configs/functions/services';
+import { fetchClient } from '$lib/fetch/fetch';
+import { SettingsExecute, SettingsExecuteResponse } from '$lib/generated/types';
+import isEqual from 'lodash.isequal';
+
+export type OperationTypes = 'View' | 'Create' | 'Update' | 'Delete';
 
 export interface DispatchType {
 	// The type of the input
@@ -95,8 +101,8 @@ export const getDispatchType = (
 						'type',
 						inner.String.kind.Template.kind
 							? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}:${Object.keys(
-									inner.String.kind.Template.kind
-							  )[0]?.toLowerCase()}`
+								inner.String.kind.Template.kind
+							)[0]?.toLowerCase()}`
 							: 'string:template'
 					);
 				else if (inner.String.kind.Channel) {
@@ -239,3 +245,227 @@ export const templateToStringLite = (template: string, fields: Record<string, an
 
 	return nt;
 };
+
+/**
+ * Wrapper interface for derived data
+ */
+export interface DerivedData {
+	dispatchType: DispatchType;
+	columnState: ColumnState;
+	forceRederive?: boolean;
+	isCleared: boolean;
+}
+
+export const createFieldsForCreate = (
+	columnField: Record<string, any>,
+	configOpt: CanonicalConfigOption
+): SettingsExecute => {
+	let fields: Record<string, any> = {};
+
+	Object.keys(columnField).forEach((k) => {
+		let column = configOpt.columns.find((c) => c.id === k);
+
+		if (!column) {
+			return;
+		}
+
+		if (column.ignored_for.includes('Create')) {
+			return;
+		}
+
+		fields[k] = columnField[k];
+	});
+
+	let payload: SettingsExecute = {
+		operation: 'Create',
+		module: module.id,
+		setting: configOpt.id,
+		fields
+	};
+
+	return payload;
+}
+
+export const createFieldsForUpdate = (
+	columnField: Record<string, any>,
+	configOpt: CanonicalConfigOption,
+	oldFields: Record<string, any>,
+	allDerivedData: Record<string, DerivedData>
+): SettingsExecute => {
+	let fields: Record<string, any> = {};
+	let dependencyFields: string[] = [];
+	Object.keys(columnField).forEach((k) => {
+		let column = configOpt.columns.find((c) => c.id === k);
+
+		if (!column) {
+			return;
+		}
+
+		if (configOpt.primary_key != column.id && column.ignored_for.includes('Update')) {
+			return;
+		}
+
+		let dispatchType = getDispatchType(columnField, column);
+
+		let referencedVariables = dispatchType.referenced_variables;
+
+		//logger.debug('editRow', 'Referenced variables', referencedVariables, k);
+
+		// Ignore unchanged fields that are not the primary key
+		if (isEqual(columnField[k], oldFields[k]) && k != configOpt.primary_key) {
+			return;
+		}
+
+		// Check if isCleared
+		if (allDerivedData[k]?.isCleared) {
+			fields[k] = null;
+		} else {
+			fields[k] = columnField[k];
+		}
+
+		// Add to dependencyFields
+		if (referencedVariables) {
+			dependencyFields.push(
+				...referencedVariables.filter((v) => !dependencyFields.includes(v))
+			);
+		}
+	});
+
+	logger.info('editRow', 'Dependency fields', dependencyFields);
+
+	// Add all dependency fields to the edit
+	dependencyFields.forEach((k) => {
+		let column = configOpt.columns.find((c) => c.id === k);
+
+		if (!column) {
+			return;
+		}
+
+		if (configOpt.primary_key != column.id && column.ignored_for.includes('Update')) {
+			return;
+		}
+
+		if (!columnField[k]) {
+			fields[k] = null;
+		} else {
+			fields[k] = columnField[k];
+		}
+	});
+
+	let payload: SettingsExecute = {
+		operation: 'Update',
+		module: module.id,
+		setting: configOpt.id,
+		fields
+	};
+
+	return payload;
+}
+
+interface SettingsFetchQueueEntry {
+	guildId: string;
+	exec: SettingsExecute;
+	resolve: (value: SettingsExecuteResponse) => void;
+	reject: (reason?: any) => void;
+}
+
+/**
+ * A queue for fetching settings from the server
+ * 
+ * NOTE: All settings requests should go through this queue to prevent spamming the server
+ */
+class SettingsFetchQueue {
+	private cachedSettings: Map<string, SettingsExecuteResponse>;
+	private fetchQueue: SettingsFetchQueueEntry[];
+	private hasStartedQueue: boolean;
+
+	constructor() {
+		this.cachedSettings = new Map();
+		this.fetchQueue = [];
+		this.hasStartedQueue = false;
+	}
+
+	async addToQueue(
+		guildId: string,
+		settingsExecute: SettingsExecute
+	): Promise<SettingsExecuteResponse> {
+		if (!this.hasStartedQueue) {
+			this.processQueue();
+		}
+		let promise = new Promise<SettingsExecuteResponse>((resolve, reject) => {
+			this.fetchQueue.push({ guildId, exec: settingsExecute, resolve, reject });
+		});
+		return promise;
+	}
+
+	private createKey(settingsExecute: SettingsExecute): string | null {
+		// Only view should cache as only view is idempotent
+		if (settingsExecute.operation === 'View') {
+			return JSON.stringify(settingsExecute);
+		}
+		return null;
+	}
+
+	private async fetchSetting(
+		guildId: string,
+		settingsExecute: SettingsExecute
+	): Promise<SettingsExecuteResponse> {
+		let key = this.createKey(settingsExecute);
+
+		if (key) {
+			let cachedSetting = this.cachedSettings.get(key);
+			if (cachedSetting) {
+				return cachedSetting;
+			}
+		}
+
+		const creds = getAuthCreds();
+		if (!creds) throw new Error('No auth credentials found');
+
+		const res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
+			method: 'POST',
+			auth: creds?.token,
+			body: JSON.stringify(settingsExecute)
+		});
+
+		if (!res.ok) {
+			let err = await res.error('Failed to fetch settings for this module');
+			throw new Error(err);
+		}
+
+		const data = await res.json();
+
+		if (key) {
+			this.cachedSettings.set(key, data);
+		}
+
+		return data;
+	}
+
+	private async processQueue() {
+		if (this.hasStartedQueue) {
+			return; // Ensure we only have one queue running at a time
+		}
+
+		this.hasStartedQueue = true;
+
+		while (true) {
+			let entry = this.fetchQueue.shift();
+			if (!entry) {
+				await new Promise((resolve) => setTimeout(resolve, 500));
+				continue;
+			}
+			try {
+				let data = await this.fetchSetting(entry.guildId, entry.exec);
+				entry.resolve(data);
+			} catch (e) {
+				entry.reject(e);
+			}
+
+			// Sleep for 500ms to allow event loop to process other tasks
+			await new Promise((resolve) => setTimeout(resolve, 500));
+		}
+	}
+}
+
+export let settingsFetchQueue = new SettingsFetchQueue();

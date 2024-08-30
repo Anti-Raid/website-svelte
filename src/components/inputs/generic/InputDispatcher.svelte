@@ -32,6 +32,7 @@ Note: this may be less performant than using the concrete input components direc
 	export let value: any;
 	export let showErrors: boolean = true;
 	export let disabled: boolean = false;
+	export let extClass: string | undefined;
 	export let choices: { [label: string]: string } | undefined;
 	export let multiple: boolean = false;
 
@@ -127,6 +128,9 @@ Note: this may be less performant than using the concrete input components direc
 					{showErrors}
 					{disabled}
 					{choices}
+					{bitflagValues}
+					{channelConstraints}
+					{extClass}
 					multiple={false}
 				/>
 
@@ -141,7 +145,7 @@ Note: this may be less performant than using the concrete input components direc
 	{:else}
 		<p class="text-gray-200">No values added</p>
 	{/if}
-{:else if type == 'number' || type == "integer"}
+{:else if type == 'number' || type == 'integer'}
 	<InputNumber
 		{id}
 		{label}
@@ -152,6 +156,7 @@ Note: this may be less performant than using the concrete input components direc
 		bind:value
 		{showErrors}
 		{disabled}
+		inpClass={extClass}
 	/>
 {:else if type == 'boolean'}
 	<BoolInput
