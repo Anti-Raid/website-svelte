@@ -138,7 +138,7 @@
 				<ul class="mt-4">
 					{#each state.searchedCommands as searchedCommand}
 						<li class="cluster-search-command mb-7">
-							<h3 class="text-xl font-bold">{searchedCommand?.command?.full_name}</h3>
+							<h3 class="text-xl text-white font-bold">{searchedCommand?.command?.full_name}</h3>
 
 							{#if searchedCommand?.command?.description}
 								<p class="text-slate-200">{searchedCommand?.command?.description}</p>
