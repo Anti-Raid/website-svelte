@@ -97,7 +97,7 @@
 				{#each instanceList.Instances as instance}
 					<tr class="hover:bg-slate-950">
 						<td class="px-4 py-3 whitespace-nowrap">
-							<div class="text-md font-semibold font-monster">
+							<div class="text-md font-extrabold font-monster text-white">
 								{instanceList?.Map?.find((cluster) => cluster.ID == instance?.ClusterID)?.Name}
 							</div>
 							<span
