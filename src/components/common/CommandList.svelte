@@ -286,7 +286,6 @@
 													</td>
 													<td>
 														<span>
-															{JSON.stringify(row.arguments)}
 															<ul class="list-disc list-outside">
 																{#each row.arguments as arg, i}
 																	<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
