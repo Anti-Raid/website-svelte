@@ -251,12 +251,12 @@
 												<tr>
 													<td>
 														{#if row.subcommand_depth == 0}
-															<span class="font-semibold">
+															<span class="font-semibold text-white">
 																{row.name}
 															</span>
 														{:else}
 															<span class="whitespace-nowrap">
-																<span class="font-semibold">{row?.parent_command?.name}</span
+																<span class="font-semibold text-white">{row?.parent_command?.name}</span
 																>{' '}<em>{row.name}</em>
 															</span>
 														{/if}
@@ -275,7 +275,7 @@
 															</div>
 														{/if}
 													</td>
-													<td>
+													<td class="font-semibold text-white">
 														{#if row.description}
 															{row.description}
 														{:else}
@@ -287,7 +287,7 @@
 															{#each row.arguments as arg, i}
 																<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
 																	<span class="command-argument">
-																		<span class="font-semibold">{arg.name}</span
+																		<span class="font-semibold text-white">{arg.name}</span
 																		>{#if arg.required}<span
 																				class="text-red-400 font-semibold text-lg"
 																				>*<span class="sr-only">Required parameter)</span></span
