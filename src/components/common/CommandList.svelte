@@ -92,7 +92,7 @@
 
 <!--Cluster Menu at the right of the page-->
 <article class="command-list-article overflow-x-auto overflow-y-hidden h-full">
-	<section class="mt-5 command-list lg:flex lg:flex-grow">
+	<section class="mt-5 command-list flex flex-grow">
 		<nav class="cluster-map flex-none border-r border-slate-500 w-28">
 			{#each instanceList?.Instances as instance}
 				<NavButton
@@ -138,7 +138,7 @@
 				<ul class="mt-4">
 					{#each state.searchedCommands as searchedCommand}
 						<li class="cluster-search-command mb-7">
-							<h3 class="text-xl text-white font-bold">{searchedCommand?.command?.full_name}</h3>
+							<h3 class="text-xl font-bold">{searchedCommand?.command?.full_name}</h3>
 
 							{#if searchedCommand?.command?.description}
 								<p class="text-slate-200">{searchedCommand?.command?.description}</p>
@@ -150,7 +150,7 @@
 				</ul>
 
 				<!--Module list-->
-				<section class="cluster-module-list lg:flex lg:flex-grow">
+				<section class="cluster-module-list flex flex-grow">
 					<!--Bar-->
 					<nav class="cluster-map flex-none border-r border-slate-500 w-40">
 						{#each Object.entries(state.clusterModuleData[state?.openCluster]) as [_, module]}
@@ -171,7 +171,7 @@
 					<!--Content-->
 					<div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
 						{#if state.openModule}
-							<h1 class="text-2xl text-white font-semibold leading-6 font-monster">
+							<h1 class="text-2xl font-semibold leading-6 font-monster">
 								{state.clusterModuleData[state?.openCluster][state?.openModule]?.name}
 							</h1>
 							<p class="text-slate-200 text-base font-semibold font-cabin">
@@ -251,12 +251,12 @@
 												<tr>
 													<td>
 														{#if row.subcommand_depth == 0}
-															<span class="font-semibold text-white">
+															<span class="font-semibold">
 																{row.name}
 															</span>
 														{:else}
 															<span class="whitespace-nowrap">
-																<span class="font-semibold text-white">{row?.parent_command?.name}</span
+																<span class="font-semibold">{row?.parent_command?.name}</span
 																>{' '}<em>{row.name}</em>
 															</span>
 														{/if}
@@ -275,27 +275,35 @@
 															</div>
 														{/if}
 													</td>
-													<td class="font-semibold text-white">
-														{#if row.description}
-															{row.description}
-														{:else}
-															Mystery Box?
-														{/if}
+													<td>
+														<span>
+															{#if row.description}
+																{row.description}
+															{:else}
+																Mystery Box?
+															{/if}
+														</span>
 													</td>
 													<td>
-														<ul class="list-disc list-outside">
-															{#each row.arguments as arg, i}
-																<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
-																	<span class="command-argument">
-																		<span class="font-semibold text-white">{arg.name}</span
-																		>{#if arg.required}<span
-																				class="text-red-400 font-semibold text-lg"
-																				>*<span class="sr-only">Required parameter)</span></span
-																			>{/if}{#if arg.description}: <em class="text-white">{arg.description}</em>{/if}
-																	</span>
-																</li>
-															{/each}
-														</ul>
+														<span>
+															{JSON.stringify(row.arguments)}
+															<ul class="list-disc list-outside">
+																{#each row.arguments as arg, i}
+																	<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
+																		<span class="font-semibold">{arg.name}</span>
+
+																		{#if arg.required}<span class="text-red-400 font-semibold"
+																				>*<span class="sr-only">(Required parameter)</span></span
+																			>
+																		{/if}
+
+																		{#if arg.description}
+																			<span>: </span><em>{arg.description}</em>
+																		{/if}
+																	</li>
+																{/each}
+															</ul>
+														</span>
 													</td>
 													<td>
 														<ul class="list-disc list-outside">
