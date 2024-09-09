@@ -24,7 +24,7 @@
         }
 </script>
 
-<div class="font-monster font-semibold text-{color}{color === 'white' ? '' : '-500'} text-{big ? '4xl text-center': '2xl'} tracking-tight">
-   <Icon icon="mdi:{icon}" class="animate-spin {big ? 'block m-auto ' : 'inline-block text-2xl'}" />
+<div class="font-cabin font-semibold text-{color}{color === 'white' ? '' : '-500'} text-{big ? '4xl text-center': '2xl'} tracking-tight">
+   <Icon icon="mdi:{icon}" class="{big ? 'block m-auto ' : 'inline-block text-2xl'}" />
    <slot />
 </div>
