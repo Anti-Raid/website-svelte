@@ -24,7 +24,7 @@
         }
 </script>
 
-<div class="font-cabin font-semibold text-{color}{color === 'white' ? '' : '-500'} text-{big ? '4xl text-center': '2xl'} tracking-tight">
+<div class="mt-2 font-cabin font-medium text-{color}{color === 'white' ? '' : '-500/80'} text-{big ? '4xl text-center': '2xl'}">
    <Icon icon="mdi:{icon}" class="{big ? 'block m-auto ' : 'inline-block text-2xl'}" />
    <slot />
 </div>
