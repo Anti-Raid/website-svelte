@@ -11,12 +11,12 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 <dialog
-	class="modal"
+	class="modal z-50 mx-auto w-[40em] z-50 mx-auto bg-gray-800 rounded-lg shadow-xl"
 	bind:this={dialog}
 	on:close={() => (showModal = false)}
 	on:click|self={() => dialog.close()}
 >
-	<div class="modal z-50 mx-auto w-[40em] z-50 mx-auto bg-gray-800 rounded-lg shadow-xl">
+	<div class="z-50 w-full mx-auto">
 		<div
 			class="flex justify-between items-center head bg-surface-800 text-primary-400 py-5 px-8 text-2xl font-extrabold bg-surface-600 rounded-lg shadow-xl"
 		>
