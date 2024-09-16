@@ -26,7 +26,7 @@
         }
 </script>
 
-<div class="mt-4 font-cabin font-medium text-{color}{color === 'white' ? '' : '-500'} text-{big ? '4xl text-center': '2xl'}" + extClass ? " " + extClass : "">
+<div class="mt-4 font-cabin font-medium text-{color}{color === 'white' ? '' : '-500'} text-{big ? '4xl text-center': '2xl'} {extClass || ''}">
    <Icon icon="mdi:{icon}" class="{big ? 'block m-auto ' : 'inline-block text-2xl'}" />
    <slot />
 </div>
