@@ -6,9 +6,11 @@
 
         let icon = '';
         let color = '';
+	let extClass = ''
         if (type === 'loading') {
            icon = 'loading';
            color = 'white';
+	   extClass = 'animate-spin';
         }
         if (type === 'info') {
            icon = 'information';
@@ -24,7 +26,7 @@
         }
 </script>
 
-<div class="mt-4 font-cabin font-medium text-{color}{color === 'white' ? '' : '-500'} text-{big ? '4xl text-center': '2xl'}">
+<div class="mt-4 font-cabin font-medium text-{color}{color === 'white' ? '' : '-500'} text-{big ? '4xl text-center': '2xl'}" + extClass ? " " + extClass : "">
    <Icon icon="mdi:{icon}" class="{big ? 'block m-auto ' : 'inline-block text-2xl'}" />
    <slot />
 </div>
