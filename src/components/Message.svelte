@@ -10,7 +10,6 @@
         if (type === 'loading') {
            icon = 'loading';
            color = 'white';
-	   extClass = 'animate-spin';
         }
         if (type === 'info') {
            icon = 'information';
