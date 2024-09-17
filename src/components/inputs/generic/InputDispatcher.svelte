@@ -18,6 +18,7 @@ Note: this may be less performant than using the concrete input components direc
 	import { ChannelConstraints } from '$lib/inputconstraints';
 	import BitflagInput from '../BitflagInput.svelte';
 	import InputDescription from '../InputDescription.svelte';
+	import Debug from '../../common/Debug.svelte';
 
 	export let type: string;
 
@@ -31,6 +32,7 @@ Note: this may be less performant than using the concrete input components direc
 	export let value: any;
 	export let showErrors: boolean = true;
 	export let disabled: boolean = false;
+	export let extClass: string | undefined;
 	export let choices: { [label: string]: string } | undefined;
 	export let multiple: boolean = false;
 
@@ -126,6 +128,9 @@ Note: this may be less performant than using the concrete input components direc
 					{showErrors}
 					{disabled}
 					{choices}
+					{bitflagValues}
+					{channelConstraints}
+					{extClass}
 					multiple={false}
 				/>
 
@@ -140,7 +145,7 @@ Note: this may be less performant than using the concrete input components direc
 	{:else}
 		<p class="text-gray-200">No values added</p>
 	{/if}
-{:else if type == 'number'}
+{:else if type == 'number' || type == 'integer'}
 	<InputNumber
 		{id}
 		{label}
@@ -151,6 +156,7 @@ Note: this may be less performant than using the concrete input components direc
 		bind:value
 		{showErrors}
 		{disabled}
+		inpClass={extClass}
 	/>
 {:else if type == 'boolean'}
 	<BoolInput
@@ -188,9 +194,12 @@ Note: this may be less performant than using the concrete input components direc
 {:else if type == 'string:template:message'}
 	<Label {id} {label} />
 	<TemplateBuilder bind:rawTemplateOutput={value} bind:templateBuilderData={extState} />
-	<small class="text-white font-semibold">templateBuilderData: {JSON.stringify(extState)}</small><br
+	<Debug
+		data={{
+			templateBuilderData: extState,
+			templateFragment: value
+		}}
 	/>
-	<code class="text-white whitespace-pre-wrap">templateFragment: {value}</code>
 {:else if type.startsWith('string:template')}
 	<InputTextArea
 		{id}

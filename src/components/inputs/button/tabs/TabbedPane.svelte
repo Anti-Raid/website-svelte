@@ -5,6 +5,7 @@
 	interface Tab {
 		id: string;
 		label: string;
+		onClick?: () => void;
 	}
 
 	export let tabs: Tab[];
@@ -16,13 +17,20 @@
 	}
 </script>
 
-{#each tabs as tab}
-	<TabButton
-		visible={tab.id == visibleTab}
-		text={tab.label}
-		onClick={() => {
-			logger.info('TabButton.switch', tab.id);
-			visibleTab = tab.id;
-		}}
-	/>
-{/each}
+<div class="btn-group variant-filled text-sm rounded-md mt-1 mb-1">
+	{#each tabs as tab}
+		<TabButton
+			visible={tab.id == visibleTab}
+			text={tab.label}
+			onClick={() => {
+				if (tab.onClick) {
+					tab.onClick();
+					return;
+				} else {
+					logger.info('TabButton.switch', tab.id);
+					visibleTab = tab.id;
+				}
+			}}
+		/>
+	{/each}
+</div>

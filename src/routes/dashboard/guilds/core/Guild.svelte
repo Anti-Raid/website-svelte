@@ -12,6 +12,7 @@
 	import Content from './Content.svelte';
 	import Icon from '@iconify/svelte';
 	import { quickActions } from '../quickactions/actions';
+	import Debug from '../../../../components/common/Debug.svelte';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;
@@ -132,10 +133,7 @@
 	</section>
 </article>
 
-<details>
-	<summary class="hover:cursor-pointer">Debug</summary>
-	<pre>{JSON.stringify(state, null, 4)}</pre>
-</details>
+<Debug data={state} />
 
 <style>
 	details.summary-expand-close-right > summary {

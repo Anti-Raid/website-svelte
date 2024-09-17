@@ -27,6 +27,7 @@
 	} from '$lib/ui/commands';
 	import { NoticeProps } from './noticearea/noticearea';
 	import NoticeArea from './noticearea/NoticeArea.svelte';
+	import Debug from './Debug.svelte';
 
 	export let instanceList: InstanceList;
 
@@ -91,23 +92,16 @@
 
 <!--Cluster Menu at the right of the page-->
 <article class="command-list-article overflow-x-auto overflow-y-hidden h-full">
-	<small class="text-red-600 word-wrap block mb-1">
-		Different clusters may have different available modules due to outages, A/B testing and other
-		reasons.
-	</small>
-
-	<div class="pt-3" />
-
-	<section class="command-list flex flex-grow">
+	<section class="mt-5 command-list flex flex-grow">
 		<nav class="cluster-map flex-none border-r border-slate-500 w-28">
 			{#each instanceList?.Instances as instance}
 				<NavButton
 					current={state.openCluster == instance?.ClusterID}
-					title={`Cluster ${instance?.ClusterID}`}
+					title={`${instanceList?.Map?.find((cluster) => cluster.ID == instance?.ClusterID)?.Name}`}
 					onClick={() => {
 						state.openCluster = instance?.ClusterID || 0;
 					}}
-					extClass="block mb-2 w-full"
+					extClass="block mb-2 w-full rounded-l-full rounded-r-none font-semibold font-cabin text-md"
 				/>
 			{/each}
 
@@ -118,9 +112,10 @@
 					state.clusterFinderOpen = true;
 					state.clusterFinderByGuildIdExpectedData = null;
 				}}
-				extClass="block mb-2 w-full"
+				extClass="block mb-2 w-full rounded-l-full rounded-r-none font-semibold font-cabin text-md"
 			/>
 		</nav>
+
 		<div class="cluster-map-content flex-1 flex-grow px-2">
 			{#if !state.clusterModuleData[state?.openCluster]}
 				{#await fetchCluster(state?.openCluster)}
@@ -133,13 +128,14 @@
 				<InputText
 					id="command-search-bar"
 					label="Command Lookup"
-					placeholder="Search for a command"
+					placeholder="Search for a command."
 					minlength={0}
 					showErrors={false}
+					extClass="rounded-l-full rounded-r-md"
 					bind:value={state.commandSearch}
 				/>
 
-				<ul>
+				<ul class="mt-4">
 					{#each state.searchedCommands as searchedCommand}
 						<li class="cluster-search-command mb-7">
 							<h3 class="text-xl font-bold">{searchedCommand?.command?.full_name}</h3>
@@ -166,7 +162,7 @@
 										state.openModule =
 											module?.id || state.clusterModuleData[state?.openCluster]['core'].id;
 									}}
-									extClass="block mb-2 w-full"
+									extClass="block mb-2 w-full rounded-l-full rounded-r-none font-semibold font-cabin text-sm"
 								/>
 							{/if}
 						{/each}
@@ -175,54 +171,39 @@
 					<!--Content-->
 					<div class="cluster-module-list-content flex-1 flex-grow px-2 mb-auto">
 						{#if state.openModule}
-							<h1 class="text-2xl font-semibold">
+							<h1 class="text-2xl font-semibold leading-6 text-white font-monster">
 								{state.clusterModuleData[state?.openCluster][state?.openModule]?.name}
 							</h1>
-							<p class="text-slate-200">
+							<p class="text-slate-200 text-base font-semibold font-cabin">
 								{state.clusterModuleData[state?.openCluster][state?.openModule]?.description}
 							</p>
 
-							{#if state.clusterModuleData[state?.openCluster][state?.openModule].toggleable}
-								<p class="text-green-500 mt-2">
-									<strong>This module is toggleable.</strong>
-								</p>
-							{:else}
-								<p class="text-red-500 mt-2">
-									<strong>This module is NOT toggleable.</strong>
+							<div class="pt-2" />
+
+							{#if state.clusterModuleData[state?.openCluster][state?.openModule].is_default_enabled}
+								<p class="text-green-500 font-semibold font-cabin">
+									This module is enabled by default!
 								</p>
 							{/if}
 
-							{#if state.clusterModuleData[state?.openCluster][state?.openModule].commands_toggleable}
-								<p class="text-green-500 mt-2">
-									<strong>You can turn ON/OFF (toggle) the commands within this module!</strong>
-								</p>
-							{:else}
-								<p class="text-red-500 mt-2">
-									<strong
-										>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
-									>
-								</p>
-							{/if}
+							<p
+								class="text-{state.clusterModuleData[state?.openCluster][state?.openModule]
+									.toggleable
+									? 'green'
+									: 'red'}-500 font-semibold font-cabin"
+							>
+								{state.clusterModuleData[state?.openCluster][state?.openModule].toggleable
+									? 'This module is toggleable.'
+									: 'This module is NOT toggleable.'}
+							</p>
 
 							{#if state.clusterModuleData[state?.openCluster][state?.openModule].web_hidden}
-								<p class="text-red-500 mt-2">
-									<strong
-										>Sorry, this module is not supported with our website/dashboard yet!</strong
-									>
+								<p class="text-red-500 font-semibold font-cabin mt-2">
+									Sorry, this module is not supported with our website/dashboard yet!
 								</p>
 							{/if}
 
-							<BoolInput
-								id="enabled-by-default"
-								label="Enabled by default"
-								description="Whether this module is enabled by default"
-								disabled={true}
-								value={state.clusterModuleData[state?.openCluster][state?.openModule]
-									.is_default_enabled}
-								onChange={() => {}}
-							/>
-
-							<div class="pt-3" />
+							<div class="pt-2" />
 
 							{#await createCmdDataTable(state?.openModule)}
 								<Message type="loading">Loading commands...</Message>
@@ -230,7 +211,11 @@
 								<div class="overflow-x-auto space-y-4">
 									<!-- Header -->
 									<header class="flex justify-between gap-4">
-										<Search handler={data.handler} />
+										<Search
+											handler={data.handler}
+											category={state.clusterModuleData[state?.openCluster][state?.openModule]
+												?.name}
+										/>
 										<RowsPerPage handler={data.handler} />
 									</header>
 
@@ -246,14 +231,22 @@
 												>
 											</tr>
 											<tr class="bg-surface-800">
-												<ThFilter handler={data.handler} filterBy={'full_name'} />
-												<ThFilter handler={data.handler} filterBy={'description'} />
-												<ThFilter handler={data.handler} filterBy={'arguments'} />
-												<ThFilter handler={data.handler} filterBy={'search_permissions'} />
+												<ThFilter handler={data.handler} filterBy={'full_name'} what="Name" />
+												<ThFilter
+													handler={data.handler}
+													filterBy={'description'}
+													what="Description"
+												/>
+												<ThFilter handler={data.handler} filterBy={'arguments'} what="Arguments" />
+												<ThFilter
+													handler={data.handler}
+													filterBy={'search_permissions'}
+													what="Permissions"
+												/>
 											</tr>
 										</thead>
 
-										<tbody>
+										<tbody class="bg-surface-500 text-white">
 											{#each $cmdDataTable as row}
 												<tr>
 													<td>
@@ -283,29 +276,35 @@
 														{/if}
 													</td>
 													<td>
-														{#if row.description}
-															{row.description}
-														{:else}
-															Mystery Box?
-														{/if}
+														<span>
+															{#if row.description}
+																{row.description}
+															{:else}
+																Mystery Box?
+															{/if}
+														</span>
 													</td>
 													<td>
-														<ul class="list-disc list-outside">
-															{#each row.arguments as arg, i}
-																<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
-																	<span class="command-argument">
-																		<span class="font-semibold">{arg.name}</span
-																		>{#if arg.required}<span
-																				class="text-red-400 font-semibold text-lg"
-																				>*<span class="sr-only">Required parameter)</span></span
-																			>{/if}{#if arg.description}: <em>{arg.description}</em>{/if}
-																	</span>
-																</li>
-															{/each}
-														</ul>
+														<span>
+															<ul class="list-disc list-outside text-white">
+																{#each row.arguments as arg, i}
+																	<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
+																		<span class="font-semibold">{arg.name}</span>
+
+																		{#if arg.required}
+																			<span class="text-red-400 font-semibold">*</span>
+																		{/if}
+
+																		{#if arg.description}
+																			<span>: </span><em>{arg.description}</em>
+																		{/if}
+																	</li>
+																{/each}
+															</ul>
+														</span>
 													</td>
 													<td>
-														<ul class="list-disc list-outside">
+														<ul class="list-disc list-outside text-white">
 															{#each row.extended_data?.default_perms?.Simple?.checks || [] as check}
 																<li class="mr-2">
 																	<pre class="command-parameter">{check.kittycat_perms}</pre>
@@ -334,10 +333,7 @@
 		</div>
 	</section>
 
-	<details>
-		<summary class="hover:cursor-pointer">Debug</summary>
-		<pre>{JSON.stringify(state, null, 4)}</pre>
-	</details>
+	<Debug data={state} />
 
 	{#if state.clusterFinderOpen}
 		<Modal title="Help" logo="/logo.webp" bind:showModal={state.clusterFinderOpen}>

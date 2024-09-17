@@ -6,6 +6,7 @@
 	import PermissionCheckArray from './PermissionCheckArray.svelte';
 	import TabButton from '../../inputs/button/tabs/TabButton.svelte';
 	import InputTextArea from '../../inputs/InputTextArea.svelte';
+	import Debug from '../../common/Debug.svelte';
 
 	export let ctx: CommonPermissionContext;
 	export let id: string;
@@ -25,39 +26,44 @@
 	export let backupTab: string = '';
 </script>
 
-<TabButton
-	visible={openTab == 'simple'}
-	text={'Simple'}
-	onClick={async () => {
-		if (openTab == 'simple') return;
-		if (backupPermissionChecks?.Simple) {
-			// Restore the backup
-			permissionChecks = structuredClone(backupPermissionChecks);
-		} else {
-			// Create a backup and clear the simple checks
-			backupPermissionChecks = structuredClone(permissionChecks);
-			backupTab = openTab;
-			permissionChecks = { Simple: { checks: [] } };
+<TabbedPane
+	tabs={[
+		{
+			id: 'simple',
+			label: 'Simple',
+			onClick: async () => {
+				if (openTab == 'simple') return;
+				if (backupPermissionChecks?.Simple) {
+					// Restore the backup
+					permissionChecks = structuredClone(backupPermissionChecks);
+				} else {
+					// Create a backup and clear the simple checks
+					backupPermissionChecks = structuredClone(permissionChecks);
+					backupTab = openTab;
+					permissionChecks = { Simple: { checks: [] } };
+				}
+				openTab = 'simple';
+			}
+		},
+		{
+			id: 'template',
+			label: 'Advanced',
+			onClick: async () => {
+				if (openTab == 'template') return;
+				if (backupPermissionChecks?.Template) {
+					// Restore the backup
+					permissionChecks = structuredClone(backupPermissionChecks);
+				} else {
+					// Create a backup and clear the simple checks
+					backupPermissionChecks = structuredClone(permissionChecks);
+					backupTab = openTab;
+					permissionChecks = { Template: { template: '' } };
+				}
+				openTab = 'template';
+			}
 		}
-		openTab = 'simple';
-	}}
-/>
-<TabButton
-	visible={openTab == 'template'}
-	text={'Advanced'}
-	onClick={async () => {
-		if (openTab == 'template') return;
-		if (backupPermissionChecks?.Template) {
-			// Restore the backup
-			permissionChecks = structuredClone(backupPermissionChecks);
-		} else {
-			// Create a backup and clear the simple checks
-			backupPermissionChecks = structuredClone(permissionChecks);
-			backupTab = openTab;
-			permissionChecks = { Template: { template: '' } };
-		}
-		openTab = 'template';
-	}}
+	]}
+	visibleTab={openTab}
 />
 
 {#if openTab == 'simple'}
@@ -80,6 +86,4 @@
 	{/if}
 {/if}
 
-<p>
-	{JSON.stringify(permissionChecks)}
-</p>
+<Debug data={permissionChecks} />

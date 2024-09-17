@@ -47,31 +47,49 @@
 {/if}
 
 <div class="flex flex-col mt-4">
-	<div class="py-2 align-middle inline-block overflow-x-auto w-full">
-		<table class="shadow-xl sm:rounded-lg md:w-full">
-			<thead class="bg-slate-800 text-gray-50">
+	<div class="py-2 align-middle inline-block overflow-x-auto w-full rounded-md">
+		<table class="shadow-xl rounded-md md:w-full">
+			<thead class="bg-slate-800 text-gray-50 rounded-md">
 				<tr>
-					<th scope="col" class="px-4 py-3 text-xs font-medium tracking-wider text-left uppercase">
+					<th
+						scope="col"
+						class="px-4 py-3 text-xs font-medium font-monster tracking-wider text-left uppercase"
+					>
 						Cluster
 					</th>
-					<th scope="col" class="px-4 py-3 text-xs font-medium tracking-wider text-left uppercase">
+					<th
+						scope="col"
+						class="px-4 py-3 text-xs font-medium font-monster tracking-wider text-left uppercase"
+					>
 						Shards
 					</th>
-					<th scope="col" class="px-4 py-3 text-xs font-medium tracking-wider text-left uppercase">
+					<th
+						scope="col"
+						class="px-4 py-3 text-xs font-medium font-monster tracking-wider text-left uppercase"
+					>
 						Guilds
 					</th>
-					<th scope="col" class="px-4 py-3 text-xs font-medium tracking-wider text-left uppercase">
+					<th
+						scope="col"
+						class="px-4 py-3 text-xs font-medium font-monster tracking-wider text-left uppercase"
+					>
 						Users
 					</th>
-					<th scope="col" class="px-4 py-3 text-xs font-medium tracking-wider text-left uppercase">
+					<th
+						scope="col"
+						class="px-4 py-3 text-xs font-medium font-monster tracking-wider text-left uppercase"
+					>
 						Last Started
 					</th>
-					<th scope="col" class="px-4 py-3 text-xs font-medium tracking-wider text-left uppercase">
+					<th
+						scope="col"
+						class="px-4 py-3 text-xs font-medium font-monster tracking-wider text-left uppercase"
+					>
 						Last Checked
 					</th>
 					<th
 						scope="col"
-						class="px-4 py-3 text-xs font-medium tracking-wider text-left uppercase"
+						class="px-4 py-3 text-xs font-medium font-monster tracking-wider text-left uppercase"
 					/>
 				</tr>
 			</thead>
@@ -79,39 +97,41 @@
 				{#each instanceList.Instances as instance}
 					<tr class="hover:bg-slate-950">
 						<td class="px-4 py-3 whitespace-nowrap">
-							<div class="text-sm font-medium">
-								<strong>{instance?.ClusterID} </strong> ({instanceList?.Map?.find(
-									(cluster) => cluster.ID == instance?.ClusterID
-								)?.Name})
+							<div class="text-md font-extrabold font-monster text-white">
+								{instanceList?.Map?.find((cluster) => cluster.ID == instance?.ClusterID)?.Name}
 							</div>
-							<span class={instance?.Active ? 'text-sm text-green-500' : 'text-sm text-red-500'}>
+							<span
+								class="uppercase text-sm font-extrabold font-cabin {instance?.Active
+									? 'text-green-500'
+									: 'text-red-500'}"
+							>
 								{instance?.Active ? 'Active' : 'Inactive'}
 							</span>
 						</td>
-						<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
+						<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300 font-semibold font-cabin">
 							{instance?.Shards?.join(', ')}
 						</td>
-						<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
+						<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300 font-semibold font-cabin">
 							{#if instance}
 								{getClusterGuildCount(instance)}
 							{:else}
 								Unknown
 							{/if}
 						</td>
-						<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
+						<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300 font-semibold font-cabin">
 							{#if instance}
 								{getClusterUserCount(instance)}
 							{:else}
 								Unknown
 							{/if}
 						</td>
-						<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
+						<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300 font-semibold font-cabin">
 							{moment(instance?.StartedAt).fromNow()}
 						</td>
-						<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300">
+						<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-300 font-semibold font-cabin">
 							{moment(instance?.LastChecked).fromNow()}
 						</td>
-						<td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+						<td class="px-4 py-3 whitespace-nowrap text-right text-sm font-extrabold font-monster">
 							<button
 								on:click={() => {
 									openCluster = instance?.ClusterID;

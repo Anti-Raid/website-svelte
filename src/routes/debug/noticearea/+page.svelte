@@ -12,7 +12,7 @@
 	let text: string = 'Test';
 	let level: NoticeAreaLevels = 'info';
 	let disabled: boolean = false;
-    let className: string = '';
+	let className: string = '';
 </script>
 
 <InputText
@@ -56,11 +56,11 @@
 	description="Disable the notice area"
 />
 
-<NoticeArea props={
-    {
-        text,
-        level,
-        disabled,
-        className
-    }
-} />
+<NoticeArea
+	props={{
+		text,
+		level,
+		disabled,
+		className
+	}}
+/>

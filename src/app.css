@@ -3,6 +3,38 @@
 @tailwind utilities;
 @tailwind variants;
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
+
+/* Stretch Animation */
+@keyframes stretchTop {
+	from {
+		transform: scaleY(0);
+		transform-origin: bottom;
+	}
+	to {
+		transform: scaleY(1);
+		transform-origin: bottom;
+	}
+}
+
+.stretch {
+	animation: stretchTop 2s ease forwards;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 100%;
+}
+
 @layer base {
 	:root {
 		--border: 214.3 31.8% 91.4%;

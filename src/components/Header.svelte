@@ -161,10 +161,8 @@
 	<div class="max-w-7xl px-3 mx-auto py-3 flex items-center justify-between">
 		<a href="/">
 			<div class="flex items-center space-x-1">
-				<img class="h-8 w-auto" src="/logo.webp" alt="Antiraid" />
-				<p class="invisible md:visible text-xl text-white font-semibold">
-					<span class="text-xl font-bold text-white">AntiRaid</span>
-				</p>
+				<img class="h-8 w-auto" src="/logo.webp" alt="AntiRaid" />
+				<p class="text-md text-white font-monster font-semibold tracking-tight">AntiRaid</p>
 			</div>
 		</a>
 		<div class="flex items-center space-x-2 relative">

@@ -1,56 +1,62 @@
-import { InstanceList } from "$lib/generated/mewld/proc";
-import { CanonicalModule, FullGuildCommandConfiguration, GuildModuleConfiguration } from "$lib/generated/silverpelt";
-import { UserGuildBaseData } from "$lib/generated/types";
-import logger from "$lib/ui/logger";
-import { CommonPermissionContext } from "../../../../components/dashboard/permissions/commonPermissionContext";
-import { State } from "../core/types";
+import { InstanceList } from '$lib/generated/mewld/proc';
+import {
+	CanonicalModule,
+	FullGuildCommandConfiguration,
+	GuildModuleConfiguration
+} from '$lib/generated/silverpelt';
+import { UserGuildBaseData } from '$lib/generated/types';
+import logger from '$lib/ui/logger';
+import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
+import { State } from '../core/types';
 
 export interface QuickActionProps {
-    clusterModules: Record<string, CanonicalModule>;
-    commonPermissionContext: CommonPermissionContext;
-    guildId: string;
-    instanceList: InstanceList;
-    guildClusterId: number;
-    guildShardId: number;
-    currentModuleConfiguration: GuildModuleConfiguration[];
-    currentCommandConfiguration: FullGuildCommandConfiguration[];
-    guildData: UserGuildBaseData;
-    setState: (newState: State) => void
+	clusterModules: Record<string, CanonicalModule>;
+	commonPermissionContext: CommonPermissionContext;
+	guildId: string;
+	instanceList: InstanceList;
+	guildClusterId: number;
+	guildShardId: number;
+	currentModuleConfiguration: GuildModuleConfiguration[];
+	currentCommandConfiguration: FullGuildCommandConfiguration[];
+	guildData: UserGuildBaseData;
+	setState: (newState: State) => void;
 }
 
 export interface QuickAction {
-    id: string;
-    name: string;
-    icon: string;
-    description: string;
-    component: () => Promise<any>;
+	id: string;
+	name: string;
+	icon: string;
+	description: string;
+	component: () => Promise<any>;
 }
 
 export const defaultComponent = async () => {
-    return import("./Default.svelte");
-}
+	return import('./Default.svelte');
+};
 
 export const quickActions: QuickAction[] = [
-    {
-        id: "welcome-messages",
-        name: "Welcome Messages",
-        icon: "bx:bx-message-square-detail",
-        description: "Set up a welcome message for new members joining your server. This can help increase engagement while letting moderators know exactly who's coming!",
-        component: async () => {
-            let component = await import("./WelcomeMessages.svelte");
-            logger.info("QuickActionLoad", component);
-            return component.default;
-        }
-    },
-    {
-        id: "settings-browser",
-        name: "Settings Browser",
-        icon: "bx:bx-cog",
-        description: "Easily browse and edit all of your server's settings in one place. No more digging through menus to find what you're looking for!",
-        component: async () => {
-            let component = await import("./SettingsBrowser.svelte");
-            logger.info("QuickActionLoad", component);
-            return component.default;
-        }
-    }
+	{
+		id: 'welcome-messages',
+		name: 'Welcome Messages',
+		icon: 'bx:bx-message-square-detail',
+		description:
+			"Set up a welcome message for new members joining your server. This can help increase engagement while letting moderators know exactly who's coming!",
+		component: async () => {
+			let component = await import('./WelcomeMessages.svelte');
+			logger.info('QuickActionLoad', component);
+			return component.default;
+		}
+	},
+	{
+		id: 'settings-browser',
+		name: 'Settings Browser',
+		icon: 'bx:bx-cog',
+		description:
+			"Easily browse and edit all of your server's settings in one place. No more digging through menus to find what you're looking for!",
+		component: async () => {
+			let component = await import('./SettingsBrowser.svelte');
+			logger.info('QuickActionLoad', component);
+			return component.default;
+		}
+	}
 ];

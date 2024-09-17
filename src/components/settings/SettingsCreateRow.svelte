@@ -8,10 +8,11 @@
 		getDispatchType,
 		deriveColumnState,
 		templateToStringLite,
-		ColumnState
+		ColumnState,
+		createFieldsForCreate
 	} from '$lib/ui/settings';
 	import Icon from '@iconify/svelte';
-	import { DerivedData, OperationTypes } from './types';
+	import { DerivedData, OperationTypes } from '$lib/ui/settings';
 	import Message from '../Message.svelte';
 	import SettingsColumn from './SettingsColumn.svelte';
 	import { fetchClient } from '$lib/fetch/fetch';
@@ -27,6 +28,7 @@
 	import { NoticeProps } from '../common/noticearea/noticearea';
 	import NoticeArea from '../common/noticearea/NoticeArea.svelte';
 	import Spacer from '../inputs/Spacer.svelte';
+	import Debug from '../common/Debug.svelte';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
@@ -35,7 +37,6 @@
 	export let guildData: UserGuildBaseData;
 	export let guildId: string;
 	export let columnField: Record<string, any> = {};
-	export let debugMode: boolean;
 
 	// The current operation type this row is under
 	let currentOperationType: OperationTypes = 'Create';
@@ -65,28 +66,7 @@
 		const creds = getAuthCreds();
 		if (!creds) throw new Error('No auth credentials found');
 
-		let fields: Record<string, any> = {};
-
-		Object.keys(columnField).forEach((k) => {
-			let column = configOpt.columns.find((c) => c.id === k);
-
-			if (!column) {
-				return;
-			}
-
-			if (column.ignored_for.includes('Update')) {
-				return;
-			}
-
-			fields[k] = columnField[k];
-		});
-
-		let payload: SettingsExecute = {
-			operation: 'Create',
-			module: module.id,
-			setting: configOpt.id,
-			fields
-		};
+		let payload = createFieldsForCreate(columnField, configOpt);
 
 		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
 			method: 'POST',
@@ -172,7 +152,6 @@
 					{column}
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
-					{debugMode}
 					{clusterModules}
 					bind:allDerivedData
 				/>
@@ -183,9 +162,7 @@
 
 	<Spacer typ="extSpacing" />
 
-	{#if debugMode}
-		<p>{JSON.stringify(columnField)}</p>
-	{/if}
+	<Debug data={columnField} />
 
 	<Spacer typ="extSpacing" />
 

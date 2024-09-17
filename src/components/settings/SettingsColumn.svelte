@@ -7,11 +7,12 @@
 	import { getDispatchType, deriveColumnState, ColumnState, DispatchType } from '$lib/ui/settings';
 	import InputDispatcher from '../inputs/generic/InputDispatcher.svelte';
 	import SettingsSuggestionBox from './SettingsSuggestionBox.svelte';
-	import { DerivedData, OperationTypes } from './types';
+	import { DerivedData, OperationTypes } from '$lib/ui/settings';
 	import logger from '$lib/ui/logger';
 	import BoxButton from '../inputs/button/BoxButton.svelte';
 	import Spacer from '../inputs/Spacer.svelte';
 	import { UserGuildBaseData } from '$lib/generated/types';
+	import Debug from '../common/Debug.svelte';
 
 	export let clusterModules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
@@ -22,7 +23,6 @@
 	export let value: any;
 	export let currentOperationType: OperationTypes;
 	export let column: CanonicalColumn;
-	export let debugMode: boolean;
 	export let columnState: ColumnState;
 	export let columnDispatchType: DispatchType;
 
@@ -83,6 +83,7 @@
 		channelConstraints={columnDispatchType?.channel_constraints}
 		bitflagValues={columnDispatchType?.bitflag_values}
 		multiple={!!columnDispatchType?.resolved_column_type?.Array}
+		extClass={''}
 	/>
 {/if}
 
@@ -112,18 +113,17 @@
 	{/if}
 {/if}
 
-{#if debugMode}
-	<p class="configopt__debuginfo">
-		{currentOperationType},
-		{column.name} - {JSON.stringify(columnDispatchType)} - View: {deriveColumnState(
-			configOpt,
-			column,
-			'View'
-		)}, Update: {deriveColumnState(configOpt, column, 'Update')}, Create: {deriveColumnState(
-			configOpt,
-			column,
-			'Create'
-		)}, Delete: {deriveColumnState(configOpt, column, 'Delete')}, isPkey: {column.id ==
-			configOpt.primary_key}, isNullable: {column.nullable}
-	</p>
-{/if}
+<Debug
+	data={{
+		currentOperationType,
+		column,
+		columnDispatchType,
+		configOpt,
+		viewColumnState: deriveColumnState(configOpt, column, 'View'),
+		createColumnState: deriveColumnState(configOpt, column, 'Create'),
+		updateColumnState: deriveColumnState(configOpt, column, 'Update'),
+		deleteColumnState: deriveColumnState(configOpt, column, 'Delete'),
+		isPkey: column.id == configOpt.primary_key,
+		isNullable: column.nullable
+	}}
+/>

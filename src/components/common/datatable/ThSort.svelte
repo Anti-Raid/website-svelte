@@ -7,8 +7,8 @@
 	const sorted = handler.getSort();
 </script>
 
-<th on:click={() => handler.sort(orderBy)} class="text-secondary-300 cursor-pointer select-none">
-	<div class="flex items-center justify-start gap-x-2">
+<th on:click={() => handler.sort(orderBy)} class="cursor-pointer select-none">
+	<p class="text-white font-semibold font-monster">
 		<slot />
 		{#if $sorted.identifier === orderBy}
 			{#if $sorted.direction === 'asc'}
@@ -19,5 +19,5 @@
 		{:else}
 			&updownarrow;
 		{/if}
-	</div>
+	</p>
 </th>

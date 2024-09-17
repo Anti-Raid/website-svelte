@@ -5,31 +5,31 @@
 export const builderVersion = 1;
 
 export interface TemplateBuilderDataComment {
-    ver: number;
-    data: TemplateBuilderData;
-    checksum: string; // SHA256 checksum to ensure that users using advanced mode wont have older versions of the template
+	ver: number;
+	data: TemplateBuilderData;
+	checksum: string; // SHA256 checksum to ensure that users using advanced mode wont have older versions of the template
 }
 
 export interface TemplateBuilderData {
-    embeds: Embed[];
-    content: string;
+	embeds: Embed[];
+	content: string;
 }
 
 export interface Embed {
-    title: string;
-    description: string;
-    fields: EmbedField[];
+	title: string;
+	description: string;
+	fields: EmbedField[];
 }
 
 export interface EmbedField {
-    name: string;
-    value: string;
-    inline: boolean;
+	name: string;
+	value: string;
+	inline: boolean;
 }
 
 export const defaultData = () => {
-    return {
-        embeds: [{ title: '', description: '', fields: [] }],
-        content: ''
-    };
-}
+	return {
+		embeds: [{ title: '', description: '', fields: [] }],
+		content: ''
+	};
+};
