@@ -2,7 +2,7 @@
 	import { getUser } from '$lib/auth/getUser';
 	import { get } from '$lib/configs/functions/services';
 	import { fetchClient } from '$lib/fetch/fetch';
-	import { ApiError, AuthorizeRequest, User, UserLogin } from '$lib/generated/types';
+	import { AuthorizeRequest, CreateUserSessionResponse } from '$lib/generated/types';
 	import logger from '$lib/ui/logger';
 	import Message from '../../components/Message.svelte';
 
@@ -31,7 +31,7 @@
 			throw new Error(err);
 		}
 
-		let data: UserLogin = await res.json();
+		let data: CreateUserSessionResponse = await res.json();
 
 		// Fetch authUser from api
 		let user = await getUser(data.user_id);
