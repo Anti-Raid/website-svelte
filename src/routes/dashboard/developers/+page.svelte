@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { testAuthData } from '$lib/auth/checkAuthCreds';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import { get } from '$lib/configs/functions/services';
 	import { fetchClient } from '$lib/fetch/fetch';
@@ -87,6 +86,7 @@
 		};
 
 		return {
+			authCreds,
 			otherSessionHandler,
 			sessionHandler,
 			commonPermissionContext
@@ -172,7 +172,7 @@
 
 		Be sure to revoke sessons you don't recognize! The ID of the session you are currently logged
 		onto is
-		<em class="opacity-70">{testAuthData?.data?.session_id}</em>
+		<em class="opacity-70">{data?.authCreds?.session_id}</em>
 	</p>
 
 	{#if sessionTopNoticeArea}
@@ -213,7 +213,7 @@
 						<td>
 							{session.id}
 
-							{#if session.id == testAuthData?.data?.session_id}
+							{#if session.id == data?.authCreds?.session_id}
 								<span class="text-green-500"> (Current Session)</span>
 							{/if}
 						</td>

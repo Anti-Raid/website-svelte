@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { checkAuthCreds } from '$lib/auth/checkAuthCreds';
-	import { LSAuthData } from '$lib/auth/core';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import { loginUser } from '$lib/auth/loginUser';
 	import { logoutUser } from '$lib/auth/logoutUser';
+	import { CreateUserSessionResponse } from '$lib/generated/types';
 	import Message from '../Message.svelte';
 
 	let currentState: string = 'Checking your credentials';
 
-	const checkAuth = async (authCreds: LSAuthData) => {
+	const checkAuth = async (authCreds: CreateUserSessionResponse) => {
 		// Check auth
 		if (!authCreds) {
 			throw new Error('No auth credentials found');

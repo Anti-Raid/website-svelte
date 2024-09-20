@@ -2,7 +2,6 @@ import { get } from '../configs/functions/services';
 import { fetchClient } from '../fetch/fetch';
 import { User } from '../generated/types';
 import logger from '../ui/logger';
-import { LSAuthData } from './core';
 
 let cachedUserValue: User | null = null;
 

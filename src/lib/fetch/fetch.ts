@@ -442,7 +442,7 @@ export async function fetchClient(
 			throw new Error('Server currently undergoing maintenance');
 		}
 
-		let retryAfter = res.headers.get('Retry-After'))
+		let retryAfter = res.headers.get('Retry-After')
 		if (retryAfter) {
 			logger.info('FetchClient', 'Rate limited', res.headers.get('Retry-After'), res.headers);
 			let retryAfter = res.headers.get('Retry-After');

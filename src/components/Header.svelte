@@ -2,14 +2,12 @@
 	import Update from './Update.svelte';
 	import { page } from '$app/stores';
 	import { getAuthCreds } from '../lib/auth/getAuthCreds';
-	import { checkAuthCreds } from '../lib/auth/checkAuthCreds';
 	import { logoutUser } from '../lib/auth/logoutUser';
 	import { getUser } from '../lib/auth/getUser';
 	import { User } from '../lib/generated/types';
 	import Icon from '@iconify/svelte';
 	import NavButton from './inputs/button/NavButton.svelte';
 	import { loginUser } from '$lib/auth/loginUser';
-	import { LSAuthData } from '$lib/auth/core';
 	import { browser } from '$app/environment';
 	import Themer from './Themer.svelte';
 	import { onDestroy, onMount } from 'svelte';
@@ -78,24 +76,6 @@
 		user: User;
 	};
 
-	const checkUserAuth = async (authCreds: LSAuthData) => {
-		// Check auth
-		if (!authCreds) {
-			throw new Error('No auth credentials found');
-		}
-
-		try {
-			let check = await checkAuthCreds(authCreds);
-
-			if (!check) {
-				logoutUser();
-				return;
-			}
-		} catch {
-			return;
-		}
-	};
-
 	const getLoginData = async () => {
 		let authCreds = getAuthCreds();
 
@@ -117,8 +97,6 @@
 			logoutUser();
 			return;
 		}
-
-		setInterval(checkUserAuth, 1000 * 60 * 5);
 
 		let data: LoginData = {
 			profileNavigation: [

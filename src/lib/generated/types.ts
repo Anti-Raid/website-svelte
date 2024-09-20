@@ -70,6 +70,7 @@ export interface CreateUserSessionResponse {
   user_id: string;
   token: string;
   session_id: string;
+  expiry: string /* RFC3339 */;
 }
 export interface UserSessionList {
   sessions: (UserSession | undefined)[];
