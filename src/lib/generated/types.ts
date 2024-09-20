@@ -5,44 +5,6 @@ import * as discordgo from "./discordgo"
 import * as silverpelt from "./silverpelt"
 
 //////////
-// source: apps.go
-
-export interface Question {
-  id: string;
-  question: string;
-  paragraph: string;
-  placeholder: string;
-  short: boolean;
-}
-export interface Position {
-  id: string;
-  tags: string[];
-  info: string;
-  name: string;
-  questions: Question[];
-  hidden: boolean;
-  closed: boolean;
-}
-export interface AppMeta {
-  positions: Position[];
-  stable: boolean; // Stable means that the list of apps is not pending big changes
-}
-export interface AppResponse {
-  app_id: string;
-  user?: PlatformUser /* from eureka-dovewing.ts */;
-  user_id: string;
-  questions: Question[];
-  answers: { [key: string]: string};
-  state: string;
-  created_at: string /* RFC3339 */;
-  position: string;
-  review_feedback?: string;
-}
-export interface AppListResponse {
-  apps: AppResponse[];
-}
-
-//////////
 // source: auth.go
 
 export interface AuthorizeRequest {
