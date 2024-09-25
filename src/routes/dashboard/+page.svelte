@@ -27,7 +27,7 @@
 
 		currentState = 'Fetching user guild list';
 
-		let res = await fetchClient(`${get('splashtail')}/guilds?refresh=${refresh}`, {
+		let res = await fetchClient(`${get('splashtail')}/users/@me/guilds?refresh=${refresh}`, {
 			auth: authCreds?.token,
 			onRatelimit: (n, err) => {
 				if (!n) {
