@@ -66,7 +66,7 @@
 		const creds = getAuthCreds();
 		if (!creds) throw new Error('No auth credentials found');
 
-		let payload = createFieldsForCreate(columnField, configOpt);
+		let payload = createFieldsForCreate(module.id, columnField, configOpt);
 
 		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
 			method: 'POST',
