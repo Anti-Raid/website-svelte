@@ -442,30 +442,29 @@ export async function fetchClient(
 			throw new Error('Server currently undergoing maintenance');
 		}
 
-		if (res.headers.get('Retry-After') && !options?.noWait) {
+		let retryAfter = res.headers.get('Retry-After')
+		if (retryAfter) {
 			logger.info('FetchClient', 'Rate limited', res.headers.get('Retry-After'), res.headers);
 			let retryAfter = res.headers.get('Retry-After');
 
-			if (retryAfter) {
-				let err: ApiError = await res.json();
+			let err: ApiError = await res.json();
 
-				let n = parseFloat(retryAfter || '3') * 1000;
+			let n = parseFloat(retryAfter || '3') * 1000;
+
+			if (options.onRatelimit) {
+				options.onRatelimit(n, err);
+			}
+
+			// Wait for the time specified by the server
+			if (!options.noWait) {
+				logger.info('FetchClient', `Rate limited, waiting ${retryAfter} seconds`);
+				await new Promise((resolve) => setTimeout(resolve, n));
 
 				if (options.onRatelimit) {
-					options.onRatelimit(n, err);
+					options.onRatelimit(0, err);
 				}
 
-				// Wait for the time specified by the server
-				if (!options.noWait) {
-					logger.info('FetchClient', `Rate limited, waiting ${retryAfter} seconds`);
-					await new Promise((resolve) => setTimeout(resolve, n));
-
-					if (options.onRatelimit) {
-						options.onRatelimit(0, err);
-					}
-
-					return await fetchClient(url, rawOptions);
-				}
+				return await fetchClient(url, rawOptions);
 			}
 		}
 
