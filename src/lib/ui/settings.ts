@@ -257,6 +257,7 @@ export interface DerivedData {
 }
 
 export const createFieldsForCreate = (
+	moduleId: string,
 	columnField: Record<string, any>,
 	configOpt: CanonicalConfigOption
 ): SettingsExecute => {
@@ -278,7 +279,7 @@ export const createFieldsForCreate = (
 
 	let payload: SettingsExecute = {
 		operation: 'Create',
-		module: module.id,
+		module: moduleId,
 		setting: configOpt.id,
 		fields
 	};
@@ -287,6 +288,7 @@ export const createFieldsForCreate = (
 };
 
 export const createFieldsForUpdate = (
+	moduleId: string,
 	columnField: Record<string, any>,
 	configOpt: CanonicalConfigOption,
 	oldFields: Record<string, any>,
@@ -352,7 +354,7 @@ export const createFieldsForUpdate = (
 
 	let payload: SettingsExecute = {
 		operation: 'Update',
-		module: module.id,
+		module: moduleId,
 		setting: configOpt.id,
 		fields
 	};

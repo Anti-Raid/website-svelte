@@ -71,6 +71,7 @@
 		if (!creds) throw new Error('No auth credentials found');
 
 		let payload = createFieldsForUpdate(
+			module.id,
 			columnField,
 			configOpt,
 			settings.fields[index],
