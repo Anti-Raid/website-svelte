@@ -186,7 +186,7 @@
 <div
 	class="block h-auto max-w-sm p-2 border rounded-t-lg shadow bg-surface-800 border-surface-700 hover:bg-surface-700"
 >
-	<a href="/@{User.usertag}">
+	<a href="/forums/@{User.usertag}">
 		<h2 class="flex">
 			<img
 				class="h-8 rounded-full"
