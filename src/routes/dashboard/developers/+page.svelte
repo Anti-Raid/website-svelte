@@ -167,7 +167,7 @@
 	<p>
 		<strong>
 			Note: Session Tokens (created by logging in) expire every 1 hour and are not suitable for
-			developing on the Anti-Raid API. Please create an API token instead for that!
+			developing on the AntiRaid API. Please create an API token instead for that!
 		</strong><br /><br />
 
 		Be sure to revoke sessons you don't recognize! The ID of the session you are currently logged
@@ -303,7 +303,7 @@
 	<h1 class="font-semibold text-2xl">Create Session</h1>
 
 	<p>
-		A session is a structure that represents a view into the Anti-Raid API. Sessions provide a
+		A session is a structure that represents a view into the AntiRaid API. Sessions provide a
 		session token that can then be used to authorize reqiests to the API. Temporary sessions of type
 		"login" are automatically created when logging in via Discord Oauth2 however these expire 1 hour
 		after creation and may not support upcoming functionality such as naming sessions and
@@ -313,7 +313,7 @@
 	<InputText
 		id="session-name"
 		label="Session Name"
-		placeholder="Tycoon Anti-Raid Manager etc."
+		placeholder="Tycoon AntiRaid Manager etc."
 		minlength={1}
 		showErrors={false}
 		bind:value={createSession.name}

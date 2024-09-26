@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import Header from '../components/Header.svelte';
 	import Loading from '../components/Loading.svelte';
 	import { getVersion } from '$lib/configs/functions/versioner';

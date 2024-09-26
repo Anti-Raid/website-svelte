@@ -101,8 +101,8 @@ export const getDispatchType = (
 						'type',
 						inner.String.kind.Template.kind
 							? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}:${Object.keys(
-								inner.String.kind.Template.kind
-							)[0]?.toLowerCase()}`
+									inner.String.kind.Template.kind
+							  )[0]?.toLowerCase()}`
 							: 'string:template'
 					);
 				else if (inner.String.kind.Channel) {

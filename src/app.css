@@ -99,7 +99,7 @@
 	h5,
 	h6,
 	div {
-		@apply text-primary-600;
+		@apply text-white font-semibold font-cabin;
 	}
 
 	.table tr td {

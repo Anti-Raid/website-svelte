@@ -47,10 +47,10 @@
 </script>
 
 {#if state.openedEntity.indexPage}
-	<div class="index-page px-2 mb-auto mx-auto">
+	<div class="index-page ml-2 px-2 mb-auto mx-auto">
 		<h1 class="text-2xl font-semibold">Welcome!</h1>
 		<p class="text-slate-200">
-			Using the dashboard, you can control almost all aspects of Anti-Raid and its operation on your
+			Using the dashboard, you can control almost all aspects of AntiRaid and its operation on your
 			server!
 		</p>
 
@@ -79,10 +79,10 @@
 		<h2 class="mt-5 text-xl font-semibold">Modules</h2>
 
 		<p class="text-slate-200">
-			Also on the left of the screen are modules that together make up the core of Anti-Raid. As a
-			server manager, you can use the modules system to enable/disable the module and all
-			events/commands pertaining to it as well as delegate default permissions for commands within a
-			module for macro level control.
+			On the left of the screen are modules that together make up the core of AntiRaid. As a server
+			manager, you can use the modules system to enable/disable the module and all events/commands
+			pertaining to it as well as delegate default permissions for commands within a module for
+			macro level control.
 		</p>
 
 		<div class="mb-2" />
@@ -101,13 +101,12 @@
 		</div>
 
 		<h2 class="mt-5 text-xl font-semibold">Command Searcher</h2>
-
 		<p class="text-slate-200">
 			Looking for a specific command? Or did you forget which module it's in? No biggie, just type
 			it in below!
 		</p>
 
-		<div class="mb-2" />
+		<div class="p-3" />
 
 		<InputText
 			id="command-search-bar"
@@ -115,6 +114,7 @@
 			placeholder="Search for a command"
 			minlength={0}
 			showErrors={false}
+			extClass="rounded-l-none rounded-r-full"
 			bind:value={state.commandSearch}
 		/>
 
@@ -130,14 +130,15 @@
 			{/each}
 		</ul>
 
-		<h2 class="mt-5 text-xl font-semibold">Status</h2>
-
-		<p class="text-slate-200 word-wrap block mb-1">
+		<h2 class="mt-5 text-xl font-semibold">Cluster Status</h2>
+		<p class="text-slate-200 word-wrap block">
 			Different clusters may have different available modules due to outages, A/B testing and other
-			reasons. Right now, your server is on cluster <strong>{guildClusterId}</strong>, shard
-			<strong>{guildShardId}</strong>.
-			<br />
-			To make things easier for you, here's an overview of your clusters status:
+			reasons.
+		</p>
+		<p class="text-slate-200 word-wrap block mb-1">
+			Right now, your server is on Cluster <strong>{guildClusterId}</strong>, Shard
+			<strong>{guildShardId}</strong>. <br /> To make things easier for you, here's an overview of your
+			Cluster's Status:
 		</p>
 
 		<ClusterHealth
@@ -155,7 +156,7 @@
 		</BoxButton>
 	</div>
 {:else if state.openedEntity.module}
-	<div class="module px-2 mb-auto mx-auto">
+	<div class="module ml-2 px-2 mb-auto mx-auto">
 		<h1 class="text-2xl font-semibold">
 			{clusterModules[state.openedEntity.module.id]?.name}
 		</h1>

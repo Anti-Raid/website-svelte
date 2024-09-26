@@ -110,7 +110,7 @@
 				class="flex justify-between items-center head bg-surface-800 text-primary-300 py-5 px-8 text-2xl font-extrabold"
 			>
 				<div class="flex">
-					<img class="h-10 rounded-full" src={Logo} alt="Sparkyflight" />
+					<img class="h-10 rounded-full" src={Logo} alt="AntiRaid Forums" />
 					<h2 class="ml-2 mt-1">Upload Files</h2>
 				</div>
 

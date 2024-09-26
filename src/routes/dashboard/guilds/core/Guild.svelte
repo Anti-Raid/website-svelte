@@ -55,9 +55,16 @@
 	>
 		<section class="guild-basic-details">
 			<!--Avatar-->
-			<img loading="lazy" src={guildData.icon} class="h-10 m-0 align-middle inline" alt="" />
+			<img
+				loading="lazy"
+				src={guildData.icon}
+				class="h-8 m-0 align-middle inline rounded-full"
+				alt="{guildData.name}'s avatar"
+			/>
 			<!--Guild Name-->
-			<span class="font-semibold align-middle m-0">{guildData.name}</span>
+			<span class="ml-1 font-monster font-bold tracking-tight align-middle m-0"
+				>{guildData.name}</span
+			>
 		</section>
 
 		<NavButton
@@ -66,7 +73,7 @@
 			onClick={() => {
 				state.openedEntity = { indexPage: {} };
 			}}
-			extClass="block mb-2 w-full"
+			extClass="block rounded-l-md rounded-r-full mt-3 mb-2 font-cabin font-semibold w-full"
 		/>
 
 		<details id="quick-actions-pane" class="summary-expand-close-right" open>
@@ -79,7 +86,7 @@
 					onClick={() => {
 						state.openedEntity = { quickAction: { id: action.id } };
 					}}
-					extClass="block mb-2 w-full"
+					extClass="block rounded-l-md rounded-r-full mb-2 font-cabin font-semibold w-full"
 				/>
 			{/each}
 		</details>
@@ -94,7 +101,7 @@
 					onClick={() => {
 						state.openedEntity = { module: { id: module?.id, tab: 'moduleInfo' } };
 					}}
-					extClass="block mb-2 w-full"
+					extClass="block rounded-l-md rounded-r-full mb-2 font-cabin font-semibold w-full"
 				/>
 			{/each}
 		</details>

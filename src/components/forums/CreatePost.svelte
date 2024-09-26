@@ -8,7 +8,7 @@
 		PUBLIC_ENVIRONMENT === 'production' ? 'https://potsypaw.antiraid.xyz' : 'http://localhost:5590';
 
 	export let Token: string | null;
-	export let Type: string = 'sparkyflight';
+	export let Type: string = 'general';
 
 	let Caption: string = '';
 	let ImageURL: any;
