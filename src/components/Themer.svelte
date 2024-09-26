@@ -18,7 +18,7 @@
 	];
 
 	// Temporary
-	let theme: string = 'skeleton';
+	let theme: string = 'gold-nouveau';
 	const changeColor = (th: string) => {
 		theme = th;
 		document.querySelector('#antiraid')?.setAttribute('data-theme', th);
@@ -27,7 +27,7 @@
 
 	$: {
 		if (browser) {
-			theme = localStorage.getItem('theme->antiraid') || 'skeleton';
+			theme = localStorage.getItem('theme->antiraid') || 'gold-nouveau';
 			document.querySelector('#antiraid')?.setAttribute('data-theme', theme);
 		}
 	}
