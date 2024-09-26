@@ -2,7 +2,7 @@
 	import { PUBLIC_ENVIRONMENT } from '$env/static/public';
 	import Swal from 'sweetalert2';
 	import 'animate.css';
-	import type { users, posts } from '../../types/types.interface';
+	import type { users, posts } from '../../types/forums/types.interface';
 	import { onMount } from 'svelte';
 	import Popup from './Popup.svelte';
 
