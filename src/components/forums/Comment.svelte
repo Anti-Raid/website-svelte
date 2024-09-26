@@ -12,7 +12,7 @@ import type { comments, users } from '../../types/forums/types.interface';
 <div
 	class="block max-w-sm p-4 border rounded-lg shadow bg-surface-800 border-surface-700 hover:bg-surface-700"
 >
-	<a href="/@{User.usertag}">
+	<a href="/forums/@{User.usertag}">
 		<h2 class="flex">
 			<img
 				class="h-8 rounded-full"
