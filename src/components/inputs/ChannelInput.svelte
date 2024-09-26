@@ -11,6 +11,8 @@
 	import { ChannelConstraints } from '$lib/inputconstraints';
 	import { title } from '$lib/strings';
 	import RawSelect from './select/RawSelect.svelte';
+	import Debug from '../common/Debug.svelte';
+	import Developer from '../common/Developer.svelte';
 
 	export let style: 'normal' | 'simplified' = 'normal';
 	export let channels: GuildChannelWithPermissions[];
@@ -132,61 +134,53 @@
 	bind:value
 />
 
-<fieldset class="section grid rounded-md text-slate-200">
-	<legend class="p-1 font-semibold">Allowed Channel Types</legend>
-	<div class="content">
-		<ul>
-			{#each channelConstraints.allowed_types as type, i}
-				<li class="inline text-slate-200">
-					{`${title(_indexInv(type).replaceAll('_', ' '))}${
-						i != channelConstraints.allowed_types.length - 1 ? ' OR ' : ''
-					}`}
-				</li>
-			{/each}
-		</ul>
-	</div>
-</fieldset>
-
-<fieldset class="section grid rounded-md text-slate-200">
-	<legend class="p-1 font-semibold">Needed Bot Permissions</legend>
-	<div class="content">
-		<ul>
-			{#each Object.entries(new BitFlag(serenityPermissions, channelConstraints.needed_bot_permissions).getSetFlags()) as [name, permission], i}
-				{#if name != ''}
+<Developer>
+	<fieldset class="section grid rounded-md text-slate-200">
+		<legend class="p-1 font-semibold">Allowed Channel Types</legend>
+		<div class="content">
+			<ul>
+				{#each channelConstraints.allowed_types as type, i}
 					<li class="inline text-slate-200">
-						<span class="font-semibold">{name} </span>{#if style != 'simplified'}({permission}){/if}
-						{#if i != Object.entries(new BitFlag(serenityPermissions, channelConstraints.needed_bot_permissions).getSetFlags()).length - 1}
-							<span class="inline text-slate-200"> AND </span>
-						{/if}
+						{`${title(_indexInv(type).replaceAll('_', ' '))}${
+							i != channelConstraints.allowed_types.length - 1 ? ' OR ' : ''
+						}`}
 					</li>
-				{/if}
-			{/each}
-		</ul>
-	</div>
-</fieldset>
+				{/each}
+			</ul>
+		</div>
+	</fieldset>
+
+	<fieldset class="section grid rounded-md text-slate-200">
+		<legend class="p-1 font-semibold">Needed Bot Permissions</legend>
+		<div class="content">
+			<ul>
+				{#each Object.entries(new BitFlag(serenityPermissions, channelConstraints.needed_bot_permissions).getSetFlags()) as [name, permission], i}
+					{#if name != ''}
+						<li class="inline text-slate-200">
+							<span class="font-semibold"
+								>{name}
+							</span>{#if style != 'simplified'}({permission}){/if}
+							{#if i != Object.entries(new BitFlag(serenityPermissions, channelConstraints.needed_bot_permissions).getSetFlags()).length - 1}
+								<span class="inline text-slate-200"> AND </span>
+							{/if}
+						</li>
+					{/if}
+				{/each}
+			</ul>
+		</div>
+	</fieldset>
+</Developer>
 
 {#if style == 'normal' && selectedChannel}
 	<p>Selected Channel: {selectedChannel?.channel?.name || 'Unknown Channel'}</p>
 
-	<details>
-		<summary class="hover:cursor-pointer">Debug</summary>
-		<p>Bot Permissions</p>
-		<ul>
-			{#each Object.entries(new BitFlag(serenityPermissions, selectedChannel.bot).getSetFlags()) as [name, permission]}
-				{#if name != ''}
-					<li><span class="font-semibold">{name}: </span>{permission}</li>
-				{/if}
-			{/each}
-		</ul>
-		<p>User Permissions</p>
-		<ul>
-			{#each Object.entries(new BitFlag(serenityPermissions, selectedChannel.user).getSetFlags()) as [name, permission]}
-				{#if name != ''}
-					<li><span class="font-semibold">{name}: </span>{permission}</li>
-				{/if}
-			{/each}
-		</ul>
-	</details>
+	<Debug
+		data={{
+			Channel: selectedChannel,
+			'Bot Permissions': new BitFlag(serenityPermissions, selectedChannel.bot).getSetFlags(),
+			'User Permissions': new BitFlag(serenityPermissions, selectedChannel.user).getSetFlags()
+		}}
+	/>
 {/if}
 
 <style>

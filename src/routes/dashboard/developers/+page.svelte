@@ -32,12 +32,14 @@
 		extractKnownPermissionsFromModules,
 		makeKittycatPermissionMapperFromPermissions
 	} from '$lib/ui/permMap';
+	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 
 	let sessionRows: Readable<UserSession[]>;
 	let otherSessionRows: Readable<UserSession[]>;
 
 	let currentState = 'Loading developer portal';
 
+	let devMode = false;
 	const loadGuildData = async () => {
 		let authCreds = getAuthCreds();
 
@@ -84,6 +86,8 @@
 				extractKnownPermissionsFromModules(Object.values(clusterModules))
 			)
 		};
+
+		devMode = localStorage.getItem('devMode') == 'true';
 
 		return {
 			authCreds,
@@ -363,7 +367,7 @@
 	{#if createSessionResp}
 		<h2 class="font-semibold text-2xl">Session Created</h2>
 		<p class="text-red-500 font-semibold text-lg">
-			Please sace these credentials somewhere safe. You will need to REMOVE and RECREATE the session
+			Please save these credentials somewhere safe. You will need to REMOVE and RECREATE the session
 			in order to regenerate a new token!
 		</p>
 		<p class="break-all">
@@ -373,6 +377,17 @@
 			{createSessionResp.token}
 		</p>
 	{/if}
+
+	<h2 class="font-semibold text-2xl">Advanced</h2>
+
+	<BoolInput
+		id="dev-mode"
+		label="Developer Mode"
+		description="Enable developer mode to see more advanced/WIP features"
+		bind:value={devMode}
+		onChange={(v) => localStorage.setItem('devMode', v.toString())}
+		disabled={false}
+	/>
 {:catch err}
 	<Message type="error">{@html err}</Message>
 {/await}
