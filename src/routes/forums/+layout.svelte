@@ -1,5 +1,5 @@
 <script lang="ts">
-	import '../app.css';
+	import './app.css';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import Header from '../../components/Header.svelte';
 	import Popup from '../../components/forums/Popup.svelte';
