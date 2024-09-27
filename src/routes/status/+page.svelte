@@ -5,7 +5,7 @@
 	import Meta from '../../components/Meta.svelte';
 </script>
 
-<Meta title="Status" description="View Anti-Raid's cluster status" />
+<Meta title="Status" description="View AntiRaid's cluster status" />
 
 <h2 class="block text-4xl text-white font-semibold tracking-tight font-monster xl:inline">
 	Cluster Health

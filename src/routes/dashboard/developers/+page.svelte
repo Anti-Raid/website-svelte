@@ -32,12 +32,14 @@
 		extractKnownPermissionsFromModules,
 		makeKittycatPermissionMapperFromPermissions
 	} from '$lib/ui/permMap';
+	import BoolInput from '../../../components/inputs/BoolInput.svelte';
 
 	let sessionRows: Readable<UserSession[]>;
 	let otherSessionRows: Readable<UserSession[]>;
 
 	let currentState = 'Loading developer portal';
 
+	let devMode = false;
 	const loadGuildData = async () => {
 		let authCreds = getAuthCreds();
 
@@ -84,6 +86,8 @@
 				extractKnownPermissionsFromModules(Object.values(clusterModules))
 			)
 		};
+
+		devMode = localStorage.getItem('devMode') == 'true';
 
 		return {
 			authCreds,
@@ -167,7 +171,7 @@
 	<p>
 		<strong>
 			Note: Session Tokens (created by logging in) expire every 1 hour and are not suitable for
-			developing on the Anti-Raid API. Please create an API token instead for that!
+			developing on the AntiRaid API. Please create an API token instead for that!
 		</strong><br /><br />
 
 		Be sure to revoke sessons you don't recognize! The ID of the session you are currently logged
@@ -303,7 +307,7 @@
 	<h1 class="font-semibold text-2xl">Create Session</h1>
 
 	<p>
-		A session is a structure that represents a view into the Anti-Raid API. Sessions provide a
+		A session is a structure that represents a view into the AntiRaid API. Sessions provide a
 		session token that can then be used to authorize reqiests to the API. Temporary sessions of type
 		"login" are automatically created when logging in via Discord Oauth2 however these expire 1 hour
 		after creation and may not support upcoming functionality such as naming sessions and
@@ -313,7 +317,7 @@
 	<InputText
 		id="session-name"
 		label="Session Name"
-		placeholder="Tycoon Anti-Raid Manager etc."
+		placeholder="Tycoon AntiRaid Manager etc."
 		minlength={1}
 		showErrors={false}
 		bind:value={createSession.name}
@@ -363,7 +367,7 @@
 	{#if createSessionResp}
 		<h2 class="font-semibold text-2xl">Session Created</h2>
 		<p class="text-red-500 font-semibold text-lg">
-			Please sace these credentials somewhere safe. You will need to REMOVE and RECREATE the session
+			Please save these credentials somewhere safe. You will need to REMOVE and RECREATE the session
 			in order to regenerate a new token!
 		</p>
 		<p class="break-all">
@@ -373,6 +377,17 @@
 			{createSessionResp.token}
 		</p>
 	{/if}
+
+	<h2 class="font-semibold text-2xl">Advanced</h2>
+
+	<BoolInput
+		id="dev-mode"
+		label="Developer Mode"
+		description="Enable developer mode to see more advanced/WIP features"
+		bind:value={devMode}
+		onChange={(v) => localStorage.setItem('devMode', v.toString())}
+		disabled={false}
+	/>
 {:catch err}
 	<Message type="error">{@html err}</Message>
 {/await}

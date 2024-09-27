@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { comments, users } from '../../types/forums/types.interface';
+	import type { comments, users } from '../../types/forums/types.interface';
 
 	export let User: users;
 	export let Comment: comments;

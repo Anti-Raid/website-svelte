@@ -13,7 +13,7 @@
 	export let Post: posts;
 	export let AuthedUser: users | null = null;
 	export let Token: string | null = null;
-	export let Type: string = 'sparkyflight';
+	export let Type: string = 'general';
 
 	let CommentsCount: number = Post.comments.length;
 	let SharingCompatible: boolean = false;
@@ -212,6 +212,7 @@
 		</h5>
 
 		{#if Post.image}
+			<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 			<img
 				src={Post.image}
 				alt="Post Card"
@@ -234,6 +235,7 @@
 		{#if Post.plugins.length != 0}
 			{#each Post.plugins as item}
 				{#if item.type === 'tenor'}
+					<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 					<img
 						src={item.href}
 						alt="Tenor"
@@ -254,6 +256,7 @@
 				{/if}
 
 				{#if item.type === 'url'}
+					<!-- svelte-ignore a11y-no-static-element-interactions -->
 					<div
 						class="block max-w-sm p-2 border cursor-pointer rounded-md shadow bg-surface-600 border-surface-400 hover:bg-surface-800"
 						tabIndex={0}
@@ -287,6 +290,7 @@
 							<p class="text-primary-300 text-sm font-semibold">{item.jsonData.description}</p>
 
 							{#if item.jsonData.image}
+								<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 								<img
 									src={item.jsonData.image}
 									alt={item.jsonData.title}

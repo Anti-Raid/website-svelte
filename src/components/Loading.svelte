@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import Meta from '../components/Meta.svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	let words: String[] = [
@@ -43,6 +44,11 @@
 
 	let run = setInterval(switchWord, intervalDuration);
 </script>
+
+<Meta
+	title="Home"
+	description="This website is extremely experimental, and should not be used by the public at this time."
+/>
 
 <div class="grid place-items-center min-h-screen overflow-none no-scrollbar">
 	<ol class="list-disc no-scrollbar">

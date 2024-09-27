@@ -79,86 +79,83 @@
 	export let wizard_saveNoticeProps: NoticeProps;
 </script>
 
-<h1 class="text-2xl font-semibold">Welcome Messages</h1>
+<div class="ml-2">
+	<h1 class="text-2xl font-semibold">Welcome Messages</h1>
+	<p>Welcome your members to your server using AntiRaid (and Audit-Log Sinks).</p>
 
-<p>Welcome your members to your server using Anti-Raid (and Audit-Log Sinks).</p>
+	{#await getAuditLogSinks(props.clusterModules)}
+		<NoticeArea
+			props={{
+				level: 'loading',
+				text: 'Finding config option...'
+			}}
+		/>
+	{:then configOpt}
+		<h3 class="text-4xl mb-1">
+			<span class="numberCircle font-extrabold">1</span>
+			Choose A Channel
+		</h3>
 
-<h2 class="text-xl font-semibold">Yes Minister?</h2>
-<p>
-	To make life easier for you, Anti-Raid provides a simple wizard for quickly creating welcome
-	messages
-</p>
+		<ChannelInput
+			channels={props.guildData.channels}
+			channelConstraints={configOpt.sinkColumnDispatchType.channel_constraints || {
+				allowed_types: [],
+				needed_bot_permissions: '0'
+			}}
+			style="simplified"
+			bind:value={wizard_selectedChannel}
+			disabled={false}
+		/>
 
-{#await getAuditLogSinks(props.clusterModules)}
-	<NoticeArea
-		props={{
-			level: 'loading',
-			text: 'Finding config option...'
-		}}
-	/>
-{:then configOpt}
-	<h3 class="text-4xl mb-1">
-		<span class="numberCircle font-extrabold">1</span>
-		Choose A Channel
-	</h3>
+		<h3 class="text-4xl mb-1">
+			<span class="numberCircle font-extrabold">2</span> Message please?
+		</h3>
 
-	<ChannelInput
-		channels={props.guildData.channels}
-		channelConstraints={configOpt.sinkColumnDispatchType.channel_constraints || {
-			allowed_types: [],
-			needed_bot_permissions: '0'
-		}}
-		style="simplified"
-		bind:value={wizard_selectedChannel}
-		disabled={false}
-	/>
+		<p>
+			Now, now, minister... I've laid out alternative proposals for your bid to reduce the civil
+			service
+		</p>
 
-	<h3 class="text-4xl mb-1"><span class="numberCircle font-extrabold">2</span> Message please?</h3>
+		<TemplateBuilder bind:rawTemplateOutput={wizard_messageTemplate} />
+		<code class="text-white whitespace-pre-wrap">{wizard_messageTemplate}</code>
 
-	<p>
-		Now, now, minister... I've laid out alternative proposals for your bid to reduce the civil
-		service
-	</p>
+		<ButtonReact
+			color={Color.Themable}
+			icon="ant-design:check-outlined"
+			onClick={createWelcomeMessage}
+			text="Create Welcome Message"
+			states={{
+				loading: 'Creating...',
+				success: 'Created!',
+				error: 'Failed to create'
+			}}
+			bind:noticeProps={wizard_saveNoticeProps}
+		/>
 
-	<TemplateBuilder bind:rawTemplateOutput={wizard_messageTemplate} />
-	<code class="text-white whitespace-pre-wrap">{wizard_messageTemplate}</code>
+		{#if wizard_saveNoticeProps}
+			<NoticeArea props={wizard_saveNoticeProps} />
+		{/if}
+	{:catch err}
+		<NoticeArea
+			props={{
+				level: 'error',
+				text: `Failed to fetch audit log sinks: ${err}`
+			}}
+		/>
+	{/await}
 
-	<ButtonReact
-		color={Color.Themable}
-		icon="ant-design:check-outlined"
-		onClick={createWelcomeMessage}
-		text="Create Welcome Message"
-		states={{
-			loading: 'Creating...',
-			success: 'Created!',
-			error: 'Failed to create'
-		}}
-		bind:noticeProps={wizard_saveNoticeProps}
-	/>
-
-	{#if wizard_saveNoticeProps}
-		<NoticeArea props={wizard_saveNoticeProps} />
-	{/if}
-{:catch err}
-	<NoticeArea
-		props={{
-			level: 'error',
-			text: `Failed to fetch audit log sinks: ${err}`
-		}}
-	/>
-{/await}
-
-<style>
-	.numberCircle {
-		display: inline-block;
-		width: fit-content;
-		min-width: 1rem;
-		padding-top: 1rem;
-		padding-right: 0.5rem;
-		align-items: center;
-		justify-content: center;
-		text-align: center; /* center the character*/
-		line-height: em(12); /* needs to match the height */
-		aspect-ratio: 1 / 1;
-	}
-</style>
+	<style>
+		.numberCircle {
+			display: inline-block;
+			width: fit-content;
+			min-width: 1rem;
+			padding-top: 1rem;
+			padding-right: 0.5rem;
+			align-items: center;
+			justify-content: center;
+			text-align: center; /* center the character*/
+			line-height: em(12); /* needs to match the height */
+			aspect-ratio: 1 / 1;
+		}
+	</style>
+</div>

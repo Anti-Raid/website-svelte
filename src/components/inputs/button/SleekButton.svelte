@@ -9,14 +9,14 @@
 
 <button
 	on:click|preventDefault={() => onclick()}
-	class="block top-0 text-left items-start index-page-button p-4 border rounded-sm bg-slate-800 hover:bg-transparent shadow"
+	class="block top-0 text-left items-start index-page-button p-4 border rounded-tl-none rounded-br-lg bg-slate-800 hover:bg-transparent shadow"
 >
 	<div class="h-full text-white">
 		{#if icon}
 			<Icon {icon} class="block text-4xl m-auto" />
 		{/if}
-		<span class="block font-semibold m-auto text-center">{name}</span>
-		<small class="mt-0.5 block opacity-80 text-left">
+		<span class="block font-monster font-semibold m-auto text-center">{name}</span>
+		<small class="mt-0.5 block font-cabin font-semibold opacity-80 text-center">
 			{@html description}
 		</small>
 	</div>
