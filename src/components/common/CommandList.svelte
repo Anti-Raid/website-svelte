@@ -101,7 +101,7 @@
 					onClick={() => {
 						state.openCluster = instance?.ClusterID || 0;
 					}}
-					extClass="block mb-2 w-full rounded-l-full rounded-r-none font-semibold font-cabin text-md"
+					extClass="block mb-2 w-full rounded-l-full  font-semibold font-cabin text-md"
 				/>
 			{/each}
 
@@ -112,7 +112,7 @@
 					state.clusterFinderOpen = true;
 					state.clusterFinderByGuildIdExpectedData = null;
 				}}
-				extClass="block mb-2 w-full rounded-l-full rounded-r-none font-semibold font-cabin text-md"
+				extClass="block mb-2 w-full rounded-l-full  font-semibold font-cabin text-md"
 			/>
 		</nav>
 
@@ -162,7 +162,7 @@
 										state.openModule =
 											module?.id || state.clusterModuleData[state?.openCluster]['core'].id;
 									}}
-									extClass="block mb-2 w-full rounded-l-full rounded-r-none font-semibold font-cabin text-sm"
+									extClass="block mb-2 w-full rounded-l-full  font-semibold font-cabin text-sm"
 								/>
 							{/if}
 						{/each}

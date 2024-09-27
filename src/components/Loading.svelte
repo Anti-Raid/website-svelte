@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-    import Meta from '../components/Meta.svelte';
+	import Meta from '../components/Meta.svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	let words: String[] = [

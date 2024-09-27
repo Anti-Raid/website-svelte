@@ -53,8 +53,8 @@
 	type="text"
 	{id}
 	class="{disabled
-		? 'mt-2 w-[30%] flex bg-surface-600/50 bg-opacity-30 text-gray-100 rounded-xl border border-primary-200 opacity-75 py-3 px-3 disabled cursor-not-allowed'
-		: 'mt-2 w-[30%] flex transition duration-200 hover:bg-surface-700 bg-surface-600 bg-opacity-100 text-white font-semibold font-monster rounded-xl border border-primary-200 focus:outline-none py-3 px-3'} {extClass}"
+		? 'mt-2 rounded-l-full overflow-auto flex bg-surface-600/50 bg-opacity-30 text-gray-100 rounded-xl border border-primary-200 opacity-75 py-3 px-3 disabled cursor-not-allowed placeholder:text-secondary-600'
+		: 'mt-2 rounded-l-full overflow-auto flex transition duration-200 hover:bg-surface-700 bg-surface-600 bg-opacity-100 text-white font-semibold font-monster rounded-xl border border-primary-200 focus:outline-none py-3 px-3 placeholder:text-secondary-400'} {extClass}"
 	{placeholder}
 	{required}
 	{disabled}

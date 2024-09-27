@@ -114,7 +114,7 @@
 			placeholder="Search for a command"
 			minlength={0}
 			showErrors={false}
-			extClass="rounded-l-none rounded-r-full"
+			extClass=" rounded-r-full"
 			bind:value={state.commandSearch}
 		/>
 
