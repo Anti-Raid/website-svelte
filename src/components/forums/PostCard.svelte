@@ -199,7 +199,7 @@
 			<p class="ml-2 mt-1 mb-1 font-bold text-primary-400">
 				{#if User.name != User.usertag}{User.name}{:else}{User.usertag}{/if}
 				<span class="text-primary-400/75"
-					>{User.usertag != User.name ? `(${User.usertag})` : ''}</span
+					>{User.usertag != User.name ? `(@${User.usertag})` : ''}</span
 				>
 			</p>
 		</h2>
