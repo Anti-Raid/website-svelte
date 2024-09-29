@@ -44,7 +44,7 @@
 
 	const submitData = async () => {
 		let data: any = {
-			type: Type === 'sparkyflight' ? 0 : 1
+			type: Type === 'general' ? 0 : 1
 		};
 
 		if (validateCaption(Caption)) {

@@ -164,9 +164,9 @@
 	const SharePost = (PostID: string): any => {
 		if (SharingCompatible)
 			navigator.share({
-				title: `@${User.usertag}'s post on ${Type.charAt(0).toUpperCase() + Type.slice(1)}`,
+				title: `@${User.usertag}'s post on AntiRaid Forums`,
 				text: Post.caption,
-				url: `${window.location.origin}/post/${PostID}`
+				url: `${window.location.origin}/forums/post/${PostID}`
 			});
 		else
 			return Swal.fire({
@@ -179,7 +179,7 @@
 	};
 
 	const Comments = () => {
-		window.location.href = `${window.location.origin}/post/${Post.postid}#comments`;
+		window.location.href = `${window.location.origin}/forums/post/${Post.postid}#comments`;
 	};
 </script>
 
