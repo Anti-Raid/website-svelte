@@ -2,7 +2,7 @@
 	import Developer from './Developer.svelte';
 
 	export let data: any;
-	let i = JSON.stringify(data, null, 4);
+	$: i = JSON.stringify(data, null, 4);
 </script>
 
 <Developer>
