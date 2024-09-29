@@ -106,9 +106,9 @@
 </script>
 
 <Update
-	id="experimental-site-notice"
-	short="This site is experimental."
-	long="This website is experimental, and may have issues."
+	id="omfgiwannadie"
+	short="Forums killed my mother."
+	long="i have erectile dysfunction."
 />
 
 <header class="top-0 w-full">
