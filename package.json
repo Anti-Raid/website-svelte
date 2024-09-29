@@ -38,6 +38,7 @@
 		"@tailwindcss/typography": "^0.5.10",
 		"@types/lodash.isequal": "^4.5.8",
 		"@vincjo/datatables": "^1.14.4",
+		"animate.css": "^4.1.1",
 		"dompurify": "^3.1.1",
 		"firebase": "^10.13.2",
 		"lodash.isequal": "^4.5.0",
