@@ -5,7 +5,7 @@
 	export let Comment: comments;
 
 	const ImageLoadError = (err: any) => {
-		err.target.src = '/logo.png';
+		err.target.src = '/logo.webp';
 	};
 </script>
 

@@ -20,7 +20,7 @@
 	let deletingPost: boolean = false;
 
 	const ImageLoadError = (err: any) => {
-		err.target.src = '/logo.png';
+		err.target.src = '/logo.webp';
 	};
 
 	const animateCSS = (element: any, animation: any, prefix: string = 'animate__') =>

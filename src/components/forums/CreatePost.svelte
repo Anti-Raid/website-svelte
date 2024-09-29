@@ -190,7 +190,7 @@
 	</button>
 
 	<Upload
-		Logo="/logo.png"
+		Logo="/logo.webp"
 		AllowedFileTypes={['image/jpg', 'image/jpeg', 'image/png', 'image/svg', 'image/gif']}
 		MaxFileSize={60}
 		MultipleFilesAllowed={false}

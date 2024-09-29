@@ -43,6 +43,6 @@ export const load = async ({ request, fetch }: any) => {
 	return {
 		user: userData,
 		posts: posts,
-		token: cookies.token,
+		token: cookies.token
 	};
 };
