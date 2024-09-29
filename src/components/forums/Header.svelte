@@ -69,34 +69,34 @@
 
 	const getLoginData = async () => {
 		let user: users = $page.data?.user;
-        if (!user) return null;
+		if (!user) return null;
 
 		const p: LoginData = {
-				profileNavigation: [
-					{
-						name: 'Home',
-						href: '/forums'
-					},
-					{
-						name: 'Developer Portal',
-						href: '/forums/developers'
-					},
-					{
-						name: 'Logout',
-						onclick: () => {
-							window.location.href = '/forums/auth/logout';
-						}
+			profileNavigation: [
+				{
+					name: 'Home',
+					href: '/forums'
+				},
+				{
+					name: 'Developer Portal',
+					href: '/forums/developers'
+				},
+				{
+					name: 'Logout',
+					onclick: () => {
+						window.location.href = '/forums/auth/logout';
 					}
-				],
-				user
-			};
+				}
+			],
+			user
+		};
 
 		return p;
 	};
 
-    const loginForumUser = () => {
-        window.location.href = "/forums/auth/login";
-    };
+	const loginForumUser = () => {
+		window.location.href = '/forums/auth/login';
+	};
 
 	$: {
 		navigation.map((p) => {
@@ -105,11 +105,7 @@
 	}
 </script>
 
-<Update
-	id="omfgiwannadie"
-	short="Forums killed my mother."
-	long="i have erectile dysfunction."
-/>
+<Update id="omfgiwannadie" short="Forums killed my mother." long="i have erectile dysfunction." />
 
 <header class="top-0 w-full">
 	<div class="max-w-7xl px-3 mx-auto py-3 flex items-center justify-between">
