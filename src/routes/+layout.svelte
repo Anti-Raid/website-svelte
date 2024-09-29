@@ -11,7 +11,7 @@
 	if ($page.url.pathname != '/') loaded = true;
 
 	let headerBeShowed: boolean = true;
-	if ($page.url.pathname.startsWith('/forums')) headerBeShowed = false;
+	$: headerBeShowed = !$page.url.pathname.startsWith('/forums');
 </script>
 
 <section id="content">
