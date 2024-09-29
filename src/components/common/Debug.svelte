@@ -2,7 +2,6 @@
 	import Developer from './Developer.svelte';
 
 	export let data: any;
-	$: i = JSON.stringify(data, null, 4);
 </script>
 
 <Developer>
@@ -14,7 +13,7 @@
 			class="block w-full px-2 text-sm rounded-md text-white bg-slate-600 font-cabin font-semibold border-0 focus:ring-0"
 			placeholder="Sorry, no data was recieved from the server."
 			contenteditable="false"
-			bind:textContent={i}
+			value={JSON.stringify(data, null, 4)}
 			required
 		/>
 	</details>
