@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Update from '../Update.svelte';
 	import { page } from '$app/stores';
 	import { users } from '../../types/forums/types.interface';
 	import Icon from '@iconify/svelte';
@@ -8,11 +7,9 @@
 	import { onDestroy, onMount } from 'svelte';
 
 	let navigation = [
-		{ name: 'Home', href: '/' },
-		{ name: 'Invite', href: '/invite' },
-		{ name: 'About', href: '/about' },
-		{ name: 'Commands', href: '/commands' },
-		{ name: 'Status', href: '/status' }
+		{ name: 'Home', href: '/forums' },
+		{ name: 'Profile', href: '/profile' },
+		{ name: 'Search', href: '#comingsoon' },
 	];
 
 	let open = '';
@@ -83,9 +80,7 @@
 				},
 				{
 					name: 'Logout',
-					onclick: () => {
-						window.location.href = '/forums/auth/logout';
-					}
+					href: '/forums/auth/logout'
 				}
 			],
 			user
@@ -104,8 +99,6 @@
 		});
 	}
 </script>
-
-<Update id="omfgiwannadie" short="Forums killed my mother." long="i have erectile dysfunction." />
 
 <header class="top-0 w-full">
 	<div class="max-w-7xl px-3 mx-auto py-3 flex items-center justify-between">

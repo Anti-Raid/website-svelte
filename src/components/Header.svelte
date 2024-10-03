@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Update from './Update.svelte';
 	import { page } from '$app/stores';
 	import { getAuthCreds } from '../lib/auth/getAuthCreds';
 	import { logoutUser } from '../lib/auth/logoutUser';
@@ -128,12 +127,6 @@
 		});
 	}
 </script>
-
-<Update
-	id="experimental-site-notice"
-	short="This site is experimental."
-	long="This website is experimental, and may have issues."
-/>
 
 <header class="top-0 w-full">
 	<div class="max-w-7xl px-3 mx-auto py-3 flex items-center justify-between">
