@@ -161,7 +161,7 @@
 
 		{#if Profile.bio}
 			{#if Profile.bio != 'None'}
-				<h5 class="mt-1 font-bold text-lg text-primary-400">
+				<h5 class="mt-1 font-bold text-md text-primary-400">
 					{Profile.bio}
 				</h5>
 			{/if}
