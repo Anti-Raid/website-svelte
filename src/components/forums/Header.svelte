@@ -9,7 +9,7 @@
 	let navigation = [
 		{ name: 'Home', href: '/forums' },
 		{ name: 'Profile', href: '/profile' },
-		{ name: 'Search', href: '#comingsoon' },
+		{ name: 'Search', href: '#comingsoon' }
 	];
 
 	let open = '';

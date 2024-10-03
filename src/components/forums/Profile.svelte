@@ -16,12 +16,12 @@
 	if (Profile && AuthedUser)
 		isFollowing = Profile.followers.find((p) => p.userid === AuthedUser?.userid) ? true : false;
 
-    let followingCount: number | null = 0;
-    let followerCount: number | null = 0;
-    if (Profile) {
-        followingCount = Profile.following.length;
-        followerCount = Profile.followers.length;
-    }
+	let followingCount: number | null = 0;
+	let followerCount: number | null = 0;
+	if (Profile) {
+		followingCount = Profile.following.length;
+		followerCount = Profile.followers.length;
+	}
 
 	const Follow = async (UserID: string) => {
 		if (Token) {
@@ -155,9 +155,9 @@
 		/>
 
 		<p class="mt-2 font-bold text-xl text-primary-400">{Profile.name}</p>
-        {#if Profile.name != Profile.usertag}
-            <p class="font-bold text-xl text-primary-500">@{Profile.usertag}</p>
-        {/if}
+		{#if Profile.name != Profile.usertag}
+			<p class="font-bold text-xl text-primary-500">@{Profile.usertag}</p>
+		{/if}
 
 		{#if Profile.bio}
 			{#if Profile.bio != 'None'}
@@ -211,13 +211,7 @@
 			{#each UserPosts as item}
 				<div class="col-span-1 h-auto p-0 m-0">
 					<div class="self-auto h-auto p-0 m-0">
-						<PostCard
-							User={Profile}
-							Post={item}
-							{AuthedUser}
-							{Token}
-							Type={'fourms'}
-						/>
+						<PostCard User={Profile} Post={item} {AuthedUser} {Token} Type={'fourms'} />
 					</div>
 				</div>
 			{/each}

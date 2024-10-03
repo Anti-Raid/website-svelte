@@ -2,13 +2,16 @@
 	import type { PageData } from './$types';
 	import Meta from '../../../components/Meta.svelte';
 	import Profile from '../../../components/forums/Profile.svelte';
-    import Message from '../../../components/Message.svelte';
+	import Message from '../../../components/Message.svelte';
 
 	export let data: PageData;
 </script>
 
 {#if !data.profile || (data.profile && 'error' in data.profile)}
-	<Meta title="Unknown Profile - AntiRaid Forums" description="Sorry, that profile cannot be found." />
+	<Meta
+		title="Unknown Profile - AntiRaid Forums"
+		description="Sorry, that profile cannot be found."
+	/>
 	<Message big={true} type={'error'}>Sorry, that profile cannot be found.</Message>
 {:else}
 	<Meta

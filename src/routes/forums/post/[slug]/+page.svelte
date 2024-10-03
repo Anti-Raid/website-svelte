@@ -4,7 +4,7 @@
 	import PostCard from '../../../../components/forums/PostCard.svelte';
 	import Comment from '../../../../components/forums/Comment.svelte';
 	import CreateComment from '../../../../components/forums/CreateComment.svelte';
-    import Debug from '../../../../components/common/Debug.svelte';
+	import Debug from '../../../../components/common/Debug.svelte';
 
 	export let data: PageData;
 </script>
@@ -68,6 +68,6 @@
 		{/if}
 	</div>
 
-    <div class="p-2"/>
-    <Debug data={data} />
+	<div class="p-2" />
+	<Debug {data} />
 {/if}
