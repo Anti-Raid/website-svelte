@@ -156,12 +156,12 @@
 
 		<p class="mt-2 font-bold text-xl text-primary-400">{Profile.name}</p>
 		{#if Profile.name != Profile.usertag}
-			<p class="font-bold text-xl text-primary-500">@{Profile.usertag}</p>
+			<p class="mt-0 font-bold text-xl text-primary-500">@{Profile.usertag}</p>
 		{/if}
 
 		{#if Profile.bio}
 			{#if Profile.bio != 'None'}
-				<h5 class="font-bold text-primary-500">
+				<h5 class="mt-1 font-bold text-xl text-primary-400">
 					{Profile.bio}
 				</h5>
 			{/if}
