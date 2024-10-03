@@ -8,7 +8,7 @@
 
 	let navigation = [
 		{ name: 'Home', href: '/forums' },
-		{ name: 'Profile', href: '/fourms/profile' },
+		{ name: 'Profile', href: '/forums/profile' },
 		{ name: 'Search', href: '#comingsoon' }
 	];
 
