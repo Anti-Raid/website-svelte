@@ -91,7 +91,7 @@
 							clearInterval(timerInterval);
 						}
 					}).then(() => {
-						window.location.href = '/';
+						window.location.href = '/forums/profile';
 					});
 				} else
 					return Swal.fire({
