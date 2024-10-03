@@ -130,14 +130,14 @@
 					>
 					<div class="mt-2">
 						<div
-							class="flex w-half rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md"
+							class="flex w-full rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md"
 						>
 							<input
 								type="text"
 								name="Name"
 								id="Name"
 								autocomplete="Name"
-								class="relative block w-half appearance-none rounded-md text-base font-bold border border-surface-700 px-3 py-2 bg-gray-700 text-white placeholder-primary-400 focus:z-10 focus:border-surface-300 focus:outline-none focus:ring-surface-300"
+								class="relative block w-full appearance-none rounded-md text-base font-bold border border-surface-700 px-3 py-2 bg-gray-700 text-white placeholder-primary-400 focus:z-10 focus:border-surface-300 focus:outline-none focus:ring-surface-300"
 								placeholder="Name"
 								bind:value={Name}
 							/>
@@ -222,7 +222,7 @@
 						>
 
 						<Upload
-							Logo="/logo.png"
+							Logo="/logo.webp"
 							AllowedFileTypes={['image/jpg', 'image/jpeg', 'image/png', 'image/svg', 'image/gif']}
 							MaxFileSize={60}
 							MultipleFilesAllowed={false}
