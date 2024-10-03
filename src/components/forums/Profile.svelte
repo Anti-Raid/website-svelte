@@ -178,19 +178,19 @@
 			{#if AuthedUser}
 				{#if Profile.userid === AuthedUser.userid}
 					<button
-						class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-primary-500 bg-surface-500 rounded-lg hover:bg-surface-400 focus:ring-2 focus:outline-none focus:ring-surface-300"
+						class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-surface-500 rounded-lg hover:bg-surface-400 focus:ring-2 focus:outline-none focus:ring-surface-300"
 						on:click={() => {
-							window.location.href = '/profile/edit';
+							window.location.href = '/forums/profile/edit';
 						}}>Edit Profile</button
 					>
 				{:else if !isFollowing}
 					<button
-						class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-primary-500 bg-surface-500 rounded-lg hover:bg-surface-400 focus:ring-2 focus:outline-none focus:ring-surface-300"
+						class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-surface-500 rounded-lg hover:bg-surface-400 focus:ring-2 focus:outline-none focus:ring-surface-300"
 						on:click={() => Follow(Profile.userid)}>Follow</button
 					>
 				{:else}
 					<button
-						class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-primary-500 bg-surface-500 rounded-lg hover:bg-surface-400 focus:ring-2 focus:outline-none focus:ring-surface-300"
+						class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-surface-500 rounded-lg hover:bg-surface-400 focus:ring-2 focus:outline-none focus:ring-surface-300"
 						on:click={() => Unfollow(Profile.userid)}>Unfollow</button
 					>
 				{/if}
