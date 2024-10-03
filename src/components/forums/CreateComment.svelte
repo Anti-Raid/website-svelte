@@ -96,7 +96,7 @@
 <input
 	placeholder="Caption*"
 	name="caption"
-	class="relative block w-full appearance-none rounded-t-md border border-gray-300 px-3 py-3 bg-surface-800 text-primary-600 font-bold placeholder-primary-400 focus:z-10 focus:border-surface-500 focus:outline-none focus:ring-surface-500 sm:text-sm"
+	class="relative block w-full appearance-none rounded-t-md border border-gray-300 px-3 py-3 bg-surface-800 text-primary-400 font-bold placeholder-primary-400 focus:z-10 focus:border-surface-500 focus:outline-none focus:ring-surface-500 sm:text-sm"
 	bind:value={Caption}
 />
 
@@ -110,7 +110,7 @@
 			viewBox="0 0 24 24"
 			stroke-width="1.5"
 			stroke="currentColor"
-			class="w-6 h-6"
+			class="w-6 h-6 text-primary-400"
 		>
 			<path
 				stroke-linecap="round"
@@ -145,7 +145,7 @@
 			viewBox="0 0 24 24"
 			stroke-width="1.5"
 			stroke="currentColor"
-			class="w-6 h-6"
+			class="w-6 h-6 text-primary-400"
 		>
 			<path
 				stroke-linecap="round"
