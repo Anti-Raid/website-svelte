@@ -15,7 +15,7 @@ export async function load({ params, fetch }) {
 
 			if (data) {
 				if (data.error) return {
-					error: data.error
+					error: data.message
 				}
 				else return data;
 			}
