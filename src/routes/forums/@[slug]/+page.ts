@@ -11,7 +11,7 @@ export async function load({ params, fetch }) {
 	const profile: users | null = await fetch(`${API_URL}/users/get?tag=${params.slug}`).then(
 		(res) => {
 			const status = res.status;
-			const data = return res.json();
+			const data = await res.json();
 
 			if (data) {
 				if (data.error) return {
