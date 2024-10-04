@@ -9,7 +9,7 @@ export async function load({ params, fetch }) {
 	let profilePosts: posts[] | null = null;
 
 	const profile: users | null = await fetch(`${API_URL}/users/get?tag=${params.slug}`).then(
-		(res) => {
+		async(res) => {
 			const status = res.status;
 			const data = await res.json();
 
