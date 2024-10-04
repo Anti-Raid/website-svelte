@@ -14,7 +14,7 @@
 
 {#if data.token}
 	{#if data.user}
-		{#if data.user.state === 'ACTIVE'}
+		{#if data.user.state != 'BANNED'}
 			<CreatePost Token={data.token} />
 		{:else}
 			<h2 class="text-white font-bold font-monster">
