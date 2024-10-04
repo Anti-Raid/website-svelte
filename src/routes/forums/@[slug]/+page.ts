@@ -11,8 +11,14 @@ export async function load({ params, fetch }) {
 	const profile: users | null = await fetch(`${API_URL}/users/get?tag=${params.slug}`).then(
 		(res) => {
 			const status = res.status;
+			const data = return res.json();
 
-			if (status === 200) return res.json();
+			if (data) {
+				if (data.error) return {
+					error: data.error
+				}
+				else return data;
+			}
 			else
 				return {
 					error: 'Unable to reach server.'
@@ -20,7 +26,7 @@ export async function load({ params, fetch }) {
 		}
 	);
 
-	if (profile)
+	if (profile && !profile.error)
 		profilePosts = await fetch(`${API_URL}/users/list_posts?tag=${profile.usertag}`).then(
 			(res: Response) => {
 				const status = res.status;
