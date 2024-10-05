@@ -44,7 +44,7 @@
 
 	const submitData = async () => {
 		let data: any = {
-			type: Type === 'sparkyflight' ? 0 : 1
+			type: Type === 'general' ? 0 : 1
 		};
 
 		if (validateCaption(Caption)) {
@@ -165,12 +165,12 @@
 <input
 	placeholder="Caption*"
 	name="caption"
-	class="relative block w-full appearance-none rounded-t-md border border-gray-300 px-3 py-3 bg-surface-800 text-primary-600 font-bold placeholder-primary-400 focus:z-10 focus:border-gray-400 focus:outline-none focus:ring-surface-500 sm:text-sm"
+	class="relative block w-full appearance-none rounded-t-md border border-gray-300 px-3 py-3 bg-surface-800 text-primary-400 font-bold placeholder-primary-400 focus:z-10 focus:border-gray-400 focus:outline-none focus:ring-surface-500 sm:text-sm"
 	bind:value={Caption}
 />
 
 <div
-	class="flex w-full appearance-none rounded-b-md border border-gray-300 px-3 py-6 bg-surface-800 text-primary-600 font-bold focus:z-10 focus:border-gray-400 focus:outline-none focus:ring-surface-500 sm:text-sm"
+	class="flex w-full appearance-none rounded-b-md border border-gray-300 px-3 py-6 bg-surface-800 text-primary-500 font-bold focus:z-10 focus:border-gray-400 focus:outline-none focus:ring-surface-500 sm:text-sm"
 >
 	<button type="button" on:click={uploadImage}>
 		<svg
@@ -179,7 +179,7 @@
 			viewBox="0 0 24 24"
 			stroke-width="1.5"
 			stroke="currentColor"
-			class="w-6 h-6"
+			class="w-6 h-6 text-primary-400"
 		>
 			<path
 				stroke-linecap="round"
@@ -190,7 +190,7 @@
 	</button>
 
 	<Upload
-		Logo="/logo.png"
+		Logo="/logo.webp"
 		AllowedFileTypes={['image/jpg', 'image/jpeg', 'image/png', 'image/svg', 'image/gif']}
 		MaxFileSize={60}
 		MultipleFilesAllowed={false}
@@ -214,7 +214,7 @@
 			viewBox="0 0 24 24"
 			stroke-width="1.5"
 			stroke="currentColor"
-			class="w-6 h-6"
+			class="w-6 h-6 text-primary-400"
 		>
 			<path
 				stroke-linecap="round"
@@ -233,7 +233,7 @@
 			viewBox="0 0 24 24"
 			stroke-width="1.5"
 			stroke="currentColor"
-			class="w-6 h-6"
+			class="w-6 h-6 text-primary-400"
 		>
 			<path
 				stroke-linecap="round"

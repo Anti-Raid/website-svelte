@@ -1,22 +1,15 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { getAuthCreds } from '../lib/auth/getAuthCreds';
-	import { logoutUser } from '../lib/auth/logoutUser';
-	import { getUser } from '../lib/auth/getUser';
-	import { User } from '../lib/generated/types';
+	import { users } from '../../types/forums/types.interface';
 	import Icon from '@iconify/svelte';
-	import NavButton from './inputs/button/NavButton.svelte';
-	import { loginUser } from '$lib/auth/loginUser';
+	import NavButton from '../inputs/button/NavButton.svelte';
 	import { browser } from '$app/environment';
-	import Themer from './Themer.svelte';
 	import { onDestroy, onMount } from 'svelte';
 
 	let navigation = [
-		{ name: 'Home', href: '/' },
-		{ name: 'Invite', href: '/invite' },
-		{ name: 'About', href: '/about' },
-		{ name: 'Commands', href: '/commands' },
-		{ name: 'Status', href: '/status' }
+		{ name: 'Home', href: '/forums' },
+		{ name: 'Profile', href: '/forums/profile' },
+		{ name: 'Search', href: '#comingsoon' }
 	];
 
 	let open = '';
@@ -34,10 +27,6 @@
 			bind: null
 		},
 		profileMenu: {
-			open: false,
-			bind: null
-		},
-		themeMenu: {
 			open: false,
 			bind: null
 		}
@@ -72,53 +61,40 @@
 			href?: string;
 			onclick?: () => void;
 		}[];
-		user: User;
+		user: users;
 	};
 
 	const getLoginData = async () => {
-		let authCreds = getAuthCreds();
+		let user: users = $page.data?.user;
+		if (!user) return null;
 
-		if (!authCreds) {
-			return null;
-		}
-
-		let cachedAuthUser = localStorage.getItem('authUser');
-
-		if (!cachedAuthUser) {
-			let userRes = await getUser(authCreds.user_id);
-			cachedAuthUser = JSON.stringify(userRes);
-			localStorage.setItem('authUser', cachedAuthUser);
-		}
-
-		let user: User = JSON.parse(cachedAuthUser);
-
-		if (!user) {
-			logoutUser();
-			return;
-		}
-
-		let data: LoginData = {
+		const p: LoginData = {
 			profileNavigation: [
 				{
-					name: 'Dashboard',
-					href: '/dashboard'
+					name: 'Home',
+					href: '/forums'
+				},
+                                {
+                                        name: 'Edit Profile',
+                                        href: '/forums/profile/edit'
 				},
 				{
-					name: 'Developers',
-					href: '/dashboard/developers'
+					name: 'Developer Portal',
+					href: '/forums/developers'
 				},
 				{
 					name: 'Logout',
-					onclick: () => {
-						logoutUser();
-						window.location.reload();
-					}
+					href: '/forums/auth/logout'
 				}
 			],
 			user
 		};
 
-		return data;
+		return p;
+	};
+
+	const loginForumUser = () => {
+		window.location.href = '/forums/auth/login';
 	};
 
 	$: {
@@ -133,7 +109,7 @@
 		<a href="/">
 			<div class="flex items-center space-x-1">
 				<img class="h-8 w-auto" src="/logo.webp" alt="AntiRaid" />
-				<p class="text-md text-white font-monster font-semibold tracking-tight">AntiRaid</p>
+				<p class="text-md text-white font-monster font-semibold tracking-tight">Forums</p>
 			</div>
 		</a>
 		<div class="flex items-center space-x-2 relative">
@@ -167,22 +143,6 @@
 				{/if}
 			</button>
 
-			<span class="relative">
-				<button
-					name="themer-pane"
-					aria-label="View Themes"
-					on:click={() => (openElements.themeMenu.open = !openElements.themeMenu.open)}
-					class={openElements.themeMenu.open
-						? 'px-3 py-2 text-center text-white rounded-md bg-primary-500 bg-opacity-20'
-						: 'px-3 py-2 text-center text-white bg-transparent rounded-md hover:bg-primary-500 hover:bg-opacity-20'}
-				>
-					<Icon icon="mdi:palette" class="text-3xl text-white-900" />
-				</button>
-				<div bind:this={openElements.themeMenu.bind} class="themer-div text-left">
-					<Themer bind:isOpen={openElements.themeMenu.open} />
-				</div>
-			</span>
-
 			{#await getLoginData()}
 				<Icon icon="fa-solid:yin-yang" width="32px" class="animate-spin text-white" />
 				<span class="animate-pulse text-white">...</span>
@@ -198,7 +158,7 @@
 							on:click={() => (openElements.profileMenu.open = !openElements.profileMenu.open)}
 						>
 							<span class="sr-only">Open user menu</span>
-							<img class="h-8 w-8 rounded-full" src={data?.user?.user?.avatar} alt="" />
+							<img class="h-8 w-8 rounded-full" src={data?.user?.avatar} alt="" />
 						</button>
 
 						{#if openElements.profileMenu.open}
@@ -248,7 +208,7 @@
 				{:else}
 					<button
 						type="button"
-						on:click={loginUser}
+						on:click={loginForumUser}
 						class="px-4 py-2 text-sm font-medium text-left text-gray-50 rounded-lg cursor-pointer bg-indigo-600 hover:bg-indigo-800 focus:outline-none focus:ring-1 focus:ring-inset focus:ring-white"
 					>
 						Login

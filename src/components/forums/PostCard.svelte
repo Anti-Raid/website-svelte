@@ -20,7 +20,7 @@
 	let deletingPost: boolean = false;
 
 	const ImageLoadError = (err: any) => {
-		err.target.src = '/logo.png';
+		err.target.src = '/logo.webp';
 	};
 
 	const animateCSS = (element: any, animation: any, prefix: string = 'animate__') =>
@@ -164,9 +164,9 @@
 	const SharePost = (PostID: string): any => {
 		if (SharingCompatible)
 			navigator.share({
-				title: `@${User.usertag}'s post on ${Type.charAt(0).toUpperCase() + Type.slice(1)}`,
+				title: `@${User.usertag}'s post on AntiRaid Forums`,
 				text: Post.caption,
-				url: `${window.location.origin}/post/${PostID}`
+				url: `${window.location.origin}/forums/post/${PostID}`
 			});
 		else
 			return Swal.fire({
@@ -179,7 +179,7 @@
 	};
 
 	const Comments = () => {
-		window.location.href = `${window.location.origin}/post/${Post.postid}#comments`;
+		window.location.href = `${window.location.origin}/forums/post/${Post.postid}#comments`;
 	};
 </script>
 
@@ -197,7 +197,10 @@
 				on:error={ImageLoadError}
 			/>
 			<p class="ml-2 mt-1 mb-1 font-bold text-primary-400">
-				{User.usertag}
+				{#if User.name != User.usertag}{User.name}{:else}{User.usertag}{/if}
+				<span class="text-primary-400/75"
+					>{User.usertag != User.name ? `(@${User.usertag})` : ''}</span
+				>
 			</p>
 		</h2>
 	</a>

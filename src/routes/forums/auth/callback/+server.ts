@@ -11,5 +11,5 @@ export async function GET({ request, cookies, url }) {
 		expires: ((d) => new Date(d.getFullYear() + 1, d.getMonth(), d.getDate()))(new Date())
 	});
 
-	throw redirect(307, '/');
+	throw redirect(307, '/forums');
 }
