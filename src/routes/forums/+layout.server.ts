@@ -15,7 +15,7 @@ export const load = async ({ request, fetch }: any) => {
 		if (status === 200) {
 			const data: posts[] = await res.json();
 
-			if (data) return data;
+			if (data) return data.filter((p) => p.type === 0);
 			else return null;
 		} else return null;
 	});
