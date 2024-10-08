@@ -172,8 +172,6 @@
 </Developer>
 
 {#if style == 'normal' && selectedChannel}
-	<p>Selected Channel: {selectedChannel?.channel?.name || 'Unknown Channel'}</p>
-
 	<Debug
 		data={{
 			Channel: selectedChannel,

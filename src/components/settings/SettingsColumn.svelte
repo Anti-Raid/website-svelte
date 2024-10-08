@@ -76,6 +76,7 @@
 		minlength={columnDispatchType?.minlength}
 		maxlength={columnDispatchType?.maxlength}
 		type={columnDispatchType?.type}
+		required={column.ignored_for.includes(currentOperationType) ? false : !column.nullable}
 		disabled={columnState == ColumnState.Disabled || allDerivedData[column.id].isCleared}
 		bind:value
 		showErrors={true}
