@@ -132,6 +132,7 @@ Note: this may be less performant than using the concrete input components direc
 					{disabled}
 					{choices}
 					{bitflagValues}
+					{guildData}
 					{channelConstraints}
 					{extClass}
 					multiple={false}
