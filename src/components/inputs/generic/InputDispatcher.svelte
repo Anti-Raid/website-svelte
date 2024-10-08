@@ -208,7 +208,7 @@ Note: this may be less performant than using the concrete input components direc
 		{disabled}
 		{required}
 	/>
-{:else if type == 'sting:modifier'}
+{:else if type == 'string:modifier'}
 	<Label {id} {label} />
 	<InputDescription {description} />
 	<Modifier bind:value {guildData} {required} {disabled} />
