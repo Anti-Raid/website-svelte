@@ -116,7 +116,9 @@
 
 		let botPerms = new BitFlag(serenityPermissions, channel.bot);
 
-		let isAllowedType = channelConstraints.allowed_types.includes(channel.channel.type);
+		let isAllowedType =
+			channelConstraints.allowed_types.length == 0 ||
+			channelConstraints.allowed_types.includes(channel.channel.type);
 		let hasRequiredPermission = botPerms.isFlagSet(channelConstraints.needed_bot_permissions);
 
 		// @ts-ignore
