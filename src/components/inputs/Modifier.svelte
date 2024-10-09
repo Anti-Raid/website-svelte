@@ -5,6 +5,7 @@
 	import InputText from './InputText.svelte';
 	import RoleInput from './RoleInput.svelte';
 	import Select from './select/Select.svelte';
+	import Spacer from './Spacer.svelte';
 
 	export let guildData: UserGuildBaseData;
 	export let value: string;
@@ -74,6 +75,8 @@
 	{disabled}
 />
 
+<Spacer typ="input" />
+
 {#if selectedModifier.type == 'channel'}
 	<ChannelInput
 		channels={guildData.channels}
@@ -83,7 +86,7 @@
 		{disabled}
 	/>
 {:else if selectedModifier.type == 'role'}
-	<RoleInput roles={guildData.roles} botRoles={[]} bind:value required disabled />
+	<RoleInput roles={guildData.roles} botRoles={[]} bind:value {required} {disabled} />
 {:else if selectedModifier.type != 'global'}
 	<InputText
 		id="value"
