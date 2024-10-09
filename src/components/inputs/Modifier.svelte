@@ -75,7 +75,7 @@
 	{disabled}
 />
 
-<Spacer typ="input" />
+<Spacer typ="input" /><br />
 
 {#if selectedModifier.type == 'channel'}
 	<ChannelInput
