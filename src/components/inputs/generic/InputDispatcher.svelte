@@ -117,7 +117,7 @@ Note: this may be less performant than using the concrete input components direc
 	{#if value}
 		<Spacer typ="extSpacing" />
 		{#each value as _, i}
-			<div class="flex flex-row items-center justify-center multi-input align-items">
+			<div class="multi-input">
 				<svelte:self
 					{type}
 					id={id + '-' + i}
@@ -137,6 +137,8 @@ Note: this may be less performant than using the concrete input components direc
 					{extClass}
 					multiple={false}
 				/>
+
+				<Spacer typ="extSpacing" />
 
 				<div class="inline-block mt-2 ml-1 text-red-400 align-bottom hover:text-red-500">
 					<button type="button" on:click|preventDefault={() => deleteValue(i)} aria-label="Delete">
