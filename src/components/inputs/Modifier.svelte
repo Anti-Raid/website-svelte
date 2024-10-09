@@ -14,7 +14,7 @@
 
 	interface Modifier {
 		type: string;
-		value?: string;
+		value: string;
 		specificity?: number;
 	}
 
@@ -42,7 +42,7 @@
 
 		return {
 			type: split[0],
-			value: split.length > 2 ? split[1] : '',
+			value: split.length > 2 && split[0] != 'global' ? split[1] : '',
 			specificity: split.length > 2 ? parseInt(split[2].toString()) : 0
 		};
 	};
@@ -81,12 +81,18 @@
 	<ChannelInput
 		channels={guildData.channels}
 		channelConstraints={{ allowed_types: [], needed_bot_permissions: '0' }}
-		bind:value
+		bind:value={selectedModifier.value}
 		{required}
 		{disabled}
 	/>
 {:else if selectedModifier.type == 'role'}
-	<RoleInput roles={guildData.roles} botRoles={[]} bind:value {required} {disabled} />
+	<RoleInput
+		roles={guildData.roles}
+		botRoles={[]}
+		bind:value={selectedModifier.value}
+		{required}
+		{disabled}
+	/>
 {:else if selectedModifier.type != 'global'}
 	<InputText
 		id="value"
