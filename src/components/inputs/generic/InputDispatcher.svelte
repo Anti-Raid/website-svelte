@@ -215,7 +215,7 @@ Note: this may be less performant than using the concrete input components direc
 	<Label {id} {label} />
 	<InputDescription {description} />
 	<Modifier bind:value {guildData} {required} {disabled} />
-{:else if type == 'string:template:message'}
+{:else if type.startsWith('string:template:message')}
 	<Label {id} {label} />
 	<TemplateBuilder bind:rawTemplateOutput={value} bind:templateBuilderData={extState} />
 	<Debug
