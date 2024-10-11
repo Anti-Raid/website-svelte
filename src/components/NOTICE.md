@@ -3,6 +3,6 @@ The majority of the code located in this directory as well as any subdirectory i
 
 
 ## **Respective Owners and Authors**
-- [Sparkyflight](https://sparkyflight.xyz/)
-- [Infinity List](https://infinitybots.gg/)
-- [Selectdev Portfolio](https://selectdev.purrquinox.com/)
+- **[Sparkyflight](https://sparkyflight.xyz/)**
+- **[Infinity List](https://infinitybots.gg/)**
+- **[Selectdev Portfolio](https://selectdev.purrquinox.com/)**
