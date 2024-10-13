@@ -95,7 +95,7 @@ export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilde
 			let fragment = generateTemplateFragmentForEmbed(embed);
 
 			if (fragment) {
-				templateStr += `${fragment}table.insert(message, embed)\n\t`;
+				templateStr += `${fragment}table.insert(message.embeds, embed)\n\t`;
 			}
 		}
 	}
