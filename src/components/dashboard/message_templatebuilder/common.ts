@@ -105,13 +105,13 @@ export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilde
 	}
 
 	if (templateStr) {
-		templateStr = `function (args) {
+		templateStr = `function (args)
     local message_plugin = require "@antiraid/message"
     local message = message_plugin.new_message()
     -- Create the message
     ${templateStr.trim()}
     return message
-}`;
+end`;
 
 		// Get sha256 checksum of the template
 		const checksum = await sha256(templateStr.trim());
