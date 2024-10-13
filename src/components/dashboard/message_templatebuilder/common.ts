@@ -146,7 +146,6 @@ export const parseTemplateBuilderDataCommentFromTemplate = async (
 	template: string
 ): Promise<ParsedTemplateBuilderComment | null> => {
 	let templateFirstLine = template.split('\n')[0];
-	template = template.slice(1); // Rest of template is the actual template
 
 	if (!templateFirstLine.startsWith('@pragma ')) {
 		return null;
