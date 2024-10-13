@@ -68,7 +68,7 @@
 <section id="climateclock">
     <div id="climateclock_breadcrumb" class="text-center">
 		<h2 class="text-4xl font-cabin font-extrabold text-indigo-600">Climate Clock</h2>
-		<p class="font-monster text-xl text-white lg:mx-auto">The Earth doesn't have much time left, until all of it's damage from Climate Change is irreversible! AntiRaid donates 0.5% of all of our revenue to help reduce emissions. Help make the change that will improve our future!</p>
+		<p class="font-monster text-md text-white lg:mx-auto">The Earth doesn't have much time left, until all of it's damage from Climate Change is irreversible! AntiRaid donates 0.5% of all of our revenue to help reduce emissions. Help make the change that will improve our future!</p>
     </div>
 
 <center>
