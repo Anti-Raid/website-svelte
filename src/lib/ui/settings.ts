@@ -99,11 +99,7 @@ export const getDispatchType = (
 					_setOnDispatchType(
 						dispatchType,
 						'type',
-						inner.String.kind.Template.kind
-							? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}:${Object.keys(
-									inner.String.kind.Template.kind
-							  )[0]?.toLowerCase()}`
-							: 'string:template'
+						`string:template:${inner.String.kind.Template.kind}#${inner.String.kind.Template.ctx}`
 					);
 				else if (inner.String.kind.Channel) {
 					_setOnDispatchType(dispatchType, 'type', 'string:channel');

@@ -19,6 +19,8 @@ Note: this may be less performant than using the concrete input components direc
 	import BitflagInput from '../BitflagInput.svelte';
 	import InputDescription from '../InputDescription.svelte';
 	import Debug from '../../common/Debug.svelte';
+	import RoleInput from '../RoleInput.svelte';
+	import Modifier from '../Modifier.svelte';
 
 	export let type: string;
 
@@ -30,7 +32,8 @@ Note: this may be less performant than using the concrete input components direc
 	export let maxlength: number | undefined;
 	export let description: string | undefined;
 	export let value: any;
-	export let showErrors: boolean = true;
+	export let showErrors: boolean = false;
+	export let required: boolean = false;
 	export let disabled: boolean = false;
 	export let extClass: string | undefined;
 	export let choices: { [label: string]: string } | undefined;
@@ -91,7 +94,6 @@ Note: this may be less performant than using the concrete input components direc
 {#if multiple}
 	<div class="items-center justify-center col-span-9">
 		<Label {id} {label} />
-
 		{#if !disabled}
 			<button class="text-lg mr-2" type="button" on:click|preventDefault={() => appendValue()}>
 				<Icon icon="ant-design:plus-circle-outlined" class="inline-block mr-1 text-white" />Add
@@ -115,7 +117,7 @@ Note: this may be less performant than using the concrete input components direc
 	{#if value}
 		<Spacer typ="extSpacing" />
 		{#each value as _, i}
-			<div class="flex flex-row items-center justify-center multi-input align-items">
+			<div class="multi-input">
 				<svelte:self
 					{type}
 					id={id + '-' + i}
@@ -126,13 +128,17 @@ Note: this may be less performant than using the concrete input components direc
 					description=""
 					bind:value={value[i]}
 					{showErrors}
+					{required}
 					{disabled}
 					{choices}
 					{bitflagValues}
+					{guildData}
 					{channelConstraints}
 					{extClass}
 					multiple={false}
 				/>
+
+				<Spacer typ="extSpacing" />
 
 				<div class="inline-block mt-2 ml-1 text-red-400 align-bottom hover:text-red-500">
 					<button type="button" on:click|preventDefault={() => deleteValue(i)} aria-label="Delete">
@@ -156,6 +162,7 @@ Note: this may be less performant than using the concrete input components direc
 		bind:value
 		{showErrors}
 		{disabled}
+		{required}
 		inpClass={extClass}
 	/>
 {:else if type == 'boolean'}
@@ -164,6 +171,7 @@ Note: this may be less performant than using the concrete input components direc
 		{label}
 		description={description || 'Unknown description'}
 		bind:value
+		{required}
 		{disabled}
 		onChange={() => {}}
 	/>
@@ -177,6 +185,7 @@ Note: this may be less performant than using the concrete input components direc
 		{description}
 		bind:value
 		{showErrors}
+		{required}
 		{disabled}
 	/>
 {:else if type == 'string:channel'}
@@ -189,9 +198,24 @@ Note: this may be less performant than using the concrete input components direc
 			needed_bot_permissions: '0'
 		}}
 		bind:value
+		{required}
 		{disabled}
 	/>
-{:else if type == 'string:template:message'}
+{:else if type == 'string:role'}
+	<Label {id} {label} />
+	<InputDescription {description} />
+	<RoleInput
+		roles={guildData.roles}
+		botRoles={guildData.bot_roles}
+		bind:value
+		{disabled}
+		{required}
+	/>
+{:else if type == 'string:modifier'}
+	<Label {id} {label} />
+	<InputDescription {description} />
+	<Modifier bind:value {guildData} {required} {disabled} />
+{:else if type.startsWith('string:template:message')}
 	<Label {id} {label} />
 	<TemplateBuilder bind:rawTemplateOutput={value} bind:templateBuilderData={extState} />
 	<Debug
@@ -210,6 +234,7 @@ Note: this may be less performant than using the concrete input components direc
 		{description}
 		bind:value
 		{showErrors}
+		{required}
 		{disabled}
 	/>
 	<small class="text-gray-500 dark:text-gray-400"
@@ -232,6 +257,7 @@ Note: this may be less performant than using the concrete input components direc
 			choices={getChoices(choices)}
 			bind:value
 			onChange={() => {}}
+			{required}
 			{disabled}
 		/>
 	{:else}
@@ -245,6 +271,7 @@ Note: this may be less performant than using the concrete input components direc
 			{description}
 			bind:value
 			{showErrors}
+			{required}
 			{disabled}
 		/>
 	{/if}

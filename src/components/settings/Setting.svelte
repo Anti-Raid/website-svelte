@@ -3,8 +3,6 @@
 	import { SettingsExecute, UserGuildBaseData } from '$lib/generated/types';
 	import Label from '../inputs/Label.svelte';
 	import Message from '../Message.svelte';
-	import SettingsCreateRow from './SettingsCreateRow.svelte';
-	import SettingsRow from './SettingsRow.svelte';
 	import SettingsView from './SettingsView.svelte';
 	import { settingsFetchQueue } from '$lib/ui/settings';
 
