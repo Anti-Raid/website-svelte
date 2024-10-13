@@ -71,12 +71,14 @@
 		<p class="font-monster text-xl text-white lg:mx-auto">The Earth doesn't have much time left, until all of it's damage from Climate Change is irreversible! AntiRaid donates 0.5% of all of our revenue to help reduce emissions. Help make the change that will improve our future!</p>
     </div>
 
+<center>
 <a
 				href="https://climate.purrquinox.com/"
-				class="flex items-center w-[50%] justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
+				class="flex items-center w-[30%] justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
 			>
 				Learn More <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
 			</a>
+</center>
 
 	<div class="mt-5" />
 
