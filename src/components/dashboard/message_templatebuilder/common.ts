@@ -69,6 +69,9 @@ export const parseString = (s: string): string => {
 		s = s.replaceAll('"" .. ', '');
 	}
 
+	// Convert enters to the \n string
+	s = s.replaceAll('\n', '\\n');
+
 	return s;
 };
 
