@@ -73,7 +73,7 @@
 
 <a
 				href="https://climate.purrquinox.com/"
-				class="flex items-center w-half justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
+				class="flex items-center w-[50%] justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
 			>
 				Learn More <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
 			</a>
