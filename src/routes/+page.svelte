@@ -68,12 +68,12 @@
 <section id="climateclock">
     <div id="climateclock_breadcrumb" class="text-center">
 		<h2 class="text-4xl font-cabin font-extrabold text-indigo-600">Climate Clock</h2>
-		<p class="font-monster text-xl text-white lg:mx-auto">The Earth doesn't have much time left, until all of it's damage from Climate Change is irreversible! Purrquinox/AntiRaid donates 0.5% of all of our revenue to help reduce emissions. Help make the change of our future!</p>
+		<p class="font-monster text-xl text-white lg:mx-auto">The Earth doesn't have much time left, until all of it's damage from Climate Change is irreversible! AntiRaid donates 0.5% of all of our revenue to help reduce emissions. Help make the change that will improve our future!</p>
     </div>
 
 <a
 				href="https://climate.purrquinox.com/"
-				class="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
+				class="flex items-center w-half justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
 			>
 				Learn More <Icon icon="fa-solid:arrow-right" />
 			</a>
