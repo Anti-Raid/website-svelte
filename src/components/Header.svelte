@@ -16,7 +16,6 @@
 		{ name: 'Invite', href: '/invite' },
 		{ name: 'About', href: '/about' },
 		{ name: 'Commands', href: '/commands' },
-		{ name: 'Status', href: '/status' }
 	];
 
 	let open = '';
