@@ -10,12 +10,12 @@
 	const Benefits: BenefitProp[] = [
 		{
 			Title: 'Customizable Backups',
-			Description: `AntiRaid offers you with customizable <em>and</em> downloadable server backups allowing you to both backup exactly what you need and control your server's data if you want to including local backups and restores!`,
+			Description: `AntiRaid offers customizable <em>and</em> downloadable server backups allowing you to both backup exactly what you need and perform local backups and restores!`,
 			Icon: 'heroicons:archive-box-arrow-down'
 		},
 		{
 			Title: 'Limits',
-			Description: `With AntiRaid, you can easily set up precise rate limits to control exactly what your moderators can do. This ensures your server remains protected and your moderation actions are well-regulated.`,
+			Description: `With AntiRaid, you can easily set up precise rate limits to control exactly what your moderators can do. This ensures your server remains protected and your moderators' actions, well-regulated.`,
 			Icon: 'heroicons:shield-check'
 		},
 		{
@@ -25,7 +25,7 @@
 		},
 		{
 			Title: 'User Friendly',
-			Description: `Unlike most other bots, AntiRaid provides an API for extensive control, allowing you to manage backups and settings, and export your data. This ensures flexibility and helps you avoid vendor-locking by easily switching to other solutions if needed.`,
+			Description: `Unlike most other bots, AntiRaid provides an API allowing for automation and control over your server's data, while ensuring flexibility and minimal vendor locking.`,
 			Icon: 'mdi:user'
 		},
 		{
