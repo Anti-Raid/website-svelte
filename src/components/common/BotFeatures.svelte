@@ -29,8 +29,8 @@
 			Icon: 'mdi:user'
 		},
 		{
-			Title: 'Advanced Infractions System',
-			Description: `Our Advanced Infractions System allows you to easily make cases against a user for violating rules, while being able to make it contain information such as moderator name, allegation, reason, action and proof.`,
+			Title: 'Unrivaled Scripting',
+			Description: `Our unrivaled scripting, based on Roblox Luau, allows you to customize AntiRaid to the specific needs of your server instead of being yet another Generic Discord Bot`,
 			Icon: 'heroicons-outline:bolt'
 		},
 		{
