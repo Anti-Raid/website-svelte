@@ -76,25 +76,25 @@
 	bind:value={state.commandSearch}
 />
 
+<ul class="mt-4">
+	{#each state.searchedCommands as searchedCommand}
+		<li class="search-command mb-7">
+			<h3 class="text-xl font-bold">{searchedCommand?.command?.full_name}</h3>
+
+			{#if searchedCommand?.command?.description}
+				<p class="text-slate-200">{searchedCommand?.command?.description}</p>
+			{/if}
+
+			<p class="text-slate-200"><strong>Module:</strong> {searchedCommand?.module?.name}</p>
+		</li>
+	{/each}
+</ul>
+
 <article class="command-list-article overflow-x-auto overflow-y-hidden h-full">
 	<section class="mt-5 command-list flex flex-grow">
 		{#await fetchModules()}
 			<Message type="loading">Loading modules...</Message>
 		{:then modules}
-			<ul class="mt-4">
-				{#each state.searchedCommands as searchedCommand}
-					<li class="search-command mb-7">
-						<h3 class="text-xl font-bold">{searchedCommand?.command?.full_name}</h3>
-
-						{#if searchedCommand?.command?.description}
-							<p class="text-slate-200">{searchedCommand?.command?.description}</p>
-						{/if}
-
-						<p class="text-slate-200"><strong>Module:</strong> {searchedCommand?.module?.name}</p>
-					</li>
-				{/each}
-			</ul>
-
 			<!--Module list-->
 			<section class="module-list flex flex-grow">
 				<!--Bar-->
