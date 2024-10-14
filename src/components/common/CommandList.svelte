@@ -65,22 +65,22 @@
 	};
 </script>
 
+<!--Search bar-->
+<InputText
+	id="command-search-bar"
+	label="Command Lookup"
+	placeholder="Search for a command."
+	minlength={0}
+	showErrors={false}
+	extClass="rounded-l-full rounded-r-md"
+	bind:value={state.commandSearch}
+/>
+
 <article class="command-list-article overflow-x-auto overflow-y-hidden h-full">
 	<section class="mt-5 command-list flex flex-grow">
 		{#await fetchModules()}
 			<Message type="loading">Loading modules...</Message>
 		{:then modules}
-			<!--Search bar-->
-			<InputText
-				id="command-search-bar"
-				label="Command Lookup"
-				placeholder="Search for a command."
-				minlength={0}
-				showErrors={false}
-				extClass="rounded-l-full rounded-r-md"
-				bind:value={state.commandSearch}
-			/>
-
 			<ul class="mt-4">
 				{#each state.searchedCommands as searchedCommand}
 					<li class="search-command mb-7">
