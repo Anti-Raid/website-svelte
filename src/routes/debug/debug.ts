@@ -1,4 +1,4 @@
-import { makeSharedRequest, opGetClusterModules } from '$lib/fetch/ext';
+import { makeSharedRequest, opGetModules } from '$lib/fetch/ext';
 import {
 	extractKnownPermissionsFromModules,
 	makeKittycatPermissionMapperFromPermissions
@@ -6,11 +6,11 @@ import {
 import { CommonPermissionContext } from '../../components/dashboard/permissions/commonPermissionContext';
 
 export const dbgCreateContext = async () => {
-	let clusterModules = await makeSharedRequest(opGetClusterModules(0));
+	let modules = await makeSharedRequest(opGetModules());
 
 	let commonPermissionContext: CommonPermissionContext = {
 		kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
-			extractKnownPermissionsFromModules(Object.values(clusterModules))
+			extractKnownPermissionsFromModules(Object.values(modules))
 		)
 	};
 

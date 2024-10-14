@@ -1,7 +1,6 @@
 import { getAuthCreds } from '$lib/auth/getAuthCreds';
 import { get } from '$lib/configs/functions/services';
 import { fetchClient } from '$lib/fetch/fetch';
-import { InstanceList } from '$lib/generated/mewld/proc';
 import {
 	CanonicalModule,
 	FullGuildCommandConfiguration,
@@ -98,33 +97,15 @@ export const opGetGuildStaffTeam = (guildId: string): SharedRequester<GuildStaff
 	};
 };
 
-// Fetches the health of all clusters
-export const opGetClusterHealth: SharedRequester<InstanceList> = {
-	name: 'clusterHealth',
-	requestFunc: async (): Promise<InstanceList> => {
-		const res = await fetchClient(`${get('splashtail')}/clusters/health`);
-		if (!res.ok) {
-			let err = await res.error('Cluster Health');
-			throw new Error(err);
-		}
-
-		const data: InstanceList = await res.json();
-
-		return data;
-	},
-	shouldCache: true
-};
-
-// Fetches the modules of a cluster
-export const opGetClusterModules = (
-	clusterId: number
+// Fetches the modules of the bot
+export const opGetModules = (
 ): SharedRequester<Record<string, CanonicalModule>> => {
 	return {
-		name: `clusterModules:${clusterId}`,
+		name: `modules`,
 		requestFunc: async (): Promise<Record<string, CanonicalModule>> => {
-			const res = await fetchClient(`${get('splashtail')}/clusters/${clusterId}/modules`);
+			const res = await fetchClient(`${get('splashtail')}/modules`);
 			if (!res.ok) {
-				let err = await res.error('Cluster Modules');
+				let err = await res.error('Modules');
 				throw new Error(err);
 			}
 

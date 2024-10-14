@@ -11,7 +11,7 @@
 	<h1 class="text-2xl font-semibold">Settings Browser</h1>
 
 	<div class="index-page mb-auto mx-auto">
-		{#each Object.values(props.clusterModules).filter((m) => m.config_options.length > 0) as module}
+		{#each Object.values(props.modules).filter((m) => m.config_options.length > 0) as module}
 			<section class="mt-4 mb-4">
 				<h1 class="text-2xl font-semibold">{module.name}</h1>
 				<p>{module.description}</p>

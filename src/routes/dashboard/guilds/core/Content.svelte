@@ -10,10 +10,7 @@
 	import CommandTab from '../tab:commands/CommandTab.svelte';
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 	import SettingsTab from '../tab:settings/SettingsTab.svelte';
-	import Icon from '@iconify/svelte';
 	import { State } from './types';
-	import { InstanceList } from '$lib/generated/mewld/proc';
-	import ClusterHealth from '../../../../components/common/ClusterHealth.svelte';
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 	import InputText from '../../../../components/inputs/InputText.svelte';
 	import { commandLookup } from '$lib/ui/commands';
@@ -21,12 +18,9 @@
 	import Message from '../../../../components/Message.svelte';
 	import SleekButton from '../../../../components/inputs/button/SleekButton.svelte';
 
-	export let clusterModules: Record<string, CanonicalModule>;
+	export let modules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;
 	export let guildId: string;
-	export let instanceList: InstanceList;
-	export let guildClusterId: number;
-	export let guildShardId: number;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 	export let currentCommandConfiguration: FullGuildCommandConfiguration[];
 	export let guildData: UserGuildBaseData;
@@ -36,14 +30,6 @@
 	const _setState = (newState: State) => {
 		state = newState;
 	};
-
-	const filterInstanceListToGuild = (il: InstanceList, guildClusterId: number): InstanceList => {
-		return {
-			...il,
-			Instances: il.Instances.filter((i) => i?.ClusterID == guildClusterId)
-		};
-	};
-	let showingAllClusters: boolean = false;
 </script>
 
 {#if state.openedEntity.indexPage}
@@ -88,14 +74,14 @@
 		<div class="mb-2" />
 
 		<div class="col-span-8 grid grid-cols-1 gap-6 lg:grid-cols-3 h-full">
-			{#each Object.values(clusterModules) as clusterModule}
+			{#each Object.values(modules) as _module}
 				<SleekButton
 					onclick={() => {
-						state.openedEntity = { module: { id: clusterModule.id, tab: 'moduleInfo' } };
+						state.openedEntity = { module: { id: _module.id, tab: 'moduleInfo' } };
 					}}
 					icon="bx:book"
-					name={clusterModule.name}
-					description={clusterModule.description}
+					name={_module.name}
+					description={_module.description}
 				/>
 			{/each}
 		</div>
@@ -119,8 +105,8 @@
 		/>
 
 		<ul>
-			{#each commandLookup(clusterModules, state.commandSearch) as searchedCommand}
-				<li class="cluster-search-command mb-7">
+			{#each commandLookup(modules, state.commandSearch) as searchedCommand}
+				<li class="search-command mb-7">
 					<h3 class="text-xl font-bold">{searchedCommand?.command?.full_name}</h3>
 					{#if searchedCommand?.command?.description}
 						<p class="text-slate-200">{searchedCommand?.command?.description}</p>
@@ -129,39 +115,14 @@
 				</li>
 			{/each}
 		</ul>
-
-		<h2 class="mt-5 text-xl font-semibold">Cluster Status</h2>
-		<p class="text-slate-200 word-wrap block">
-			Different clusters may have different available modules due to outages, A/B testing and other
-			reasons.
-		</p>
-		<p class="text-slate-200 word-wrap block mb-1">
-			Right now, your server is on Cluster <strong>{guildClusterId}</strong>, Shard
-			<strong>{guildShardId}</strong>. <br /> To make things easier for you, here's an overview of your
-			Cluster's Status:
-		</p>
-
-		<ClusterHealth
-			instanceList={showingAllClusters
-				? instanceList
-				: filterInstanceListToGuild(instanceList, guildClusterId)}
-		/>
-		<BoxButton
-			onclick={(e) => {
-				e.preventDefault();
-				showingAllClusters = !showingAllClusters;
-			}}
-		>
-			{showingAllClusters ? 'Hide Other Clusters' : 'View All Clusters'}
-		</BoxButton>
 	</div>
 {:else if state.openedEntity.module}
 	<div class="module ml-2 px-2 mb-auto mx-auto">
 		<h1 class="text-2xl font-semibold">
-			{clusterModules[state.openedEntity.module.id]?.name}
+			{modules[state.openedEntity.module.id]?.name}
 		</h1>
 		<p class="text-slate-200">
-			{clusterModules[state.openedEntity.module.id]?.description}
+			{modules[state.openedEntity.module.id]?.description}
 		</p>
 
 		<TabbedPane
@@ -175,7 +136,7 @@
 		{#if state.openedEntity.module.tab == 'moduleInfo'}
 			<ModuleInfoTab
 				{guildId}
-				module={clusterModules[state.openedEntity.module.id]}
+				module={modules[state.openedEntity.module.id]}
 				{commonPermissionContext}
 				bind:currentModuleConfiguration
 			/>
@@ -183,17 +144,12 @@
 			<CommandTab
 				{guildId}
 				moduleId={state.openedEntity.module.id}
-				{clusterModules}
+				{modules}
 				{commonPermissionContext}
 				bind:currentCommandConfiguration
 			/>
 		{:else if state.openedEntity.module.tab == 'settings'}
-			<SettingsTab
-				{guildId}
-				module={clusterModules[state.openedEntity.module.id]}
-				{guildData}
-				{clusterModules}
-			/>
+			<SettingsTab {guildId} module={modules[state.openedEntity.module.id]} {guildData} {modules} />
 		{/if}
 	</div>
 {:else if state.openedEntity.quickAction}
@@ -207,12 +163,9 @@
 		<svelte:component
 			this={module}
 			props={{
-				clusterModules,
+				modules,
 				commonPermissionContext,
 				guildId,
-				instanceList,
-				guildShardId,
-				guildClusterId,
 				currentModuleConfiguration,
 				currentCommandConfiguration,
 				guildData,

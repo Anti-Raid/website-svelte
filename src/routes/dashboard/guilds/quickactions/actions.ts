@@ -1,4 +1,3 @@
-import { InstanceList } from '$lib/generated/mewld/proc';
 import {
 	CanonicalModule,
 	FullGuildCommandConfiguration,
@@ -10,12 +9,9 @@ import { CommonPermissionContext } from '../../../../components/dashboard/permis
 import { State } from '../core/types';
 
 export interface QuickActionProps {
-	clusterModules: Record<string, CanonicalModule>;
+	modules: Record<string, CanonicalModule>;
 	commonPermissionContext: CommonPermissionContext;
 	guildId: string;
-	instanceList: InstanceList;
-	guildClusterId: number;
-	guildShardId: number;
 	currentModuleConfiguration: GuildModuleConfiguration[];
 	currentCommandConfiguration: FullGuildCommandConfiguration[];
 	guildData: UserGuildBaseData;

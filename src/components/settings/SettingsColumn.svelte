@@ -14,7 +14,7 @@
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import Debug from '../common/Debug.svelte';
 
-	export let clusterModules: Record<string, CanonicalModule>;
+	export let modules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
@@ -95,7 +95,7 @@
 		{configOpt}
 		{column}
 		operationType={currentOperationType}
-		{clusterModules}
+		{modules}
 		bind:value
 	/>
 {/if}

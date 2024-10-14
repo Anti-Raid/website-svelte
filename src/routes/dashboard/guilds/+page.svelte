@@ -4,14 +4,12 @@
 	import { get } from '$lib/configs/functions/services';
 	import {
 		makeSharedRequest,
-		opGetClusterHealth,
-		opGetClusterModules,
+		opGetModules,
 		opGetAllCommandConfigurations,
 		opGetModuleConfiguration
 	} from '$lib/fetch/ext';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { UserGuildBaseData } from '$lib/generated/types';
-	import { getClusterOfShard, getShardIDFromGuildID } from '$lib/mewext/mewext';
 	import {
 		extractKnownPermissionsFromModules,
 		makeKittycatPermissionMapperFromPermissions
@@ -57,21 +55,9 @@
 
 		let guildData: UserGuildBaseData = await res.json();
 
-		currentState = 'Fetching cluster health and metadata';
+		currentState = 'Fetching module list...';
 
-		let instanceList = await makeSharedRequest(opGetClusterHealth);
-
-		currentState = 'Fetching cluster modules for guild';
-
-		let [guildShardId, err] = getShardIDFromGuildID(guildId, instanceList.Instances.length);
-
-		if (err) {
-			throw err;
-		}
-
-		let guildClusterId = getClusterOfShard(guildShardId, instanceList.Map);
-
-		let clusterModules = await makeSharedRequest(opGetClusterModules(guildClusterId));
+		let modules = await makeSharedRequest(opGetModules());
 
 		currentState = 'Fetching current module configuration';
 
@@ -88,7 +74,7 @@
 		try {
 			commonPermissionContext = {
 				kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
-					extractKnownPermissionsFromModules(Object.values(clusterModules))
+					extractKnownPermissionsFromModules(Object.values(modules))
 				)
 			};
 		} catch (err) {
@@ -110,10 +96,7 @@
 			currentModuleConfiguration,
 			currentCommandConfiguration,
 			guildData,
-			instanceList,
-			guildShardId,
-			guildClusterId,
-			clusterModules,
+			modules,
 			state,
 			commonPermissionContext
 		};
@@ -135,10 +118,7 @@
 			currentModuleConfiguration={r.currentModuleConfiguration}
 			currentCommandConfiguration={r.currentCommandConfiguration}
 			guildData={r.guildData}
-			instanceList={r.instanceList}
-			guildShardId={r.guildShardId}
-			guildClusterId={r.guildClusterId}
-			clusterModules={r.clusterModules}
+			modules={r.modules}
 			commonPermissionContext={r.commonPermissionContext}
 			state={r.state}
 		/>
