@@ -30,12 +30,12 @@
 		},
 		{
 			Title: 'Unrivaled Scripting',
-			Description: `Our unrivaled scripting system, based on Roblox Luau, allows you to customize AntiRaid to the specific needs of your server instead of being yet another Generic Discord Bot`,
+			Description: `Our scripting system, based on Luau, a superset of Lua created by Roblox, allows you to customize AntiRaid to the specific needs of your server instead of being yet another Generic Discord Bot`,
 			Icon: 'heroicons-outline:bolt'
 		},
 		{
 			Title: 'Audit Logging',
-			Description: `AntiRaid enhances server security by sending notifications to a specific channel every time an action occurs. This real-time logging helps you monitor server activity and stay informed about potential threats, allowing for swift responses to protect against attackers.`,
+			Description: `AntiRaid can send notifications in real time any time an action occurs, helping your moderators monitor server activity and stay informed about potential threats.`,
 			Icon: 'heroicons-outline:chat-bubble-bottom-center-text'
 		}
 	];
