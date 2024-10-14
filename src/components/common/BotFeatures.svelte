@@ -20,7 +20,7 @@
 		},
 		{
 			Title: 'Raid Prevention',
-			Description: `AntiRaid offers advanced raid protection with customizable lockdown settings to secure your server during a raid. Automatically prevent new members from joining, control access to specific channels, and receive instant alerts to stay informed and manage disruptions effectively.`,
+			Description: `AntiRaid offers advanced raid protection with customizable lockdown settings to secure your server during a raid.`,
 			Icon: 'heroicons-outline:globe-alt'
 		},
 		{
