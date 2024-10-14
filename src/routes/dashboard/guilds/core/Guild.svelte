@@ -7,22 +7,18 @@
 	import NavButton from '../../../../components/inputs/button/NavButton.svelte';
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
-	import { InstanceList } from '$lib/generated/mewld/proc';
 	import { openedEntityToString, State } from './types';
 	import Content from './Content.svelte';
 	import Icon from '@iconify/svelte';
 	import { quickActions } from '../quickactions/actions';
 	import Debug from '../../../../components/common/Debug.svelte';
 
-	export let clusterModules: Record<string, CanonicalModule>;
+	export let modules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;
 	export let guildId: string;
-	export let instanceList: InstanceList;
 	export let currentModuleConfiguration: GuildModuleConfiguration[];
 	export let currentCommandConfiguration: FullGuildCommandConfiguration[];
 	export let guildData: UserGuildBaseData;
-	export let guildClusterId: number;
-	export let guildShardId: number;
 	export let state: State;
 
 	const setIn = () => {
@@ -42,7 +38,7 @@
 	$: state.openedEntity, setIn();
 </script>
 
-<!--Cluster Menu at the right of the page-->
+<!--Menu at the right of the page-->
 <article class="guild-menu grid grid-cols-1 md:gap-1 md:grid-cols-5 md:grid-flow-dense">
 	<!--Search bar-->
 
@@ -94,7 +90,7 @@
 		<details id="modules-pane" class="summary-expand-close-right" open>
 			<summary class="hover:cursor-pointer font-semibold">Modules</summary>
 
-			{#each Object.entries(clusterModules) as [_, module]}
+			{#each Object.entries(modules) as [_, module]}
 				<NavButton
 					current={state.openedEntity?.module?.id == module?.id}
 					title={module?.name}
@@ -126,15 +122,12 @@
 		</div>
 
 		<Content
-			{clusterModules}
+			{modules}
 			{commonPermissionContext}
 			{guildId}
-			{instanceList}
 			{currentModuleConfiguration}
 			{currentCommandConfiguration}
 			{guildData}
-			{guildClusterId}
-			{guildShardId}
 			bind:state
 		/>
 	</section>

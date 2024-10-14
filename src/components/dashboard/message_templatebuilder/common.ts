@@ -69,6 +69,9 @@ export const parseString = (s: string): string => {
 		s = s.replaceAll('"" .. ', '');
 	}
 
+	// Convert enters to the \n string
+	s = s.replaceAll('\n', '\\n');
+
 	return s;
 };
 
@@ -95,7 +98,7 @@ export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilde
 			let fragment = generateTemplateFragmentForEmbed(embed);
 
 			if (fragment) {
-				templateStr += `${fragment}table.insert(message, embed)\n\t`;
+				templateStr += `${fragment}table.insert(message.embeds, embed)\n\t`;
 			}
 		}
 	}
@@ -105,13 +108,13 @@ export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilde
 	}
 
 	if (templateStr) {
-		templateStr = `function (args) {
+		templateStr = `function (args)
     local message_plugin = require "@antiraid/message"
     local message = message_plugin.new_message()
     -- Create the message
     ${templateStr.trim()}
     return message
-}`;
+end`;
 
 		// Get sha256 checksum of the template
 		const checksum = await sha256(templateStr.trim());
@@ -146,7 +149,6 @@ export const parseTemplateBuilderDataCommentFromTemplate = async (
 	template: string
 ): Promise<ParsedTemplateBuilderComment | null> => {
 	let templateFirstLine = template.split('\n')[0];
-	template = template.slice(1); // Rest of template is the actual template
 
 	if (!templateFirstLine.startsWith('@pragma ')) {
 		return null;
@@ -162,7 +164,7 @@ export const parseTemplateBuilderDataCommentFromTemplate = async (
 		}
 
 		// Check if the checksum is correct
-		let checksumOk = (await sha256(template)) == pragmaObj.builderInfo.checksum;
+		let checksumOk = (await sha256(template.split("\n").slice(1).join("\n"))) == pragmaObj.builderInfo.checksum;
 
 		return {
 			comment: pragmaObj.builderInfo,

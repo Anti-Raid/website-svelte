@@ -8,5 +8,3 @@
 </script>
 
 <SideButton current={selected == 0} title="Dashboard" onClick={() => (selected = 0)} />
-<SideButton current={selected == 1} title="Cluster 1" onClick={() => (selected = 1)} />
-<SideButton current={selected == 2} title="Cluster 2" onClick={() => (selected = 2)} />

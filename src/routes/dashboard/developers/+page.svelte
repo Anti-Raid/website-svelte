@@ -26,7 +26,7 @@
 	import ThSort from '../../../components/common/datatable/ThSort.svelte';
 	import { NoticeProps } from '../../../components/common/noticearea/noticearea';
 	import NoticeArea from '../../../components/common/noticearea/NoticeArea.svelte';
-	import { makeSharedRequest, opGetClusterModules } from '$lib/fetch/ext';
+	import { makeSharedRequest, opGetModules } from '$lib/fetch/ext';
 	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
 	import {
 		extractKnownPermissionsFromModules,
@@ -77,13 +77,13 @@
 		sessionRows = sessionHandler.getRows();
 		otherSessionRows = otherSessionHandler.getRows();
 
-		// Get list of cluster modules
-		currentState = 'Fetching all available cluster modules';
-		let clusterModules = await makeSharedRequest(opGetClusterModules(0));
+		// Get list of modules
+		currentState = 'Fetching all available modules';
+		let modules = await makeSharedRequest(opGetModules());
 
 		let commonPermissionContext: CommonPermissionContext = {
 			kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
-				extractKnownPermissionsFromModules(Object.values(clusterModules))
+				extractKnownPermissionsFromModules(Object.values(modules))
 			)
 		};
 

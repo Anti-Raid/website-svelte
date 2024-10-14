@@ -24,13 +24,13 @@
 	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 
 	export let moduleId: string;
-	export let clusterModules: Record<string, CanonicalModule>;
+	export let modules: Record<string, CanonicalModule>;
 	export let currentCommandConfiguration: FullGuildCommandConfiguration[];
 	export let commonPermissionContext: CommonPermissionContext;
 	export let guildId: string;
 
-	let commands: ParsedCanonicalCommandData[] = extractCommandsFromModule(clusterModules[moduleId]);
-	$: moduleId, (commands = extractCommandsFromModule(clusterModules[moduleId]));
+	let commands: ParsedCanonicalCommandData[] = extractCommandsFromModule(modules[moduleId]);
+	$: moduleId, (commands = extractCommandsFromModule(modules[moduleId]));
 
 	let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
 	const createCmdDataTable = async (commands: ParsedCanonicalCommandData[]) => {
@@ -61,7 +61,7 @@
 				>
 				<CommandEditor
 					{guildId}
-					module={clusterModules[moduleId]}
+					module={modules[moduleId]}
 					allCurrentCommandConfigurations={currentCommandConfiguration}
 					{commonPermissionContext}
 					currentCommandConfiguration={commandConfig}
@@ -156,7 +156,7 @@
 										logger.info('CommandTab', 'Editing command', {
 											row,
 											full_name: row.full_name,
-											clusterModules
+											modules
 										});
 										currentOpenCommand = row;
 										configsBeingEditted = getCommandConfigurations(

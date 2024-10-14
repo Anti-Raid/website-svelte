@@ -6,7 +6,7 @@
 	import SettingsView from './SettingsView.svelte';
 	import { settingsFetchQueue } from '$lib/ui/settings';
 
-	export let clusterModules: Record<string, CanonicalModule>;
+	export let modules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
@@ -39,15 +39,7 @@
 {#await getCurrentSettings(configOpt.max_return, offset)}
 	<p>Loading...</p>
 {:then settings}
-	<SettingsView
-		{clusterModules}
-		{configOpt}
-		{module}
-		{guildData}
-		{guildId}
-		{settings}
-		bind:offset
-	/>
+	<SettingsView {modules} {configOpt} {module} {guildData} {guildId} {settings} bind:offset />
 {:catch err}
 	<Message type="error"><strong>Error</strong>{@html err?.message || err}</Message>
 {/await}

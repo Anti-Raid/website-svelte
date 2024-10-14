@@ -6,7 +6,6 @@ import {
 	PermissionChecks,
 	CommandExtendedDataMap
 } from '$lib/generated/silverpelt';
-import { permuteCommands } from '$lib/mewext/mewext';
 import logger from './logger';
 
 export interface LookedUpCommand {
@@ -15,12 +14,12 @@ export interface LookedUpCommand {
 }
 
 export const commandLookup = (
-	clusterModules: Record<string, CanonicalModule>,
+	modules: Record<string, CanonicalModule>,
 	query: string
 ): LookedUpCommand[] => {
 	if (!query) return [];
 
-	let moduleData = clusterModules;
+	let moduleData = modules;
 	if (!moduleData) return [];
 
 	let commands: LookedUpCommand[] = [];
@@ -107,7 +106,6 @@ export const extractCommandsFromModule = (
 /**
  * Derives a list of command configurations for a certain command
  *
- * @param clusterModules The modules available on the cluster. Used as a fallback when a command configuration is not explicitly set.
  * @param currentCommandConfiguration The current full list of command configurations for the guild
  * @param guildId The guild ID
  * @param command The command to get configurations for
@@ -224,3 +222,24 @@ export const mapToCanonicalCommandExtendedData = (
 		};
 	});
 };
+
+// From name_split, construct a list of all permutations of the command name from the root till the end
+//
+// E.g: If subcommand is `limits hit`, then `limits` and `limits hit` will be constructed
+//
+//	as the list of commands to check
+//
+// E.g 2: If subcommand is `limits hit add`, then `limits`, `limits hit` and `limits hit add`
+//
+//	will be constructed as the list of commands to check
+export function permuteCommands(subcommand: string): string[] {
+	const parts = subcommand.split(' ');
+	const commands = [];
+	let command = '';
+	for (const part of parts) {
+		command += part;
+		commands.push(command);
+		command += ' ';
+	}
+	return commands;
+}

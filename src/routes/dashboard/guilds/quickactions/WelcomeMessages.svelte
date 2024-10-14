@@ -83,7 +83,7 @@
 	<h1 class="text-2xl font-semibold">Welcome Messages</h1>
 	<p>Welcome your members to your server using AntiRaid (and Audit-Log Sinks).</p>
 
-	{#await getAuditLogSinks(props.clusterModules)}
+	{#await getAuditLogSinks(props.modules)}
 		<NoticeArea
 			props={{
 				level: 'loading',

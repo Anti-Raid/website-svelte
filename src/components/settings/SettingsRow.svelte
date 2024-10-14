@@ -36,7 +36,7 @@
 
 	const { sanitize } = dompurify;
 
-	export let clusterModules: Record<string, CanonicalModule>;
+	export let modules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
@@ -181,7 +181,7 @@
 					{column}
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
-					{clusterModules}
+					{modules}
 					bind:allDerivedData
 				/>
 				<Spacer typ="extSpacing" />

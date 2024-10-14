@@ -30,7 +30,7 @@
 	import Spacer from '../inputs/Spacer.svelte';
 	import Debug from '../common/Debug.svelte';
 
-	export let clusterModules: Record<string, CanonicalModule>;
+	export let modules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let settings: SettingsExecuteResponse;
 	export let module: CanonicalModule;
@@ -152,7 +152,7 @@
 					{column}
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
-					{clusterModules}
+					{modules}
 					bind:allDerivedData
 				/>
 				<Spacer typ="extSpacing" />

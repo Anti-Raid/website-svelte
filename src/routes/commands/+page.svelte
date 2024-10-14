@@ -1,6 +1,4 @@
 <script lang="ts">
-	import Message from '../../components/Message.svelte';
-	import { makeSharedRequest, opGetClusterHealth } from '$lib/fetch/ext';
 	import CommandList from '../../components/common/CommandList.svelte';
 </script>
 
@@ -8,10 +6,4 @@
 	<span class="block text-white xl:inline">Command List</span>
 </h2>
 
-{#await makeSharedRequest(opGetClusterHealth)}
-	<Message type="loading">Fetching command list</Message>
-{:then data}
-	<CommandList instanceList={data} />
-{:catch err}
-	<Message type="error">{@html err}</Message>
-{/await}
+<CommandList />

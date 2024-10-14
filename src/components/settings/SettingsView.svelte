@@ -5,7 +5,7 @@
 	import SettingsCreateRow from './SettingsCreateRow.svelte';
 	import SettingsRow from './SettingsRow.svelte';
 
-	export let clusterModules: Record<string, CanonicalModule>;
+	export let modules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
@@ -16,7 +16,7 @@
 
 <div class="setting" id={configOpt.id}>
 	{#if (!configOpt?.max_entries || settings?.fields?.length < configOpt?.max_entries) && configOpt?.operations['Create']}
-		<SettingsCreateRow {settings} {configOpt} {module} {guildData} {guildId} {clusterModules} />
+		<SettingsCreateRow {settings} {configOpt} {module} {guildData} {guildId} {modules} />
 	{/if}
 
 	{#each settings?.fields || [] as columnField, i}
@@ -28,7 +28,7 @@
 			{guildId}
 			{configOpt}
 			bind:settings
-			{clusterModules}
+			{modules}
 		/>
 	{/each}
 </div>

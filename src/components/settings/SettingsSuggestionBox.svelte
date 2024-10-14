@@ -14,7 +14,7 @@
 	import Message from '../Message.svelte';
 	import SettingsSuggestionInput from './SettingsSuggestionInput.svelte';
 
-	export let clusterModules: Record<string, CanonicalModule>;
+	export let modules: Record<string, CanonicalModule>;
 	export let guildId: string;
 	export let module: CanonicalModule;
 	export let configOpt: CanonicalConfigOption;
@@ -22,10 +22,10 @@
 	export let column: CanonicalColumn;
 
 	const getSettingsReference = async (guildId: string, moduleId: string, configOpt: string) => {
-		let referredModule = clusterModules[moduleId];
+		let referredModule = modules[moduleId];
 
 		if (!referredModule) {
-			throw new Error(`Module ${moduleId} not found in clusterModules`);
+			throw new Error(`Module ${moduleId} not found in modules`);
 		}
 
 		let referredConfigOpt = referredModule.config_options.find((config) => config.id === configOpt);

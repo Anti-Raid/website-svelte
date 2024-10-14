@@ -4,7 +4,7 @@
 	import Message from '../../../../components/Message.svelte';
 	import { UserGuildBaseData } from '$lib/generated/types';
 
-	export let clusterModules: Record<string, CanonicalModule>;
+	export let modules: Record<string, CanonicalModule>;
 	export let guildId: string;
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
@@ -14,7 +14,7 @@
 	<Message type="info">No settings found for this module</Message>
 {:else}
 	{#each module.config_options as configOpt}
-		<Setting {module} {configOpt} {guildId} {guildData} {clusterModules} />
+		<Setting {module} {configOpt} {guildId} {guildData} {modules} />
 		<hr />
 	{/each}
 {/if}
