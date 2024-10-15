@@ -30,7 +30,7 @@
 		},
 		{
 			Title: 'Unrivaled Scripting',
-			Description: `Our unrivaled scripting, based on Roblox Luau, allows you to customize AntiRaid to the specific needs of your server instead of being yet another Generic Discord Bot`,
+			Description: `Our scripting system, based on Luau, a superset of Lua created by Roblox, allows you to customize AntiRaid to the specific needs of your server instead of being <em>yet another</em> generic discord bot`,
 			Icon: 'heroicons-outline:bolt'
 		},
 		{
