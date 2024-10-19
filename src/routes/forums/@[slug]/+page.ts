@@ -9,17 +9,17 @@ export async function load({ params, fetch }) {
 	let profilePosts: posts[] | null = null;
 
 	const profile: users | null = await fetch(`${API_URL}/users/get?tag=${params.slug}`).then(
-		async(res) => {
+		async (res) => {
 			const status = res.status;
 			const data = await res.json();
 
 			if (data) {
-				if (data.error) return {
-					error: data.message
-				}
+				if (data.error)
+					return {
+						error: data.message
+					};
 				else return data;
-			}
-			else
+			} else
 				return {
 					error: 'Unable to reach server.'
 				};

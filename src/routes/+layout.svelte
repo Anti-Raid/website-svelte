@@ -2,9 +2,9 @@
 	import '../app.css';
 	import '@fortawesome/fontawesome-free/css/all.min.css';
 	import Header from '../components/Header.svelte';
+	import Footer from '../components/Footer.svelte';
 	import ForumHeader from '../components/forums/Header.svelte';
 	import Loading from '../components/Loading.svelte';
-	import { getVersion } from '$lib/configs/functions/versioner';
 	import { page } from '$app/stores';
 
 	let loaded: boolean = false;
@@ -28,14 +28,7 @@
 					<slot />
 				</main>
 
-				<footer class="mb-auto border-white border-t-2">
-					<p class="text-center text-white font-monster text-md font-extrabold">
-						&copy; 2024 Purrquinox
-					</p>
-					<small class="text-center text-white font-monster text-sm font-extrabold">
-						{getVersion()}
-					</small>
-				</footer>
+				<Footer />
 			</article>
 		</div>
 	{:else}
@@ -51,19 +44,5 @@
 		width: 100%;
 		margin: 0 auto;
 		box-sizing: border-box;
-	}
-
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 12px;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 12px 0;
-		}
 	}
 </style>

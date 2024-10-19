@@ -13,9 +13,10 @@
 
 	let navigation = [
 		{ name: 'Home', href: '/' },
-		{ name: 'Invite', href: '/invite' },
 		{ name: 'About', href: '/about' },
+		{ name: 'Invite', href: '/invite' },
 		{ name: 'Commands', href: '/commands' },
+		{ name: 'Forums', href: '/forums' }
 	];
 
 	let open = '';

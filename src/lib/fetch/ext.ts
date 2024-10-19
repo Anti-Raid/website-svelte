@@ -98,8 +98,7 @@ export const opGetGuildStaffTeam = (guildId: string): SharedRequester<GuildStaff
 };
 
 // Fetches the modules of the bot
-export const opGetModules = (
-): SharedRequester<Record<string, CanonicalModule>> => {
+export const opGetModules = (): SharedRequester<Record<string, CanonicalModule>> => {
 	return {
 		name: `modules`,
 		requestFunc: async (): Promise<Record<string, CanonicalModule>> => {
