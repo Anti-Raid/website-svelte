@@ -27,11 +27,15 @@
 		},
 		{
 
-			name: 'Docs',
+			name: 'Developers',
 			items: [
 				{
 					name: 'API Docs',
 					href: 'https://splashtail-staging.antiraid.xyz'
+				},
+                                {
+                                        name: 'Developer Portal',
+                                        href: 'https://antiraid.xyz/dashboard/developers'
 				}
 			]
 		},
