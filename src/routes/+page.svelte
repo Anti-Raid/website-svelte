@@ -1,5 +1,6 @@
 <script>
 	import Meta from '../components/Meta.svelte';
+	import Breadcrumb from '../components/Breadcrumb.svelte';
 	import Icon from '@iconify/svelte';
 	import BotFeatures from '../components/common/BotFeatures.svelte';
 </script>
@@ -50,10 +51,7 @@
 <div class="m-8" />
 
 <section id="features">
-	<div id="features-what" class="text-center">
-		<h2 class="text-4xl font-cabin font-extrabold text-indigo-600">Features</h2>
-		<p class="font-monster text-xl text-white lg:mx-auto">What do we have to offer?</p>
-	</div>
+	<Breadcrumb Title="Features" Description="What do we have to offer?" />
 	<div class="mt-5" />
 
 	<center>
@@ -66,19 +64,18 @@
 <div class="p-3" />
 
 <section id="climateclock">
-    <div id="climateclock_breadcrumb" class="text-center">
-		<h2 class="text-4xl font-cabin font-extrabold text-indigo-400">Climate Clock</h2>
-		<p class="font-monster text-sm text-white lg:mx-auto">The Earth doesn't have much time left, until all of it's damage from Climate Change is irreversible! AntiRaid donates 0.5% of all of our revenue to help reduce emissions. Help make the change that will improve our future!</p>
-    </div>
+	<Breadcrumb
+		Title="Climate Clock"
+		Description="Time is running out for our planet! Climate Change is threatening to cause irreversible damage! At AntiRaid, we contribute 0.5% of our revenue to initiatives focused on reducing emissions. Join us in creating a positive change for a better future!"
+	/>
+	<div class="mt-3" />
 
-<center>
-<a
-				href="https://climate.purrquinox.com/"
-				class="mt-2 flex items-center w-[45%] justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
-			>
-				Learn More <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
-			</a>
-</center>
+	<button
+		on:click={() => (window.location.href = 'https://climate.purrquinox.com/')}
+		class="ml-2 flex items-center w-half justify-center rounded-md border border-transparent bg-indigo-600 px-5 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-3 md:px-4 md:text-lg"
+	>
+		Learn More <Icon icon="fa-solid:arrow-right" class="pl-2 inline-block w-5" />
+	</button>
 
 	<div class="mt-5" />
 

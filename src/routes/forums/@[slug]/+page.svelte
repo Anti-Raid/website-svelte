@@ -13,7 +13,9 @@
 		description="Sorry, that profile cannot be found."
 	/>
 
-	<Message big={true} type={'error'}>{data.profile.error || "Sorry, that profile cannot be found."}</Message>
+	<Message big={true} type={'error'}
+		>{data.profile.error || 'Sorry, that profile cannot be found.'}</Message
+	>
 {:else}
 	<Meta
 		title="@{data.profile.usertag}'s Profile - AntiRaid Forums"

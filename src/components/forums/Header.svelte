@@ -74,9 +74,9 @@
 					name: 'Home',
 					href: '/forums'
 				},
-                                {
-                                        name: 'Edit Profile',
-                                        href: '/forums/profile/edit'
+				{
+					name: 'Edit Profile',
+					href: '/forums/profile/edit'
 				},
 				{
 					name: 'Developer Portal',

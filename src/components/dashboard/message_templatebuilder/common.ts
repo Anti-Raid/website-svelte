@@ -164,7 +164,8 @@ export const parseTemplateBuilderDataCommentFromTemplate = async (
 		}
 
 		// Check if the checksum is correct
-		let checksumOk = (await sha256(template.split("\n").slice(1).join("\n"))) == pragmaObj.builderInfo.checksum;
+		let checksumOk =
+			(await sha256(template.split('\n').slice(1).join('\n'))) == pragmaObj.builderInfo.checksum;
 
 		return {
 			comment: pragmaObj.builderInfo,
