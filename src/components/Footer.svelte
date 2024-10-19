@@ -26,6 +26,16 @@
 			]
 		},
 		{
+
+			name: 'Docs',
+			items: [
+				{
+					name: 'API Docs',
+					href: 'https://splashtail-staging.antiraid.xyz'
+				}
+			]
+		},
+		{
 			name: 'Community',
 			items: [
 				{
@@ -48,13 +58,9 @@
 				{
 					name: 'Privacy Policy',
 					href: '/legal/privacy'
-				},
-				{
-					name: 'Use License',
-					href: '/legal/uselicense'
 				}
 			]
-		}
+		},
 	];
 
 	const socials: {
