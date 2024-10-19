@@ -13,10 +13,6 @@
 		{
 			name: 'Privacy Policy',
 			href: '/legal/privacy'
-		},
-		{
-			name: 'Use License',
-			href: '/legal/uselicense'
 		}
 	];
 </script>
