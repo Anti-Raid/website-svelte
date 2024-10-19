@@ -27,10 +27,10 @@
 		},
 		{
 
-			name: 'Documentation',
+			name: 'Docs',
 			items: [
 				{
-					name: 'API Documentation',
+					name: 'API Docs',
 					href: 'https://splashtail-staging.antiraid.xyz'
 				}
 			]
