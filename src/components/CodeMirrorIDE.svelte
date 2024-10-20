@@ -66,12 +66,6 @@
 		reconfigure: EditorView;
 	}>();
 
-        const minLines = 6;
-        value = "";
-        for (var i = 0; i < minLines; i++) {
-           value += '\n';
-        }
-
 	let element: HTMLDivElement;
 	let view: EditorView;
 	let update_from_prop = false;
