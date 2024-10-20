@@ -99,6 +99,7 @@ export interface CanonicalInnerColumnTypeStringKind {
     default_length: number /* uint64 */;
   };
   Textarea?: {
+    ctx: string;
   };
   TemplateRef?: {
     kind: string;

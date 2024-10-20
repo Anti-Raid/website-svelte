@@ -19,6 +19,7 @@ Note: this may be less performant than using the concrete input components direc
 	import RoleInput from '../RoleInput.svelte';
 	import Modifier from '../Modifier.svelte';
 	import TemplateChooser from '../../dashboard/templatechooser/TemplateChooser.svelte';
+	import TemplateBuilder from '../../dashboard/message_templatebuilder/TemplateBuilder.svelte';
 
 	export let type: string;
 
@@ -164,7 +165,14 @@ Note: this may be less performant than using the concrete input components direc
 		{disabled}
 		onChange={() => {}}
 	/>
-{:else if type == 'string:textarea'}
+{:else if type == 'string:textarea:template'}
+	<Label {id} {label} />
+	<TemplateBuilder bind:rawTemplateOutput={value} />
+	<small class="text-gray-500 dark:text-gray-400"
+		>See our documentation to learn more about templating</small
+	>
+{:else if type.startsWith('string:textarea')}
+	<Label {id} {label} />
 	<InputTextArea
 		{id}
 		{label}

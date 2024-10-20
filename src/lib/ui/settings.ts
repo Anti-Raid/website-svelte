@@ -92,6 +92,12 @@ export const getDispatchType = (
 
 				// Handle the kind
 				if (inner.String.kind.Normal) _setOnDispatchType(dispatchType, 'type', 'string');
+				else if (inner.String.kind.Textarea)
+					_setOnDispatchType(
+						dispatchType,
+						'type',
+						`string:textarea:${inner.String.kind.Textarea.ctx}`
+					);
 				else if (inner.String.kind.TemplateRef)
 					_setOnDispatchType(
 						dispatchType,
