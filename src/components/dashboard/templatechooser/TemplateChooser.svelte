@@ -57,6 +57,11 @@
 					<Icon icon="mdi:check" />
 					Selected
 				</p>
+				<BoxButton
+					onclick={() => {
+						value = '';
+					}}>Deselect</BoxButton
+				>
 			{/if}
 		</details>
 	{/each}
