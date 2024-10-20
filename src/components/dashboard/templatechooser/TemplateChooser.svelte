@@ -46,7 +46,7 @@
 				>{fields['name']}</summary
 			>
 
-			{#if value == fields['name']}
+			{#if value != fields['name']}
 				<BoxButton
 					onclick={() => {
 						value = fields['name'];
