@@ -30,6 +30,7 @@
 {#if columnDispatchType?.resolved_column_type?.Scalar || columnDispatchType?.resolved_column_type?.Array}
 	<InputDispatcher
 		{guildData}
+		{guildId}
 		id={column.id}
 		label={column.name}
 		placeholder={column.description}

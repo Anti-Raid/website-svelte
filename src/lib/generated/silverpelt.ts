@@ -100,7 +100,7 @@ export interface CanonicalInnerColumnTypeStringKind {
   };
   Textarea?: {
   };
-  Template?: {
+  TemplateRef?: {
     kind: string;
     ctx: string;
   };
