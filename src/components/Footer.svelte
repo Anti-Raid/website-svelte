@@ -94,13 +94,13 @@
 			<div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3 md:ml-6 lg:ml-6">
 				{#each categories as category}
 					<div>
-						<h2 class="mb-6 text-sm font-semibold font-monster text-white uppercase">
+						<h2 class="mb-6 text-sm font-semibold font-cabin text-white uppercase">
 							{category.name}
 						</h2>
 
-						<ul class="text-white/75 font-cabin tracking-tight font-medium">
+						<ul class="text-white/75 font-cabin font-medium">
 							{#each category.items as item}
-								<li class="mb-4">
+								<li>
 									<a href={item.href} class="hover:underline">{item.name}</a>
 								</li>
 							{/each}
