@@ -101,7 +101,7 @@
 	let value = '';
 </script>
 
-<CodeMirrorIde bind:value extensions={[StreamLanguage.define(lua).extension]} theme={oneDark} />
+<CodeMirrorIde bind:value extensions={[StreamLanguage.define(lua).extension]} theme={oneDark} placeholder="Start typing your code here." />
 
 <div class="p-3" />
 <Xterm {options} on:load={onLoad} on:data={onData} on:key={onKey} />
