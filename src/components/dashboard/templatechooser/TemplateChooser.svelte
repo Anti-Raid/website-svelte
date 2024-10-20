@@ -32,14 +32,7 @@
 {:then settings}
 	{#if settings.fields.length == 0}
 		<Message type="info"
-			><button
-				on:click|preventDefault={() => {
-					history.pushState(
-						null,
-						'',
-						`/dashboard/guilds?id=${guildId}&in=module.settings.settings`
-					);
-				}}>Create a template</button
+			><a href={`/dashboard/guilds?id=${guildId}&in=module.settings.settings`}>Create a template</a
 			>Create a template</Message
 		>
 	{/if}
