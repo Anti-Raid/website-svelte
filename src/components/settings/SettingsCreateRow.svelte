@@ -146,14 +146,13 @@
 					{module}
 					{guildData}
 					{guildId}
-					{columnField}
 					bind:value={columnField[column.id]}
 					{currentOperationType}
 					{column}
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
 					{modules}
-					bind:allDerivedData
+					bind:derivedData={allDerivedData[column.id]}
 				/>
 				<Spacer typ="extSpacing" />
 			{/if}
