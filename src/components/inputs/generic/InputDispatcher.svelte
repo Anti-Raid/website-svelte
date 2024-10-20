@@ -164,7 +164,7 @@ Note: this may be less performant than using the concrete input components direc
 		{disabled}
 		onChange={() => {}}
 	/>
-{:else if type == 'textarea'}
+{:else if type == 'string:textarea'}
 	<InputTextArea
 		{id}
 		{label}
