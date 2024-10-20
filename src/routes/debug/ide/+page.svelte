@@ -3,7 +3,6 @@
 	import CodeMirrorIde from '../../../components/CodeMirrorIDE.svelte';
 	import { lua } from '@codemirror/legacy-modes/mode/lua';
 	import { oneDark } from '@codemirror/theme-one-dark';
-        import type { LayoutData } from '../$types';
 	import type { PageData } from './$types';
 	import { type Terminal, Xterm, XtermAddon } from '@battlefieldduck/xterm-svelte';
 	import {
@@ -12,7 +11,7 @@
 	} from '@battlefieldduck/xterm-svelte';
 
 	// Get data from server.
-	export let data: LayoutData & PageData;
+	export let data: PageData;
 
 	// Commands
 	const commands: Map<
@@ -102,11 +101,7 @@
 	let value = '';
 </script>
 
-<CodeMirrorIde
-	bind:value
-	extensions={[StreamLanguage.define(lua).extension]}
-	theme={oneDark}
-/>
+<CodeMirrorIde bind:value extensions={[StreamLanguage.define(lua).extension]} theme={oneDark} />
 
 <div class="p-3" />
 <Xterm {options} on:load={onLoad} on:data={onData} on:key={onKey} />

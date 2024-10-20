@@ -26,7 +26,7 @@ const bash = (terminal: Terminal, data: any) => {
 	if (data.args.length === 0) terminal.writeln('Error: No file specified.');
 	else {
 		const file = data.args[0];
-    terminal.writeln(`Error: File not found`);
+		terminal.writeln(`Error: File not found`);
 	}
 };
 
