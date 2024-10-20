@@ -67,6 +67,7 @@
 	}>();
 
         const minLines = 6;
+        value = "";
         for (var i = 0; i < minLines; i++) {
            value += '\n';
         }
