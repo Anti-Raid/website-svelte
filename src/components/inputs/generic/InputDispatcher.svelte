@@ -205,6 +205,7 @@ Note: this may be less performant than using the concrete input components direc
 	<InputDescription {description} />
 	<Modifier bind:value {guildData} {required} {disabled} />
 {:else if type.startsWith('string:templateref')}
+	<Label {id} {label} />
 	<TemplateChooser {guildId} bind:value />
 	<small class="text-gray-500 dark:text-gray-400"
 		>See our documentation to learn more about templating</small
