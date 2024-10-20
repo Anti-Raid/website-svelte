@@ -12,7 +12,7 @@
     import { EditorState, StateEffect, type Extension } from "@codemirror/state";
     import { indentWithTab } from "@codemirror/commands";
     import { indentUnit, type LanguageSupport } from "@codemirror/language";
-    import { debounce } from "./util";
+    import { debounce } from "./CodemirrorUtil";
 
     let classes = "";
     export { classes as class };
