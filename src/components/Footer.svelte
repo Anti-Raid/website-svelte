@@ -85,7 +85,7 @@
 			<div class="mb-6 md:mb-0">
 				<a href="https://antiraid.xyz/" class="flex items-center">
 					<img src="/logo.webp" class="h-8 me-3" alt="AntiRaid Logo" />
-					<span class="self-center text-2xl font-semibold whitespace-nowrap font-monster"
+					<span class="self-center text-2xl font-semibold tracking-tight whitespace-nowrap font-monster"
 						>AntiRaid</span
 					>
 				</a>
@@ -98,7 +98,7 @@
 							{category.name}
 						</h2>
 
-						<ul class="text-white/75 font-cabin font-medium">
+						<ul class="text-white/75 font-cabin tracking-tight font-medium">
 							{#each category.items as item}
 								<li class="mb-4">
 									<a href={item.href} class="hover:underline">{item.name}</a>
