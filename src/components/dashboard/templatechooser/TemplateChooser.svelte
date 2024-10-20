@@ -30,6 +30,20 @@
 {#await templateList(10, offset)}
 	<p>Loading...</p>
 {:then settings}
+	{#if settings.fields.length == 0}
+		<Message type="info"
+			><button
+				on:click|preventDefault={() => {
+					history.pushState(
+						null,
+						'',
+						`/dashboard/guilds?id=${guildId}&in=module.settings.settings`
+					);
+				}}>Create a template</button
+			>Create a template</Message
+		>
+	{/if}
+
 	{#each settings.fields as fields}
 		<details
 			id={`setting-schema-details`}
