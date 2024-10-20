@@ -85,7 +85,7 @@
 			<div class="mb-6 md:mb-0">
 				<a href="https://antiraid.xyz/" class="flex items-center">
 					<img src="/logo.webp" class="h-8 me-3" alt="AntiRaid Logo" />
-					<span class="self-center text-2xl font-semibold tracking-tight whitespace-nowrap font-monster"
+					<span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
 						>AntiRaid</span
 					>
 				</a>
@@ -94,13 +94,13 @@
 			<div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3 md:ml-6 lg:ml-6">
 				{#each categories as category}
 					<div>
-						<h2 class="mb-6 text-sm font-semibold font-cabin text-white uppercase">
+						<h2 class="mb-6 text-sm font-semibold text-white uppercase">
 							{category.name}
 						</h2>
 
-						<ul class="text-white/75 font-cabin font-medium">
+						<ul class="text-white/75 font-medium">
 							{#each category.items as item}
-								<li>
+								<li class="mb-4">
 									<a href={item.href} class="hover:underline">{item.name}</a>
 								</li>
 							{/each}
