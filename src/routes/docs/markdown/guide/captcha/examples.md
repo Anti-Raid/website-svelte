@@ -4,7 +4,7 @@
 
 ```lua
 @pragma {"lang":"lua"}
-function (args) 
+function (args)
     local interop = require "@antiraid/interop"
 
     local captcha_config = {}
@@ -76,7 +76,7 @@ end
 
 ```lua
 @pragma {"lang":"lua"}
-function (args) 
+function (args)
     local interop = require "@antiraid/interop"
 
     local captcha_config = {}

@@ -2,17 +2,17 @@
 
 ## Builtins
 
-**Module Name:** ``@antiraid/builtins``
+**Module Name:** `@antiraid/builtins`
 
 Provides some basic builtins for AntiRaid.
 
 ### Functions
 
-- ``require(module_name: string) -> table<any>``
+- `require(module_name: string) -> table<any>`
 
 ## Concurrency
 
-**Module Name:** ``@antiraid/concurrency``
+**Module Name:** `@antiraid/concurrency`
 
 Not really useful right now. Will be expanded in the future.
 
@@ -20,7 +20,7 @@ Not really useful right now. Will be expanded in the future.
 
 ### Functions
 
-- ``select_ok(coros: {coroutine}) -> coroutine``
+- `select_ok(coros: {coroutine}) -> coroutine`
 
 Creates a new coroutine which will select the first successful coroutine over a list of coroutine. The created coroutine is then executed and the result returned
 
@@ -28,21 +28,21 @@ The returned coroutine will wait for any coroutine within the list to be ready a
 
 ## Interop
 
-**Module Name:** ``@antiraid/interop``
+**Module Name:** `@antiraid/interop`
 
 Interop between Lua and the Rust core
 
 ### Values
 
-- ``null``
+- `null`
 
-While the Lua ``nil`` does work in many cases (and even when calling the SDK), its not the best choice. When querying AntiRaid SDK, the SDK will use the ``@antiraid/interop#null`` value to represent a null value. Lua templates can also use this value if desired.
+While the Lua `nil` does work in many cases (and even when calling the SDK), its not the best choice. When querying AntiRaid SDK, the SDK will use the `@antiraid/interop#null` value to represent a null value. Lua templates can also use this value if desired.
 
-One advantage of ``null`` vs ``nil`` is that ``null`` can be used to check whether a value is set but is null or is completely unset. ``nil`` can only be used to check if a value is unset. This is important when interfacing with Discord as Discord often has differing semantics between non-existence and existing-but-null such as in Gateway Events.
+One advantage of `null` vs `nil` is that `null` can be used to check whether a value is set but is null or is completely unset. `nil` can only be used to check if a value is unset. This is important when interfacing with Discord as Discord often has differing semantics between non-existence and existing-but-null such as in Gateway Events.
 
-- ``array_metatable``
+- `array_metatable`
 
-To pass arrays to modules within the AntiRaid SDK, you need to set the metatable to ``@antiraid/interop#array_metatable``. This will allow the SDK to convert the array to a Rust ``Vec`` internally.
+To pass arrays to modules within the AntiRaid SDK, you need to set the metatable to `@antiraid/interop#array_metatable`. This will allow the SDK to convert the array to a Rust `Vec` internally.
 
 ```lua
 local interop = require '@antiraid/interop'
@@ -53,7 +53,7 @@ This is required because tables in Lua can represent both a hashmap and an array
 
 ### Functions
 
-- ``memusage() -> number``
+- `memusage() -> number`
 
 While not strictly useful for interop, it is often desirable to know the memory usage of a Lua template as AntiRaid will kill your template if it exceeds the memory limit. For this, you can use the `@antiraid/interop#memusage` function.
 
@@ -70,19 +70,19 @@ Functions for creating templated messages
 
 ### Functions
 
-- ``new_message() -> table<message.Message>``
+- `new_message() -> table<message.Message>`
 
 Creates a new message table
 
-- ``new_message_embed() -> table<message.MessageEmbed>``
+- `new_message_embed() -> table<message.MessageEmbed>`
 
 Creates a new message embed table
 
-- ``new_message_embed_field() -> table<message.MessageEmbedField>``
+- `new_message_embed_field() -> table<message.MessageEmbedField>`
 
 Creates a new message embed field table
 
-- ``format_gwevent_field(field: table<gwevent.field.Field>) -> String``
+- `format_gwevent_field(field: table<gwevent.field.Field>) -> String`
 
 Formats a gwevent field into a string. These are exposed in places such as Audit Logs and other areas.
 
@@ -122,47 +122,47 @@ pub struct Message {
 
 ## Permissions
 
-**Module Name:** ``@antiraid/permissions``
+**Module Name:** `@antiraid/permissions`
 
-Provides functions for checking and handling permissions. Internally, this exposes (parts of) the ``kittycat`` and ``rust.permissions`` crates for Lua templating.
+Provides functions for checking and handling permissions. Internally, this exposes (parts of) the `kittycat` and `rust.permissions` crates for Lua templating.
 
 ### Functions
 
-- ``new_permission_check() -> table<permissions.PermissionCheck>``
+- `new_permission_check() -> table<permissions.PermissionCheck>`
 
 Creates a new permission check table
 
-- ``new_permission_checks() -> table<permissions.PermissionChecks>``
+- `new_permission_checks() -> table<permissions.PermissionChecks>`
 
-Creates a new permission checks table. This is not very useful (theres only two variants: ``Simple`` and ``Template``) but is exposed for the sake of completeness.
+Creates a new permission checks table. This is not very useful (theres only two variants: `Simple` and `Template`) but is exposed for the sake of completeness.
 
-- ``new_permission(namespace: string, perm: string, negator: boolean) -> table<kittycat.perms.Permission>``
+- `new_permission(namespace: string, perm: string, negator: boolean) -> table<kittycat.perms.Permission>`
 
 Creates a new kittycat permission table given the namespace, permission and negator.
 
-- ``new_permission_from_string(perm: string) -> table<kittycat.perms.Permission>``
+- `new_permission_from_string(perm: string) -> table<kittycat.perms.Permission>`
 
 Given the string form of a kittycat permission, creates a new permission table.
 
-- ``permission_to_string(perm: table<kittycat.perms.Permission>) -> string``
+- `permission_to_string(perm: table<kittycat.perms.Permission>) -> string`
 
 Converts a kittycat permission to its string form.
 
-- ``has_perm(permissions: {table<kittycat.perms.Permission>}, perm: table<kittycat.perms.Permission>) -> boolean``
+- `has_perm(permissions: {table<kittycat.perms.Permission>}, perm: table<kittycat.perms.Permission>) -> boolean`
 
-Checks if a list of permissions 'has' a specific permission. This corresponds to ``kittycat::perms::has_perm(permissions, perm)``.
+Checks if a list of permissions 'has' a specific permission. This corresponds to `kittycat::perms::has_perm(permissions, perm)`.
 
-- ``has_perm_str(permissions: {string}, perm: string) -> boolean``
+- `has_perm_str(permissions: {string}, perm: string) -> boolean`
 
-The string variant of ``has_perm``. This is useful when you have a list of permissions in string form. This corresponds to ``kittycat::perms::has_perm_str(permissions, perm)``.
+The string variant of `has_perm`. This is useful when you have a list of permissions in string form. This corresponds to `kittycat::perms::has_perm_str(permissions, perm)`.
 
-- ``check_perms_single(check: permissions.PermissionCheck, member_native_perms: serenity.all.Permissions, member_kittycat_perms: {kittycat.perms.Permission}) -> LuaPermissionResult``
+- `check_perms_single(check: permissions.PermissionCheck, member_native_perms: serenity.all.Permissions, member_kittycat_perms: {kittycat.perms.Permission}) -> LuaPermissionResult`
 
-Checks a single permission check. This corresponds to ``permissions::check_perms_single(check, member_native_perms, member_kittycat_perms)``.
+Checks a single permission check. This corresponds to `permissions::check_perms_single(check, member_native_perms, member_kittycat_perms)`.
 
-- ``eval_checks(checks: {permissions.PermissionCheck}, member_native_perms: serenity.all.Permissions, member_kittycat_perms: {kittycat.perms.Permission}) -> LuaPermissionResult``
+- `eval_checks(checks: {permissions.PermissionCheck}, member_native_perms: serenity.all.Permissions, member_kittycat_perms: {kittycat.perms.Permission}) -> LuaPermissionResult`
 
-Checks a set of permission checks. This corresponds to ``permissions::eval_checks(checks, member_native_perms, member_kittycat_perms)``.
+Checks a set of permission checks. This corresponds to `permissions::eval_checks(checks, member_native_perms, member_kittycat_perms)`.
 
 ### Types
 

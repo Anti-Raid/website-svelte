@@ -25,5 +25,16 @@ export default defineConfig({
 	},
 	build: {
 		sourcemap: true
+	},
+	optimizeDeps: {
+		exclude: [
+			'codemirror',
+			'@codemirror/view',
+			'@codemirror/state',
+			'@codemirror/commands',
+			'@codemirror/language',
+			'@codemirror/legacy-modes/mode/lua',
+			'@codemirror/theme-one-dark'
+		]
 	}
 });
