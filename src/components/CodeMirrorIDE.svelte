@@ -13,12 +13,6 @@
 	import { indentWithTab } from '@codemirror/commands';
 	import { indentUnit, type LanguageSupport } from '@codemirror/language';
 
-        const minLines = 6;
-        let startingValue = '';
-        for (var i = 0; i < minLines; i++) {
-           startingValue += '\n';
-        }
-
 	/**
 	 * Reduce calls to the passed function.
 	 *
@@ -72,6 +66,11 @@
 		reconfigure: EditorView;
 	}>();
 
+        const minLines = 6;
+        for (var i = 0; i < minLines; i++) {
+           value += '\n';
+        }
+
 	let element: HTMLDivElement;
 	let view: EditorView;
 	let update_from_prop = false;
@@ -109,7 +108,6 @@
 		return new EditorView({
 			parent: element,
 			state: create_editor_state(value),
-                        value: startingValue,
 			dispatch(transaction: any) {
 				view.update([transaction]);
 
