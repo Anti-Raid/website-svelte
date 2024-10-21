@@ -1,4 +1,9 @@
 <script lang="ts">
+	/**
+	 * @title Datatables Search
+	 * @description Datatables search bar to replace the default one
+	 **/
+
 	import type { DataHandler } from '@vincjo/datatables';
 	export let handler: DataHandler;
 	export let category: string | null = null;

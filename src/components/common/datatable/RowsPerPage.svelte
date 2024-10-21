@@ -1,4 +1,9 @@
 <script lang="ts">
+	/**
+	 * @title Datatables RowsPerPage
+	 * @description Datatables rows per page select menu to replace the default one
+	 **/
+
 	import type { DataHandler } from '@vincjo/datatables';
 	export let handler: DataHandler;
 	const rowsPerPage = handler.getRowsPerPage();

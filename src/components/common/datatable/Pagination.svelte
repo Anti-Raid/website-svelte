@@ -1,4 +1,9 @@
 <script lang="ts">
+	/**
+	 * @title Datatables Pagination
+	 * @description Datatables pagination to replace the default one
+	 **/
+
 	import type { DataHandler } from '@vincjo/datatables';
 	export let handler: DataHandler;
 	const pageNumber = handler.getPageNumber();

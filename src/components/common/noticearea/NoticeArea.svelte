@@ -1,4 +1,9 @@
 <script lang="ts">
+	/**
+	 * @title NoticeArea
+	 * @description NoticeArea provides a nice looking box with an icon and text with animations, inspired by Discord's old notification system
+	 **/
+
 	import Icon from '@iconify/svelte';
 	import { Display, NoticeProps, getDisplay } from './noticearea';
 
