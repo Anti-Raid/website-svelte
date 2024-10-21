@@ -4,7 +4,6 @@
 	import Icon from '@iconify/svelte';
 	import BoxButton from '../../inputs/button/BoxButton.svelte';
 	import Message from '../../Message.svelte';
-	import SettingsCreateRow from '../../settings/SettingsCreateRow.svelte';
 	import InputText from '../../inputs/InputText.svelte';
 	import InputTextArea from '../../inputs/InputTextArea.svelte';
 	import ButtonReact from '../../inputs/button/ButtonReact.svelte';

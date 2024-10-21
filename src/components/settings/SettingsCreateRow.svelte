@@ -81,10 +81,7 @@
 
 		let newEntry: SettingsExecuteResponse = await res.json();
 
-		let newLength = settings.fields.push({
-			...columnField,
-			...newEntry.fields[0]
-		});
+		let newLength = settings.fields.push(newEntry.fields[0]);
 		settings = settings;
 		columnField = {}; // Clear the column field after creating a new entry
 
