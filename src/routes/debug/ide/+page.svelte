@@ -51,6 +51,7 @@
 <CodeMirrorIde
 	bind:value
 	execute={executeCode}
+        files={files}
         running={running}
 	extensions={[StreamLanguage.define(lua).extension]}
 	theme={oneDark}
