@@ -227,7 +227,7 @@
 						class="p-2 bg-green-500 h-full font-monster font-bold rounded-r-md"
 						on:click={execute}
 					>
-						<i class="fa fa-play mr-1" /> Running
+						<i class="fa fa-play mr-1" /> Execute
 					</button>
 				</div>
                                 {:else}
