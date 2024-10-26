@@ -256,7 +256,7 @@
 	</div>
         <div class="py-6 bg-surface-600 text-white font-bold font-monster" id="files">
                 {#each files as file}
-                   <div class="bg-surface-500 text-white font-bold font-monster">
+                   <div class="inline-block bg-surface-500 text-white font-bold font-monster">
                       <i class={file.icon} />
                       <h2>{file.name}</h2>
                    </div>
