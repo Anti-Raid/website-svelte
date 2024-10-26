@@ -17,7 +17,7 @@
         // Files
         let files: File[] = [{
            name: "main.luau",
-           icon: "fa fa-solid fa-square rotate-40",
+           icon: "fa fa-solid fa-square rotate-45",
            open: true,
            downloadable: false
 	}];
