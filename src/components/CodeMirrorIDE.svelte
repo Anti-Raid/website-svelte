@@ -3,6 +3,12 @@
 	export type StyleSpec = {
 		[propOrSelector: string]: string | number | StyleSpec | null;
 	};
+        export interface File {
+             name: string;
+             icon: string;
+             open: boolean;
+             downloadable: boolean;
+	};
 </script>
 
 <script lang="ts">
@@ -42,19 +48,23 @@
 		} as T;
 	}
 
+        /**
+        * Update minimum line count of CodeMirror
+        * @param editor - CodeMirror Editor Variable
+        * @param minNumOfLines - Minimum number of Lines
+        **/
         export function updateToMinNumberOfLines(editor, minNumOfLines) {
-    const currentNumOfLines = editor.state.doc.lines;
-    const currentStr = editor.state.doc.toString();
+           const currentNumOfLines = editor.state.doc.lines;
+           const currentStr = editor.state.doc.toString();
+           if (currentNumOfLines >= minNumOfLines) return;
 
-    if (currentNumOfLines >= minNumOfLines) return;
+           const lines = minNumOfLines - currentNumOfLines;
+           const appendLines = "\n".repeat(lines);
 
-    const lines = minNumOfLines - currentNumOfLines;
-    const appendLines = "\n".repeat(lines);
-
-    editor.dispatch({
-        changes: {from: currentStr.length, insert: appendLines}
-    })
-}
+           editor.dispatch({
+              changes: {from: currentStr.length, insert: appendLines}
+           });
+        }
 
 	let classes = '';
 	export { classes as class };
@@ -73,6 +83,7 @@
 	export let placeholder: string | HTMLElement | null | undefined = undefined;
 	export let nodebounce = false;
 
+        export let files: File[] = [];
         export let running: boolean = false;
 	export let execute: (() => Promise<void>) | null = null;
 
@@ -243,6 +254,14 @@
 			{/if}
 		</div>
 	</div>
+        <div class="bg-surface-600 text-white font-bold font-monster" id="files">
+                {#each files as file}
+                   <div class="bg-surface-500 text-white font-bold font-monster">
+                      <i class={file.icon} />
+                      <h2>{file.name}</h2>
+                   </div>
+                {/each}
+        </div>
 
 	<div class="codemirror-wrapper rounded-b-md h-[50%] {classes}" bind:this={element} />
 {:else}
