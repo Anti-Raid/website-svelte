@@ -17,7 +17,7 @@
         // Files
         let files: File[] = [{
            name: "main.luau",
-           icon: "mdi:proicons:roblox",
+           icon: "fa fa-solid fa-square rotate-40",
            open: true,
            downloadable: false
 	}];
