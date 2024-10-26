@@ -254,7 +254,7 @@
 			{/if}
 		</div>
 	</div>
-        <div class="bg-surface-600 text-white font-bold font-monster" id="files">
+        <div class="py-6 bg-surface-600 text-white font-bold font-monster" id="files">
                 {#each files as file}
                    <div class="bg-surface-500 text-white font-bold font-monster">
                       <i class={file.icon} />
