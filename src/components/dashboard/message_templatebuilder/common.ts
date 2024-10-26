@@ -127,6 +127,7 @@ actions_executor:sendmessage_channel({
 
 		let pragma: TemplatePragma = {
 			lang: 'lua',
+			actions: ["sendmessage_channel"],
 			builderInfo: {
 				ver: builderVersion,
 				data: tbd,
@@ -134,7 +135,7 @@ actions_executor:sendmessage_channel({
 			}
 		};
 
-		templateStr = `@pragma ${JSON.stringify(pragma)}\n${templateStr}`;
+		templateStr = `-- @pragma ${JSON.stringify(pragma)}\n${templateStr}`;
 	}
 
 	return templateStr;
@@ -148,6 +149,7 @@ export interface ParsedTemplateBuilderComment {
 
 export interface TemplatePragma {
 	lang: string;
+	actions: string[];
 	builderInfo?: TemplateBuilderDataComment; // Website specific field
 }
 
