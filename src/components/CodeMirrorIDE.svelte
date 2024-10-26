@@ -217,7 +217,7 @@
 		<div class="flex justify-between items-center flex-nowrap w-full">
 			<div class="flex items-center ml-2">
 				<img class="h-8 w-8 rounded-full" src="/logo.webp" alt="AntiRaid Logo" />
-				<h2 class="ml-1 mt-0.5 font-monster font-bold tracking-tight text-lg">Code</h2>
+				<h2 class="ml-1 mt-0.5 font-monster font-bold tracking-tight text-lg">ARcode</h2>
 			</div>
 
 			{#if execute}
@@ -226,7 +226,7 @@
 						class="p-2 bg-green-500 h-full font-monster font-bold rounded-r-md"
 						on:click={execute}
 					>
-						<i class="fa fa-play mr-1" /> RUN
+						<i class="fa fa-play mr-1" /> Execute
 					</button>
 				</div>
 			{/if}
