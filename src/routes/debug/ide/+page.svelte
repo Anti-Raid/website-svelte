@@ -12,24 +12,26 @@
 
 	let terminal: Terminal;
 
-	// Value
-	let value = '';
-
 	// Files
 	let files: File[] = [
 		{
-			name: 'main.luau',
-			icon: 'simple-icons:roblox',
-			open: true,
-			downloadable: false
+			name: 'main',
+			value: `print("Oh my fucking god, please end my life already.")`,
+			lang: 'lua',
+			icon: 'devicon:lua',
+			open: true
 		},
 		{
-			name: 'robodog_murder.ts',
-			icon: 'fa fa-brands fa-js',
-			open: false,
-			downloadable: false
+			name: 'robodog',
+			value: `console.log("robodog goes brrrrr.")`,
+			lang: 'ts',
+			icon: 'devicon:typescript',
+			open: false
 		}
 	];
+
+	// Value
+	let value = files.find((p) => p.open === true)?.value || '';
 
 	// Terminal Onload
 	const onLoad = () => {

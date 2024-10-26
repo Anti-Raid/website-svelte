@@ -4,11 +4,13 @@
 	export type StyleSpec = {
 		[propOrSelector: string]: string | number | StyleSpec | null;
 	};
+	export type SupportedLanguages = 'lua' | 'js' | 'ts';
 	export interface File {
 		name: string;
+		value: string | null;
+		lang: SupportedLanguages;
 		icon: string;
 		open: boolean;
-		downloadable: boolean;
 	}
 </script>
 
@@ -228,6 +230,46 @@
 		if (theme) extensions.push(theme);
 		return extensions;
 	};
+
+	const createFile = (name: string, lang: SupportedLanguages) => {
+		files.push({
+			name: name,
+			value: '',
+			lang: lang,
+			icon: '',
+			open: false
+		});
+
+		files[files.findIndex((p) => p.open === true)].open = false;
+		files[files.findIndex((p) => p.name === name)].open = true;
+		value = files[files.findIndex((p) => p.name === name)].value;
+	};
+
+	const changeFile = (file: File) => {
+		const currentFileIndex = files.findIndex((p) => p.open === true);
+		if (currentFileIndex !== -1) files[currentFileIndex].open = false;
+
+		const newFileIndex = files.findIndex((p) => p === file);
+		if (newFileIndex !== -1) {
+			files[newFileIndex].open = true;
+			value = files[newFileIndex].value;
+		}
+	};
+
+	const closeFile = (file: File) => {
+		const index = files.findIndex((p) => p === file);
+		if (index === -1) return;
+
+		const nextFile = files[index + 1] || files[index - 1];
+		files.splice(index, 1);
+
+		if (nextFile) {
+			nextFile.open = true;
+			value = nextFile.value;
+		} else {
+			value = '';
+		}
+	};
 </script>
 
 {#if is_browser}
@@ -262,10 +304,13 @@
 		</div>
 	</div>
 
-	<div class="flex py-2 bg-surface-600 text-white font-bold font-monster" id="files">
+	<div class="flex items-center py-2 bg-surface-600 text-white font-bold font-monster" id="files">
 		{#each files as file}
-			<div
-				class="ml-1 first:ml-2 inline-flex flex-shrink-0 px-2 py-1.5 bg-surface-500 text-white font-bold font-monster rounded-md"
+			<button
+				class="ml-1 first:ml-2 inline-flex flex-shrink-0 px-2 py-1.5 bg-surface-500 hover:opacity-75 text-white font-bold font-monster rounded-md"
+				on:click={() => {
+					changeFile(file);
+				}}
 			>
 				{#if file.icon.startsWith('fa')}
 					<i class="{file.icon} mt-1" />
@@ -273,13 +318,29 @@
 					<Icon icon={file.icon} class="mt-1" />
 				{/if}
 
-				<h2 class="ml-2">{file.name}</h2>
+				<h2 class="ml-2">{file.name}.{file.lang}</h2>
 
-				<button class="mt-0.5 ml-2">
+				<button
+					on:click={() => {
+						closeFile(file);
+					}}
+					class="mt-0.5 ml-2 hover:opacity-75"
+				>
 					<i class="fa fa-close" />
 				</button>
-			</div>
+			</button>
 		{/each}
+
+		<div class="flex justify-end items-end">
+			<button
+				class="ml-2 hover:opacity-75"
+				on:click={() => {
+					createFile('newfile', 'ts');
+				}}
+			>
+				<i class="fa fa-add" />
+			</button>
+		</div>
 	</div>
 
 	<div class="codemirror-wrapper rounded-b-md h-[50%] {classes}" bind:this={element} />
