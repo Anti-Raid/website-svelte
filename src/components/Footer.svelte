@@ -35,6 +35,14 @@
 				{
 					name: 'Developer Portal',
 					href: 'https://antiraid.xyz/dashboard/developers'
+				},
+                                {
+					name: 'Forums API Docs',
+					href: 'https://potsypaw.antiraid.xyz'
+				},
+				{
+					name: 'Forums Developer Portal',
+					href: 'https://antiraid.xyz/forums/developers'
 				}
 			]
 		},
@@ -43,7 +51,7 @@
 			items: [
 				{
 					name: 'Discord Server',
-					href: '/invite'
+					href: '/discord'
 				},
 				{
 					name: 'Forums',
