@@ -18,8 +18,7 @@
 		terminal.writeln('Welcome to the Internal Test REPL System!');
 		terminal.writeln('This may be used in a later production environment!');
 		terminal.writeln('Default Language: Lua');
-                terminal.writeln('Current Language: Typescript');
-		terminal.writeln(`AntiRaid Version: ${getVersion()}`);
+                terminal.writeln(`AntiRaid Version: ${getVersion()}`);
 		terminal.writeln(
 			'\nInstructions: Write code above in the IDE, and press the RUN button in the top-right corner.'
 		);
@@ -29,7 +28,7 @@
 	const executeCode = async () => {
 		terminal?.clear();
 		const ev = new Eval();
-		const i = await ev.eval('typescript', value);
+		const i = await ev.eval('lua', value);
 		terminal.writeln(
 			`${i.language.charAt(0).toUpperCase() + i.language.slice(1)}: v${i.version} REPL\n`
 		);
