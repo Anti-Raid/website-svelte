@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { StreamLanguage } from '@codemirror/language';
 	import CodeMirrorIde from '../../../components/CodeMirrorIDE.svelte';
+        import { type File } from '../../../components/CodeMirrorIDE.svelte';
 	import { lua } from '@codemirror/legacy-modes/mode/lua';
 	import { oneDark } from '@codemirror/theme-one-dark';
 	import { getVersion } from '$lib/configs/functions/versioner';
@@ -12,6 +13,14 @@
 
 	// Value
 	let value = '';
+
+        // Files
+        let files: File[] = [{
+           name: "main.luau",
+           icon: "simple-icons:roblox",
+           open: true,
+           downloadable: false
+	}];
 
 	// Terminal Onload
 	const onLoad = () => {
