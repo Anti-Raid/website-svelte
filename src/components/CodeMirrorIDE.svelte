@@ -196,7 +196,7 @@
 </script>
 
 {#if is_browser}
-	<div class="bg-surface-700 text-white font-bold font-monster rounded-t-md py-3" id="navbar">
+	<div class="bg-surface-700 text-white font-bold font-monster rounded-t-md py-2" id="navbar">
 		<div class="flex justify-between items-center flex-nowrap w-full">
 			<div class="flex items-center ml-2">
 				<img class="h-8 w-8 rounded-full" src="/logo.webp" alt="AntiRaid Logo" />
@@ -206,7 +206,7 @@
 			{#if execute}
 				<div class="flex items-center flex-shrink-0">
 					<button
-						class="p-2 bg-green-500 h-full font-monster font-bold rounded-r-md"
+						class="p-2 bg-green-500 h-full font-monster font-bold rounded-r-md py-2"
 						on:click={execute}
 					>
 						<i class="fa fa-play mr-1" /> RUN
@@ -216,7 +216,7 @@
 		</div>
 	</div>
 
-	<div class="codemirror-wrapper rounded-b-md {classes}" bind:this={element} />
+	<div class="codemirror-wrapper rounded-b-md h-[50%] {classes}" bind:this={element} />
 {:else}
 	<div class="scm-waiting {classes}">
 		<div class="scm-waiting__loading scm-loading">
