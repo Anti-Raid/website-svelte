@@ -254,11 +254,11 @@
 			{/if}
 		</div>
 	</div>
-        <div class="py-6 bg-surface-600 text-white font-bold font-monster" id="files">
+        <div class="py-3 bg-surface-600 text-white font-bold font-monster" id="files">
                 {#each files as file}
-                   <div class="inline-block bg-surface-500 text-white font-bold font-monster">
-                      <i class={file.icon} />
-                      <h2>{file.name}</h2>
+                   <div class="inline-flex p-2 bg-surface-500 text-white font-bold font-monster">
+                      <i class="{file.icon}" />
+                      <h2 class="ml-2">{file.name}</h2>
                    </div>
                 {/each}
         </div>
