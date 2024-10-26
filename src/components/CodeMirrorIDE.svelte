@@ -42,6 +42,22 @@
 		} as T;
 	}
 
+        function updateToMinNumberOfLines(editor, minNumOfLines) {
+    const currentNumOfLines = editor.state.doc.lines;
+    const currentStr = editor.state.doc.toString();
+
+    if (currentNumOfLines >= minNumOfLines) {
+        return;
+    }
+
+    const lines = minNumOfLines - currentNumOfLines;
+    const appendLines = "\n".repeat(lines);
+
+    editor.dispatch({
+        changes: {from: currentStr.length, insert: appendLines}
+    })
+}
+
 	let classes = '';
 	export { classes as class };
 	export let value: string | null | undefined = '';
@@ -97,6 +113,7 @@
 	onMount(() => {
 		view = create_editor_view();
 		dispatch('ready', view);
+                updateToMinNumberOfLines(view, 10);
 	});
 	onDestroy(() => view?.destroy());
 
