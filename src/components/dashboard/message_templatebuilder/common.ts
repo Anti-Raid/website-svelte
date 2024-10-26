@@ -4,35 +4,34 @@ type Snippet = (current: string) => string;
 
 export const defaultSnippets: Record<string, Snippet> = {
 	'Lua Example': function (_current: string): string {
-		return String.raw`@pragma {"lang":"lua"}
-function (args) 
-    local message_plugin = require "@antiraid/message"
+		return String.raw`-- @pragma {"lang":"lua"}
+local args, token = ...
+local message_plugin = require "@antiraid/message"
 
-    -- Make the embed
-    local embed = message_plugin.new_message_embed()
-    embed.title = args.event_titlename
-    embed.description = "" -- Start with an empty description
+-- Make the embed
+local embed = message_plugin.new_message_embed()
+embed.title = args.event_titlename
+embed.description = "" -- Start with an empty description
 
-    -- Add the fields to the description
-    for key, value in pairs(args.fields) do
-        local should_set = false
+-- Add the fields to the description
+for key, value in pairs(args.fields) do
+	local should_set = false
 
-        if value ~= nil and value.field.type ~= "None" then
-            should_set = true
-        end
-    
-        if should_set then
-            local formatted_value = message_plugin.format_gwevent_categorized_field(value)
-            embed.description = embed.description .. "**" .. key:gsub("_", " "):upper() .. "**: " .. formatted_value .. "\n"
-        end
-    end
+	if value ~= nil and value.field.type ~= "None" then
+		should_set = true
+	end
 
-    local message = message_plugin.new_message()
+	if should_set then
+		local formatted_value = message_plugin.format_gwevent_categorized_field(value)
+		embed.description = embed.description .. "**" .. key:gsub("_", " "):upper() .. "**: " .. formatted_value .. "\n"
+	end
+end
 
-    table.insert(message.embeds, embed)
+local message = message_plugin.new_message()
 
-    return message
-end`;
+table.insert(message.embeds, embed)
+
+return message`;
 	}
 };
 
@@ -108,13 +107,13 @@ export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilde
 	}
 
 	if (templateStr) {
-		templateStr = `function (args)
-    local message_plugin = require "@antiraid/message"
-    local message = message_plugin.new_message()
-    -- Create the message
-    ${templateStr.trim()}
-    return message
-end`;
+		templateStr = `
+local args, token = ...
+local message_plugin = require "@antiraid/message"
+local message = message_plugin.new_message()
+-- Create the message
+${templateStr.trim()}
+return message`;
 
 		// Get sha256 checksum of the template
 		const checksum = await sha256(templateStr.trim());
@@ -195,12 +194,12 @@ export const generateTemplateFragmentForEmbed = (embed: Embed) => {
 			}
 
 			baseFragment += `
-    -- Field ${i + 1}
-    local field = message_plugin.new_message_embed_field()\n
-    field.name = ${parseString(field.name)}\n
-    field.value = ${parseString(field.value)}\n
-    field.inline = ${field.inline}\n
-    table.insert(embed.fields, field)\n
+-- Field ${i + 1}
+local field = message_plugin.new_message_embed_field()\n
+field.name = ${parseString(field.name)}\n
+field.value = ${parseString(field.value)}\n
+field.inline = ${field.inline}\n
+table.insert(embed.fields, field)\n
             `;
 		});
 	}
