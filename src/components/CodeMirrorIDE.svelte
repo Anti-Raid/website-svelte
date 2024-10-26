@@ -196,11 +196,11 @@
 </script>
 
 {#if is_browser}
-	<div class="bg-surface-700 text-white font-bold font-monster rounded-t-md" id="navbar">
+	<div class="bg-surface-700 text-white font-bold font-monster rounded-t-md px-3" id="navbar">
 		<div class="flex justify-between items-center flex-nowrap w-full">
 			<div class="flex items-center ml-2">
 				<img class="h-8 w-8 rounded-full" src="/logo.webp" alt="AntiRaid Logo" />
-				<h2 class="ml-1 mt-0.5 font-monster font-bold tracking-tight text-lg">AntiRaid</h2>
+				<h2 class="ml-1 mt-0.5 font-monster font-bold tracking-tight text-lg">Code</h2>
 			</div>
 
 			{#if execute}
