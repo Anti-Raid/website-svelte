@@ -25,7 +25,9 @@
 	};
 
 	// Execute Code
+        let running: boolean = false;
 	const executeCode = async () => {
+                running = true
 		terminal?.clear();
 		const ev = new Eval();
 		const i = await ev.eval('lua', value);
@@ -33,12 +35,14 @@
 			`${i.language.charAt(0).toUpperCase() + i.language.slice(1)}: v${i.version} REPL\n`
 		);
 		terminal.writeln(`Output: ${i.output}`);
+                running = false;
 	};
 </script>
 
 <CodeMirrorIde
 	bind:value
 	execute={executeCode}
+        running={running}
 	extensions={[StreamLanguage.define(lua).extension]}
 	theme={oneDark}
 	placeholder="Start typing your code here."
