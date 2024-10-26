@@ -113,7 +113,14 @@ local message_plugin = require "@antiraid/message"
 local message = message_plugin.new_message()
 -- Create the message
 ${templateStr.trim()}
-return message`;
+
+-- Send message using action executor
+local actions_executor = actions_plugin.new(token);
+actions_executor:sendmessage_channel({
+    channel_id = args.sink,
+    message = message
+})
+`;
 
 		// Get sha256 checksum of the template
 		const checksum = await sha256(templateStr.trim());
