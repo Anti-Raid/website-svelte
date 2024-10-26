@@ -40,7 +40,7 @@
 		terminal.writeln(
 			'\nInstructions: Write code above in the IDE, and press the Execute button in the top-right corner.'
 		);
-		terminal.writeln(`\n\n$: `);
+		terminal.write(`\n\n$: `);
 	};
 
 	// Execute Code
