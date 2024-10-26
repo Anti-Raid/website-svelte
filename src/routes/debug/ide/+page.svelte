@@ -1,42 +1,52 @@
 <script lang="ts">
 	import { StreamLanguage } from '@codemirror/language';
 	import CodeMirrorIde from '../../../components/CodeMirrorIDE.svelte';
-        import { type File } from '../../../components/CodeMirrorIDE.svelte';
+	import { type File } from '../../../components/CodeMirrorIDE.svelte';
 	import { lua } from '@codemirror/legacy-modes/mode/lua';
 	import { oneDark } from '@codemirror/theme-one-dark';
 	import { getVersion } from '$lib/configs/functions/versioner';
 	import Eval from 'open-eval';
 	import { type Terminal } from '@battlefieldduck/xterm-svelte';
 	import TerminalComp from '../../../components/Terminal.svelte';
+	import { PageData } from './$types';
 
 	let terminal: Terminal;
 
 	// Value
 	let value = '';
 
-        // Files
-        let files: File[] = [{
-           name: "main.luau",
-           icon: "fa fa-solid fa-square rotate-45",
-           open: true,
-           downloadable: false
-	}];
+	// Files
+	let files: File[] = [
+		{
+			name: 'main.luau',
+			icon: 'simple-icons:roblox',
+			open: true,
+			downloadable: false
+		},
+		{
+			name: 'robodog_murder.ts',
+			icon: 'fa fa-brands fa-js',
+			open: false,
+			downloadable: false
+		}
+	];
 
 	// Terminal Onload
 	const onLoad = () => {
 		terminal.writeln('Welcome to the Internal Test REPL System!');
 		terminal.writeln('This may be used in a later production environment!');
 		terminal.writeln('Default Language: Lua');
-                terminal.writeln(`AntiRaid Version: ${getVersion()}`);
+		terminal.writeln(`AntiRaid Version: ${getVersion()}`);
 		terminal.writeln(
-			'\nInstructions: Write code above in the IDE, and press the RUN button in the top-right corner.'
+			'\nInstructions: Write code above in the IDE, and press the Execute button in the top-right corner.'
 		);
+		terminal.writeln(`\n\n$: `);
 	};
 
 	// Execute Code
-        let running: boolean = false;
+	let running: boolean = false;
 	const executeCode = async () => {
-                running = true
+		running = true;
 		terminal?.clear();
 		const ev = new Eval();
 		const i = await ev.eval('lua', value);
@@ -44,19 +54,22 @@
 			`${i.language.charAt(0).toUpperCase() + i.language.slice(1)}: v${i.version} REPL\n`
 		);
 		terminal.writeln(`Output: ${i.output}`);
-                running = false;
+		running = false;
 	};
+
+	// Get commands
+	export let data: PageData;
 </script>
 
 <CodeMirrorIde
 	bind:value
 	execute={executeCode}
-        files={files}
-        running={running}
+	{files}
+	{running}
 	extensions={[StreamLanguage.define(lua).extension]}
 	theme={oneDark}
 	placeholder="Start typing your code here."
 />
 
 <div class="p-3" />
-<TerminalComp bind:terminal commands={[]} onload={onLoad} />
+<TerminalComp bind:terminal commands={data.commands} onload={onLoad} />

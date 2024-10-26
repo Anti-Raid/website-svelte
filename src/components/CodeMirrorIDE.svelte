@@ -1,17 +1,20 @@
 <script lang="ts" context="module">
+	// Exported Typings
 	export type ThemeSpec = Record<string, StyleSpec>;
 	export type StyleSpec = {
 		[propOrSelector: string]: string | number | StyleSpec | null;
 	};
-        export interface File {
-             name: string;
-             icon: string;
-             open: boolean;
-             downloadable: boolean;
-	};
+	export interface File {
+		name: string;
+		icon: string;
+		open: boolean;
+		downloadable: boolean;
+	}
 </script>
 
 <script lang="ts">
+	// Modules
+	import Icon from '@iconify/svelte';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import { basicSetup } from 'codemirror';
 	import { EditorView, keymap, placeholder as placeholderExt } from '@codemirror/view';
@@ -26,11 +29,11 @@
 	 * @param threshold - The delay to avoid recalling the function.
 	 * @param execAsap - If true, the Function is called at the start of the threshold, otherwise the Function is called at the end of the threshold.
 	 */
-	export function debounce<T extends (...args: any[]) => any>(
+	export const debounce = <T extends (...args: any[]) => any>(
 		func: T,
 		threshold: number,
 		execAsap = false
-	): T {
+	): T => {
 		let timeout: any;
 
 		return function debounced(this: any, ...args: any[]): any {
@@ -39,33 +42,34 @@
 			if (timeout) clearTimeout(timeout);
 			else if (execAsap) func.apply(self, args);
 
-			timeout = setTimeout(delayed, threshold || 100);
-
-			function delayed(): void {
+			const delayed = (): void => {
 				if (!execAsap) func.apply(self, args);
 				timeout = null;
-			}
+			};
+
+			timeout = setTimeout(delayed, threshold || 100);
 		} as T;
-	}
+	};
 
-        /**
-        * Update minimum line count of CodeMirror
-        * @param editor - CodeMirror Editor Variable
-        * @param minNumOfLines - Minimum number of Lines
-        **/
-        export function updateToMinNumberOfLines(editor, minNumOfLines) {
-           const currentNumOfLines = editor.state.doc.lines;
-           const currentStr = editor.state.doc.toString();
-           if (currentNumOfLines >= minNumOfLines) return;
+	/**
+	 * Update minimum line count of CodeMirror
+	 * @param editor - CodeMirror Editor Variable
+	 * @param minNumOfLines - Minimum number of Lines
+	 **/
+	export const updateToMinNumberOfLines = (editor: EditorView, minNumOfLines: number) => {
+		const currentNumOfLines = editor.state.doc.lines;
+		const currentStr = editor.state.doc.toString();
+		if (currentNumOfLines >= minNumOfLines) return;
 
-           const lines = minNumOfLines - currentNumOfLines;
-           const appendLines = "\n".repeat(lines);
+		const lines = minNumOfLines - currentNumOfLines;
+		const appendLines = '\n'.repeat(lines);
 
-           editor.dispatch({
-              changes: {from: currentStr.length, insert: appendLines}
-           });
-        }
+		editor.dispatch({
+			changes: { from: currentStr.length, insert: appendLines }
+		});
+	};
 
+	// Variables
 	let classes = '';
 	export { classes as class };
 	export let value: string | null | undefined = '';
@@ -83,8 +87,8 @@
 	export let placeholder: string | HTMLElement | null | undefined = undefined;
 	export let nodebounce = false;
 
-        export let files: File[] = [];
-        export let running: boolean = false;
+	export let files: File[] = [];
+	export let running: boolean = false;
 	export let execute: (() => Promise<void>) | null = null;
 
 	const is_browser = typeof window !== 'undefined';
@@ -101,6 +105,7 @@
 	let first_config = true;
 	let first_update = true;
 
+	// Reactive
 	$: state_extensions = [
 		...get_base_extensions(
 			basic,
@@ -119,16 +124,18 @@
 	$: view && update(value);
 	$: view && state_extensions && reconfigure();
 
+	// Events
 	$: on_change = nodebounce ? handle_change : debounce(handle_change, 300);
 
 	onMount(() => {
 		view = create_editor_view();
 		dispatch('ready', view);
-                updateToMinNumberOfLines(view, 10);
+		updateToMinNumberOfLines(view, 10);
 	});
 	onDestroy(() => view?.destroy());
 
-	function create_editor_view(): EditorView {
+	// Editor
+	const create_editor_view = (): EditorView => {
 		return new EditorView({
 			parent: element,
 			state: create_editor_state(value),
@@ -140,9 +147,9 @@
 				}
 			}
 		});
-	}
+	};
 
-	function reconfigure(): void {
+	const reconfigure = (): void => {
 		if (first_config) {
 			first_config = false;
 			return;
@@ -153,9 +160,9 @@
 		});
 
 		dispatch('reconfigure', view);
-	}
+	};
 
-	function update(value: string | null | undefined): void {
+	const update = (value: string | null | undefined): void => {
 		if (first_update) {
 			first_update = false;
 			return;
@@ -169,25 +176,25 @@
 		update_from_prop = true;
 		view.setState(create_editor_state(value));
 		update_from_prop = false;
-	}
+	};
 
-	function handle_change(): void {
+	const handle_change = (): void => {
 		const new_value = view.state.doc.toString();
 		if (new_value === value) return;
 
 		update_from_state = true;
 		value = new_value;
 		dispatch('change', value);
-	}
+	};
 
-	function create_editor_state(value: string | null | undefined): EditorState {
+	const create_editor_state = (value: string | null | undefined): EditorState => {
 		return EditorState.create({
 			doc: value ?? undefined,
 			extensions: state_extensions
 		});
-	}
+	};
 
-	function get_base_extensions(
+	const get_base_extensions = (
 		basic: boolean,
 		useTab: boolean,
 		tabSize: number,
@@ -196,7 +203,7 @@
 		editable: boolean,
 		readonly: boolean,
 		lang: LanguageSupport | null | undefined
-	): Extension[] {
+	): Extension[] => {
 		const extensions: Extension[] = [
 			indentUnit.of(' '.repeat(tabSize)),
 			EditorView.editable.of(editable),
@@ -210,17 +217,17 @@
 		if (lineWrapping) extensions.push(EditorView.lineWrapping);
 
 		return extensions;
-	}
+	};
 
-	function get_theme(
+	const get_theme = (
 		theme: Extension | null | undefined,
 		styles: ThemeSpec | null | undefined
-	): Extension[] {
+	): Extension[] => {
 		const extensions: Extension[] = [];
 		if (styles) extensions.push(EditorView.theme(styles));
 		if (theme) extensions.push(theme);
 		return extensions;
-	}
+	};
 </script>
 
 {#if is_browser}
@@ -232,36 +239,48 @@
 			</div>
 
 			{#if execute}
-                                {#if !running}
-				<div class="flex items-center flex-shrink-0">
-					<button
-						class="p-2 bg-green-500 h-full font-monster font-bold rounded-r-md"
-						on:click={execute}
-					>
-						<i class="fa fa-play mr-1" /> Execute
-					</button>
-				</div>
-                                {:else}
-                                <div class="flex items-center flex-shrink-0">
-					<button
-						class="p-2 bg-red-500 h-full font-monster font-bold rounded-r-md"
-						on:click={() => {}}
-					>
-						<i class="fa fa-stop mr-1" /> Stop
-					</button>
-				</div>
-                                {/if}
+				{#if !running}
+					<div class="flex items-center flex-shrink-0">
+						<button
+							class="p-2 bg-green-500 h-full font-monster font-bold rounded-r-md"
+							on:click={execute}
+						>
+							<i class="fa fa-play mr-1" /> Execute
+						</button>
+					</div>
+				{:else}
+					<div class="flex items-center flex-shrink-0">
+						<button
+							class="p-2 bg-red-500 h-full font-monster font-bold rounded-r-md"
+							on:click={() => {}}
+						>
+							<i class="fa fa-stop mr-1" /> Stop
+						</button>
+					</div>
+				{/if}
 			{/if}
 		</div>
 	</div>
-        <div class="py-2 bg-surface-600 text-white font-bold font-monster" id="files">
-                {#each files as file}
-                   <div class="pl-1 first:pl-2 inline-flex p-2 bg-surface-500 text-white font-bold font-monster">
-                      <i class="{file.icon}" />
-                      <h2 class="ml-2">{file.name}</h2>
-                   </div>
-                {/each}
-        </div>
+
+	<div class="flex py-2 bg-surface-600 text-white font-bold font-monster" id="files">
+		{#each files as file}
+			<div
+				class="ml-1 first:ml-2 inline-flex flex-shrink-0 px-2 py-1.5 bg-surface-500 text-white font-bold font-monster rounded-md"
+			>
+				{#if file.icon.startsWith('fa')}
+					<i class="{file.icon} mt-1" />
+				{:else}
+					<Icon icon={file.icon} class="mt-1" />
+				{/if}
+
+				<h2 class="ml-2">{file.name}</h2>
+
+				<button class="mt-0.5 ml-2">
+					<i class="fa fa-close" />
+				</button>
+			</div>
+		{/each}
+	</div>
 
 	<div class="codemirror-wrapper rounded-b-md h-[50%] {classes}" bind:this={element} />
 {:else}
