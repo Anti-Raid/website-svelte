@@ -216,7 +216,7 @@
 		</div>
 	</div>
 
-	<div class="codemirror-wrapper rounded-b-md h-[50%] {classes}" bind:this={element} />
+	<div class="codemirror-wrapper rounded-b-md min-h-[50%] {classes}" bind:this={element} />
 {:else}
 	<div class="scm-waiting {classes}">
 		<div class="scm-waiting__loading scm-loading">
