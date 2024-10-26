@@ -42,13 +42,11 @@
 		} as T;
 	}
 
-        function updateToMinNumberOfLines(editor, minNumOfLines) {
+        export function updateToMinNumberOfLines(editor, minNumOfLines) {
     const currentNumOfLines = editor.state.doc.lines;
     const currentStr = editor.state.doc.toString();
 
-    if (currentNumOfLines >= minNumOfLines) {
-        return;
-    }
+    if (currentNumOfLines >= minNumOfLines) return;
 
     const lines = minNumOfLines - currentNumOfLines;
     const appendLines = "\n".repeat(lines);
@@ -74,6 +72,8 @@
 	export let readonly = false;
 	export let placeholder: string | HTMLElement | null | undefined = undefined;
 	export let nodebounce = false;
+
+        export let running: boolean = false;
 	export let execute: (() => Promise<void>) | null = null;
 
 	const is_browser = typeof window !== 'undefined';
@@ -221,14 +221,25 @@
 			</div>
 
 			{#if execute}
+                                {#if !running}
 				<div class="flex items-center flex-shrink-0">
 					<button
 						class="p-2 bg-green-500 h-full font-monster font-bold rounded-r-md"
 						on:click={execute}
 					>
-						<i class="fa fa-play mr-1" /> Execute
+						<i class="fa fa-play mr-1" /> Running
 					</button>
 				</div>
+                                {:else}
+                                <div class="flex items-center flex-shrink-0">
+					<button
+						class="p-2 bg-red-500 h-full font-monster font-bold rounded-r-md"
+						on:click={() => {}}
+					>
+						<i class="fa fa-stop mr-1" /> Stop
+					</button>
+				</div>
+                                {/if}
 			{/if}
 		</div>
 	</div>
