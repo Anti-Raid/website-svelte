@@ -196,7 +196,7 @@
 </script>
 
 {#if is_browser}
-	<div class="bg-surface-700 text-white font-bold font-monster rounded-t-md px-3" id="navbar">
+	<div class="bg-surface-700 text-white font-bold font-monster rounded-t-md py-3" id="navbar">
 		<div class="flex justify-between items-center flex-nowrap w-full">
 			<div class="flex items-center ml-2">
 				<img class="h-8 w-8 rounded-full" src="/logo.webp" alt="AntiRaid Logo" />
