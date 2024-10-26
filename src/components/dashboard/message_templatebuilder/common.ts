@@ -4,9 +4,10 @@ type Snippet = (current: string) => string;
 
 export const defaultSnippets: Record<string, Snippet> = {
 	'Lua Example': function (_current: string): string {
-		return String.raw`-- @pragma {"lang":"lua"}
+		return String.raw`-- @pragma {"lang":"lua","allowed_caps":["discord:sendmessage_channel"]}
 local args, token = ...
 local message_plugin = require "@antiraid/message"
+local actions_plugin = require "@antiraid/discord"
 
 -- Make the embed
 local embed = message_plugin.new_message_embed()
@@ -31,7 +32,12 @@ local message = message_plugin.new_message()
 
 table.insert(message.embeds, embed)
 
-return message`;
+-- Send message using action executor
+local actions_executor = actions_plugin.new(token);
+actions_executor:sendmessage_channel({
+    channel_id = args.sink,
+    message = message
+})`;
 	}
 };
 
@@ -110,6 +116,7 @@ export const generateTemplateForTemplateBuilderData = async (tbd: TemplateBuilde
 		templateStr = `
 local args, token = ...
 local message_plugin = require "@antiraid/message"
+local actions_plugin = require "@antiraid/discord"
 local message = message_plugin.new_message()
 -- Create the message
 ${templateStr.trim()}
@@ -127,7 +134,7 @@ actions_executor:sendmessage_channel({
 
 		let pragma: TemplatePragma = {
 			lang: 'lua',
-			actions: ["sendmessage_channel"],
+			allowed_caps: ["discord:sendmessage_channel"],
 			builderInfo: {
 				ver: builderVersion,
 				data: tbd,
@@ -149,7 +156,7 @@ export interface ParsedTemplateBuilderComment {
 
 export interface TemplatePragma {
 	lang: string;
-	actions: string[];
+	allowed_caps: string[];
 	builderInfo?: TemplateBuilderDataComment; // Website specific field
 }
 
