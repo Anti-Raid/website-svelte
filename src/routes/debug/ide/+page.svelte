@@ -67,7 +67,7 @@
 			let str = JSON.stringify(resp);
 
 			if (resp.Ok) {
-				str = `SUCCESS!\n\r\n${resp.Ok.result?.toString()?.replaceAll('\n', '\r\n')}`;
+				str = `SUCCESS!\n\r\n${(resp.Ok.result?.toString() || 'nil').replaceAll('\n', '\r\n')}`;
 			} else if (resp.PermissionError) {
 				str = (
 					await new PermissionResultFormatter(resp.PermissionError.res).format('markdown')
