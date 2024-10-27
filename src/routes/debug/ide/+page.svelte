@@ -41,13 +41,7 @@
 
 	// Terminal Onload
 	const onLoad = () => {
-		terminal.writeln('Welcome to the Internal Test REPL System!');
-		terminal.writeln('This may be used in a later production environment!');
-		terminal.writeln('Default Language: Lua');
-		terminal.writeln(`AntiRaid Version: ${getVersion()}`);
-		terminal.writeln(
-			'\nInstructions: Write code above in the IDE, and press the Execute button in the top-right corner.'
-		);
+		terminal.writeln('Welcome to the Internal Templating Test System!');
 		terminal.write(`\n\n$: `);
 	};
 
