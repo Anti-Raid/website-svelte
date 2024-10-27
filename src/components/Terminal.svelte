@@ -45,7 +45,7 @@
 
 	// Terminal Options
 	let options: ITerminalOptions & ITerminalInitOnlyOptions = {
-		fontFamily: 'Consolas',
+		fontFamily: 'Noto Mono',
 		cursorBlink: true
 	};
 

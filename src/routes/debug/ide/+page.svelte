@@ -4,7 +4,6 @@
 	import { type File } from '../../../components/CodeMirrorIDE.svelte';
 	import { lua } from '@codemirror/legacy-modes/mode/lua';
 	import { oneDark } from '@codemirror/theme-one-dark';
-	import { getVersion } from '$lib/configs/functions/versioner';
 	import { type Terminal } from '@battlefieldduck/xterm-svelte';
 	import TerminalComp from '../../../components/Terminal.svelte';
 	import { PageData } from './$types';
@@ -48,33 +47,27 @@
 
 	// Execute Code
 	let running: boolean = false;
-	/*const executeCode = async () => {
-		running = true;
-		terminal?.clear();
-		const ev = new Eval();
-		const i = await ev.eval('lua', value);
-		terminal.writeln(
-			`${i.language.charAt(0).toUpperCase() + i.language.slice(1)}: v${i.version} REPL\n`
-		);
-		terminal.writeln(`Output: ${i.output}`);
-		running = false;
-	};*/
 	const executeCode = async () => {
 		running = true;
 		terminal?.clear();
 
 		let creds = getAuthCreds();
-		if (!creds) throw new Error('Auth credentials not found');
-		let req: ExecuteTemplateRequest = { args: {}, template: value };
-		let res = await fetchClient(`${get('splashtail')}/guilds/${guildIDValue}/execute-template`, {
-			auth: creds?.token,
-			method: 'POST',
-			body: JSON.stringify(req)
-		});
-		if (!res.ok) throw new Error(await res.error());
-		let resp: ExecuteTemplateResponse = await res.json();
+		try {
+			if (!creds) throw new Error('Auth credentials not found');
+			if (!guildIDValue) throw new Error('Guild ID not set');
+			let req: ExecuteTemplateRequest = { args: {}, template: value };
+			let res = await fetchClient(`${get('splashtail')}/guilds/${guildIDValue}/execute-template`, {
+				auth: creds?.token,
+				method: 'POST',
+				body: JSON.stringify(req)
+			});
+			if (!res.ok) throw new Error(await res.error());
+			let resp: ExecuteTemplateResponse = await res.json();
 
-		terminal?.write(JSON.stringify(resp));
+			terminal?.write(JSON.stringify(resp));
+		} catch (err) {
+			terminal?.write(`\r${err}\r\n`);
+		}
 		running = false;
 	};
 
