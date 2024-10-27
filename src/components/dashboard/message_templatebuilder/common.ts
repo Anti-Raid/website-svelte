@@ -134,7 +134,7 @@ actions_executor:sendmessage_channel({
 
 		let pragma: TemplatePragma = {
 			lang: 'lua',
-			allowed_caps: ["discord:sendmessage_channel"],
+			allowed_caps: ['discord:sendmessage_channel'],
 			builderInfo: {
 				ver: builderVersion,
 				data: tbd,

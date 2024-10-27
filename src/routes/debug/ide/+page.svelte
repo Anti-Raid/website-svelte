@@ -9,6 +9,10 @@
 	import { type Terminal } from '@battlefieldduck/xterm-svelte';
 	import TerminalComp from '../../../components/Terminal.svelte';
 	import { PageData } from './$types';
+	import InputText from '../../../components/inputs/InputText.svelte';
+	import { getAuthCreds } from '$lib/auth/getAuthCreds';
+	import { ExecuteTemplateRequest, ExecuteTemplateResponse } from '$lib/generated/types';
+	import { fetchClient } from '$lib/fetch/fetch';
 
 	let terminal: Terminal;
 
@@ -33,6 +37,9 @@
 	// Value
 	let value = files.find((p) => p.open === true)?.value || '';
 
+	// Guild ID
+	let guildIDValue: string = '';
+
 	// Terminal Onload
 	const onLoad = () => {
 		terminal.writeln('Welcome to the Internal Test REPL System!');
@@ -47,7 +54,7 @@
 
 	// Execute Code
 	let running: boolean = false;
-	const executeCode = async () => {
+	/*const executeCode = async () => {
 		running = true;
 		terminal?.clear();
 		const ev = new Eval();
@@ -57,11 +64,39 @@
 		);
 		terminal.writeln(`Output: ${i.output}`);
 		running = false;
+	};*/
+	const executeCode = async () => {
+		running = true;
+		terminal?.clear();
+
+		let creds = getAuthCreds();
+		if (!creds) throw new Error('Auth credentials not found');
+		let req: ExecuteTemplateRequest = { args: {}, template: value };
+		let res = await fetchClient(`/guilds/${guildIDValue}/execute-template`, {
+			auth: creds?.token,
+			method: 'POST',
+			body: JSON.stringify(req)
+		});
+		if (!res.ok) throw new Error(await res.error());
+		let resp: ExecuteTemplateResponse = await res.json();
+
+		terminal?.write(JSON.stringify(resp));
+		running = false;
 	};
 
 	// Get commands
 	export let data: PageData;
 </script>
+
+<InputText
+	id="guildid"
+	label="Guild ID"
+	placeholder="Enter your Guild ID here!"
+	minlength={0}
+	bind:value={guildIDValue}
+/>
+
+<div class="p-2" />
 
 <CodeMirrorIde
 	bind:value
