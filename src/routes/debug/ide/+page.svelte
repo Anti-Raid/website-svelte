@@ -12,6 +12,7 @@
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import { ExecuteTemplateRequest, ExecuteTemplateResponse } from '$lib/generated/types';
 	import { fetchClient } from '$lib/fetch/fetch';
+	import { get } from '$lib/configs/functions/services';
 
 	let terminal: Terminal;
 
@@ -65,7 +66,7 @@
 		let creds = getAuthCreds();
 		if (!creds) throw new Error('Auth credentials not found');
 		let req: ExecuteTemplateRequest = { args: {}, template: value };
-		let res = await fetchClient(`/guilds/${guildIDValue}/execute-template`, {
+		let res = await fetchClient(`${get('splashtail')}/guilds/${guildIDValue}/execute-template`, {
 			auth: creds?.token,
 			method: 'POST',
 			body: JSON.stringify(req)
