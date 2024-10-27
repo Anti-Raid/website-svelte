@@ -10,7 +10,7 @@
 	import InputText from '../../../components/inputs/InputText.svelte';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import { ExecuteTemplateRequest, ExecuteTemplateResponse } from '$lib/generated/types';
-	import { fetchClient } from '$lib/fetch/fetch';
+	import { fetchClient, PermissionResultFormatter } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
 
 	let terminal: Terminal;
@@ -61,10 +61,24 @@
 				method: 'POST',
 				body: JSON.stringify(req)
 			});
-			if (!res.ok) throw new Error(await res.error());
+			if (!res.ok) throw new Error(await res.error('', 'markdown'));
 			let resp: ExecuteTemplateResponse = await res.json();
 
-			terminal?.write(JSON.stringify(resp));
+			let str = JSON.stringify(resp);
+
+			if (resp.Ok) {
+				str = `SUCCESS!\n\r\n${resp.Ok.result?.toString()?.replaceAll('\n', '\r\n')}`;
+			} else if (resp.PermissionError) {
+				str = (
+					await new PermissionResultFormatter(resp.PermissionError.res).format('markdown')
+				).replaceAll('\n', '\r\n');
+			} else if (resp.ExecErr) {
+				str = `EXECUTION ERROR:\n\n${resp.ExecErr.error.replaceAll('\n', '\r\n')}`;
+			} else {
+				str = `UNKNOWN ERROR:\n\n${str}`;
+			}
+
+			terminal?.write(`\r${str}\r\n`);
 		} catch (err) {
 			terminal?.write(`\r${err}\r\n`);
 		}
