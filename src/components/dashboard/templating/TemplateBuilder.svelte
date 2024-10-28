@@ -80,7 +80,11 @@
 	}
 
 	$: if (templateBuilderOutput && data?.comment?.for) {
-		output = updateOutput();
+		if (data.comment.for === 'custom') {
+			output = templateBuilderOutput;
+		} else {
+			output = updateOutput();
+		}
 	}
 </script>
 
