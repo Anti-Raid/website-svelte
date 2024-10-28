@@ -14,9 +14,10 @@
 <InputTextArea
 	id="custom-template"
 	label="Custom Template"
-	bind:value={templateBuilderData}
+	bind:value={output}
 	placeholder="Enter your custom template here..."
 	required={true}
 	disabled={false}
 	minlength={0}
+	showErrors={false}
 />

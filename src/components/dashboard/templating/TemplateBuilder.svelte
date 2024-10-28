@@ -99,6 +99,10 @@
 						<SleekButton
 							onclick={() => {
 								data.comment.for = type.value;
+
+								if (type.value == 'custom') {
+									templateBuilderOutput = output;
+								}
 							}}
 							name={type.name}
 							description={type.description}
