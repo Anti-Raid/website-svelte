@@ -1,4 +1,4 @@
-import logger from "$lib/ui/logger";
+import logger from '$lib/ui/logger';
 
 /**
  * Parses a string for Lua purposes
@@ -50,14 +50,17 @@ export const parseTemplateBuilderDataCommentFromTemplate = (
 	let templateFirstLine = template.split('\n')[0];
 
 	if (!templateFirstLine.startsWith('@pragma ') && !templateFirstLine.startsWith('-- @pragma ')) {
-		logger.debug("parseTemplateBuilderDataCommentFromTemplate", "No pragma found, returning default comment");
+		logger.debug(
+			'parseTemplateBuilderDataCommentFromTemplate',
+			'No pragma found, returning default comment'
+		);
 		return {
 			comment: {
 				ver: builderVersion,
-				for: "",
-				data: {},
+				for: '',
+				data: {}
 			},
-			template: ""
+			template: ''
 		};
 	}
 
@@ -70,8 +73,8 @@ export const parseTemplateBuilderDataCommentFromTemplate = (
 			return {
 				comment: {
 					ver: builderVersion,
-					for: "",
-					data: {},
+					for: '',
+					data: {}
 				},
 				template
 			};
@@ -82,12 +85,15 @@ export const parseTemplateBuilderDataCommentFromTemplate = (
 			template
 		};
 	} catch (err) {
-		logger.error("parseTemplateBuilderDataCommentFromTemplate", `Error parsing pragma JSON: ${err}`);
+		logger.error(
+			'parseTemplateBuilderDataCommentFromTemplate',
+			`Error parsing pragma JSON: ${err}`
+		);
 		return {
 			comment: {
 				ver: builderVersion,
-				for: "",
-				data: {},
+				for: '',
+				data: {}
 			},
 			template
 		};

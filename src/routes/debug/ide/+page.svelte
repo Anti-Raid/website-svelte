@@ -20,16 +20,9 @@
 		{
 			name: 'main',
 			value: `print("Oh my fucking god, please end my life already.")`,
-			lang: 'lua',
-			icon: 'devicon:lua',
+			lang: 'luau',
+			icon: 'vscode-icons:file-type-luau',
 			open: true
-		},
-		{
-			name: 'robodog',
-			value: `console.log("robodog goes brrrrr.")`,
-			lang: 'ts',
-			icon: 'devicon:typescript',
-			open: false
 		}
 	];
 
@@ -42,7 +35,7 @@
 	// Terminal Onload
 	const onLoad = () => {
 		terminal.writeln('Welcome to the Internal Templating Test System!');
-		terminal.write(`\n\n$: `);
+		terminal.write(`\n\nroot@antiraid.xyz $: `);
 	};
 
 	// Execute Code
@@ -79,10 +72,11 @@
 			}
 
 			terminal?.write(`\r${str}\r\n`);
+			running = false;
 		} catch (err) {
 			terminal?.write(`\r${err}\r\n`);
+			running = false;
 		}
-		running = false;
 	};
 
 	// Get commands
