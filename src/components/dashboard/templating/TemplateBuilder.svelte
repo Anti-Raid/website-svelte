@@ -11,6 +11,7 @@
 
 	import MessageBuilder from './message/Builder.svelte';
 	import BoxButton from '../../inputs/button/BoxButton.svelte';
+	import CustomBuilder from './custom/CustomBuilder.svelte';
 
 	export let showTypes: string[] = [];
 	export let output: string = '';
@@ -50,7 +51,7 @@
 			name: 'Custom',
 			description: 'Create a custom template for your specific needs.',
 			value: 'custom',
-			component: null // Placeholder
+			component: CustomBuilder // Placeholder
 		}
 	];
 
