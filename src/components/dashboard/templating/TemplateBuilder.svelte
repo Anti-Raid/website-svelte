@@ -11,7 +11,7 @@
 
 	import MessageBuilder from './message/Builder.svelte';
 
-	export let hiddenTypes: string[] = [];
+	export let showTypes: string[] = [];
 	export let output: string = '';
 
 	let data: ParsedTemplateBuilderComment;
@@ -89,7 +89,7 @@
 		<section class="mt-4 mb-4">
 			<div class="col-span-8 grid grid-cols-1 gap-6 lg:grid-cols-2 h-full">
 				{#each types as type}
-					{#if !hiddenTypes.includes(type.value)}
+					{#if showTypes.length == 0 || showTypes.includes(type.value)}
 						<SleekButton
 							onclick={() => {
 								data.comment.for = type.value;
