@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import SleekButton from '../../inputs/button/SleekButton.svelte';
 	import {
-		builderVersion,
 		ParsedTemplateBuilderComment,
 		parseTemplateBuilderDataCommentFromTemplate,
 		TemplatePragma

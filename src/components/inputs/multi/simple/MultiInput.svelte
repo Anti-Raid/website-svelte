@@ -1,6 +1,4 @@
 <script lang="ts">
-	import ButtonReact from '../Button.svelte';
-	import DangerButton from '../DangerButton.svelte';
 	import Input from '../../InputTextArea.svelte';
 	import InputSm from '../../InputText.svelte';
 	import Label from '../../Label.svelte';

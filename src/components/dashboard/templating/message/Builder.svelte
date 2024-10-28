@@ -1,14 +1,12 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { parseString } from '../common';
 	import { Embed as EmbedT, Message } from './types';
 	import Label from '../../../inputs/Label.svelte';
-	import DangerButton from '../../../inputs/multi/DangerButton.svelte';
-	import ButtonReact from '../../../inputs/multi/Button.svelte';
 	import Spacer from '../../../inputs/Spacer.svelte';
 	import InputTextArea from '../../../inputs/InputTextArea.svelte';
 	import Embed from './Embed.svelte';
 	import logger from '$lib/ui/logger';
+	import BoxButton from '../../../inputs/button/BoxButton.svelte';
 
 	// This will be passed by the parent component
 	export let templateBuilderData: Message;
@@ -153,15 +151,15 @@ table.insert(embed.fields, field)
 			<Embed bind:embed />
 
 			<div>
-				<DangerButton onclick={() => deleteEmbed(i)}>Delete Embed</DangerButton>
-				<ButtonReact onclick={() => addEmbed(i)}>Add Embed</ButtonReact>
+				<BoxButton onclick={() => addEmbed(i)}>New Embed</BoxButton>
+				<BoxButton onclick={() => deleteEmbed(i)}>Delete Embed</BoxButton>
 			</div>
 		</details>
 	{/each}
 </div>
 
 {#if templateBuilderData?.embeds?.length == 0}
-	<ButtonReact onclick={() => addEmbed(-1)}>New Embed</ButtonReact>
+	<BoxButton onclick={() => addEmbed(-1)}>New Embed</BoxButton>
 {/if}
 
 <Spacer typ="smallSpacing" />

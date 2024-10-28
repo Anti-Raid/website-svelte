@@ -1,76 +1,156 @@
 <script lang="ts">
-    // Regular Imports
-    import { browser } from "$app/environment";
+	// Regular Imports
+	import { browser } from '$app/environment';
 
-    // Buttons
-    import TabbedPane from "../../../components/inputs/button/tabs/TabbedPane.svelte";
-    import TabButton from "../../../components/inputs/button/tabs/TabButton.svelte";
-    import BoxButton from "../../../components/inputs/button/BoxButton.svelte";
-    import ButtonInner from "../../../components/inputs/button/ButtonInner.svelte";
-    import ButtonLink from "../../../components/inputs/button/ButtonLink.svelte";
-    import ButtonLinkNewTab from "../../../components/inputs/button/ButtonLinkNewTab.svelte";
-    import ButtonReact from "../../../components/inputs/button/ButtonReact.svelte";
-    import NavButton from "../../../components/inputs/button/NavButton.svelte";
-    import SleekButton from "../../../components/inputs/button/SleekButton.svelte";
+	// Etc
+	import BitflagInput from '../../../components/inputs/BitflagInput.svelte';
+	import BoolInput from '../../../components/inputs/BoolInput.svelte';
+	import InputNumber from '../../../components/inputs/InputNumber.svelte';
+	import InputText from '../../../components/inputs/InputText.svelte';
+	import InputTextArea from '../../../components/inputs/InputTextArea.svelte';
+	import Label from '../../../components/inputs/Label.svelte';
+	import serenityPermissions from '$lib/generated/build_assets/serenity_perms.json';
+	import FileUpload from '../../../components/inputs/FileUpload.svelte';
+	import Select from '../../../components/inputs/select/Select.svelte';
+	import SelectMulti from '../../../components/inputs/select/SelectMulti.svelte';
+	import MultiInput from '../../../components/inputs/multi/simple/MultiInput.svelte';
 
-    // Multi
-    import KvMultiInput from "../../../components/inputs/multi/kv/KVMultiInput.svelte";
-    import KvMultiInputElement from "../../../components/inputs/multi/kv/KVMultiInputElement.svelte";
-    import MultiInput from "../../../components/inputs/multi/simple/MultiInput.svelte";
-    import Button from "../../../components/inputs/multi/Button.svelte";
-    import DangerButton from "../../../components/inputs/multi/DangerButton.svelte";
+	// Button Function
+	const debugButton = () => {
+		if (browser) alert('This is a debug button.');
+	};
 
-    // Select
-    import RawSelect from "../../../components/inputs/select/RawSelect.svelte";
-    import RawSelectMulti from "../../../components/inputs/select/RawSelectMulti.svelte";
-    import Select from "../../../components/inputs/select/Select.svelte";
-    import SelectMulti from "../../../components/inputs/select/SelectMulti.svelte";
+	// Value(s)
+	export let textValue: string;
+	export let textareaValue: string;
+	export let boolValue: boolean;
+	export let numberValue: number;
+	export let nativePerms: string;
 
-    // Etc
-    import BitflagInput from "../../../components/inputs/BitflagInput.svelte";
-    import BoolInput from "../../../components/inputs/BoolInput.svelte";
-    import ChannelInput from "../../../components/inputs/ChannelInput.svelte";
-    import FileUpload from "../../../components/inputs/FileUpload.svelte";
-    import InputDescription from "../../../components/inputs/InputDescription.svelte";
-    import InputNumber from "../../../components/inputs/InputNumber.svelte";
-    import InputText from "../../../components/inputs/InputText.svelte";
-    import InputTextArea from "../../../components/inputs/InputTextArea.svelte";
-    import Label from "../../../components/inputs/Label.svelte";
-    import Modifier from "../../../components/inputs/Modifier.svelte";
-    import RoleInput from "../../../components/inputs/RoleInput.svelte";
-    import Spacer from "../../../components/inputs/Spacer.svelte";
+	// Files
+	export let file: File;
+	export let fileName: string;
+	export let fileMimeType: string;
+	export let fileUploaded: boolean;
 
-    // Button Function
-    const debugButton = () => {
-        if (browser) alert("This is a debug button.");
-    };
+	// Select menu input
+	export let selectMenuValue: string;
+	export let selectMenuMultivalue: string[];
 
-    // Value(s)
-    export let textValue: string;
-    export let boolValue: boolean;
-    export let numberValue: number;
-    export let fileValue: File;
+	// Multi input
+	export let multiInputValue: string[];
 </script>
 
 <div class="debug">
-    <section id="text">
-        <h2>Text Inputs:</h2>
-        <div class="p-2" />
+	<section id="text">
+		<h2>Text Inputs:</h2>
+		<div class="p-2" />
 
-        <div id="regular_text">
-            <InputText 
-                id="debug"
-                label="Regular Text"
-                placeholder="Debug Text"
-                minlength={0}
-                bind:value={textValue}
-            />
-        </div>
+		<div id="regular_text">
+			<InputText
+				id="debug"
+				label="Regular Text"
+				placeholder="Debug Text"
+				minlength={0}
+				bind:value={textValue}
+			/>
+		</div>
 
-        <!-- Continue with Text Inputs -->
-    </section>
+		<div id="regular_number">
+			<InputNumber
+				id="debug"
+				label="Regular Number"
+				placeholder="Debug Number"
+				minlength={0}
+				bind:value={numberValue}
+			/>
+		</div>
 
-    <div class="p-2" />
-    
-    <!-- Continue with other Input Types with same layout-->
+		<div id="regular_textarea">
+			<InputTextArea
+				id="debug"
+				label="Regular Textarea"
+				placeholder="Debug Textarea"
+				minlength={0}
+				bind:value={textareaValue}
+			/>
+		</div>
+
+		<!--File input-->
+		<FileUpload
+			id="debug"
+			label="File Upload"
+			bind:file
+			acceptableTypes={['image/png', 'image/jpeg']}
+			bind:fileName
+			bind:fileMimeType
+			bind:fileUploaded
+		/>
+	</section>
+
+	<div class="p-2" />
+
+	<!-- Continue with other Input Types with same layout-->
+	<div id="regular_bool_input">
+		<BoolInput
+			id="debug"
+			label="Regular Boolean"
+			disabled={false}
+			description="This is a boolean input."
+			onChange={() => console.log('Boolean changed')}
+			bind:value={boolValue}
+		/>
+	</div>
+
+	<div id="regular_bitflag_input">
+		<Label id="bitflag-dbg" label="Select Permissions" />
+		<BitflagInput
+			id="bitflag-dbg"
+			bind:selectedFlags={nativePerms}
+			flagDescriptors={serenityPermissions}
+		/>
+	</div>
+
+	<!--Select menus-->
+	<div id="dbg_select_menu">
+		<Label id="select-dbg" label="Select Menu" />
+		<Select
+			id="select-dbg"
+			label="Select an option"
+			bind:value={selectMenuValue}
+			choices={[
+				{ value: 'option1', label: 'Option 1', id: 'option1' },
+				{ value: 'option2', label: 'Option 2', id: 'option2' },
+				{ value: 'option3', label: 'Option 3', id: 'option3' }
+			]}
+			disabled={false}
+		/>
+	</div>
+
+	<div id="dbg_select_menu_multi">
+		<Label id="select-dbg" label="Select Menu" />
+		<SelectMulti
+			id="select-dbg"
+			label="Select an option"
+			bind:value={selectMenuMultivalue}
+			choices={[
+				{ value: 'option1', label: 'Option 1', id: 'option1' },
+				{ value: 'option2', label: 'Option 2', id: 'option2' },
+				{ value: 'option3', label: 'Option 3', id: 'option3' }
+			]}
+			disabled={false}
+		/>
+	</div>
+
+	<!--Multi Input-->
+	<MultiInput
+		id="multi-input"
+		title="Multi Input Foo Title"
+		label="Foo"
+		bind:values={multiInputValue}
+		minlength={0}
+		placeholder="Add an item"
+	/>
+
+	<!--ChannelInput/RoleInput/Modifier omitted here for now as they cannot be tested without having an actual guild lookup, will be added later-->
 </div>
