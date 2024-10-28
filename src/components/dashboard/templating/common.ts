@@ -1,3 +1,5 @@
+import logger from "$lib/ui/logger";
+
 /**
  * Parses a string for Lua purposes
  * @param s The string to parse
@@ -42,12 +44,13 @@ export const parseString = (s: string): string => {
 	return s;
 };
 
-export const parseTemplateBuilderDataCommentFromTemplate = async (
+export const parseTemplateBuilderDataCommentFromTemplate = (
 	template: string
-): Promise<ParsedTemplateBuilderComment> => {
+): ParsedTemplateBuilderComment => {
 	let templateFirstLine = template.split('\n')[0];
 
 	if (!templateFirstLine.startsWith('@pragma ') && !templateFirstLine.startsWith('-- @pragma ')) {
+		logger.debug("parseTemplateBuilderDataCommentFromTemplate", "No pragma found, returning default comment");
 		return {
 			comment: {
 				ver: builderVersion,
@@ -58,7 +61,7 @@ export const parseTemplateBuilderDataCommentFromTemplate = async (
 		};
 	}
 
-	let pragma = templateFirstLine.replace('@pragma ', '').replace('-- @pragma ', '');
+	let pragma = templateFirstLine.replace('-- @pragma ', '').replace('@pragma ', '').trim();
 
 	try {
 		let pragmaObj: TemplatePragma = JSON.parse(pragma);
@@ -78,7 +81,8 @@ export const parseTemplateBuilderDataCommentFromTemplate = async (
 			comment: pragmaObj.builderInfo,
 			template
 		};
-	} catch {
+	} catch (err) {
+		logger.error("parseTemplateBuilderDataCommentFromTemplate", `Error parsing pragma JSON: ${err}`);
 		return {
 			comment: {
 				ver: builderVersion,

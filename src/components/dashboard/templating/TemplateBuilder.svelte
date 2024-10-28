@@ -17,9 +17,9 @@
 	let data: ParsedTemplateBuilderComment;
 	let isMounted = false;
 
-	onMount(async () => {
+	onMount(() => {
 		// Initialize or fetch any necessary data here
-		data = await parseTemplateBuilderDataCommentFromTemplate(output);
+		data = parseTemplateBuilderDataCommentFromTemplate(output);
 		isMounted = true;
 
 		logger.info('TemplateBuilder mounted', { data });
@@ -72,11 +72,7 @@
 		let pragma: TemplatePragma = {
 			lang: 'lua',
 			allowed_caps: templateBuilderNeededCaps,
-			builderInfo: {
-				ver: builderVersion,
-				for: data.comment.for,
-				data
-			}
+			builderInfo: data.comment
 		};
 
 		return `-- @pragma ${JSON.stringify(pragma)}\n${templateBuilderOutput}`;
