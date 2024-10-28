@@ -12,15 +12,11 @@
 			name: 'About',
 			items: [
 				{
-					name: 'About',
-					href: '/about'
+					name: 'Docs',
+					href: '/docs'
 				},
 				{
-					name: 'Features',
-					href: '/about#features-what'
-				},
-				{
-					name: 'Our Team',
+					name: 'About Us',
 					href: '/about#staff'
 				}
 			]

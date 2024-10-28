@@ -10,6 +10,7 @@
 	import logger from '$lib/ui/logger';
 
 	import MessageBuilder from './message/Builder.svelte';
+	import BoxButton from '../../inputs/button/BoxButton.svelte';
 
 	export let showTypes: string[] = [];
 	export let output: string = '';
@@ -43,13 +44,13 @@
 			name: 'CAPTCHA',
 			description: 'Create a template for sending a CAPTCHA on response to the action.',
 			value: 'captcha',
-			component: async () => {} // Placeholder
+			component: null // Placeholder
 		},
 		{
 			name: 'Custom',
 			description: 'Create a custom template for your specific needs.',
 			value: 'custom',
-			component: async () => {} // Placeholder
+			component: null // Placeholder
 		}
 	];
 
@@ -78,7 +79,7 @@
 		return `-- @pragma ${JSON.stringify(pragma)}\n${templateBuilderOutput}`;
 	}
 
-	$: if (templateBuilderOutput || data?.comment?.for) {
+	$: if (templateBuilderOutput && data?.comment?.for) {
 		output = updateOutput();
 	}
 </script>
@@ -101,6 +102,17 @@
 				{/each}
 			</div>
 		</section>
+	{:else}
+		<h1 class="text-2xl font-bold">Building a {data.comment.for} template</h1>
+		<BoxButton
+			onclick={() => {
+				data.comment.for = '';
+				templateBuilderOutput = '';
+				templateBuilderNeededCaps = [];
+			}}
+		>
+			Back
+		</BoxButton>
 	{/if}
 
 	{#if types.find((type) => type.value === data.comment.for)?.component}

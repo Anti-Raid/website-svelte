@@ -57,26 +57,28 @@
 		let templateStr = ``;
 
 		if (tbd?.embeds?.length > 0) {
+			templateStr += `\nmessage.embeds = {}\nsetmetatable(embeds, interop.array_metatable)\n\n`;
 			for (let embed of tbd.embeds) {
 				let fragment = generateTemplateFragmentForEmbed(embed);
 
 				if (fragment) {
-					templateStr += `${fragment}table.insert(message.embeds, embed)\n\t`;
+					templateStr += `${fragment}table.insert(message.embeds, embed)\n`;
 				}
 			}
 		}
 
 		if (tbd?.content) {
-			templateStr += `message.content = ${parseString(tbd.content)}\n\t`;
+			templateStr += `\nmessage.content = ${parseString(tbd.content)}\n`;
 		}
 
 		if (templateStr) {
 			templateStr = `
 local args, token = ...
-local message_plugin = require "@antiraid/message"
 local actions_plugin = require "@antiraid/discord"
-local message = message_plugin.new_message()
--- Create the message
+local interop = require "@antiraid/interop"
+
+local message = {}
+
 ${templateStr.trim()}
 
 -- Send message using action executor
@@ -95,11 +97,11 @@ actions_executor:sendmessage_channel({
 		let baseFragment = '';
 
 		if (embed.title) {
-			baseFragment += `embed.title = ${parseString(embed.title)}\n\t`;
+			baseFragment += `embed.title = ${parseString(embed.title)}\n`;
 		}
 
 		if (embed.description) {
-			baseFragment += `embed.description = ${parseString(embed.description)}\n\t`;
+			baseFragment += `embed.description = ${parseString(embed.description)}\n`;
 		}
 
 		if (embed.fields.length > 0) {
@@ -110,20 +112,22 @@ actions_executor:sendmessage_channel({
 
 				baseFragment += `
 -- Field ${i + 1}
-local field = message_plugin.new_message_embed_field()\n
-field.name = ${parseString(field.name)}\n
-field.value = ${parseString(field.value)}\n
-field.inline = ${field.inline}\n
-table.insert(embed.fields, field)\n
+local field = {
+    name = ${parseString(field.name)},
+    value = ${parseString(field.value)},
+    inline = ${field.inline}
+}
+
+table.insert(embed.fields, field)
             `;
 			});
 		}
 
 		if (baseFragment) {
-			return `local embed = message_plugin.new_message_embed()\n\t${baseFragment}`;
+			return `local embed = {}\n${baseFragment}`;
 		}
 
-		return '';
+		return baseFragment;
 	};
 
 	$: {
