@@ -66,9 +66,6 @@
 		column,
 		value
 	});
-
-	// For better UX, we switch between buttons and select when the number of suggestions is too large
-	const maxElementsForButtons = 20;
 </script>
 
 {#if column.suggestions.Static}

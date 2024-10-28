@@ -1,4 +1,9 @@
 <script lang="ts">
+	/**
+	 * @title Datatables ThFilter
+	 * @description Datatables ThFilter to replace the default one
+	 **/
+
 	import { title } from '$lib/strings';
 	import type { DataHandler } from '@vincjo/datatables';
 	export let handler: DataHandler;

@@ -359,7 +359,7 @@ export class ClientResponse {
 			let json: ApiError = await this.response.json();
 
 			if (type == 'html') {
-				let htmlOut = await marked.parse(this.formatApiError(base || 'Error', json));
+				let htmlOut = await marked.parse(this.formatApiError(base || "", json));
 				let sanitized = sanitize(htmlOut);
 
 				// Ensure that the error message is wrapped in a paragraph
@@ -370,17 +370,27 @@ export class ClientResponse {
 				return sanitized;
 			}
 
-			return sanitize(this.formatApiError(base || 'Error', json));
+			return sanitize(this.formatApiError(base || "", json));
 		} catch (err) {
-			return `${base || 'Error'}: ${this.response.statusText} (${err})`;
+			if (base) {
+				return `${base}: ${this.response.statusText} (${err})`;
+			}
+
+			return `${this.response.statusText} (${err})`;
 		}
 	}
 
 	private formatApiError(base: string, err: ApiError) {
 		if (err?.context) {
-			return `${base}: ${err.message} [${err.context}]`;
+			if (base) {
+				return `${base}: ${err.message} [${err.context}]`;
+			}
+			return `${err.message} [${err.context}]`;
 		} else {
-			return `${base}: ${err.message}`;
+			if (base) {
+				return `${base}: ${err.message}`;
+			}
+			return `${err.message}`;
 		}
 	}
 

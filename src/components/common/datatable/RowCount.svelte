@@ -1,4 +1,9 @@
 <script lang="ts">
+	/**
+	 * @title Datatables RowCount
+	 * @description Datatables row count tooltip to replace the default one
+	 **/
+
 	import type { DataHandler } from '@vincjo/datatables';
 	export let handler: DataHandler;
 	const rowCount = handler.getRowCount();

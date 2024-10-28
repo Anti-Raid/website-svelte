@@ -145,6 +145,21 @@ export interface GuildStaffMember {
 	role: string[];
 	public: boolean;
 }
+export interface ExecuteTemplateRequest {
+	args: any;
+	template: string;
+}
+export interface ExecuteTemplateResponse {
+	Ok?: {
+		result: any;
+	};
+	ExecErr?: {
+		error: string;
+	};
+	PermissionError?: {
+		res: any /* silverpelt.PermissionResult */;
+	};
+}
 
 //////////
 // source: ioauth.go

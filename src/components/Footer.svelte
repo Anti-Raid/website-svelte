@@ -12,30 +12,25 @@
 			name: 'About',
 			items: [
 				{
-					name: 'About',
-					href: '/about'
+					name: 'Docs',
+					href: '/docs'
 				},
 				{
-					name: 'Features',
-					href: '/about#features-what'
-				},
-				{
-					name: 'Our Team',
+					name: 'About Us',
 					href: '/about#staff'
 				}
 			]
 		},
 		{
-
 			name: 'Developers',
 			items: [
 				{
 					name: 'API Docs',
 					href: 'https://splashtail-staging.antiraid.xyz'
 				},
-                                {
-                                        name: 'Developer Portal',
-                                        href: 'https://antiraid.xyz/dashboard/developers'
+				{
+					name: 'Developer Portal',
+					href: 'https://antiraid.xyz/dashboard/developers'
 				}
 			]
 		},
@@ -44,7 +39,7 @@
 			items: [
 				{
 					name: 'Discord Server',
-					href: '/invite'
+					href: '/discord'
 				},
 				{
 					name: 'Forums',
@@ -64,7 +59,7 @@
 					href: '/legal/privacy'
 				}
 			]
-		},
+		}
 	];
 
 	const socials: {

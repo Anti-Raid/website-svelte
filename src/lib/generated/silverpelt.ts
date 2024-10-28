@@ -84,11 +84,6 @@ export interface CanonicalSettingsError {
 		current: number /* uint64 */;
 	};
 }
-export interface CanonicalColumnTypeDynamicClause {
-	field: string;
-	value: any;
-	column_type: CanonicalColumnType;
-}
 export interface CanonicalColumnType {
 	Scalar?: {
 		column_type: CanonicalInnerColumnType;
@@ -96,17 +91,16 @@ export interface CanonicalColumnType {
 	Array?: {
 		inner: CanonicalInnerColumnType;
 	};
-	Dynamic?: {
-		clauses: CanonicalColumnTypeDynamicClause[];
-	};
 }
 export interface CanonicalInnerColumnTypeStringKind {
 	Normal?: {};
 	Token?: {
 		default_length: number /* uint64 */;
 	};
-	Textarea?: {};
-	Template?: {
+	Textarea?: {
+		ctx: string;
+	};
+	TemplateRef?: {
 		kind: string;
 		ctx: string;
 	};

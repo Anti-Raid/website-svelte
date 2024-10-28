@@ -1,7 +1,7 @@
 <script lang="ts">
-	import BoolInput from '../../inputs/BoolInput.svelte';
-	import InputSm from '../../inputs/InputText.svelte';
-	import Label from '../../inputs/Label.svelte';
+	import BoolInput from '../../../inputs/BoolInput.svelte';
+	import InputSm from '../../../inputs/InputText.svelte';
+	import Label from '../../../inputs/Label.svelte';
 	import { EmbedField } from './types';
 
 	export let placeholder: string;

@@ -1,9 +1,8 @@
 <script lang="ts">
-	import Label from '../../inputs/Label.svelte';
-	import ButtonReact from '../../inputs/multi/Button.svelte';
-	import DangerButton from '../../inputs/multi/DangerButton.svelte';
-	import EmbedFieldElement from './EmbedFieldElement.svelte';
-	import KvMultiInputElement from './EmbedFieldElement.svelte';
+	import Label from '../../../inputs/Label.svelte';
+	import ButtonReact from '../../../inputs/multi/Button.svelte';
+	import DangerButton from '../../../inputs/multi/DangerButton.svelte';
+	import EmbedFieldElement from '../message/EmbedFieldElement.svelte';
 	import { EmbedField } from './types';
 
 	export let id: string;

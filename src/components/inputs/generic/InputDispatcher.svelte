@@ -11,19 +11,19 @@ Note: this may be less performant than using the concrete input components direc
 	import Label from '../Label.svelte';
 	import Select from '../select/Select.svelte';
 	import Spacer from '../Spacer.svelte';
-	import TemplateBuilder from '../../dashboard/message_templatebuilder/TemplateBuilder.svelte';
-	import { defaultData } from '../../dashboard/message_templatebuilder/types';
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import ChannelInput from '../ChannelInput.svelte';
 	import { ChannelConstraints } from '$lib/inputconstraints';
 	import BitflagInput from '../BitflagInput.svelte';
 	import InputDescription from '../InputDescription.svelte';
-	import Debug from '../../common/Debug.svelte';
 	import RoleInput from '../RoleInput.svelte';
 	import Modifier from '../Modifier.svelte';
+	import TemplateChooser from '../../dashboard/templating/TemplateChooser.svelte';
+	import TemplateBuilder from '../../dashboard/templating/TemplateBuilder.svelte';
 
 	export let type: string;
 
+	export let guildId: string;
 	export let guildData: UserGuildBaseData;
 	export let id: string;
 	export let label: string;
@@ -78,17 +78,6 @@ Note: this may be less performant than using the concrete input components direc
 		if (!value) value = [];
 		value = [...value, defaultValue()];
 	};
-
-	// Needed for templatebuilder
-	let extState: any;
-
-	$: if (value == null) {
-		if (type == 'string:template:message') {
-			extState = defaultData();
-		}
-	} else if (value == '' && type == 'string:template:message') {
-		value = null;
-	}
 </script>
 
 {#if multiple}
@@ -132,6 +121,7 @@ Note: this may be less performant than using the concrete input components direc
 					{disabled}
 					{choices}
 					{bitflagValues}
+					{guildId}
 					{guildData}
 					{channelConstraints}
 					{extClass}
@@ -175,7 +165,14 @@ Note: this may be less performant than using the concrete input components direc
 		{disabled}
 		onChange={() => {}}
 	/>
-{:else if type == 'textarea'}
+{:else if type == 'string:textarea:template'}
+	<Label {id} {label} />
+	<TemplateBuilder bind:output={value} />
+	<small class="text-gray-500 dark:text-gray-400"
+		>See our documentation to learn more about templating</small
+	>
+{:else if type.startsWith('string:textarea')}
+	<Label {id} {label} />
 	<InputTextArea
 		{id}
 		{label}
@@ -215,28 +212,9 @@ Note: this may be less performant than using the concrete input components direc
 	<Label {id} {label} />
 	<InputDescription {description} />
 	<Modifier bind:value {guildData} {required} {disabled} />
-{:else if type.startsWith('string:template:message')}
+{:else if type.startsWith('string:templateref')}
 	<Label {id} {label} />
-	<TemplateBuilder bind:rawTemplateOutput={value} bind:templateBuilderData={extState} />
-	<Debug
-		data={{
-			templateBuilderData: extState,
-			templateFragment: value
-		}}
-	/>
-{:else if type.startsWith('string:template')}
-	<InputTextArea
-		{id}
-		{label}
-		{placeholder}
-		minlength={minlength || 0}
-		{maxlength}
-		{description}
-		bind:value
-		{showErrors}
-		{required}
-		{disabled}
-	/>
+	<TemplateChooser {guildId} bind:value />
 	<small class="text-gray-500 dark:text-gray-400"
 		>See our documentation to learn more about templating</small
 	>

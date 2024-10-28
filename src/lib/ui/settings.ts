@@ -27,8 +27,6 @@ export interface DispatchType {
 	bitflag_values: { [label: string]: string } | undefined;
 	// If channel, then the channelConstraints
 	channel_constraints: ChannelConstraints | undefined;
-	// Referenced variables (for dynamic columns)
-	referenced_variables: string[];
 	// Resolves column type
 	resolved_column_type: CanonicalColumnType;
 }
@@ -58,7 +56,6 @@ export const getDispatchType = (
 		allowed_values: undefined,
 		bitflag_values: undefined,
 		channel_constraints: undefined,
-		referenced_variables: [],
 		resolved_column_type: column.column_type
 	};
 
@@ -95,11 +92,17 @@ export const getDispatchType = (
 
 				// Handle the kind
 				if (inner.String.kind.Normal) _setOnDispatchType(dispatchType, 'type', 'string');
-				else if (inner.String.kind.Template)
+				else if (inner.String.kind.Textarea)
 					_setOnDispatchType(
 						dispatchType,
 						'type',
-						`string:template:${inner.String.kind.Template.kind}#${inner.String.kind.Template.ctx}`
+						`string:textarea:${inner.String.kind.Textarea.ctx}`
+					);
+				else if (inner.String.kind.TemplateRef)
+					_setOnDispatchType(
+						dispatchType,
+						'type',
+						`string:templateref:${inner.String.kind.TemplateRef.kind}#${inner.String.kind.TemplateRef.ctx}`
 					);
 				else if (inner.String.kind.Channel) {
 					_setOnDispatchType(dispatchType, 'type', 'string:channel');
@@ -136,25 +139,6 @@ export const getDispatchType = (
 
 		return dispatchType;
 	};
-
-	// First handle dynamic (and nested dynamic too!)
-	while (dispatchType.resolved_column_type.Dynamic) {
-		let found = false;
-		for (let clause of dispatchType.resolved_column_type.Dynamic.clauses) {
-			let value = templateToStringLite(clause.field, fields);
-			dispatchType.referenced_variables = dispatchType.referenced_variables.concat(
-				getReferencedVariables(clause.field)
-			);
-			if (value == clause.value) {
-				dispatchType.resolved_column_type = clause.column_type;
-				found = true;
-			}
-		}
-
-		if (!found) {
-			break;
-		}
-	}
 
 	if (dispatchType.resolved_column_type.Scalar) {
 		return handleInner(dispatchType, dispatchType.resolved_column_type.Scalar.column_type);
@@ -197,34 +181,6 @@ export const deriveColumnState = (
 };
 
 /**
- * Returns a list of variables that were referenced in a template
- */
-export const getReferencedVariables = (template: string): string[] => {
-	let variables: string[] = [];
-	let inVariable = false;
-	let variable = '';
-	for (let i = 0; i < template.length; i++) {
-		if (template[i] == '{') {
-			inVariable = true;
-			continue;
-		}
-
-		if (template[i] == '}') {
-			inVariable = false;
-			variables.push(variable);
-			variable = '';
-			continue;
-		}
-
-		if (inVariable) {
-			variable += template[i];
-		}
-	}
-
-	return variables;
-};
-
-/**
  * Lite version of the Rust template_to_string. In particular, this implementation does not provide special variables
  */
 export const templateToStringLite = (template: string, fields: Record<string, any>) => {
@@ -248,7 +204,6 @@ export const templateToStringLite = (template: string, fields: Record<string, an
 export interface DerivedData {
 	dispatchType: DispatchType;
 	columnState: ColumnState;
-	forceRederive?: boolean;
 	isCleared: boolean;
 }
 
@@ -291,7 +246,6 @@ export const createFieldsForUpdate = (
 	allDerivedData: Record<string, DerivedData>
 ): SettingsExecute => {
 	let fields: Record<string, any> = {};
-	let dependencyFields: string[] = [];
 	Object.keys(columnField).forEach((k) => {
 		let column = configOpt.columns.find((c) => c.id === k);
 
@@ -303,12 +257,6 @@ export const createFieldsForUpdate = (
 			return;
 		}
 
-		let dispatchType = getDispatchType(columnField, column);
-
-		let referencedVariables = dispatchType.referenced_variables;
-
-		//logger.debug('editRow', 'Referenced variables', referencedVariables, k);
-
 		// Ignore unchanged fields that are not the primary key
 		if (isEqual(columnField[k], oldFields[k]) && k != configOpt.primary_key) {
 			return;
@@ -316,32 +264,6 @@ export const createFieldsForUpdate = (
 
 		// Check if isCleared
 		if (allDerivedData[k]?.isCleared) {
-			fields[k] = null;
-		} else {
-			fields[k] = columnField[k];
-		}
-
-		// Add to dependencyFields
-		if (referencedVariables) {
-			dependencyFields.push(...referencedVariables.filter((v) => !dependencyFields.includes(v)));
-		}
-	});
-
-	logger.info('editRow', 'Dependency fields', dependencyFields);
-
-	// Add all dependency fields to the edit
-	dependencyFields.forEach((k) => {
-		let column = configOpt.columns.find((c) => c.id === k);
-
-		if (!column) {
-			return;
-		}
-
-		if (configOpt.primary_key != column.id && column.ignored_for.includes('Update')) {
-			return;
-		}
-
-		if (!columnField[k]) {
 			fields[k] = null;
 		} else {
 			fields[k] = columnField[k];

@@ -19,56 +19,18 @@
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
 	export let guildId: string;
-	export let columnField: Record<string, any>;
 	export let value: any;
+	export let derivedData: DerivedData;
 	export let currentOperationType: OperationTypes;
 	export let column: CanonicalColumn;
 	export let columnState: ColumnState;
 	export let columnDispatchType: DispatchType;
-
-	// Used to force re-render of dynamic_on columns
-	export let allDerivedData: { [key: string]: DerivedData };
-
-	// On column field change
-	let fieldList: string[] | undefined = undefined;
-	const flagRerenders = () => {
-		if (fieldList === undefined) {
-			fieldList = [];
-			for (let key in allDerivedData) {
-				if (
-					key != column.id &&
-					allDerivedData[key].dispatchType.referenced_variables?.includes(column.id)
-				) {
-					fieldList.push(key);
-				}
-			}
-		}
-
-		fieldList.forEach((key) => {
-			allDerivedData[key].forceRederive = true;
-		});
-	};
-
-	const rederive = () => {
-		columnState = deriveColumnState(configOpt, column, currentOperationType);
-		columnDispatchType = getDispatchType(columnField, column);
-		allDerivedData[column.id].forceRederive = false;
-	};
-
-	const rederiveIfForced = () => {
-		if (allDerivedData[column.id].forceRederive) {
-			logger.debug('rederiveIfForced', 'Rederiving for', column.id);
-			rederive();
-		}
-	};
-
-	$: value, flagRerenders();
-	$: allDerivedData[column.id].forceRederive, rederiveIfForced();
 </script>
 
 {#if columnDispatchType?.resolved_column_type?.Scalar || columnDispatchType?.resolved_column_type?.Array}
 	<InputDispatcher
 		{guildData}
+		{guildId}
 		id={column.id}
 		label={column.name}
 		placeholder={column.description}
@@ -77,7 +39,7 @@
 		maxlength={columnDispatchType?.maxlength}
 		type={columnDispatchType?.type}
 		required={column.ignored_for.includes(currentOperationType) ? false : !column.nullable}
-		disabled={columnState == ColumnState.Disabled || allDerivedData[column.id].isCleared}
+		disabled={columnState == ColumnState.Disabled || derivedData.isCleared}
 		bind:value
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
@@ -106,10 +68,10 @@
 		<BoxButton
 			onclick={(e) => {
 				e.preventDefault();
-				allDerivedData[column.id].isCleared = true;
+				derivedData.isCleared = !derivedData.isCleared;
 			}}
 		>
-			{allDerivedData[column.id].isCleared ? "Don't Clear" : 'Clear'}
+			{derivedData.isCleared ? "Don't Clear" : 'Clear'}
 		</BoxButton>
 	{/if}
 {/if}

@@ -81,10 +81,7 @@
 
 		let newEntry: SettingsExecuteResponse = await res.json();
 
-		let newLength = settings.fields.push({
-			...columnField,
-			...newEntry.fields[0]
-		});
+		let newLength = settings.fields.push(newEntry.fields[0]);
 		settings = settings;
 		columnField = {}; // Clear the column field after creating a new entry
 
@@ -146,14 +143,13 @@
 					{module}
 					{guildData}
 					{guildId}
-					{columnField}
 					bind:value={columnField[column.id]}
 					{currentOperationType}
 					{column}
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
 					{modules}
-					bind:allDerivedData
+					bind:derivedData={allDerivedData[column.id]}
 				/>
 				<Spacer typ="extSpacing" />
 			{/if}

@@ -16,7 +16,7 @@
 
 <div class="setting" id={configOpt.id}>
 	{#if (!configOpt?.max_entries || settings?.fields?.length < configOpt?.max_entries) && configOpt?.operations['Create']}
-		<SettingsCreateRow {settings} {configOpt} {module} {guildData} {guildId} {modules} />
+		<SettingsCreateRow bind:settings {configOpt} {module} {guildData} {guildId} {modules} />
 	{/if}
 
 	{#each settings?.fields || [] as columnField, i}

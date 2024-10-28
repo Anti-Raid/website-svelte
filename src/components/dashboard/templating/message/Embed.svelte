@@ -1,6 +1,6 @@
 <script lang="ts">
-	import InputText from '../../inputs/InputText.svelte';
-	import InputTextArea from '../../inputs/InputTextArea.svelte';
+	import InputText from '../../../inputs/InputText.svelte';
+	import InputTextArea from '../../../inputs/InputTextArea.svelte';
 	import EmbedField from './EmbedField.svelte';
 	import { Embed } from './types';
 

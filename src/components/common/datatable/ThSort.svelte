@@ -1,4 +1,9 @@
 <script lang="ts">
+	/**
+	 * @title Datatables ThSort
+	 * @description Datatables ThSort to replace the default one
+	 **/
+
 	import type { DataHandler } from '@vincjo/datatables';
 
 	export let handler: DataHandler;

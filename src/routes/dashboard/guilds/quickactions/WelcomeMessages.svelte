@@ -7,7 +7,7 @@
 	import { getDispatchType } from '$lib/ui/settings';
 	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
 	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
-	import TemplateBuilder from '../../../../components/dashboard/message_templatebuilder/TemplateBuilder.svelte';
+	import TemplateBuilder from '../../../../components/dashboard/templating/TemplateBuilder.svelte';
 	import ButtonReact from '../../../../components/inputs/button/ButtonReact.svelte';
 	import { Color } from '../../../../components/inputs/button/colors';
 	import ChannelInput from '../../../../components/inputs/ChannelInput.svelte';
@@ -116,7 +116,7 @@
 			service
 		</p>
 
-		<TemplateBuilder bind:rawTemplateOutput={wizard_messageTemplate} />
+		<TemplateBuilder bind:output={wizard_messageTemplate} showTypes={['message', 'custom']} />
 		<code class="text-white whitespace-pre-wrap">{wizard_messageTemplate}</code>
 
 		<ButtonReact
