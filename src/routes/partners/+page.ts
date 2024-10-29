@@ -24,7 +24,7 @@ const partners: Partner[] = [
 			'Connect, Share, Grow. NetSocial empowers communities to be who they want to be, no more bots, paywalls and obscene content!',
 		logo: 'https://cdn.netsocial.app/logos/netsocial.png',
 		url: 'https://netsocial.app/',
-		owner: 'ranveersoni',
+		owner: 'Ranveer Soni',
 		owner_image: 'https://avatars.githubusercontent.com/u/87431619?v=4',
 		owner_website: 'https://maya25-me.vercel.app/',
 		links: [
