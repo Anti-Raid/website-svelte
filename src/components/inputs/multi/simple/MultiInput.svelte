@@ -38,25 +38,26 @@
 	{/if}
 
 	{#if !disabled}
-		<button class="text-lg mr-2" type="button" on:click|preventDefault={() => appendValue()}>
-			<Icon icon="ant-design:plus-circle-outlined" class="inline-block mr-1 text-white" />Add Other
+		<button class="text-lg mr-2 font-semibold font-monster hover:underline" type="button" on:click|preventDefault={() => appendValue()}>
+			<Icon icon="zondicons:add-solid" class="inline-block mb-1 mr-1 text-white" />Add Other
 		</button>
+
 		<button
-			class="text-lg mr-2"
+			class="text-lg mr-2 font-semibold font-monster hover:underline"
 			type="button"
 			on:click|preventDefault={() => {
 				let i = prompt('Enter the position to add the new value');
-				if (i) {
-					addValue(parseInt(i));
-				}
+				if (i) addValue(parseInt(i));
 			}}
 		>
-			<Icon icon="ant-design:plus-circle-outlined" class="inline-block mr-1 text-white" />Add At
+			<Icon icon="zondicons:add-solid" class="inline-block mb-1 mr-1 text-white" />Add At
 			Position
 		</button>
 	{/if}
 </div>
+
 <Spacer typ="extSpacing" />
+
 {#each values as value, i}
 	<div class="flex flex-row items-center justify-center multi-input align-items">
 		{#if small}
@@ -83,8 +84,8 @@
 			/>
 		{/if}
 
-		<div class="inline-block mt-2 ml-1 text-red-400 align-bottom hover:text-red-500">
-			<button type="button" on:click|preventDefault={() => deleteValue(i)} aria-label="Delete">
+		<div class="inline-block mt-2 ml-1 text-white align-bottom hover:underline">
+			<button class="flex font-semibold font-monster uppercase" type="button" on:click|preventDefault={() => deleteValue(i)} aria-label="Delete">
 				<Icon icon="ant-design:delete-outlined" class="text-2xl text-white" />
 				Delete
 			</button>

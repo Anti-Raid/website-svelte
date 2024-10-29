@@ -15,9 +15,9 @@
 <select
 	{id}
 	class={disabled
-		? 'w-full mx-auto flex bg-black bg-opacity-50 text-gray-100 rounded-xl border border-primary-200 focus:outline-none py-4 px-6'
-		: 'w-full mx-auto flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-primary-400 rounded-xl border border-primary-200 focus:border-primary-400 focus:outline-none py-4 px-6'}
-	bind:value
+        ? 'w-full text-left mx-auto flex bg-surface-600 bg-opacity-50 text-gray-100 border border-primary-200 font-bold font-monster focus:outline-none py-4 px-6 rounded-xl'
+        : 'w-full text-left mx-auto flex transition duration-200 hover:bg-surface-700 bg-surface-600 text-white font-bold font-monster border border-primary-200 focus:border-surface-800 focus:outline-none py-4 px-6 rounded-xl'}
+    bind:value
 	{required}
 	{disabled}
 	aria-disabled={disabled}
@@ -26,7 +26,7 @@
 >
 	<option value="" disabled={disabledDefaultInput}>{defaultLabel}</option>
 	{#each choices as choice}
-		<option id={choice.id} value={choice.value} disabled={choice.disabled || false}
+		<option class="font-bold font-monster" id={choice.id} value={choice.value} disabled={choice.disabled || false}
 			>{choice.label}</option
 		>
 	{/each}
