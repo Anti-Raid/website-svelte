@@ -1,7 +1,4 @@
 <script lang="ts">
-	// Regular Imports
-	import { browser } from '$app/environment';
-
 	// Etc
 	import BitflagInput from '../../../components/inputs/BitflagInput.svelte';
 	import BoolInput from '../../../components/inputs/BoolInput.svelte';
@@ -14,11 +11,6 @@
 	import Select from '../../../components/inputs/select/Select.svelte';
 	import SelectMulti from '../../../components/inputs/select/SelectMulti.svelte';
 	import MultiInput from '../../../components/inputs/multi/simple/MultiInput.svelte';
-
-	// Button Function
-	const debugButton = () => {
-		if (browser) alert('This is a debug button.');
-	};
 
 	// Value(s)
 	export let textValue: string;
@@ -38,59 +30,58 @@
 	export let selectMenuMultivalue: string[];
 
 	// Multi input
-	export let multiInputValue: string[];
+	export let multiInputValue: string[] = [];
 </script>
 
 <div class="debug">
-	<section id="text">
-		<h2>Text Inputs:</h2>
-		<div class="p-2" />
-
-		<div id="regular_text">
-			<InputText
-				id="debug"
-				label="Regular Text"
-				placeholder="Debug Text"
-				minlength={0}
-				bind:value={textValue}
-			/>
-		</div>
-
-		<div id="regular_number">
-			<InputNumber
-				id="debug"
-				label="Regular Number"
-				placeholder="Debug Number"
-				minlength={0}
-				bind:value={numberValue}
-			/>
-		</div>
-
-		<div id="regular_textarea">
-			<InputTextArea
-				id="debug"
-				label="Regular Textarea"
-				placeholder="Debug Textarea"
-				minlength={0}
-				bind:value={textareaValue}
-			/>
-		</div>
-
-		<!--File input-->
-		<FileUpload
+	<div id="regular_text">
+		<InputText
 			id="debug"
-			label="File Upload"
-			bind:file
-			acceptableTypes={['image/png', 'image/jpeg']}
-			bind:fileName
-			bind:fileMimeType
-			bind:fileUploaded
+			label="Regular Text"
+			placeholder="Debug Text"
+			minlength={0}
+			bind:value={textValue}
 		/>
-	</section>
+	</div>
 
 	<div class="p-2" />
 
-	<!-- Continue with other Input Types with same layout-->
+	<div id="regular_number">
+		<InputNumber
+			id="debug"
+			label="Regular Number"
+			placeholder="Debug Number"
+			minlength={0}
+			bind:value={numberValue}
+		/>
+	</div>
+
+	<div class="p-2" />
+
+	<div id="regular_textarea">
+		<InputTextArea
+			id="debug"
+			label="Regular Textarea"
+			placeholder="Debug Textarea"
+			minlength={0}
+			bind:value={textareaValue}
+		/>
+	</div>
+
+	<div class="p-2" />
+
+	<FileUpload
+		id="debug"
+		label="File Upload"
+		bind:file
+		acceptableTypes={['image/png', 'image/jpeg']}
+		bind:fileName
+		bind:fileMimeType
+		bind:fileUploaded
+	/>
+
+	<div class="p-2" />
+
 	<div id="regular_bool_input">
 		<BoolInput
 			id="debug"
@@ -102,6 +93,8 @@
 		/>
 	</div>
 
+	<div class="p-2" />
+
 	<div id="regular_bitflag_input">
 		<Label id="bitflag-dbg" label="Select Permissions" />
 		<BitflagInput
@@ -111,7 +104,8 @@
 		/>
 	</div>
 
-	<!--Select menus-->
+	<div class="p-2" />
+
 	<div id="dbg_select_menu">
 		<Label id="select-dbg" label="Select Menu" />
 		<Select
@@ -126,6 +120,8 @@
 			disabled={false}
 		/>
 	</div>
+
+	<div class="p-2" />
 
 	<div id="dbg_select_menu_multi">
 		<Label id="select-dbg" label="Select Menu" />
@@ -142,6 +138,8 @@
 		/>
 	</div>
 
+	<div class="p-2" />
+
 	<!--Multi Input-->
 	<MultiInput
 		id="multi-input"
@@ -151,6 +149,4 @@
 		minlength={0}
 		placeholder="Add an item"
 	/>
-
-	<!--ChannelInput/RoleInput/Modifier omitted here for now as they cannot be tested without having an actual guild lookup, will be added later-->
 </div>

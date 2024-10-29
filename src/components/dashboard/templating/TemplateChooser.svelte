@@ -108,7 +108,7 @@
 
 			{#if value != fields['name']}
 				<BoxButton
-					onclick={() => {
+					onClick={() => {
 						value = fields['name'];
 					}}>Select</BoxButton
 				>
@@ -118,7 +118,7 @@
 					Selected
 				</p>
 				<BoxButton
-					onclick={() => {
+					onClick={() => {
 						value = '';
 					}}>Deselect</BoxButton
 				>

@@ -11,7 +11,7 @@
 <section {id} class="kittycat-perm-select-array mb-2">
 	{#if perms?.length == 0}
 		<BoxButton
-			onclick={() => {
+			onClick={() => {
 				perms = [...perms, ''];
 			}}>Add Permission</BoxButton
 		>
@@ -22,13 +22,13 @@
 
 		<div class="flex flex-row mt-1">
 			<BoxButton
-				onclick={() => {
+				onClick={() => {
 					perms = [...perms.slice(0, i + 1), '', ...perms.slice(i + 1)];
 				}}>Add Permission</BoxButton
 			>
 			<div class="mr-2" />
 			<BoxButton
-				onclick={() => {
+				onClick={() => {
 					perms = perms.filter((_, index) => index !== i);
 				}}>Remove Permission</BoxButton
 			>

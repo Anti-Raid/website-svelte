@@ -247,7 +247,7 @@
 
 {#if toggleManuallyOverriden}
 	<BoxButton
-		onclick={() => {
+		onClick={() => {
 			if (state.__resetFields.current.includes('enabled')) {
 				state.__resetFields.current = state.__resetFields.current.filter((f) => f !== 'enabled');
 			} else {
@@ -274,7 +274,7 @@
 
 {#if defaultPermsManuallyOverriden}
 	<BoxButton
-		onclick={() => {
+		onClick={() => {
 			if (state.__resetFields.current.includes('default_perms')) {
 				state.__resetFields.current = state.__resetFields.current.filter(
 					(f) => f !== 'default_perms'

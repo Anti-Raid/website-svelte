@@ -151,15 +151,15 @@ table.insert(embed.fields, field)
 			<Embed bind:embed />
 
 			<div>
-				<BoxButton onclick={() => addEmbed(i)}>New Embed</BoxButton>
-				<BoxButton onclick={() => deleteEmbed(i)}>Delete Embed</BoxButton>
+				<BoxButton onClick={() => addEmbed(i)}>New Embed</BoxButton>
+				<BoxButton onClick={() => deleteEmbed(i)}>Delete Embed</BoxButton>
 			</div>
 		</details>
 	{/each}
 </div>
 
 {#if templateBuilderData?.embeds?.length == 0}
-	<BoxButton onclick={() => addEmbed(-1)}>New Embed</BoxButton>
+	<BoxButton onClick={() => addEmbed(-1)}>New Embed</BoxButton>
 {/if}
 
 <Spacer typ="smallSpacing" />

@@ -113,7 +113,7 @@
 	{:else}
 		<h1 class="text-2xl font-bold">Building a {data.comment.for} template</h1>
 		<BoxButton
-			onclick={() => {
+			onClick={() => {
 				data.comment.for = '';
 				templateBuilderOutput = '';
 				templateBuilderNeededCaps = [];

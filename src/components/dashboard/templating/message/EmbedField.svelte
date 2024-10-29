@@ -37,11 +37,11 @@
 			{required}
 			{disabled}
 		/>
-		<BoxButton onclick={() => deleteValue(i)}>Delete</BoxButton>
-		<BoxButton onclick={() => addValue(i)}>Add</BoxButton>
+		<BoxButton onClick={() => deleteValue(i)}>Delete</BoxButton>
+		<BoxButton onClick={() => addValue(i)}>Add</BoxButton>
 	{/each}
 
 	{#if values.length == 0}
-		<BoxButton onclick={() => addValue(-1)}>New Embed Field</BoxButton>
+		<BoxButton onClick={() => addValue(-1)}>New Embed Field</BoxButton>
 	{/if}
 </div>

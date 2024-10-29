@@ -66,7 +66,7 @@
 	{#if column.nullable && currentOperationType == 'Update'}
 		<Spacer typ="smallSpacing" />
 		<BoxButton
-			onclick={(e) => {
+			onClick={(e) => {
 				e.preventDefault();
 				derivedData.isCleared = !derivedData.isCleared;
 			}}

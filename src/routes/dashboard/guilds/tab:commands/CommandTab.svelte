@@ -69,7 +69,7 @@
 				/>
 			</details>
 		{/each}
-		<BoxButton onclick={() => (currentOpenCommand = undefined)}>Back</BoxButton>
+		<BoxButton onClick={() => (currentOpenCommand = undefined)}>Back</BoxButton>
 	{:else}
 		<div class="overflow-x-auto space-y-4">
 			<!-- Header -->
