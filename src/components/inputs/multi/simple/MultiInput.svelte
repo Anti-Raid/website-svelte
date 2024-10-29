@@ -38,7 +38,11 @@
 	{/if}
 
 	{#if !disabled}
-		<button class="text-lg mr-2 font-semibold font-monster hover:underline" type="button" on:click|preventDefault={() => appendValue()}>
+		<button
+			class="text-lg mr-2 font-semibold font-monster hover:underline"
+			type="button"
+			on:click|preventDefault={() => appendValue()}
+		>
 			<Icon icon="zondicons:add-solid" class="inline-block mb-1 mr-1 text-white" />Add Other
 		</button>
 
@@ -50,8 +54,7 @@
 				if (i) addValue(parseInt(i));
 			}}
 		>
-			<Icon icon="zondicons:add-solid" class="inline-block mb-1 mr-1 text-white" />Add At
-			Position
+			<Icon icon="zondicons:add-solid" class="inline-block mb-1 mr-1 text-white" />Add At Position
 		</button>
 	{/if}
 </div>
@@ -85,7 +88,12 @@
 		{/if}
 
 		<div class="inline-block mt-2 ml-1 text-white align-bottom hover:underline">
-			<button class="flex font-semibold font-monster uppercase" type="button" on:click|preventDefault={() => deleteValue(i)} aria-label="Delete">
+			<button
+				class="flex font-semibold font-monster uppercase"
+				type="button"
+				on:click|preventDefault={() => deleteValue(i)}
+				aria-label="Delete"
+			>
 				<Icon icon="ant-design:delete-outlined" class="text-2xl text-white" />
 				Delete
 			</button>
