@@ -23,7 +23,7 @@
 
 	<div class="p-3" />
 
-	<div class="flex">
+<div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
 		{#each data.partners as partner}
 			<div class="self-auto">
 				<div
@@ -38,7 +38,7 @@
 							alt={partner.owner}
 							on:error={ImageLoadError}
 						/>
-						<p class="ml-2 mt-1 mb-1 font-extrabold text-md font-monster hover:underline">
+						<p class="ml-2 mt-1 mb-1 font-bold text-md font-cabin hover:underline">
 							{partner.owner}
 						</p>
 					</a>
