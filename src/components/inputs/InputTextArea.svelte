@@ -5,48 +5,48 @@
 	export let id: string;
 	export let label: string;
 	export let placeholder: string;
-	export let minlength: number;
+	export let minlength: number | undefined = undefined;
 	export let maxlength: number | undefined = undefined;
 	export let value: string = '';
 	export let showErrors: boolean = true;
+	export let extClass: string | undefined = undefined;
 	export let description: string = '';
 	export let required: boolean = true;
 	export let disabled: boolean = false;
 
 	let success: boolean | null = null;
-
 	let errorMsg = '';
 
-	function checkLength() {
+	const checkLength = () => {
 		if (!showErrors) return;
+		if (!value) success = null;
 
-		if (!value) {
-			success = null;
-			return;
+		if (!minlength) success = true;
+		else {
+			if (value.length < minlength) {
+				success = false;
+				errorMsg = `Must be at least ${minlength} characters long`;
+			} else if (maxlength && value.length > maxlength) {
+				success = false;
+				errorMsg = `Must be at most ${maxlength} characters long`;
+			} else {
+				success = true;
+			}
 		}
-
-		if (value.length < minlength) {
-			success = false;
-			errorMsg = `Must be at least ${minlength} characters long`;
-		} else if (maxlength && value.length > maxlength) {
-			success = false;
-			errorMsg = `Must be at most ${maxlength} characters long`;
-		} else {
-			success = true;
-		}
-	}
+	};
 </script>
 
 <Label {id} {label} />
 <InputDescription {description} />
+
 <textarea
 	on:change={checkLength}
 	{minlength}
 	{maxlength}
 	{id}
-	class={disabled
-		? 'w-full mx-auto flex bg-black bg-opacity-30 text-gray-100 rounded-xl border border-primary-200 opacity-75 py-4 px-6 disabled cursor-not-allowed'
-		: 'w-full flex transition duration-200 hover:bg-opacity-50 bg-black bg-opacity-30 text-white focus:text-primary-400 rounded-xl border border-primary-200 focus:border-primary-400 focus:outline-none py-4 px-6'}
+	class="{disabled
+		? 'disabled mt-2 w-full overflow-auto flex transition duration-200 bg-surface-600 opacity-75 text-white font-semibold font-monster rounded-lg border border-primary-200 focus:outline-none py-3 px-3 placeholder:text-white cursor-not-allowed'
+		: 'mt-2 overflow-auto w-full flex transition duration-200 hover:bg-surface-700 bg-surface-600 text-white font-semibold font-monster rounded-lg border border-primary-200 focus:outline-none py-3 px-3 placeholder:text-white'} {extClass}"
 	{placeholder}
 	{required}
 	{disabled}

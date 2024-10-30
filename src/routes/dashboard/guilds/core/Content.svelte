@@ -11,7 +11,6 @@
 	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
 	import SettingsTab from '../tab:settings/SettingsTab.svelte';
 	import { State } from './types';
-	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
 	import InputText from '../../../../components/inputs/InputText.svelte';
 	import { commandLookup } from '$lib/ui/commands';
 	import { defaultComponent, quickActions } from '../quickactions/actions';

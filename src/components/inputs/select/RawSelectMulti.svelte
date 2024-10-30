@@ -10,9 +10,8 @@
 	export let maxLabels = 5;
 
 	const getLabel = (value: string[]) => {
-		if (value.length == 0) {
-			return defaultLabel;
-		} else {
+		if (value.length == 0) return defaultLabel;
+		else {
 			let labelValues = [];
 
 			for (let choice of choices) {
@@ -21,9 +20,7 @@
 					break;
 				}
 
-				if (value.includes(choice.value)) {
-					labelValues.push(choice.label);
-				}
+				if (value.includes(choice.value)) labelValues.push(choice.label);
 			}
 
 			return labelValues.join(', ');
@@ -46,12 +43,11 @@
 			isOpen = !isOpen;
 		}}
 		class={disabled
-			? 'w-full text-left mx-auto flex bg-black bg-opacity-50 text-gray-100 border border-primary-200 focus:outline-none py-4 px-6 rounded-xl'
-			: 'w-full text-left mx-auto flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-primary-400 border border-primary-200 focus:border-primary-400 focus:outline-none py-4 px-6 rounded-xl'}
+			? 'w-full text-left mx-auto flex bg-surface-600 bg-opacity-50 text-gray-100 border border-primary-200 font-bold font-monster focus:outline-none py-4 px-6 rounded-xl'
+			: 'w-full text-left mx-auto flex transition duration-200 hover:bg-surface-700 bg-surface-600 text-white font-bold font-monster border border-primary-200 focus:border-surface-800 focus:outline-none py-4 px-6 rounded-xl'}
 	>
 		{getLabel(value)}
 
-		<!--Down arrow at end of button-->
 		<svg
 			class="w-6 h-6 ml-auto"
 			xmlns="http://www.w3.org/2000/svg"
@@ -67,13 +63,13 @@
 
 	{#if isOpen}
 		<div
-			class="z-10 w-full bg-black bg-opacity-100 border border-primary-200 focus:border-primary-400 focus:outline-none rounded-xl"
+			class="z-10 w-full bg-surface-600 bg-opacity-100 border border-primary-200 focus:border-primary-400 focus:outline-none rounded-xl"
 		>
 			{#each choices as choice}
 				<button
 					class={value.includes(choice.value)
-						? 'w-full mx-auto flex bg-primary-400 text-black border border-primary-400 focus:border-primary-400 focus:outline-none py-4 px-6 rounded-xl'
-						: 'w-full mx-auto flex transition duration-200 hover:bg-slate-900 text-white focus:text-primary-400 focus:border-primary-400 focus:outline-none py-4 px-6 rounded-xl'}
+						? 'w-full mx-auto flex text-white border border-surface-700 font-bold font-monster focus:border-primary-800 focus:outline-none py-4 px-6 rounded-xl'
+						: 'w-full mx-auto flex transition duration-200 hover:bg-slate-900 text-white font-bold font-monster focus:text-primary-400 focus:border-primary-400 focus:outline-none py-4 px-6 rounded-xl'}
 					on:click={() => {
 						if (value.includes(choice.value)) {
 							value = value.filter((v) => v !== choice.value);

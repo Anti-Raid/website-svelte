@@ -4,7 +4,7 @@
 	export type StyleSpec = {
 		[propOrSelector: string]: string | number | StyleSpec | null;
 	};
-	export type SupportedLanguages = 'lua' | 'js' | 'ts';
+	export type SupportedLanguages = 'luau' | 'js' | 'ts';
 	export interface File {
 		name: string;
 		value: string | null;

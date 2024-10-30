@@ -5,7 +5,7 @@
 	export let id: string;
 	export let label: string;
 	export let placeholder: string;
-	export let minlength: number;
+	export let minlength: number | undefined = undefined;
 	export let maxlength: number | undefined = undefined;
 	export let value: number = 0;
 	export let showErrors: boolean = true;
@@ -15,32 +15,29 @@
 	export let disabled: boolean = false;
 
 	let success: boolean | null = null;
-
 	let errorMsg = '';
 
-	function checkLength() {
+	const checkLength = () => {
 		if (!showErrors) return;
+		if (!value) success = false;
 
-		if (!value) {
-			success = null;
-			return;
+		if (!minlength) success = true;
+		else {
+			if (value < 10 ** minlength) {
+				success = false;
+				errorMsg = `Must be at least ${minlength} characters long`;
+			} else if (maxlength && value > 10 ** maxlength) {
+				success = false;
+				errorMsg = `Must be at most ${maxlength} characters long`;
+			} else {
+				success = true;
+			}
 		}
-
-		if (value < 10 ** minlength) {
-			success = false;
-			errorMsg = `Must be at least ${minlength} characters long`;
-		} else if (maxlength && value > 10 ** maxlength) {
-			success = false;
-			errorMsg = `Must be at most ${maxlength} characters long`;
-		} else {
-			success = true;
-		}
-	}
+	};
 </script>
 
 <div class={inpClass}>
 	<Label {id} {label} />
-
 	<InputDescription {description} />
 
 	<input
@@ -49,9 +46,9 @@
 		{maxlength}
 		type="number"
 		{id}
-		class={disabled
-			? 'w-full mx-auto flex bg-black bg-opacity-30 text-gray-100 rounded-xl border border-primary-200 opacity-75 py-4 px-6 disabled cursor-not-allowed'
-			: 'w-full mx-auto flex transition duration-200 hover:bg-slate-900 bg-black bg-opacity-100 text-white focus:text-primary-400 rounded-xl border border-primary-200 focus:border-primary-400 focus:outline-none py-4 px-6'}
+		class="{disabled
+			? 'disabled mt-2 overflow-auto flex transition duration-200 bg-surface-600 opacity-75 text-white font-semibold font-monster rounded-lg border border-primary-200 focus:outline-none py-3 px-3 placeholder:text-white cursor-not-allowed'
+			: 'mt-2 overflow-auto flex transition duration-200 hover:bg-surface-700 bg-surface-600 text-white font-semibold font-monster rounded-lg border border-primary-200 focus:outline-none py-3 px-3 placeholder:text-white'} {inpClass}"
 		{placeholder}
 		{required}
 		{disabled}
@@ -61,11 +58,11 @@
 	/>
 
 	{#if success == true}
-		<p class="text-sm text-success-600 dark:text-success-500">
+		<p class="text-sm text-success-600">
 			<span class="font-medium">Looks good!</span>
 		</p>
 	{:else if success == false}
-		<p class="text-sm text-red-600 dark:text-red-500">
+		<p class="text-sm text-red-600">
 			<span class="font-medium">{errorMsg}</span>
 		</p>
 	{/if}

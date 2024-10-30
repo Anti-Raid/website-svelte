@@ -24,7 +24,7 @@
 	const templateList = async (limit: number, offset: number) => {
 		let payload: SettingsExecute = {
 			operation: 'View',
-			module: 'settings',
+			module: 'core',
 			setting: 'guild_templates',
 			fields: {
 				__limit: limit,
@@ -108,7 +108,7 @@
 
 			{#if value != fields['name']}
 				<BoxButton
-					onclick={() => {
+					onClick={() => {
 						value = fields['name'];
 					}}>Select</BoxButton
 				>
@@ -118,7 +118,7 @@
 					Selected
 				</p>
 				<BoxButton
-					onclick={() => {
+					onClick={() => {
 						value = '';
 					}}>Deselect</BoxButton
 				>

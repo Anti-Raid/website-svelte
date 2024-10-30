@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Label from '../../../inputs/Label.svelte';
-	import ButtonReact from '../../../inputs/multi/Button.svelte';
-	import DangerButton from '../../../inputs/multi/DangerButton.svelte';
+	import BoxButton from '../../../inputs/button/BoxButton.svelte';
 	import EmbedFieldElement from '../message/EmbedFieldElement.svelte';
 	import { EmbedField } from './types';
 
@@ -38,11 +37,11 @@
 			{required}
 			{disabled}
 		/>
-		<DangerButton onclick={() => deleteValue(i)}>Delete</DangerButton>
-		<ButtonReact onclick={() => addValue(i)}>Add</ButtonReact>
+		<BoxButton onClick={() => deleteValue(i)}>Delete</BoxButton>
+		<BoxButton onClick={() => addValue(i)}>Add</BoxButton>
 	{/each}
 
 	{#if values.length == 0}
-		<ButtonReact onclick={() => addValue(-1)}>New Embed Field</ButtonReact>
+		<BoxButton onClick={() => addValue(-1)}>New Embed Field</BoxButton>
 	{/if}
 </div>

@@ -12,12 +12,12 @@
 			name: 'About',
 			items: [
 				{
-					name: 'Docs',
-					href: '/docs'
-				},
-				{
 					name: 'About Us',
 					href: '/about#staff'
+				},
+				{
+					name: 'Documentation',
+					href: '/docs'
 				}
 			]
 		},
@@ -25,7 +25,7 @@
 			name: 'Developers',
 			items: [
 				{
-					name: 'API Docs',
+					name: 'API Documentation',
 					href: 'https://splashtail-staging.antiraid.xyz'
 				},
 				{
@@ -42,7 +42,7 @@
 					href: '/discord'
 				},
 				{
-					name: 'Forums',
+					name: 'AntiRaid Forums',
 					href: '/forums'
 				}
 			]

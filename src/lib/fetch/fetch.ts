@@ -359,7 +359,7 @@ export class ClientResponse {
 			let json: ApiError = await this.response.json();
 
 			if (type == 'html') {
-				let htmlOut = await marked.parse(this.formatApiError(base || "", json));
+				let htmlOut = await marked.parse(this.formatApiError(base || '', json));
 				let sanitized = sanitize(htmlOut);
 
 				// Ensure that the error message is wrapped in a paragraph
@@ -370,7 +370,7 @@ export class ClientResponse {
 				return sanitized;
 			}
 
-			return sanitize(this.formatApiError(base || "", json));
+			return sanitize(this.formatApiError(base || '', json));
 		} catch (err) {
 			if (base) {
 				return `${base}: ${this.response.statusText} (${err})`;

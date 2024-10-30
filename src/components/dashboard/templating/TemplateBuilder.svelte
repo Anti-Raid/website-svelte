@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import SleekButton from '../../inputs/button/SleekButton.svelte';
 	import {
-		builderVersion,
 		ParsedTemplateBuilderComment,
 		parseTemplateBuilderDataCommentFromTemplate,
 		TemplatePragma
@@ -11,6 +10,7 @@
 
 	import MessageBuilder from './message/Builder.svelte';
 	import BoxButton from '../../inputs/button/BoxButton.svelte';
+	import CustomBuilder from './custom/CustomBuilder.svelte';
 
 	export let showTypes: string[] = [];
 	export let output: string = '';
@@ -50,7 +50,7 @@
 			name: 'Custom',
 			description: 'Create a custom template for your specific needs.',
 			value: 'custom',
-			component: null // Placeholder
+			component: CustomBuilder // Placeholder
 		}
 	];
 
@@ -80,7 +80,11 @@
 	}
 
 	$: if (templateBuilderOutput && data?.comment?.for) {
-		output = updateOutput();
+		if (data.comment.for === 'custom') {
+			output = templateBuilderOutput;
+		} else {
+			output = updateOutput();
+		}
 	}
 </script>
 
@@ -94,6 +98,10 @@
 						<SleekButton
 							onclick={() => {
 								data.comment.for = type.value;
+
+								if (type.value == 'custom') {
+									templateBuilderOutput = output;
+								}
 							}}
 							name={type.name}
 							description={type.description}
@@ -105,7 +113,7 @@
 	{:else}
 		<h1 class="text-2xl font-bold">Building a {data.comment.for} template</h1>
 		<BoxButton
-			onclick={() => {
+			onClick={() => {
 				data.comment.for = '';
 				templateBuilderOutput = '';
 				templateBuilderNeededCaps = [];
