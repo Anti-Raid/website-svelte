@@ -24,7 +24,7 @@
 	const templateList = async (limit: number, offset: number) => {
 		let payload: SettingsExecute = {
 			operation: 'View',
-			module: 'settings',
+			module: 'core',
 			setting: 'guild_templates',
 			fields: {
 				__limit: limit,
