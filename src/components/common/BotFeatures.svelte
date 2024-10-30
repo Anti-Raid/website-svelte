@@ -14,9 +14,9 @@
 			Icon: 'heroicons:archive-box-arrow-down'
 		},
 		{
-			Title: 'Limits',
-			Description: `With AntiRaid, you can easily set up precise rate limits to control exactly what your moderators can do. This ensures your server remains protected and your moderation actions are well-regulated.`,
-			Icon: 'heroicons:shield-check'
+			Title: 'Unrivaled Scripting',
+			Description: `Our scripting system, based on Luau, a superset of Lua created by Roblox, allows you to customize AntiRaid to the specific needs of your server instead of being <em>yet another</em> generic discord bot`,
+			Icon: 'heroicons-outline:bolt'
 		},
 		{
 			Title: 'Raid Prevention',
@@ -24,19 +24,9 @@
 			Icon: 'heroicons-outline:globe-alt'
 		},
 		{
-			Title: 'User Friendly',
+			Title: 'User/Developer Friendly',
 			Description: `Unlike most other bots, AntiRaid provides an API for extensive control, allowing you to manage backups and settings, and export your data. This ensures flexibility and helps you avoid vendor-locking by easily switching to other solutions if needed.`,
 			Icon: 'mdi:user'
-		},
-		{
-			Title: 'Unrivaled Scripting',
-			Description: `Our scripting system, based on Luau, a superset of Lua created by Roblox, allows you to customize AntiRaid to the specific needs of your server instead of being <em>yet another</em> generic discord bot`,
-			Icon: 'heroicons-outline:bolt'
-		},
-		{
-			Title: 'Audit Logging',
-			Description: `AntiRaid enhances server security by sending notifications to a specific channel every time an action occurs. This real-time logging helps you monitor server activity and stay informed about potential threats, allowing for swift responses to protect against attackers.`,
-			Icon: 'heroicons-outline:chat-bubble-bottom-center-text'
 		}
 	];
 </script>
