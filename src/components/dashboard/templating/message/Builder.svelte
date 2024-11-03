@@ -20,8 +20,8 @@
 			templateBuilderData = { content: '', embeds: [] };
 		}
 
-		if (!neededCaps || !neededCaps.includes('discord:sendmessage_channel')) {
-			neededCaps = ['discord:sendmessage_channel'];
+		if (!neededCaps || !neededCaps.includes('discord:create_message')) {
+			neededCaps = ['discord:create_message'];
 		}
 
 		if (!templateBuilderData.embeds || !Array.isArray(templateBuilderData.embeds)) {
@@ -81,7 +81,7 @@ ${templateStr.trim()}
 
 -- Send message using action executor
 local actions_executor = actions_plugin.new(token);
-actions_executor:sendmessage_channel({
+actions_executor:create_message({
     channel_id = args.sink,
     message = message
 })
