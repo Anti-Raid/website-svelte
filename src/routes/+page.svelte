@@ -54,18 +54,6 @@
 		AntiRaid and protect your server today!
 	</p>
 
-	<!--<p class="block mx-auto text-xl font-monster font-medium text-white mt-5 max-w-full">
-		With <img
-			class="inline-flex mb-1 h-8 w-8 bg-surface-400/40 rounded-full"
-			src="/logo.webp"
-			alt="AntiRaid Logo"
-		/>
-		AntiRaid, you can easily protect your
-		<a href="/invite" class="font-bold tracking-tight text-primary-400 hover:text-red-600"
-			>Discord Server</a
-		> in a matter of seconds!
-	</p>-->
-
 	<div class="mt-5 sm:mt-8 flex justify-center items-center">
 		<div class="rounded-md shadow">
 			<a
@@ -88,7 +76,7 @@
 
 <div class="m-8" />
 
-<section id="features">
+<!--<section id="features">
 	<Breadcrumb Title="Features" Description="What do we have to offer?" />
 	<div class="p-3" />
 
@@ -111,7 +99,7 @@
 			<i class="fa-solid fa-arrow-right" />
 		</button>
 	</div>
-</section>
+</section>-->
 
 <div class="p-3" />
 
