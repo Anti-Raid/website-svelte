@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CommandList from '../../components/common/CommandList.svelte';
+	import CommandList from '@components/common/CommandList.svelte';
 </script>
 
 <h2 class="text-4xl font-bold tracking-tight text-gray-900">

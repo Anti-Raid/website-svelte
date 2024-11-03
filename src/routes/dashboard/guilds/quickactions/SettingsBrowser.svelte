@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SleekButton from '../../../../components/inputs/button/SleekButton.svelte';
+	import SleekButton from '@components/inputs/button/SleekButton.svelte';
 	import { State } from '../core/types';
 	import { QuickActionProps } from './actions';
 

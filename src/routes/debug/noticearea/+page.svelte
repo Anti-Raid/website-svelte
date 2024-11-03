@@ -1,13 +1,13 @@
 <script lang="ts">
 	import logger from '$lib/ui/logger';
-	import NoticeArea from '../../../components/common/noticearea/NoticeArea.svelte';
+	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
 	import {
 		NoticeAreaLevels,
 		noticeAreaLevelsArray
-	} from '../../../components/common/noticearea/noticearea';
-	import BoolInput from '../../../components/inputs/BoolInput.svelte';
-	import InputText from '../../../components/inputs/InputText.svelte';
-	import Select from '../../../components/inputs/select/Select.svelte';
+	} from '@components/common/noticearea/noticearea';
+	import BoolInput from '@components/inputs/BoolInput.svelte';
+	import InputText from '@components/inputs/InputText.svelte';
+	import Select from '@components/inputs/select/Select.svelte';
 
 	let text: string = 'Test';
 	let level: NoticeAreaLevels = 'info';

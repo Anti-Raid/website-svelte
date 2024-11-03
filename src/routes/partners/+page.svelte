@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { PageData } from './$types';
-	import Breadcrumb from '../../components/Breadcrumb.svelte';
-	import Meta from '../../components/Meta.svelte';
+	import Breadcrumb from '@components/Breadcrumb.svelte';
+	import Meta from '@components/Meta.svelte';
 
 	const ImageLoadError = (err: any) => {
 		err.target.src = '/logo.webp';
@@ -23,7 +23,7 @@
 
 	<div class="p-3" />
 
-<div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
+	<div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
 		{#each data.partners as partner}
 			<div class="self-auto">
 				<div

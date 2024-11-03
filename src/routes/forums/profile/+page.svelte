@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Meta from '../../../components/Meta.svelte';
-	import Error from '../../../components/Message.svelte';
+	import Meta from '@components/Meta.svelte';
+	import Error from '@components/Message.svelte';
 	import { onMount } from 'svelte';
 	import { PUBLIC_ENVIRONMENT } from '$env/static/public';
-	import Profile from '../../../components/forums/Profile.svelte';
-	import type { posts } from '../../../types/forums/types.interface';
+	import Profile from '@components/forums/Profile.svelte';
+	import type { posts } from '@types/forums/types.interface';
 	import type { PageData } from './$types';
 
 	const API_URL =

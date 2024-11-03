@@ -1,8 +1,8 @@
 <script>
-	import Meta from '../components/Meta.svelte';
-	import Breadcrumb from '../components/Breadcrumb.svelte';
+	import Meta from '@components/Meta.svelte';
+	import Breadcrumb from '@components/Breadcrumb.svelte';
 	import Icon from '@iconify/svelte';
-	import BotFeatures from '../components/common/BotFeatures.svelte';
+	import BotFeatures from '@components/common/BotFeatures.svelte';
 </script>
 
 <Meta

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Meta from '../../components/Meta.svelte';
-	import Breadcrumb from '../../components/Breadcrumb.svelte';
+	import Meta from '@components/Meta.svelte';
+	import Breadcrumb from '@components/Breadcrumb.svelte';
 
 	const docs: {
 		name: string;

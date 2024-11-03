@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PermissionCheck from '../../../components/dashboard/permissions/PermissionCheck.svelte';
+	import PermissionCheck from '@components/dashboard/permissions/PermissionCheck.svelte';
 	import { PermissionCheck as PermissionCheckType } from '$lib/generated/silverpelt';
 	import { dbgCreateContext } from '../debug';
 

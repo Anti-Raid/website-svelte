@@ -1,16 +1,16 @@
 <script lang="ts">
 	// Etc
-	import BitflagInput from '../../../components/inputs/BitflagInput.svelte';
-	import BoolInput from '../../../components/inputs/BoolInput.svelte';
-	import InputNumber from '../../../components/inputs/InputNumber.svelte';
-	import InputText from '../../../components/inputs/InputText.svelte';
-	import InputTextArea from '../../../components/inputs/InputTextArea.svelte';
-	import Label from '../../../components/inputs/Label.svelte';
+	import BitflagInput from '@components/inputs/BitflagInput.svelte';
+	import BoolInput from '@components/inputs/BoolInput.svelte';
+	import InputNumber from '@components/inputs/InputNumber.svelte';
+	import InputText from '@components/inputs/InputText.svelte';
+	import InputTextArea from '@components/inputs/InputTextArea.svelte';
+	import Label from '@components/inputs/Label.svelte';
 	import serenityPermissions from '$lib/generated/build_assets/serenity_perms.json';
-	import FileUpload from '../../../components/inputs/FileUpload.svelte';
-	import Select from '../../../components/inputs/select/Select.svelte';
-	import SelectMulti from '../../../components/inputs/select/SelectMulti.svelte';
-	import MultiInput from '../../../components/inputs/multi/simple/MultiInput.svelte';
+	import FileUpload from '@components/inputs/FileUpload.svelte';
+	import Select from '@components/inputs/select/Select.svelte';
+	import SelectMulti from '@components/inputs/select/SelectMulti.svelte';
+	import MultiInput from '@components/inputs/multi/simple/MultiInput.svelte';
 
 	// Value(s)
 	export let textValue: string;

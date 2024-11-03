@@ -5,17 +5,17 @@
 		GuildModuleConfiguration
 	} from '$lib/generated/silverpelt';
 	import { UserGuildBaseData } from '$lib/generated/types';
-	import TabbedPane from '../../../../components/inputs/button/tabs/TabbedPane.svelte';
+	import TabbedPane from '@components/inputs/button/tabs/TabbedPane.svelte';
 	import ModuleInfoTab from '../tab:moduleinfo/ModuleInfoTab.svelte';
 	import CommandTab from '../tab:commands/CommandTab.svelte';
-	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
+	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
 	import SettingsTab from '../tab:settings/SettingsTab.svelte';
 	import { State } from './types';
-	import InputText from '../../../../components/inputs/InputText.svelte';
+	import InputText from '@components/inputs/InputText.svelte';
 	import { commandLookup } from '$lib/ui/commands';
 	import { defaultComponent, quickActions } from '../quickactions/actions';
-	import Message from '../../../../components/Message.svelte';
-	import SleekButton from '../../../../components/inputs/button/SleekButton.svelte';
+	import Message from '@components/Message.svelte';
+	import SleekButton from '@components/inputs/button/SleekButton.svelte';
 
 	export let modules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;

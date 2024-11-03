@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Meta from '../../../components/Meta.svelte';
-	import Profile from '../../../components/forums/Profile.svelte';
-	import Message from '../../../components/Message.svelte';
+	import Meta from '@components/Meta.svelte';
+	import Profile from '@components/forums/Profile.svelte';
+	import Message from '@components/Message.svelte';
 
 	export let data: PageData;
 </script>

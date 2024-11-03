@@ -5,12 +5,12 @@
 	import { CanonicalModule } from '$lib/generated/silverpelt';
 	import { SettingsExecute } from '$lib/generated/types';
 	import { getDispatchType } from '$lib/ui/settings';
-	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
-	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
-	import TemplateBuilder from '../../../../components/dashboard/templating/TemplateBuilder.svelte';
-	import ButtonReact from '../../../../components/inputs/button/ButtonReact.svelte';
-	import { Color } from '../../../../components/inputs/button/colors';
-	import ChannelInput from '../../../../components/inputs/ChannelInput.svelte';
+	import { NoticeProps } from '@components/common/noticearea/noticearea';
+	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
+	import TemplateBuilder from '@components/dashboard/templating/TemplateBuilder.svelte';
+	import ButtonReact from '@components/inputs/button/ButtonReact.svelte';
+	import { Color } from '@components/inputs/button/colors';
+	import ChannelInput from '@components/inputs/ChannelInput.svelte';
 	import { QuickActionProps } from './actions';
 
 	// svelte-ignore unused-export-let

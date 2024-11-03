@@ -4,7 +4,7 @@
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { AuthorizeRequest, CreateUserSessionResponse } from '$lib/generated/types';
 	import logger from '$lib/ui/logger';
-	import Message from '../../components/Message.svelte';
+	import Message from '@components/Message.svelte';
 
 	const createSession = async () => {
 		let searchParams = new URLSearchParams(window.location.search);

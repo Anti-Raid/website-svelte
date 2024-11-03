@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Meta from '../../../../components/Meta.svelte';
+	import Meta from '@components/Meta.svelte';
 	import type { PageData } from './$types';
 
 	const ImageLoadError = (err: any) => {

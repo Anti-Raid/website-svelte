@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SelectMulti from '../../../components/inputs/select/SelectMulti.svelte';
+	import SelectMulti from '@components/inputs/select/SelectMulti.svelte';
 
 	let selectedValues: string[];
 </script>

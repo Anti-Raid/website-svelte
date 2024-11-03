@@ -11,17 +11,17 @@
 	} from '$lib/ui/commands';
 	import { DataHandler } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
-	import Message from '../../../../components/Message.svelte';
-	import Search from '../../../../components/common/datatable/Search.svelte';
-	import RowsPerPage from '../../../../components/common/datatable/RowsPerPage.svelte';
-	import ThSort from '../../../../components/common/datatable/ThSort.svelte';
-	import ThFilter from '../../../../components/common/datatable/ThFilter.svelte';
-	import RowCount from '../../../../components/common/datatable/RowCount.svelte';
-	import Pagination from '../../../../components/common/datatable/Pagination.svelte';
+	import Message from '@components/Message.svelte';
+	import Search from '@components/common/datatable/Search.svelte';
+	import RowsPerPage from '@components/common/datatable/RowsPerPage.svelte';
+	import ThSort from '@components/common/datatable/ThSort.svelte';
+	import ThFilter from '@components/common/datatable/ThFilter.svelte';
+	import RowCount from '@components/common/datatable/RowCount.svelte';
+	import Pagination from '@components/common/datatable/Pagination.svelte';
 	import logger from '$lib/ui/logger';
-	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
+	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
 	import CommandEditor from './CommandEditor.svelte';
-	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
+	import BoxButton from '@components/inputs/button/BoxButton.svelte';
 
 	export let moduleId: string;
 	export let modules: Record<string, CanonicalModule>;
