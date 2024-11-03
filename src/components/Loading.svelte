@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+        import { onMount } from 'svelte';
 	import Meta from '@components/Meta.svelte';
 	import { createEventDispatcher } from 'svelte';
 
@@ -43,7 +44,9 @@
 	};
 
 	let run = setInterval(switchWord, intervalDuration);
-        if (browser) document.body.addEventListener("click", { dispatch("close"); });
+        onMount(() => { 
+          document.body.addEventListener("click", { dispatch("close"); })
+        });
 </script>
 
 <Meta
