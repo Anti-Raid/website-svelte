@@ -1,8 +1,28 @@
-<script>
+<script lang="ts">
 	import Meta from '@components/Meta.svelte';
 	import Breadcrumb from '@components/Breadcrumb.svelte';
 	import Icon from '@iconify/svelte';
-	import BotFeatures from '@components/common/BotFeatures.svelte';
+	import { Benefits } from '@components/common/BotFeatures.svelte';
+	import Benefit from '@components/Benefit.svelte';
+
+	let serverCount: String = '11,620';
+	let elemCarousel: HTMLDivElement;
+
+	const carouselLeft = (): void => {
+		const x =
+			elemCarousel.scrollLeft === 0
+				? elemCarousel.clientWidth * elemCarousel.childElementCount
+				: elemCarousel.scrollLeft - elemCarousel.clientWidth;
+		elemCarousel.scroll(x, 0);
+	};
+
+	const carouselRight = (): void => {
+		const x =
+			elemCarousel.scrollLeft === elemCarousel.scrollWidth - elemCarousel.clientWidth
+				? 0 // loop
+				: elemCarousel.scrollLeft + elemCarousel.clientWidth;
+		elemCarousel.scroll(x, 0);
+	};
 </script>
 
 <Meta
@@ -13,10 +33,28 @@
 <section class="mt-6 text-center">
 	<h1 class="text-4xl font-cabin font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
 		<span class="inline text-white">Protect your</span>
-		<a href="/invite" class="block text-indigo-400 xl:inline hover:text-red-600">Discord Server</a>
+		<a
+			href="/invite"
+			class="block xl:inline hover:underline bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-violet-400"
+			>Discord Server</a
+		>
 	</h1>
 
-	<p class="block mx-auto text-xl font-monster font-medium text-white mt-5 max-w-full">
+	<p class="block mx-auto text-xl font-monster font-bold text-white mt-5 max-w-full">
+		Join the other <span
+			class="bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-violet-400"
+			>{serverCount}</span
+		>
+		servers that use
+		<img
+			class="inline-flex mb-1 h-8 w-8 bg-surface-400/40 rounded-full"
+			src="/logo.webp"
+			alt="AntiRaid Logo"
+		/>
+		AntiRaid and protect your server today!
+	</p>
+
+	<!--<p class="block mx-auto text-xl font-monster font-medium text-white mt-5 max-w-full">
 		With <img
 			class="inline-flex mb-1 h-8 w-8 bg-surface-400/40 rounded-full"
 			src="/logo.webp"
@@ -26,7 +64,7 @@
 		<a href="/invite" class="font-bold tracking-tight text-primary-400 hover:text-red-600"
 			>Discord Server</a
 		> in a matter of seconds!
-	</p>
+	</p>-->
 
 	<div class="mt-5 sm:mt-8 flex justify-center items-center">
 		<div class="rounded-md shadow">
@@ -52,13 +90,27 @@
 
 <section id="features">
 	<Breadcrumb Title="Features" Description="What do we have to offer?" />
-	<div class="mt-5" />
+	<div class="p-3" />
 
-	<center>
-		<dl class="mx-2.5 space-y-4 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
-			<BotFeatures />
-		</dl>
-	</center>
+	<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
+		<button type="button" class="btn-icon variant-filled" on:click={carouselLeft}>
+			<i class="fa-solid fa-arrow-left" />
+		</button>
+
+		<div bind:this={elemCarousel} class="snap-x snap-mandatory scroll-smooth flex overflow-x-auto">
+			{#each Benefits as benefit}
+				<Benefit icon={benefit.Icon} title={benefit.Title} class="snap-center w-[1024px] rounded-container-token">
+					<p class="text-xs/4 md:text-sm lg:text-base font-medium font-monster tracking-tight">
+						{@html benefit.Description}
+					</p>
+				</Benefit>
+			{/each}
+		</div>
+
+		<button type="button" class="btn-icon variant-filled" on:click={carouselRight}>
+			<i class="fa-solid fa-arrow-right" />
+		</button>
+	</div>
 </section>
 
 <div class="p-3" />

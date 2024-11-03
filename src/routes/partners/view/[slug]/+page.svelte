@@ -26,12 +26,18 @@
 			on:error={ImageLoadError}
 		/>
 
-		<h2 class="ml-2 text-primary-400 font-bold font-monster text-4xl">{data.partner.name}</h2>
+		<h2 class="ml-2 text-white font-bold font-monster text-4xl">{data.partner.name}</h2>
 	</div>
 
-	<h6 class="mt-2 text-primary-400 font-bold font-cabin text-lg">
+	<h6 class="mt-2 text-white font-bold font-cabin text-lg">
 		{data.partner.description}
 	</h6>
+
+	<div class="p-2" />
+
+	<h4 class="mt-3 text-white font-bold font-monster text-xl">
+		{data.partner.long_description}
+	</h4>
 
 	<div class="p-3" />
 
@@ -41,21 +47,23 @@
 			one of their provided links down below!
 		</p>
 
-		{#each data.partner.links as button}
-			<button
-				class="w-full mt-2 rounded-md px-3 py-2 text-sm font-semibold bg-surface-800 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-				on:click={() => {
-					window.location.href = button.link;
-				}}
-			>
-				{#if button.emoji.startsWith('fa')}
-					<i class="{button.emoji} text-white" />
-				{:else}
-					<span>{button.emoji}</span>
-				{/if}
+		<div id="links">
+			{#each data.partner.links as button}
+				<button
+					class="w-half first:ml-0 ml-2 mt-2 rounded-md px-3 py-2 text-sm font-semibold bg-surface-800 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+					on:click={() => {
+						window.location.href = button.link;
+					}}
+				>
+					{#if button.emoji.startsWith('fa')}
+						<i class="{button.emoji} text-white" />
+					{:else}
+						<span>{button.emoji}</span>
+					{/if}
 
-				<span class="ml-1">{button.name}</span>
-			</button>
-		{/each}
+					<span class="ml-1">{button.name}</span>
+				</button>
+			{/each}
+		</div>
 	</div>
 {/if}
