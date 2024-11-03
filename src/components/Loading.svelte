@@ -43,6 +43,7 @@
 	};
 
 	let run = setInterval(switchWord, intervalDuration);
+        if (browser) document.body.addEventListener("click", { dispatch("close"); });
 </script>
 
 <Meta
