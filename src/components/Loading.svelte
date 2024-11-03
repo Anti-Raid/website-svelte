@@ -43,9 +43,11 @@
 		run = setInterval(switchWord, intervalDuration);
 	};
 
+        const close = () => { dispatch('close') };
+
 	let run = setInterval(switchWord, intervalDuration);
         onMount(() => { 
-          document.body.addEventListener("click", { dispatch("close"); })
+          document.body.addEventListener("click", close);
         });
 </script>
 
