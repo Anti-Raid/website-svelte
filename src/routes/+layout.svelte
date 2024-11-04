@@ -5,6 +5,7 @@
 	import Footer from '../components/Footer.svelte';
 	import ForumHeader from '../components/forums/Header.svelte';
 	import Loading from '../components/Loading.svelte';
+        import Update from '../components/Update.svelte';
 	import { page } from '$app/stores';
 
 	let loaded: boolean = false;
@@ -18,6 +19,7 @@
 	{#if loaded}
 		<div class="min-h-screen bg-gradient-to-b from-surface-800 to-surface-500">
 			{#if headerBeShowed}
+                                <Update id="error" short="Our services are currently down." long="Discord has taken action against our services, due to their automated anti-spam system. We are working to have this resolved." />
 				<Header />
 			{:else}
 				<ForumHeader />
