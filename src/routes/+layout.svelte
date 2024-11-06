@@ -19,8 +19,7 @@
 	{#if loaded}
 		<div class="min-h-screen bg-gradient-to-b from-surface-800 to-surface-500">
 			{#if headerBeShowed}
-                                <Update id="error" short="Our services are currently down." long="Discord has taken action against our services, due to their automated anti-spam system. We are working to have this resolved." />
-				<Header />
+                                <Header />
 			{:else}
 				<ForumHeader />
 			{/if}
