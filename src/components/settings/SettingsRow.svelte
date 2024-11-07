@@ -192,7 +192,7 @@
 		<NoticeArea props={getNoticePropsOfField('__message')} />
 	{/if}
 
-	{#if currentOperationType === 'Update' && !isEqual(columnField, settings.fields[index])}
+	{#if configOpt?.operations['Update'] && !isEqual(columnField, settings.fields[index])}
 		<!--TODO: Only show the buttonreact when theres an actual change-->
 		<ButtonReact
 			color={Color.Themable}
@@ -210,7 +210,7 @@
 
 	<Spacer typ="extSpacing" />
 
-	{#if currentOperationType === 'Update'}
+	{#if configOpt?.operations['Delete']}
 		<ButtonReact
 			color={Color.Red}
 			icon="mdi:delete"

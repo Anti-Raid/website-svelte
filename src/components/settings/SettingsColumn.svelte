@@ -4,11 +4,10 @@
 		CanonicalConfigOption,
 		CanonicalModule
 	} from '$lib/generated/silverpelt';
-	import { getDispatchType, deriveColumnState, ColumnState, DispatchType } from '$lib/ui/settings';
+	import { deriveColumnState, ColumnState, DispatchType } from '$lib/ui/settings';
 	import InputDispatcher from '../inputs/generic/InputDispatcher.svelte';
 	import SettingsSuggestionBox from './SettingsSuggestionBox.svelte';
 	import { DerivedData, OperationTypes } from '$lib/ui/settings';
-	import logger from '$lib/ui/logger';
 	import BoxButton from '../inputs/button/BoxButton.svelte';
 	import Spacer from '../inputs/Spacer.svelte';
 	import { UserGuildBaseData } from '$lib/generated/types';
@@ -39,7 +38,9 @@
 		maxlength={columnDispatchType?.maxlength}
 		type={columnDispatchType?.type}
 		required={column.ignored_for.includes(currentOperationType) ? false : !column.nullable}
-		disabled={columnState == ColumnState.Disabled || derivedData.isCleared}
+		disabled={columnState == ColumnState.Disabled ||
+			derivedData.isCleared ||
+			!configOpt.operations[currentOperationType]}
 		bind:value
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
