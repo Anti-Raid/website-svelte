@@ -38,7 +38,9 @@
 		maxlength={columnDispatchType?.maxlength}
 		type={columnDispatchType?.type}
 		required={column.ignored_for.includes(currentOperationType) ? false : !column.nullable}
-		disabled={columnState == ColumnState.Disabled || derivedData.isCleared}
+		disabled={columnState == ColumnState.Disabled ||
+			derivedData.isCleared ||
+			!configOpt.operations[currentOperationType]}
 		bind:value
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
