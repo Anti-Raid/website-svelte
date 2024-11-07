@@ -66,9 +66,9 @@
 
 		<div class="ml-2">
 			<a
-				href="/about"
+				href="https://docs.antiraid.xyz"
 				class="flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-8 py-3 text-base font-bold font-monster text-indigo-700 hover:bg-indigo-200 md:py-4 md:px-10 md:text-lg"
-				>Learn More <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
+				>User Guide <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
 			</a>
 		</div>
 	</div>
