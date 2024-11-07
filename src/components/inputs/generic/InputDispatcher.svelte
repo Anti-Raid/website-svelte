@@ -166,8 +166,7 @@ Note: this may be less performant than using the concrete input components direc
 		onChange={() => {}}
 	/>
 {:else if type == 'string:textarea:template'}
-	<Label {id} {label} />
-	<TemplateBuilder bind:output={value} {disabled} />
+	<TemplateBuilder {id} {label} bind:output={value} {disabled} />
 	<small class="text-gray-500 dark:text-gray-400"
 		>See our documentation to learn more about templating</small
 	>

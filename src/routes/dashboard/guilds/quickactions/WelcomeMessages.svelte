@@ -116,7 +116,7 @@
 			service
 		</p>
 
-		<TemplateBuilder bind:output={wizard_messageTemplate} showTypes={['message', 'custom']} />
+		<TemplateBuilder bind:output={wizard_messageTemplate} id="template" label="template" />
 		<code class="text-white whitespace-pre-wrap">{wizard_messageTemplate}</code>
 
 		<ButtonReact
