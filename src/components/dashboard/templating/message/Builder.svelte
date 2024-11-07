@@ -8,20 +8,13 @@
 	import logger from '$lib/ui/logger';
 	import BoxButton from '../../../inputs/button/BoxButton.svelte';
 
-	// This will be passed by the parent component
-	export let templateBuilderData: Message;
-	// svelte-ignore unused-export-let
 	export let output: string;
-	// svelte-ignore unused-export-let
-	export let neededCaps: string[];
+
+	let templateBuilderData: Message;
 
 	const validate = () => {
 		if (!templateBuilderData) {
 			templateBuilderData = { content: '', embeds: [] };
-		}
-
-		if (!neededCaps || !neededCaps.includes('discord:create_message')) {
-			neededCaps = ['discord:create_message'];
 		}
 
 		if (!templateBuilderData.embeds || !Array.isArray(templateBuilderData.embeds)) {
