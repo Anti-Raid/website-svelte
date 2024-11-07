@@ -6,6 +6,7 @@
 	import InputTextArea from '../../inputs/InputTextArea.svelte';
 
 	export let output: string = '';
+	export let disabled: boolean = false;
 	export let openBuilder: string = '';
 	export let openBuilderOutput: string = '';
 
@@ -24,42 +25,44 @@
 	bind:value={output}
 	placeholder="Enter your template here..."
 	required={true}
-	disabled={false}
+	{disabled}
 	minlength={0}
 	showErrors={false}
 />
 
-<!--Snippets-->
-<details>
-	<summary>Snippets</summary>
-	{#each Object.keys(defaultSnippets) as snippet}
+{#if !disabled}
+	<!--Snippets-->
+	<details>
+		<summary>Snippets</summary>
+		{#each Object.keys(defaultSnippets) as snippet}
+			<BoxButton
+				onClick={() => {
+					output = defaultSnippets[snippet](output);
+				}}
+			>
+				{snippet}
+			</BoxButton>
+		{/each}
+	</details>
+
+	<SleekButton
+		onclick={() => {
+			openBuilder = 'message';
+		}}
+		name="Create Message"
+		description="Click here to allow for easy message creation."
+	/>
+
+	{#if openBuilder == 'message'}
+		<MessageBuilder bind:output={openBuilderOutput} />
+
 		<BoxButton
 			onClick={() => {
-				output = defaultSnippets[snippet](output);
+				openBuilder = '';
+				output += openBuilderOutput;
 			}}
 		>
-			{snippet}
+			Add Message
 		</BoxButton>
-	{/each}
-</details>
-
-<SleekButton
-	onclick={() => {
-		openBuilder = 'message';
-	}}
-	name="Create Message"
-	description="Click here to allow for easy message creation."
-/>
-
-{#if openBuilder == 'message'}
-	<MessageBuilder bind:output={openBuilderOutput} />
-
-	<BoxButton
-		onClick={() => {
-			openBuilder = '';
-			output += openBuilderOutput;
-		}}
-	>
-		Add Message
-	</BoxButton>
+	{/if}
 {/if}
