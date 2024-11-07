@@ -5,7 +5,7 @@
 </script>
 
 <div class="px-4">
-	<TemplateBuilder bind:output />
+	<TemplateBuilder id="template" label="template" bind:output />
 
 	<code class="text-white whitespace-pre-wrap">templateFragment: {output}</code>
 </div>

@@ -5,6 +5,8 @@
 	import BoxButton from '../../inputs/button/BoxButton.svelte';
 	import InputTextArea from '../../inputs/InputTextArea.svelte';
 
+	export let id: string;
+	export let label: string;
 	export let output: string = '';
 	export let disabled: boolean = false;
 	export let openBuilder: string = '';
@@ -20,8 +22,8 @@
 </script>
 
 <InputTextArea
-	id="template"
-	label="Template"
+	{id}
+	{label}
 	bind:value={output}
 	placeholder="Enter your template here..."
 	required={true}
