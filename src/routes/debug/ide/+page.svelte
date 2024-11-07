@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { StreamLanguage } from '@codemirror/language';
-	import CodeMirrorIde from '../../../components/CodeMirrorIDE.svelte';
-	import { type File } from '../../../components/CodeMirrorIDE.svelte';
+	import CodeMirrorIde from '@components/CodeMirrorIDE.svelte';
+	import { type File } from '@components/CodeMirrorIDE.svelte';
 	import { lua } from '@codemirror/legacy-modes/mode/lua';
 	import { oneDark } from '@codemirror/theme-one-dark';
 	import { type Terminal } from '@battlefieldduck/xterm-svelte';
-	import TerminalComp from '../../../components/Terminal.svelte';
+	import TerminalComp from '@components/Terminal.svelte';
 	import { PageData } from './$types';
-	import InputText from '../../../components/inputs/InputText.svelte';
+	import InputText from '@components/inputs/InputText.svelte';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import { ExecuteTemplateRequest, ExecuteTemplateResponse } from '$lib/generated/types';
 	import { fetchClient, PermissionResultFormatter } from '$lib/fetch/fetch';

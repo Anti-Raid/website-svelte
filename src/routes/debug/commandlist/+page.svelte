@@ -1,5 +1,5 @@
 <script>
-	import CommandList from '../../../components/common/CommandList.svelte';
+	import CommandList from '@components/common/CommandList.svelte';
 </script>
 
 <CommandList />

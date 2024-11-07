@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Error from '../../../../components/Message.svelte';
-	import Meta from '../../../../components/Meta.svelte';
-	import Upload from '../../../../components/forums/Popkat.svelte';
+	import Error from '@components/Message.svelte';
+	import Meta from '@components/Meta.svelte';
+	import Upload from '@components/forums/Popkat.svelte';
 	import Swal from 'sweetalert2';
 	import { PUBLIC_ENVIRONMENT } from '$env/static/public';
 	import type { PageData } from './$types';

@@ -3,9 +3,12 @@
 
 	export let icon: string;
 	export let title: string;
+	export let className: string = '';
 </script>
 
-<div class="self-auto block bg-surface-800/90 hover:bg-surface-800/50 px-2 py-4 rounded-md">
+<div
+	class="block bg-surface-800/90 hover:bg-surface-800/50 px-2 py-4 rounded-md {className}"
+>
 	<dt>
 		<div
 			class="absolute flex h-12 w-12 items-center justify-center rounded-md bg-surface-400 text-white"

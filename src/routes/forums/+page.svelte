@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { PageData } from './$types';
-	import Debug from '../../components/common/Debug.svelte';
-	import CreatePost from '../../components/forums/CreatePost.svelte';
-	import PostCard from '../../components/forums/PostCard.svelte';
-	import Meta from '../../components/Meta.svelte';
+	import Debug from '@components/common/Debug.svelte';
+	import CreatePost from '@components/forums/CreatePost.svelte';
+	import PostCard from '@components/forums/PostCard.svelte';
+	import Meta from '@components/Meta.svelte';
 	export let data: PageData;
 </script>
 

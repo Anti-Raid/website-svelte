@@ -5,7 +5,7 @@
 	import Footer from '../components/Footer.svelte';
 	import ForumHeader from '../components/forums/Header.svelte';
 	import Loading from '../components/Loading.svelte';
-        import Update from '../components/Update.svelte';
+  import Update from '../components/Update.svelte';
 	import { page } from '$app/stores';
 
 	let loaded: boolean = false;

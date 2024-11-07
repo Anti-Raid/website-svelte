@@ -1,6 +1,6 @@
 <script lang="ts">
 	import logger from '$lib/ui/logger';
-	import SideButton from '../../../components/inputs/button/NavButton.svelte';
+	import SideButton from '@components/inputs/button/NavButton.svelte';
 
 	let selected = 0;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { CanonicalModule } from '$lib/generated/silverpelt';
-	import Setting from '../../../../components/settings/Setting.svelte';
-	import Message from '../../../../components/Message.svelte';
+	import Setting from '@components/settings/Setting.svelte';
+	import Message from '@components/Message.svelte';
 	import { UserGuildBaseData } from '$lib/generated/types';
 
 	export let modules: Record<string, CanonicalModule>;

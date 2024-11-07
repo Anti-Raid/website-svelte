@@ -1,7 +1,7 @@
 <script lang="ts">
-	import TemplateBuilder from '../../../components/dashboard/templating/TemplateBuilder.svelte';
+	import TemplateBuilder from '@components/dashboard/templating/TemplateBuilder.svelte';
 
-	let output: string = `-- @pragma {"lang":"lua","allowed_caps":["discord:sendmessage_channel"],"builderInfo":{"ver":2,"for":"message","data":{"embeds":[{"title":"sgsg","description":"","fields":[]}],"content":"sj"}}}`;
+	let output: string = `-- @pragma {"lang":"lua","allowed_caps":["discord:create_message"],"builderInfo":{"ver":2,"for":"message","data":{"embeds":[{"title":"sgsg","description":"","fields":[]}],"content":"sj"}}}`;
 </script>
 
 <div class="px-4">

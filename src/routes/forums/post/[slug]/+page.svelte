@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Meta from '../../../../components/Meta.svelte';
-	import PostCard from '../../../../components/forums/PostCard.svelte';
-	import Comment from '../../../../components/forums/Comment.svelte';
-	import CreateComment from '../../../../components/forums/CreateComment.svelte';
-	import Debug from '../../../../components/common/Debug.svelte';
+	import Meta from '@components/Meta.svelte';
+	import PostCard from '@components/forums/PostCard.svelte';
+	import Comment from '@components/forums/Comment.svelte';
+	import CreateComment from '@components/forums/CreateComment.svelte';
+	import Debug from '@components/common/Debug.svelte';
 
 	export let data: PageData;
 </script>

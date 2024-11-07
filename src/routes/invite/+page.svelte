@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Message from '../../components/Message.svelte';
+	import Message from '@components/Message.svelte';
 	import support from '$lib/configs/data/support.json';
 	import { makeSharedRequest, opGetApiConfig } from '$lib/fetch/ext';
 

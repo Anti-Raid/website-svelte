@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import Meta from '../components/Meta.svelte';
+        import { onMount } from 'svelte';
+	import Meta from '@components/Meta.svelte';
 	import { createEventDispatcher } from 'svelte';
 
 	let words: String[] = [
@@ -42,7 +43,12 @@
 		run = setInterval(switchWord, intervalDuration);
 	};
 
+        const close = () => { dispatch('close') };
+
 	let run = setInterval(switchWord, intervalDuration);
+        onMount(() => { 
+          document.body.addEventListener("click", close);
+        });
 </script>
 
 <Meta

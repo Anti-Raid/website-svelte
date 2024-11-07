@@ -4,30 +4,30 @@
 		FullGuildCommandConfiguration,
 		GuildCommandConfiguration
 	} from '$lib/generated/silverpelt';
-	import PermissionChecks from '../../../../components/dashboard/permissions/PermissionChecks.svelte';
+	import PermissionChecks from '@components/dashboard/permissions/PermissionChecks.svelte';
 	import { PermissionChecks as PCT } from '$lib/generated/silverpelt';
-	import BoolInput from '../../../../components/inputs/BoolInput.svelte';
-	import ListItem from '../../../../components/ListItem.svelte';
-	import UnorderedList from '../../../../components/UnorderedList.svelte';
+	import BoolInput from '@components/inputs/BoolInput.svelte';
+	import ListItem from '@components/ListItem.svelte';
+	import UnorderedList from '@components/UnorderedList.svelte';
 	import { PartialPatchRecord, createPartialPatch } from '$lib/partialPatch';
-	import ButtonReact from '../../../../components/inputs/button/ButtonReact.svelte';
-	import { Color } from '../../../../components/inputs/button/colors';
+	import ButtonReact from '@components/inputs/button/ButtonReact.svelte';
+	import { Color } from '@components/inputs/button/colors';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import logger from '$lib/ui/logger';
 	import { Clearable } from '$lib/generated/types';
-	import BoxButton from '../../../../components/inputs/button/BoxButton.svelte';
+	import BoxButton from '@components/inputs/button/BoxButton.svelte';
 	import {
 		getCommandExtendedData,
 		isPermissionCheckEmpty,
 		ParsedCanonicalCommandData
 	} from '$lib/ui/commands';
-	import { NoticeProps } from '../../../../components/common/noticearea/noticearea';
-	import NoticeArea from '../../../../components/common/noticearea/NoticeArea.svelte';
-	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
-	import Label from '../../../../components/inputs/Label.svelte';
-	import ObjectRender from '../../../../components/ObjectRender.svelte';
+	import { NoticeProps } from '@components/common/noticearea/noticearea';
+	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
+	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
+	import Label from '@components/inputs/Label.svelte';
+	import ObjectRender from '@components/ObjectRender.svelte';
 
 	export let guildId: string;
 	export let commands: ParsedCanonicalCommandData[];

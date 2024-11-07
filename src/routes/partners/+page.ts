@@ -7,6 +7,7 @@ interface PartnerLink {
 interface Partner {
 	name: string;
 	description: string;
+	long_description: string;
 	logo: string;
 	url: string;
 
@@ -20,8 +21,9 @@ interface Partner {
 const partners: Partner[] = [
 	{
 		name: 'NetSocial',
-		description:
-			'Connect, Share, Grow. NetSocial empowers communities to be who they want to be, no more bots, paywalls and obscene content!',
+		description: 'Connect, Share, Grow.',
+		long_description:
+			'NetSocial empowers communities to be who they want to be, no more bots, paywalls and obscene content!',
 		logo: 'https://cdn.netsocial.app/logos/netsocial.png',
 		url: 'https://netsocial.app/',
 		owner: 'Ranveer Soni',
@@ -41,8 +43,10 @@ const partners: Partner[] = [
 		]
 	},
 	{
-		name: 'Infinity Bots',
+		name: 'Infinity List',
 		description: 'Search our vast list of bots for an exciting start to your server.',
+		long_description:
+			'Hello, there. We are Infinity List, The future of Discord Bot Listing Services, we make it easier for you to advertise and grow your bots using our vanity links, widgets, bot packs and more! Search our vast list of bots for an exciting start to your Discord Server. Filter by name, category, tags and description to find a bot that suits your needs.',
 		logo: 'https://cdn.infinitybots.gg/core/full_logo.webp',
 		url: 'https://infinitybots.gg/',
 		owner: 'Toxic Dev',

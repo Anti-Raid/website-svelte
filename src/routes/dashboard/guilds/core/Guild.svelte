@@ -4,14 +4,14 @@
 		FullGuildCommandConfiguration,
 		GuildModuleConfiguration
 	} from '$lib/generated/silverpelt';
-	import NavButton from '../../../../components/inputs/button/NavButton.svelte';
+	import NavButton from '@components/inputs/button/NavButton.svelte';
 	import { UserGuildBaseData } from '$lib/generated/types';
-	import { CommonPermissionContext } from '../../../../components/dashboard/permissions/commonPermissionContext';
+	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
 	import { openedEntityToString, State } from './types';
 	import Content from './Content.svelte';
 	import Icon from '@iconify/svelte';
 	import { quickActions } from '../quickactions/actions';
-	import Debug from '../../../../components/common/Debug.svelte';
+	import Debug from '@components/common/Debug.svelte';
 
 	export let modules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;

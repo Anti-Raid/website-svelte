@@ -8,31 +8,31 @@
 		UserSession,
 		UserSessionList
 	} from '$lib/generated/types';
-	import Message from '../../../components/Message.svelte';
+	import Message from '@components/Message.svelte';
 	import { DataHandler, Datatable, Th } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
-	import InputText from '../../../components/inputs/InputText.svelte';
-	import Select from '../../../components/inputs/select/Select.svelte';
-	import InputNumber from '../../../components/inputs/InputNumber.svelte';
-	import KittycatPermSelectArray from '../../../components/dashboard/permissions/KittycatPermSelectArray.svelte';
-	import Label from '../../../components/inputs/Label.svelte';
-	import ButtonReact from '../../../components/inputs/button/ButtonReact.svelte';
-	import { Color } from '../../../components/inputs/button/colors';
-	import Pagination from '../../../components/common/datatable/Pagination.svelte';
-	import RowCount from '../../../components/common/datatable/RowCount.svelte';
-	import RowsPerPage from '../../../components/common/datatable/RowsPerPage.svelte';
-	import Search from '../../../components/common/datatable/Search.svelte';
-	import ThFilter from '../../../components/common/datatable/ThFilter.svelte';
-	import ThSort from '../../../components/common/datatable/ThSort.svelte';
-	import { NoticeProps } from '../../../components/common/noticearea/noticearea';
-	import NoticeArea from '../../../components/common/noticearea/NoticeArea.svelte';
+	import InputText from '@components/inputs/InputText.svelte';
+	import Select from '@components/inputs/select/Select.svelte';
+	import InputNumber from '@components/inputs/InputNumber.svelte';
+	import KittycatPermSelectArray from '@components/dashboard/permissions/KittycatPermSelectArray.svelte';
+	import Label from '@components/inputs/Label.svelte';
+	import ButtonReact from '@components/inputs/button/ButtonReact.svelte';
+	import { Color } from '@components/inputs/button/colors';
+	import Pagination from '@components/common/datatable/Pagination.svelte';
+	import RowCount from '@components/common/datatable/RowCount.svelte';
+	import RowsPerPage from '@components/common/datatable/RowsPerPage.svelte';
+	import Search from '@components/common/datatable/Search.svelte';
+	import ThFilter from '@components/common/datatable/ThFilter.svelte';
+	import ThSort from '@components/common/datatable/ThSort.svelte';
+	import { NoticeProps } from '@components/common/noticearea/noticearea';
+	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
 	import { makeSharedRequest, opGetModules } from '$lib/fetch/ext';
-	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
+	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
 	import {
 		extractKnownPermissionsFromModules,
 		makeKittycatPermissionMapperFromPermissions
 	} from '$lib/ui/permMap';
-	import BoolInput from '../../../components/inputs/BoolInput.svelte';
+	import BoolInput from '@components/inputs/BoolInput.svelte';
 
 	let sessionRows: Readable<UserSession[]>;
 	let otherSessionRows: Readable<UserSession[]>;

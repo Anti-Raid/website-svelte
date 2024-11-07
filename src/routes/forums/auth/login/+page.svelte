@@ -12,9 +12,9 @@
 	} from 'firebase/auth';
 	import { PUBLIC_ENVIRONMENT } from '$env/static/public';
 	import Swal from 'sweetalert2';
-	import Modal from '../../../../components/Modal.svelte';
-	import Breadcrumb from '../../../../components/Breadcrumb.svelte';
-	import Meta from '../../../../components/Meta.svelte';
+	import Modal from '@components/Modal.svelte';
+	import Breadcrumb from '@components/Breadcrumb.svelte';
+	import Meta from '@components/Meta.svelte';
 
 	const API_URL =
 		PUBLIC_ENVIRONMENT === 'production' ? 'https://potsypaw.antiraid.xyz' : 'http://localhost:5590';

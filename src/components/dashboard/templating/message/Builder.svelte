@@ -8,20 +8,13 @@
 	import logger from '$lib/ui/logger';
 	import BoxButton from '../../../inputs/button/BoxButton.svelte';
 
-	// This will be passed by the parent component
-	export let templateBuilderData: Message;
-	// svelte-ignore unused-export-let
 	export let output: string;
-	// svelte-ignore unused-export-let
-	export let neededCaps: string[];
+
+	let templateBuilderData: Message;
 
 	const validate = () => {
 		if (!templateBuilderData) {
 			templateBuilderData = { content: '', embeds: [] };
-		}
-
-		if (!neededCaps || !neededCaps.includes('discord:sendmessage_channel')) {
-			neededCaps = ['discord:sendmessage_channel'];
 		}
 
 		if (!templateBuilderData.embeds || !Array.isArray(templateBuilderData.embeds)) {
@@ -81,7 +74,7 @@ ${templateStr.trim()}
 
 -- Send message using action executor
 local actions_executor = actions_plugin.new(token);
-actions_executor:sendmessage_channel({
+actions_executor:create_message({
     channel_id = args.sink,
     message = message
 })

@@ -14,8 +14,8 @@
 		extractKnownPermissionsFromModules,
 		makeKittycatPermissionMapperFromPermissions
 	} from '$lib/ui/permMap';
-	import { CommonPermissionContext } from '../../../components/dashboard/permissions/commonPermissionContext';
-	import Message from '../../../components/Message.svelte';
+	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
+	import Message from '@components/Message.svelte';
 	import Guild from './core/Guild.svelte';
 	import { defaultState, stringToOpenedEntity } from './core/types';
 

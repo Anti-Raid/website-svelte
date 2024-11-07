@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Meta from '../../components/Meta.svelte';
-	import BotFeatures from '../../components/common/BotFeatures.svelte';
+	import Meta from '@components/Meta.svelte';
+	import BotFeatures from '@components/common/BotFeatures.svelte';
 	import { makeSharedRequest, opGetApiConfig, opGetGuildStaffTeam } from '$lib/fetch/ext';
-	import Message from '../../components/Message.svelte';
+	import Message from '@components/Message.svelte';
 
 	interface TeamMember {
 		DisplayName: string | undefined;
