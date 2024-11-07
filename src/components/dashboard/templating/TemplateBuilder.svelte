@@ -14,7 +14,7 @@
 
 	export const defaultSnippets: Record<string, Snippet> = {
 		'Add Pragma': function (current: string): string {
-			return String.raw`-- @pragma {"lang":"lua","allowed_caps":["discord:create_message"]}\n${current}`;
+			return `-- @pragma {"lang":"lua","allowed_caps":["discord:create_message"]}\n${current}`;
 		}
 	};
 </script>
