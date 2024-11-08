@@ -13,7 +13,7 @@
 			items: [
 				{
 					name: 'About Us',
-					href: '/about#staff'
+					href: '/about'
 				},
 				{
 					name: 'Documentation',
