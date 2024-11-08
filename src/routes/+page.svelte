@@ -10,7 +10,6 @@
 
 <Meta
 	title="Home"
-	description="This website is extremely experimental, and should not be used by the public at this time."
 />
 
 <section class="mt-6 text-center">
