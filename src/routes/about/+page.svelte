@@ -58,7 +58,6 @@
 
 <Meta
 	title="About"
-	description="This website is extremely experimental, and should not be used by the public at this time."
 />
 
 <section>
