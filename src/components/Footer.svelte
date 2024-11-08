@@ -15,6 +15,10 @@
 					name: 'About Us',
 					href: '/about'
 				},
+                                {
+					name: 'Our Team',
+					href: '/about#staff'
+				},
 				{
 					name: 'Documentation',
 					href: '/docs'
