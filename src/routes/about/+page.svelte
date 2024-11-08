@@ -87,6 +87,15 @@
 
 	<div class="p-4" />
 
+        <a
+	   href="https://docs.antiraid.xyz/"
+	   class="flex items-center justify-center w-full rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
+	>
+	   User Guide
+	</a>
+
+        <div class="p-2" />
+
 	<section id="features">
 		<div id="features-what" class="text-center">
 			<h2 class="text-4xl font-cabin font-extrabold text-center md:text-left text-indigo-600">
