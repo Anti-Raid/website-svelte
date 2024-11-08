@@ -6,23 +6,6 @@
 	import Benefit from '@components/Benefit.svelte';
 
 	let serverCount: String = '11,620';
-	let elemCarousel: HTMLDivElement;
-
-	const carouselLeft = (): void => {
-		const x =
-			elemCarousel.scrollLeft === 0
-				? elemCarousel.clientWidth * elemCarousel.childElementCount
-				: elemCarousel.scrollLeft - elemCarousel.clientWidth;
-		elemCarousel.scroll(x, 0);
-	};
-
-	const carouselRight = (): void => {
-		const x =
-			elemCarousel.scrollLeft === elemCarousel.scrollWidth - elemCarousel.clientWidth
-				? 0 // loop
-				: elemCarousel.scrollLeft + elemCarousel.clientWidth;
-		elemCarousel.scroll(x, 0);
-	};
 </script>
 
 <Meta
@@ -68,7 +51,7 @@
 			<a
 				href="/about"
 				class="flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-8 py-3 text-base font-bold font-monster text-indigo-700 hover:bg-indigo-200 md:py-4 md:px-10 md:text-lg"
-				>About Us <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
+				>Learn More <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
 			</a>
 		</div>
 	</div>
@@ -88,19 +71,6 @@
 	    </Benefit>
             <div class="p-1" />
 	{/each}
-
-	<!--<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
-		<button type="button" class="btn-icon variant-filled" on:click={carouselLeft}>
-			<i class="fa-solid fa-arrow-left" />
-		</button>
-
-		<div bind:this={elemCarousel} class="snap-x snap-mandatory scroll-smooth flex overflow-x-auto">
-		</div>
-
-		<button type="button" class="btn-icon variant-filled" on:click={carouselRight}>
-			<i class="fa-solid fa-arrow-right" />
-		</button>
-	</div>-->
 </section>
 
 <div class="p-3" />
