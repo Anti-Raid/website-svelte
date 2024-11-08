@@ -69,7 +69,21 @@
 		</p>
 	    </Benefit>
             <div class="p-1" />
+	
 	{/each}
+
+	<!--<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
+		<button type="button" class="btn-icon variant-filled" on:click={carouselLeft}>
+			<i class="fa-solid fa-arrow-left" />
+		</button>
+
+		<div bind:this={elemCarousel} class="snap-x snap-mandatory scroll-smooth flex overflow-x-auto">
+		</div>
+
+		<button type="button" class="btn-icon variant-filled" on:click={carouselRight}>
+			<i class="fa-solid fa-arrow-right" />
+		</button>
+	</div>-->
 </section>
 
 <div class="p-3" />
