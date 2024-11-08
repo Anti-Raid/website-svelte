@@ -81,11 +81,12 @@
 	<div class="p-3" />
 
         {#each Benefits as benefit}
-	    <Benefit icon={benefit.Icon} title={benefit.Title} class="snap-center w-[1024px] rounded-container-token">
+	    <Benefit icon={benefit.Icon} title={benefit.Title}>
 		<p class="text-xs/4 md:text-sm lg:text-base font-medium font-monster tracking-tight">
 		   {@html benefit.Description}
 		</p>
 	    </Benefit>
+            <div class="p-3" />
 	{/each}
 
 	<!--<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
@@ -94,7 +95,6 @@
 		</button>
 
 		<div bind:this={elemCarousel} class="snap-x snap-mandatory scroll-smooth flex overflow-x-auto">
-			
 		</div>
 
 		<button type="button" class="btn-icon variant-filled" on:click={carouselRight}>
