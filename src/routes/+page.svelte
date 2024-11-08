@@ -76,30 +76,32 @@
 
 <div class="m-8" />
 
-<!--<section id="features">
+<section id="features">
 	<Breadcrumb Title="Features" Description="What do we have to offer?" />
 	<div class="p-3" />
 
-	<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
+        {#each Benefits as benefit}
+	    <Benefit icon={benefit.Icon} title={benefit.Title}>
+		<p class="text-xs/4 md:text-sm lg:text-base font-medium font-monster tracking-tight">
+		   {@html benefit.Description}
+		</p>
+	    </Benefit>
+            <div class="p-3" />
+	{/each}
+
+	<!--<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
 		<button type="button" class="btn-icon variant-filled" on:click={carouselLeft}>
 			<i class="fa-solid fa-arrow-left" />
 		</button>
 
 		<div bind:this={elemCarousel} class="snap-x snap-mandatory scroll-smooth flex overflow-x-auto">
-			{#each Benefits as benefit}
-				<Benefit icon={benefit.Icon} title={benefit.Title} class="snap-center w-[1024px] rounded-container-token">
-					<p class="text-xs/4 md:text-sm lg:text-base font-medium font-monster tracking-tight">
-						{@html benefit.Description}
-					</p>
-				</Benefit>
-			{/each}
 		</div>
 
 		<button type="button" class="btn-icon variant-filled" on:click={carouselRight}>
 			<i class="fa-solid fa-arrow-right" />
 		</button>
-	</div>
-</section>-->
+	</div>-->
+</section>
 
 <div class="p-3" />
 
