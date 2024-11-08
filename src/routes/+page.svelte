@@ -86,7 +86,7 @@
 		   {@html benefit.Description}
 		</p>
 	    </Benefit>
-            <div class="p-3" />
+            <div class="p-1" />
 	{/each}
 
 	<!--<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
