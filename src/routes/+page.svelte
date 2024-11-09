@@ -4,31 +4,30 @@
 	import Icon from '@iconify/svelte';
 	import { Benefits } from '@components/common/BotFeatures.svelte';
 	import Benefit from '@components/Benefit.svelte';
+	import { PageData } from './$types';
+	import { onMount } from 'svelte';
 
-	let serverCount: String = '11,620';
-	let elemCarousel: HTMLDivElement;
+	export let data: PageData;
 
-	const carouselLeft = (): void => {
-		const x =
-			elemCarousel.scrollLeft === 0
-				? elemCarousel.clientWidth * elemCarousel.childElementCount
-				: elemCarousel.scrollLeft - elemCarousel.clientWidth;
-		elemCarousel.scroll(x, 0);
-	};
+	let serverCount: number = 0;
+	const targetCount: number = data.stats?.total_guilds || 0;
 
-	const carouselRight = (): void => {
-		const x =
-			elemCarousel.scrollLeft === elemCarousel.scrollWidth - elemCarousel.clientWidth
-				? 0 // loop
-				: elemCarousel.scrollLeft + elemCarousel.clientWidth;
-		elemCarousel.scroll(x, 0);
-	};
+	onMount(() => {
+		const increment = targetCount / 150;
+		const updateCount = () => {
+			if (serverCount < targetCount) {
+				serverCount = Math.ceil(serverCount + increment);
+				setTimeout(updateCount, 10);
+			} else {
+				serverCount = targetCount;
+			}
+		};
+
+		updateCount();
+	});
 </script>
 
-<Meta
-	title="Home"
-	description="This website is extremely experimental, and should not be used by the public at this time."
-/>
+<Meta title="Home" />
 
 <section class="mt-6 text-center">
 	<h1 class="text-4xl font-cabin font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
@@ -43,7 +42,7 @@
 	<p class="block mx-auto text-xl font-monster font-bold text-white mt-5 max-w-full">
 		Join the other <span
 			class="bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-violet-400"
-			>{serverCount}</span
+			>{serverCount.toLocaleString('en-US')}+</span
 		>
 		servers that use
 		<img
@@ -66,9 +65,9 @@
 
 		<div class="ml-2">
 			<a
-				href="https://docs.antiraid.xyz"
+				href="/about"
 				class="flex items-center justify-center rounded-md border border-transparent bg-indigo-100 px-8 py-3 text-base font-bold font-monster text-indigo-700 hover:bg-indigo-200 md:py-4 md:px-10 md:text-lg"
-				>User Guide <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
+				>Learn More <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
 			</a>
 		</div>
 	</div>
@@ -80,13 +79,13 @@
 	<Breadcrumb Title="Features" Description="What do we have to offer?" />
 	<div class="p-3" />
 
-        {#each Benefits as benefit}
-	    <Benefit icon={benefit.Icon} title={benefit.Title}>
-		<p class="text-xs/4 md:text-sm lg:text-base font-medium font-monster tracking-tight">
-		   {@html benefit.Description}
-		</p>
-	    </Benefit>
-            <div class="p-3" />
+	{#each Benefits as benefit}
+		<Benefit icon={benefit.Icon} title={benefit.Title}>
+			<p class="text-xs/4 md:text-sm lg:text-base font-medium font-monster tracking-tight">
+				{@html benefit.Description}
+			</p>
+		</Benefit>
+		<div class="p-1" />
 	{/each}
 
 	<!--<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
