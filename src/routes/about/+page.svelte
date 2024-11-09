@@ -3,7 +3,7 @@
 	import BotFeatures from '@components/common/BotFeatures.svelte';
 	import { makeSharedRequest, opGetApiConfig, opGetGuildStaffTeam } from '$lib/fetch/ext';
 	import Icon from '@iconify/svelte';
-        import Message from '@components/Message.svelte';
+	import Message from '@components/Message.svelte';
 
 	interface TeamMember {
 		DisplayName: string | undefined;
@@ -56,9 +56,7 @@
 	};
 </script>
 
-<Meta
-	title="About"
-/>
+<Meta title="About" />
 
 <section>
 	<div class="text-center md:text-left">
@@ -87,14 +85,14 @@
 
 	<div class="p-2" />
 
-        <a
-	   href="https://docs.antiraid.xyz/"
-	   class="flex items-center justify-center w-full rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
+	<a
+		href="https://docs.antiraid.xyz/"
+		class="flex items-center justify-center w-full rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-bold font-monster text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
 	>
-	   User Guide <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
+		User Guide <Icon icon="fa-solid:arrow-right" class="pl-1 inline-block w-5" />
 	</a>
 
-        <div class="p-2" />
+	<div class="p-2" />
 
 	<section id="features">
 		<div id="features-what" class="text-center">

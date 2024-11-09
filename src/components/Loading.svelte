@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-        import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import Meta from '@components/Meta.svelte';
 	import { createEventDispatcher } from 'svelte';
 
@@ -43,18 +43,17 @@
 		run = setInterval(switchWord, intervalDuration);
 	};
 
-        const close = () => { dispatch('close') };
+	const close = () => {
+		dispatch('close');
+	};
 
 	let run = setInterval(switchWord, intervalDuration);
-        onMount(() => { 
-          document.body.addEventListener("click", close);
-        });
+	onMount(() => {
+		document.body.addEventListener('click', close);
+	});
 </script>
 
-<Meta
-	title="Home"
-	description="This website is extremely experimental, and should not be used by the public at this time."
-/>
+<Meta title="Home" />
 
 <div class="grid place-items-center min-h-screen overflow-none no-scrollbar">
 	<ol class="list-disc no-scrollbar">

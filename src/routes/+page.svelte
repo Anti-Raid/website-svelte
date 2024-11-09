@@ -4,13 +4,30 @@
 	import Icon from '@iconify/svelte';
 	import { Benefits } from '@components/common/BotFeatures.svelte';
 	import Benefit from '@components/Benefit.svelte';
+	import { PageData } from './$types';
+	import { onMount } from 'svelte';
 
-	let serverCount: String = '11,620';
+	export let data: PageData;
+
+	let serverCount: number = 0;
+	const targetCount: number = data.stats?.total_guilds || 0;
+
+	onMount(() => {
+		const increment = targetCount / 150;
+		const updateCount = () => {
+			if (serverCount < targetCount) {
+				serverCount = Math.ceil(serverCount + increment);
+				setTimeout(updateCount, 10);
+			} else {
+				serverCount = targetCount;
+			}
+		};
+
+		updateCount();
+	});
 </script>
 
-<Meta
-	title="Home"
-/>
+<Meta title="Home" />
 
 <section class="mt-6 text-center">
 	<h1 class="text-4xl font-cabin font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
@@ -25,7 +42,7 @@
 	<p class="block mx-auto text-xl font-monster font-bold text-white mt-5 max-w-full">
 		Join the other <span
 			class="bg-clip-text text-transparent bg-gradient-to-r from-pink-600 to-violet-400"
-			>{serverCount}</span
+			>{serverCount.toLocaleString('en-US')}+</span
 		>
 		servers that use
 		<img
@@ -62,14 +79,13 @@
 	<Breadcrumb Title="Features" Description="What do we have to offer?" />
 	<div class="p-3" />
 
-        {#each Benefits as benefit}
-	    <Benefit icon={benefit.Icon} title={benefit.Title}>
-		<p class="text-xs/4 md:text-sm lg:text-base font-medium font-monster tracking-tight">
-		   {@html benefit.Description}
-		</p>
-	    </Benefit>
-            <div class="p-1" />
-	
+	{#each Benefits as benefit}
+		<Benefit icon={benefit.Icon} title={benefit.Title}>
+			<p class="text-xs/4 md:text-sm lg:text-base font-medium font-monster tracking-tight">
+				{@html benefit.Description}
+			</p>
+		</Benefit>
+		<div class="p-1" />
 	{/each}
 
 	<!--<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
