@@ -28,6 +28,7 @@
 	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
 	import Label from '@components/inputs/Label.svelte';
 	import ObjectRender from '@components/ObjectRender.svelte';
+	import Developer from '@components/common/Developer.svelte';
 
 	export let guildId: string;
 	export let commands: ParsedCanonicalCommandData[];
@@ -42,6 +43,11 @@
 		allCurrentCommandConfigurations,
 		currentCommandConfiguration
 	);
+
+	const isCommandVirtual = (): boolean => {
+		let extendedData = getCommandExtendedData(commands, currentCommandConfiguration.command);
+		return extendedData.virtual_command;
+	};
 
 	const isCommandDefaultEnabled = (): boolean => {
 		logger.info('CommandEditor', 'isCommandDefaultEnabled', currentCommandConfiguration);
@@ -282,8 +288,6 @@
 	let updateNoticeArea: NoticeProps | null;
 </script>
 
-<Label id="enable_disable_command" label="Enable/Disable Command" />
-
 <BoolInput
 	id="enabled"
 	label="Command Enabled"
@@ -355,94 +359,116 @@
 
 <hr class="mt-5 border-[4px]" />
 
-<BoolInput
-	id="enabled-by-default"
-	label="Enabled by default"
-	description="Whether this command is enabled by default"
-	disabled={true}
-	value={isCommandDefaultEnabled()}
-	onChange={() => {}}
-/>
+<Developer>
+	<hr class="mt-5 border-[4px]" />
 
-{#if currentFullCommandConfiguration}
-	<ObjectRender
-		object={{
-			'Created At': currentFullCommandConfiguration.created_at,
-			'Last Updated At': currentFullCommandConfiguration.last_updated_at,
-			'Created By': currentFullCommandConfiguration.created_by,
-			'Last Updated By': currentFullCommandConfiguration.last_updated_by
-		}}
+	<BoolInput
+		id="enabled-by-default"
+		label="Enabled by default"
+		description="Whether this command is enabled by default"
+		disabled={true}
+		value={isCommandDefaultEnabled()}
+		onChange={() => {}}
 	/>
-{/if}
 
-<UnorderedList>
-	<ListItem>
-		{#if module.commands_toggleable}
-			<small class="text-green-500 mt-2">
-				<strong>You can turn ON/OFF (toggle) the commands within this module!</strong>
-			</small>
-		{:else}
-			<small class="text-red-500 mt-2">
-				<strong
-					>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
-				>
-			</small>
-		{/if}
-	</ListItem>
+	{#if currentFullCommandConfiguration}
+		<ObjectRender
+			object={{
+				'Created At': currentFullCommandConfiguration.created_at,
+				'Last Updated At': currentFullCommandConfiguration.last_updated_at,
+				'Created By': currentFullCommandConfiguration.created_by,
+				'Last Updated By': currentFullCommandConfiguration.last_updated_by
+			}}
+		/>
+	{/if}
 
-	<ListItem>
-		{#if module.web_hidden}
-			<small class="text-red-500 mt-2">
-				<strong>This module is HIDDEN on the website and dashboard</strong>
-			</small>
-		{:else}
-			<small class="text-green-500 mt-2">
-				<strong>This module is VISIBLE on the website and dashboard</strong>
-			</small>
-		{/if}
-	</ListItem>
+	<UnorderedList>
+		<ListItem>
+			{#if module.commands_toggleable}
+				<small class="text-green-500 mt-2">
+					<strong>You can turn ON/OFF (toggle) the commands within this module!</strong>
+				</small>
+			{:else}
+				<small class="text-red-500 mt-2">
+					<strong
+						>You CANNOT turn ON/OFF (toggle) the commands within this module at this time!</strong
+					>
+				</small>
+			{/if}
+		</ListItem>
 
-	<ListItem>
-		{#if module.toggleable}
-			<small class="text-green-500 mt-2">
-				<strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
-			</small>
-		{:else}
-			<small class="text-red-500 mt-2">
-				<strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
-			</small>
-		{/if}
-	</ListItem>
+		<ListItem>
+			{#if module.web_hidden}
+				<small class="text-red-500 mt-2">
+					<strong>This module is HIDDEN on the website and dashboard</strong>
+				</small>
+			{:else}
+				<small class="text-green-500 mt-2">
+					<strong>This module is VISIBLE on the website and dashboard</strong>
+				</small>
+			{/if}
+		</ListItem>
 
-	<ListItem>
-		{#if toggleManuallyOverriden}
-			<small class="text-green-500 mt-2">
-				<strong
-					>The disabled/enabled state of this command has been manually modified and will no longer
-					follow the default enabled/disabled state defined for it.</strong
-				>
-			</small>
-		{:else}
-			<small class="text-green-500 mt-2">
-				<strong
-					>This command will use the default enabled/disabled state defined for it unless manually
-					modified.</strong
-				>
-			</small>
-		{/if}
-	</ListItem>
+		<ListItem>
+			{#if module.toggleable}
+				<small class="text-green-500 mt-2">
+					<strong>This module can be enabled/disabled (TOGGLEABLE)</strong>
+				</small>
+			{:else}
+				<small class="text-red-500 mt-2">
+					<strong>This module cannot be enabled/disabled (IS NOT TOGGLEABLE)</strong>
+				</small>
+			{/if}
+		</ListItem>
 
-	<ListItem>
-		{#if defaultPermsManuallyOverriden}
-			<small class="text-green-500 mt-2">
-				<strong>The default permissions of this command have been manually modified.</strong>
-			</small>
-		{:else}
-			<small class="text-green-500 mt-2">
-				<strong
-					>This command will use the default permissions defined for it unless manually modified.</strong
-				>
-			</small>
-		{/if}
-	</ListItem>
-</UnorderedList>
+		<ListItem>
+			{#if toggleManuallyOverriden}
+				<small class="text-green-500 mt-2">
+					<strong
+						>The disabled/enabled state of this command has been manually modified and will no
+						longer follow the default enabled/disabled state defined for it.</strong
+					>
+				</small>
+			{:else}
+				<small class="text-green-500 mt-2">
+					<strong
+						>This command will use the default enabled/disabled state defined for it unless manually
+						modified.</strong
+					>
+				</small>
+			{/if}
+		</ListItem>
+
+		<ListItem>
+			{#if defaultPermsManuallyOverriden}
+				<small class="text-green-500 mt-2">
+					<strong>The default permissions of this command have been manually modified.</strong>
+				</small>
+			{:else}
+				<small class="text-green-500 mt-2">
+					<strong
+						>This command will use the default permissions defined for it unless manually modified.</strong
+					>
+				</small>
+			{/if}
+		</ListItem>
+
+		<ListItem>
+			{#if isCommandVirtual()}
+				<small class="text-green-500 mt-2">
+					<strong
+						>This command is a virtual command meant for access control/security purposes and is not
+						physically usable within the bot</strong
+					>
+				</small>
+			{:else}
+				<small class="text-green-500 mt-2">
+					<strong
+						>This command is NOT a virtual command and should be usable within the bot via slash
+						commands.</strong
+					>
+				</small>
+			{/if}
+		</ListItem>
+	</UnorderedList>
+</Developer>

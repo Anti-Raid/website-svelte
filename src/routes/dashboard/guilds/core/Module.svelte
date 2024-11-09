@@ -421,5 +421,20 @@
 				</small>
 			{/if}
 		</ListItem>
+
+		<ListItem>
+			{#if module.virtual_module}
+				<small class="text-green-500 mt-2">
+					<strong
+						>This module is a virtual module meant for access control/security purposes and is not
+						physically usable within the bot</strong
+					>
+				</small>
+			{:else}
+				<small class="text-green-500 mt-2">
+					<strong>This module is NOT a virtual module and can be used within the bot.</strong>
+				</small>
+			{/if}
+		</ListItem>
 	</UnorderedList>
 </Developer>
