@@ -92,7 +92,6 @@ Converted to SvelteKit from NextJS for panel use
 </script>
 
 <button
-	class="w-full"
 	disabled={display.disabled}
 	aria-disabled={display.disabled}
 	{type}
