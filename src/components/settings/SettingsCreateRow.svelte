@@ -129,13 +129,13 @@
 
 <details
 	id="setting-schema-createrowelement"
-	class="setting-schema-create__details border p-2 bg-black hover:bg-slate-900"
+	class="setting-schema-create__details border border-surface-400 p-2 bg-surface-500/65 hover:bg-surface-500/75 rounded-t-lg"
 	bind:this={createRowElement}
 >
 	<summary
 		class="setting-schema-create__summary hover:cursor-pointer font-semibold text-xl items-center align-middle justify-center break-words"
 	>
-		<Icon icon="fa6-solid:plus" class="inline-block m-0 p-0 font-semibold mr-1 align-middle" />New {stripPunctuation(
+		<Icon icon="fa6-solid:plus" class="inline-block m-0 p-0 mb-1 font-semibold mr-1 align-middle" />New {stripPunctuation(
 			configOpt.name
 		)}
 	</summary>

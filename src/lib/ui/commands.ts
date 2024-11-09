@@ -185,7 +185,7 @@ export const getCommandExtendedData = (
 
 	if (!commands) {
 		logger.warn('Command not found in parsed commands');
-		return defaultExtendedData
+		return defaultExtendedData;
 	}
 
 	let subcommand = '';

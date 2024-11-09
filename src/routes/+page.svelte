@@ -2,8 +2,7 @@
 	import Meta from '@components/Meta.svelte';
 	import Breadcrumb from '@components/Breadcrumb.svelte';
 	import Icon from '@iconify/svelte';
-	import { Benefits } from '@components/common/BotFeatures.svelte';
-	import Benefit from '@components/Benefit.svelte';
+	import BotFeatures from '@components/common/BotFeatures.svelte';
 	import { PageData } from './$types';
 	import { onMount } from 'svelte';
 
@@ -79,27 +78,11 @@
 	<Breadcrumb Title="Features" Description="What do we have to offer?" />
 	<div class="p-3" />
 
-	{#each Benefits as benefit}
-		<Benefit icon={benefit.Icon} title={benefit.Title}>
-			<p class="text-xs/4 md:text-sm lg:text-base font-medium font-monster tracking-tight">
-				{@html benefit.Description}
-			</p>
-		</Benefit>
-		<div class="p-1" />
-	{/each}
-
-	<!--<div class="card p-4 grid grid-cols-[auto_1fr_auto] gap-4 items-center">
-		<button type="button" class="btn-icon variant-filled" on:click={carouselLeft}>
-			<i class="fa-solid fa-arrow-left" />
-		</button>
-
-		<div bind:this={elemCarousel} class="snap-x snap-mandatory scroll-smooth flex overflow-x-auto">
-		</div>
-
-		<button type="button" class="btn-icon variant-filled" on:click={carouselRight}>
-			<i class="fa-solid fa-arrow-right" />
-		</button>
-	</div>-->
+	<center>
+		<dl class="mx-2.5 space-y-4 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10 md:space-y-0">
+			<BotFeatures />
+		</dl>
+	</center>
 </section>
 
 <div class="p-3" />

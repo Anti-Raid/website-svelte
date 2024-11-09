@@ -11,8 +11,7 @@
 	import { Color } from '@components/inputs/button/colors';
 	import { NoticeProps } from '@components/common/noticearea/noticearea';
 	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
-	import Spacer from '@components/inputs/Spacer.svelte';
-
+    
 	let currentState = 'Loading dashboard data';
 	let guilds: DashboardGuildData;
 	let canInvite: string[] = [];
@@ -113,7 +112,7 @@
 		showErrors={false}
 	/>
 
-	<Spacer typ="extSpacing" />
+	<div class="my-3" />
 
 	<Column size="small">
 		{#each (guilds?.guilds || [])?.filter((g) => hasBot?.includes(g?.id || '') && (!hasBotSearchFilter || g?.name
@@ -136,7 +135,7 @@
 		{/each}
 	</Column>
 
-	<Spacer typ="extSpacing" />
+	<div class="my-5" />
 
 	<h1 class="text-white font-semibold text-2xl mt-5 mb-2">
 		Your Server List ({guilds?.guilds?.length})
@@ -150,6 +149,8 @@
 		minlength={0}
 		showErrors={false}
 	/>
+
+    <div class="my-3" />
 
 	<Column size="small">
 		{#each (guilds?.guilds || [])?.filter((g) => {
@@ -184,6 +185,8 @@
 			</ServerCard>
 		{/each}
 	</Column>
+
+    <div class="my-3" />
 
 	<ButtonReact
 		color={Color.Themable}
