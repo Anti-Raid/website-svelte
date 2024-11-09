@@ -32,18 +32,6 @@ export const defaultComponent = async () => {
 
 export const quickActions: QuickAction[] = [
 	{
-		id: 'welcome-messages',
-		name: 'Welcome Messages',
-		icon: 'bx:bx-message-square-detail',
-		description:
-			"Set up a welcome message for new members joining your server. This can help increase engagement while letting moderators know exactly who's coming!",
-		component: async () => {
-			let component = await import('./WelcomeMessages.svelte');
-			logger.info('QuickActionLoad', component);
-			return component.default;
-		}
-	},
-	{
 		id: 'settings-browser',
 		name: 'Settings Browser',
 		icon: 'bx:bx-cog',
