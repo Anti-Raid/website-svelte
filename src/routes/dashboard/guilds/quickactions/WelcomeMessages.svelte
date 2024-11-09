@@ -18,9 +18,9 @@
 	// svelte-ignore unused-export-let
 	export let state: any = undefined;
 
-	const getAuditLogSinks = async (configModules: Record<string, CanonicalModule>) => {
-		const module = Object.values(configModules).find((m) => m.id === 'auditlogs');
-		if (!module) throw new Error('No module found for auditlogs');
+	const getHookSinks = async (configModules: Record<string, CanonicalModule>) => {
+		const module = Object.values(configModules).find((m) => m.id === 'hooks');
+		if (!module) throw new Error('No module found for hooks');
 
 		const configOption = module.config_options.find((opt) => opt.id === 'sinks');
 		if (!configOption) throw new Error('No config option found for sinks');
@@ -51,7 +51,7 @@
 
 		let payload: SettingsExecute = {
 			operation: 'Create',
-			module: 'auditlogs',
+			module: 'hooks',
 			setting: 'sinks',
 			fields: {
 				type: 'channel',
@@ -81,9 +81,9 @@
 
 <div class="ml-2">
 	<h1 class="text-2xl font-semibold">Welcome Messages</h1>
-	<p>Welcome your members to your server using AntiRaid (and Audit-Log Sinks).</p>
+	<p>Welcome your members to your server using AntiRaid Hooks.</p>
 
-	{#await getAuditLogSinks(props.modules)}
+	{#await getHookSinks(props.modules)}
 		<NoticeArea
 			props={{
 				level: 'loading',
@@ -139,7 +139,7 @@
 		<NoticeArea
 			props={{
 				level: 'error',
-				text: `Failed to fetch audit log sinks: ${err}`
+				text: `Failed to fetch hook sinks: ${err}`
 			}}
 		/>
 	{/await}
