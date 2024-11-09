@@ -11,7 +11,7 @@
 		lang: SupportedLanguages;
 		icon: string;
 		open: boolean;
-	};
+	}
 </script>
 
 <script lang="ts">
@@ -89,6 +89,7 @@
 	export let placeholder: string | HTMLElement | null | undefined = undefined;
 	export let nodebounce = false;
 
+	export let isFilesEnabled: boolean = true;
 	export let files: File[] = [];
 	export let running: boolean = false;
 	export let execute: (() => Promise<void>) | null = null;
@@ -304,44 +305,46 @@
 		</div>
 	</div>
 
-	<div class="flex items-center py-2 bg-surface-600 text-white font-bold font-monster" id="files">
-		{#each files as file}
-			<button
-				class="ml-1 first:ml-2 inline-flex flex-shrink-0 px-2 py-1.5 bg-surface-500 hover:opacity-75 text-white font-bold font-monster rounded-md"
-				on:click={() => {
-					changeFile(file);
-				}}
-			>
-				{#if file.icon.startsWith('fa')}
-					<i class="{file.icon} mt-1" />
-				{:else}
-					<Icon icon={file.icon} class="mt-1" />
-				{/if}
-
-				<h2 class="ml-2">{file.name}.{file.lang}</h2>
-
+	{#if isFilesEnabled}
+		<div class="flex items-center py-2 bg-surface-600 text-white font-bold font-monster" id="files">
+			{#each files as file}
 				<button
+					class="ml-1 first:ml-2 inline-flex flex-shrink-0 px-2 py-1.5 bg-surface-500 hover:opacity-75 text-white font-bold font-monster rounded-md"
 					on:click={() => {
-						closeFile(file);
+						changeFile(file);
 					}}
-					class="mt-0.5 ml-2 hover:opacity-75"
 				>
-					<i class="fa fa-close" />
-				</button>
-			</button>
-		{/each}
+					{#if file.icon.startsWith('fa')}
+						<i class="{file.icon} mt-1" />
+					{:else}
+						<Icon icon={file.icon} class="mt-1" />
+					{/if}
 
-		<div class="flex justify-end items-end">
-			<button
-				class="ml-2 hover:opacity-75"
-				on:click={() => {
-					createFile('newfile', 'ts');
-				}}
-			>
-				<i class="fa fa-add" />
-			</button>
+					<h2 class="ml-2">{file.name}.{file.lang}</h2>
+
+					<button
+						on:click={() => {
+							closeFile(file);
+						}}
+						class="mt-0.5 ml-2 hover:opacity-75"
+					>
+						<i class="fa fa-close" />
+					</button>
+				</button>
+			{/each}
+
+			<div class="flex justify-end items-end">
+				<button
+					class="ml-2 hover:opacity-75"
+					on:click={() => {
+						createFile('newfile', 'ts');
+					}}
+				>
+					<i class="fa fa-add" />
+				</button>
+			</div>
 		</div>
-	</div>
+	{/if}
 
 	<div class="codemirror-wrapper rounded-b-md h-[50%] {classes}" bind:this={element} />
 {:else}

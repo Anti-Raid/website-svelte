@@ -3,7 +3,11 @@
 
 	import MessageBuilder from './message/Builder.svelte';
 	import BoxButton from '../../inputs/button/BoxButton.svelte';
-	import InputTextArea from '../../inputs/InputTextArea.svelte';
+	import CodeMirrorIde from '@components/CodeMirrorIDE.svelte';
+	import Label from '@components/inputs/Label.svelte';
+	import { StreamLanguage } from '@codemirror/language';
+	import { lua } from '@codemirror/legacy-modes/mode/lua';
+	import { oneDark } from '@codemirror/theme-one-dark';
 
 	export let id: string;
 	export let label: string;
@@ -21,15 +25,14 @@
 	};
 </script>
 
-<InputTextArea
-	{id}
-	{label}
+<Label {id} {label} />
+<CodeMirrorIde
 	bind:value={output}
-	placeholder="Enter your template here..."
-	required={true}
-	{disabled}
-	minlength={0}
-	showErrors={false}
+	files={[]}
+	isFilesEnabled={false}
+	extensions={[StreamLanguage.define(lua).extension]}
+	theme={oneDark}
+	placeholder="Start typing your code here."
 />
 
 {#if !disabled}
