@@ -27,7 +27,6 @@
 	import Developer from '@components/common/Developer.svelte';
 	import CommandList from './CommandList.svelte';
 	import Spacer from '@components/inputs/Spacer.svelte';
-	import SettingsLoop from './SettingsLoop.svelte';
 
 	export let guildId: string;
 	export let module: CanonicalModule;
