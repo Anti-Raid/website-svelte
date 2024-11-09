@@ -6,8 +6,6 @@
 	} from '$lib/generated/silverpelt';
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import TabbedPane from '@components/inputs/button/tabs/TabbedPane.svelte';
-	import ModuleInfoTab from '../tab:moduleinfo/ModuleInfoTab.svelte';
-	import CommandTab from '../tab:commands/CommandTab.svelte';
 	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
 	import SettingsTab from '../tab:settings/SettingsTab.svelte';
 	import { State } from './types';
@@ -16,6 +14,7 @@
 	import { defaultComponent, quickActions } from '../quickactions/actions';
 	import Message from '@components/Message.svelte';
 	import SleekButton from '@components/inputs/button/SleekButton.svelte';
+	import Module from './Module.svelte';
 
 	export let modules: Record<string, CanonicalModule>;
 	export let commonPermissionContext: CommonPermissionContext;
@@ -124,32 +123,15 @@
 			{modules[state.openedEntity.module.id]?.description}
 		</p>
 
-		<TabbedPane
-			bind:visibleTab={state.openedEntity.module.tab}
-			tabs={[
-				{ id: 'moduleInfo', label: 'Info' },
-				{ id: 'cmdList', label: 'Commands' },
-				{ id: 'settings', label: 'Settings' }
-			]}
+		<Module
+			{guildId}
+			module={modules[state.openedEntity.module.id]}
+			{commonPermissionContext}
+			{modules}
+			{guildData}
+			bind:currentCommandConfiguration
+			bind:currentModuleConfiguration
 		/>
-		{#if state.openedEntity.module.tab == 'moduleInfo'}
-			<ModuleInfoTab
-				{guildId}
-				module={modules[state.openedEntity.module.id]}
-				{commonPermissionContext}
-				bind:currentModuleConfiguration
-			/>
-		{:else if state.openedEntity.module.tab == 'cmdList'}
-			<CommandTab
-				{guildId}
-				moduleId={state.openedEntity.module.id}
-				{modules}
-				{commonPermissionContext}
-				bind:currentCommandConfiguration
-			/>
-		{:else if state.openedEntity.module.tab == 'settings'}
-			<SettingsTab {guildId} module={modules[state.openedEntity.module.id]} {guildData} {modules} />
-		{/if}
 	</div>
 {:else if state.openedEntity.quickAction}
 	{#await quickActions

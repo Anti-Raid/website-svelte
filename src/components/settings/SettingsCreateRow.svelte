@@ -117,6 +117,14 @@
 			}
 		}
 	};
+
+	const stripPunctuation = (str: string) => {
+		if (str.endsWith('s')) {
+			return str.slice(0, -1);
+		}
+
+		return str;
+	};
 </script>
 
 <details
@@ -127,10 +135,9 @@
 	<summary
 		class="setting-schema-create__summary hover:cursor-pointer font-semibold text-xl items-center align-middle justify-center break-words"
 	>
-		<Icon
-			icon="fa6-solid:plus"
-			class="inline-block m-0 p-0 font-semibold mr-1 align-middle"
-		/>Create New Entry
+		<Icon icon="fa6-solid:plus" class="inline-block m-0 p-0 font-semibold mr-1 align-middle" />New {stripPunctuation(
+			configOpt.name
+		)}
 	</summary>
 
 	{#each configOpt.columns as column}
