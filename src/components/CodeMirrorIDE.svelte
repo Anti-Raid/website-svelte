@@ -11,7 +11,7 @@
 		lang: SupportedLanguages;
 		icon: string;
 		open: boolean;
-	}
+	};
 </script>
 
 <script lang="ts">
