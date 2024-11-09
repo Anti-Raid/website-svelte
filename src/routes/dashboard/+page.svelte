@@ -11,6 +11,7 @@
 	import { Color } from '@components/inputs/button/colors';
 	import { NoticeProps } from '@components/common/noticearea/noticearea';
 	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
+	import Spacer from '@components/inputs/Spacer.svelte';
 
 	let currentState = 'Loading dashboard data';
 	let guilds: DashboardGuildData;
@@ -112,7 +113,7 @@
 		showErrors={false}
 	/>
 
-	<hr class="my-3" />
+	<Spacer typ="extSpacing" />
 
 	<Column size="small">
 		{#each (guilds?.guilds || [])?.filter((g) => hasBot?.includes(g?.id || '') && (!hasBotSearchFilter || g?.name
@@ -135,7 +136,7 @@
 		{/each}
 	</Column>
 
-	<hr class="my-5" />
+	<Spacer typ="extSpacing" />
 
 	<h1 class="text-white font-semibold text-2xl mt-5 mb-2">
 		Your Server List ({guilds?.guilds?.length})
