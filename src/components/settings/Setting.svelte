@@ -15,6 +15,8 @@
 
 	let offset: number = 0;
 
+	let maxReturn = configOpt.max_return;
+
 	const getCurrentSettings = async (limit: number, offset: number) => {
 		let payload: SettingsExecute = {
 			operation: 'View',
@@ -36,7 +38,7 @@
 <Label id={configOpt.id} label={configOpt.name} />
 <p class="text-md mb-2 opacity-80">{@html configOpt.description}</p>
 
-{#await getCurrentSettings(configOpt.max_return, offset)}
+{#await getCurrentSettings(maxReturn, offset)}
 	<p>Loading...</p>
 {:then settings}
 	<SettingsView {modules} {configOpt} {module} {guildData} {guildId} {settings} bind:offset />

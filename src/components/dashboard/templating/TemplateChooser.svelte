@@ -13,6 +13,7 @@
 	import { Color } from '../../inputs/button/colors';
 	import { NoticeProps } from '../../common/noticearea/noticearea';
 	import NoticeArea from '../../common/noticearea/NoticeArea.svelte';
+	import TemplateBuilder from './TemplateBuilder.svelte';
 
 	export let guildId: string;
 	export let value: string;
@@ -146,15 +147,8 @@
 			label="Template Name"
 			minlength={0}
 		/>
-		<InputTextArea
-			bind:value={newTemplateValue}
-			placeholder="Template Value"
-			id="value"
-			label="Template Value"
-			minlength={0}
-		/>
+		<TemplateBuilder bind:output={newTemplateValue} id="value" label="Template Value" />
 		<ButtonReact
-			color={Color.Themable}
 			icon="fa6-solid:plus"
 			text="Create Template And Select"
 			onClick={createTemplateAndChooseTemplate}

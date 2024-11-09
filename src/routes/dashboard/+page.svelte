@@ -86,7 +86,6 @@
 	{/if}
 
 	<ButtonReact
-		color={Color.Themable}
 		text="Refresh Server List"
 		icon="mdi:refresh"
 		onClick={recacheForce}
@@ -112,7 +111,7 @@
 		showErrors={false}
 	/>
 
-	<hr class="my-3" />
+	<div class="my-3" />
 
 	<Column size="small">
 		{#each (guilds?.guilds || [])?.filter((g) => hasBot?.includes(g?.id || '') && (!hasBotSearchFilter || g?.name
@@ -135,7 +134,7 @@
 		{/each}
 	</Column>
 
-	<hr class="my-5" />
+	<div class="my-5" />
 
 	<h1 class="text-white font-semibold text-2xl mt-5 mb-2">
 		Your Server List ({guilds?.guilds?.length})
@@ -149,6 +148,8 @@
 		minlength={0}
 		showErrors={false}
 	/>
+
+	<div class="my-3" />
 
 	<Column size="small">
 		{#each (guilds?.guilds || [])?.filter((g) => {
@@ -184,8 +185,9 @@
 		{/each}
 	</Column>
 
+	<div class="my-3" />
+
 	<ButtonReact
-		color={Color.Themable}
 		text="Refresh Server List"
 		icon="mdi:refresh"
 		onClick={recacheForce}

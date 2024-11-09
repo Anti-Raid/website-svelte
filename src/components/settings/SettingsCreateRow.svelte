@@ -117,11 +117,19 @@
 			}
 		}
 	};
+
+	const stripPunctuation = (str: string) => {
+		if (str.endsWith('s')) {
+			return str.slice(0, -1);
+		}
+
+		return str;
+	};
 </script>
 
 <details
 	id="setting-schema-createrowelement"
-	class="setting-schema-create__details border p-2 bg-black hover:bg-slate-900"
+	class="setting-schema-create__details border border-surface-400 p-2 bg-surface-500/65 hover:bg-surface-500/75 rounded-t-lg"
 	bind:this={createRowElement}
 >
 	<summary
@@ -129,8 +137,8 @@
 	>
 		<Icon
 			icon="fa6-solid:plus"
-			class="inline-block m-0 p-0 font-semibold mr-1 align-middle"
-		/>Create New Entry
+			class="inline-block m-0 p-0 mb-1 font-semibold mr-1 align-middle"
+		/>New {stripPunctuation(configOpt.name)}
 	</summary>
 
 	{#each configOpt.columns as column}
@@ -164,7 +172,6 @@
 
 	{#if currentOperationType === 'Create'}
 		<ButtonReact
-			color={Color.Themable}
 			icon="fa6-solid:plus"
 			text={`Add ${configOpt.name}`}
 			states={{

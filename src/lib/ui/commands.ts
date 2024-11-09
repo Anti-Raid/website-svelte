@@ -163,18 +163,6 @@ export const getCommandExtendedData = (
 	let permuted_commands = permuteCommands(command);
 	let base_command = permuted_commands[0];
 
-	let commands = parsedCommands.find((pc) => pc.full_name == base_command);
-
-	if (!commands) {
-		throw new Error('Command not found in parsed commands');
-	}
-
-	let subcommand = '';
-
-	if (permuted_commands.length > 1) {
-		subcommand = permuted_commands.slice(1).join(' ');
-	}
-
 	let defaultExtendedData: CommandExtendedData = {
 		default_perms: {
 			Simple: {
@@ -192,6 +180,19 @@ export const getCommandExtendedData = (
 		web_hidden: false,
 		virtual_command: false
 	};
+
+	let commands = parsedCommands.find((pc) => pc.full_name == base_command);
+
+	if (!commands) {
+		logger.warn('Command not found in parsed commands');
+		return defaultExtendedData;
+	}
+
+	let subcommand = '';
+
+	if (permuted_commands.length > 1) {
+		subcommand = permuted_commands.slice(1).join(' ');
+	}
 
 	return (
 		commands.extended_data_map[subcommand] || commands.extended_data_map[''] || defaultExtendedData

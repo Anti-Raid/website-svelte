@@ -20,41 +20,13 @@
 	const imageLoadError = (a: any) => {
 		a.target.src = '/logo.webp';
 	};
-
-	// CSS Gradient Generator
-	let hexString = '0123456789abcdef';
-
-	let randomColor = () => {
-		let hexCode = '#';
-
-		for (let i = 0; i < 6; i++) {
-			hexCode += hexString[Math.floor(Math.random() * hexString.length)];
-		}
-
-		return hexCode;
-	};
-
-	let generateGrad = (p: any) => {
-		let colorOne = randomColor();
-		let colorTwo = randomColor();
-		let angle = Math.floor(Math.random() * 360);
-
-		p.style.background = `linear-gradient(${angle}deg, ${colorOne}, ${colorTwo})`;
-	};
-
-	onMount(() => {
-		const p: HTMLElement | null = document.getElementById(`${id}_banner`);
-		if (p) generateGrad(p);
-	});
 </script>
 
 <section class="rounded-lg p-2 card bg-primary-600/50 shadow-white/50 text-white">
-	<div class="h-16 rounded-t" id="{id}_banner" />
-
-	<div class="bg-slate-900 dark:bg-gray-800 pt-6 px-6 pb-2 rounded-b">
+	<div class="bg-slate-900 dark:bg-gray-800 pt-4 px-4 pb-2 rounded-b">
 		<div class="flex justify-center items-center mb-2">
 			<img
-				class={'h-7 w-7 rounded-md icon ' + (blurImage ? 'blur' : '')}
+				class={'h-10 w-10 rounded-md icon ' + (blurImage ? 'blur' : '')}
 				src={image}
 				height="28px"
 				width="28px"
@@ -63,7 +35,7 @@
 			/>
 
 			{#if disabled}
-				<span class="ml-2 text-xl font-extrabold dark:text-white truncate">{name}</span>
+				<span class="ml-2 text-xl font-extrabold text-center dark:text-white truncate">{name}</span>
 			{:else if mainAction.click}
 				<button
 					on:click={mainAction.click}
@@ -84,7 +56,7 @@
 		{#if disabled}
 			<p class="font-extrabold dark:text-white text-red-500 h-16 max-h-16">{disabled}</p>
 		{:else if $$slots.message}
-			<div class="h-16 max-h-16">
+			<div class="h-16 max-h-16 text-center">
 				<slot name="message" />
 			</div>
 		{/if}

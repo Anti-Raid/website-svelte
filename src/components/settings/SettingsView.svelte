@@ -35,13 +35,13 @@
 
 {#if !(offset - configOpt.max_return < 0) || !(settings?.fields?.length >= configOpt.max_return)}
 	<div class="grid-cols-2 grid">
-		<div class="col-span-1 border p-2 bg-black hover:bg-slate-900">
+		<div class="col-span-1 border border-surface-400 p-2 bg-surface-500 hover:bg-surface-500/75 rounded-bl-lg">
 			<button
 				disabled={offset - configOpt.max_return < 0}
 				aria-disabled={offset - configOpt.max_return < 0}
 				class={offset - configOpt.max_return >= 0
 					? 'block w-full text-left font-semibold'
-					: 'block w-full text-left italic cursor-not-allowed'}
+					: 'block w-full text-left font-cabin font-extrabold uppercase cursor-not-allowed'}
 				on:click|preventDefault={() => {
 					if (offset - configOpt.max_return < 0) {
 						offset = 0;
@@ -51,13 +51,14 @@
 				}}>Back</button
 			>
 		</div>
-		<div class="col-span-1 border p-2 bg-black hover:bg-slate-900">
+        
+		<div class="col-span-1 border border-surface-400 p-2 bg-surface-500 hover:bg-surface-500/75 rounded-br-lg">
 			<button
 				disabled={settings?.fields?.length >= configOpt.max_return}
 				aria-disabled={settings?.fields?.length >= configOpt.max_return}
 				class={settings?.fields?.length >= configOpt.max_return
 					? 'block w-full text-left font-semibold'
-					: 'block w-full text-left italic cursor-not-allowed'}
+					: 'block w-full text-left font-cabin font-extrabold uppercase cursor-not-allowed'}
 				on:click|preventDefault={() => {
 					if (settings?.fields?.length < configOpt.max_return) return;
 					offset += configOpt.max_return;

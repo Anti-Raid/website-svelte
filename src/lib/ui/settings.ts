@@ -370,7 +370,7 @@ class SettingsFetchQueue {
 		while (true) {
 			let entry = this.fetchQueue.shift();
 			if (!entry) {
-				await new Promise((resolve) => setTimeout(resolve, 500));
+				await new Promise((resolve) => setTimeout(resolve, 0));
 				continue;
 			}
 			try {
@@ -379,9 +379,6 @@ class SettingsFetchQueue {
 			} catch (e) {
 				entry.reject(e);
 			}
-
-			// Sleep for 500ms to allow event loop to process other tasks
-			await new Promise((resolve) => setTimeout(resolve, 500));
 		}
 	}
 }

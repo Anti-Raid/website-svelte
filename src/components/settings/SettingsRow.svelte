@@ -195,7 +195,6 @@
 	{#if configOpt?.operations['Update'] && !isEqual(columnField, settings.fields[index])}
 		<!--TODO: Only show the buttonreact when theres an actual change-->
 		<ButtonReact
-			color={Color.Themable}
 			icon="mdi:edit"
 			text="Save Changes"
 			states={{
@@ -212,7 +211,6 @@
 
 	{#if configOpt?.operations['Delete']}
 		<ButtonReact
-			color={Color.Red}
 			icon="mdi:delete"
 			text="Delete"
 			states={{
