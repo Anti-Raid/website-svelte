@@ -357,11 +357,7 @@
 	<NoticeArea props={updateNoticeArea} />
 {/if}
 
-<hr class="mt-5 border-[4px]" />
-
 <Developer>
-	<hr class="mt-5 border-[4px]" />
-
 	<BoolInput
 		id="enabled-by-default"
 		label="Enabled by default"
