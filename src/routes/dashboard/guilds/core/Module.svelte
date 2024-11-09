@@ -325,7 +325,7 @@
 
 {#each module.config_options as configOpt}
 	<Setting {module} {configOpt} {guildId} {guildData} {modules} />
-	<hr />
+	<Spacer typ="smallSpacing" />
 {/each}
 
 <Spacer typ="extSpacing" />
