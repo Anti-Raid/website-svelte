@@ -348,7 +348,6 @@
 	/>
 
 	<ButtonReact
-		color={Color.Themable}
 		icon="mdi:plus"
 		text="Create Session"
 		states={{

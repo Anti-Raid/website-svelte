@@ -9,14 +9,12 @@ Converted to SvelteKit from NextJS for panel use
 -->
 
 <script lang="ts">
+	import Icon from '@iconify/svelte';
 	import { NoticeProps } from '../../common/noticearea/noticearea';
-	import ButtonInner from './ButtonInner.svelte';
-	import type { Color } from './colors';
 	import type { States } from './states';
 
 	let className: string = '';
 	export { className as class };
-	export let color: Color;
 	export let icon: string;
 	export let text: string;
 	export let type: 'button' | 'submit' = 'submit';
@@ -130,5 +128,25 @@ Converted to SvelteKit from NextJS for panel use
 		}
 	}}
 >
-	<ButtonInner {color} icon={display.icon} text={display.text} class={display.className} />
+	<div
+		class={'flex items-center w-full text-left' + (className ? ' ' + className : '')}
+		aria-live="polite"
+	>
+		<div
+			class="bg-surface-700 hover:bg-surface-600 px-4 py-2 rounded-l-full text-white align-middle"
+		>
+			<Icon
+				{icon}
+				inline={true}
+				class={'inline-flex text-white align-items items-center justify-center' +
+					(icon == 'mdi:loading' ? ' animate-spin' : '')}
+			/>
+		</div>
+
+		<div
+			class="bg-surface-600 hover:bg-surface-500 w-half px-4 py-2 rounded-r-md text-white text-left"
+		>
+			<p class="line-clamp-1 text-white">{text}</p>
+		</div>
+	</div>
 </button>

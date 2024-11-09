@@ -135,9 +135,10 @@
 	<summary
 		class="setting-schema-create__summary hover:cursor-pointer font-semibold text-xl items-center align-middle justify-center break-words"
 	>
-		<Icon icon="fa6-solid:plus" class="inline-block m-0 p-0 mb-1 font-semibold mr-1 align-middle" />New {stripPunctuation(
-			configOpt.name
-		)}
+		<Icon
+			icon="fa6-solid:plus"
+			class="inline-block m-0 p-0 mb-1 font-semibold mr-1 align-middle"
+		/>New {stripPunctuation(configOpt.name)}
 	</summary>
 
 	{#each configOpt.columns as column}
@@ -171,7 +172,6 @@
 
 	{#if currentOperationType === 'Create'}
 		<ButtonReact
-			color={Color.Themable}
 			icon="fa6-solid:plus"
 			text={`Add ${configOpt.name}`}
 			states={{

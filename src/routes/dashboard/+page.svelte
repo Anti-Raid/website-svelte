@@ -11,7 +11,7 @@
 	import { Color } from '@components/inputs/button/colors';
 	import { NoticeProps } from '@components/common/noticearea/noticearea';
 	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
-    
+
 	let currentState = 'Loading dashboard data';
 	let guilds: DashboardGuildData;
 	let canInvite: string[] = [];
@@ -86,7 +86,6 @@
 	{/if}
 
 	<ButtonReact
-		color={Color.Themable}
 		text="Refresh Server List"
 		icon="mdi:refresh"
 		onClick={recacheForce}
@@ -150,7 +149,7 @@
 		showErrors={false}
 	/>
 
-    <div class="my-3" />
+	<div class="my-3" />
 
 	<Column size="small">
 		{#each (guilds?.guilds || [])?.filter((g) => {
@@ -186,10 +185,9 @@
 		{/each}
 	</Column>
 
-    <div class="my-3" />
+	<div class="my-3" />
 
 	<ButtonReact
-		color={Color.Themable}
 		text="Refresh Server List"
 		icon="mdi:refresh"
 		onClick={recacheForce}

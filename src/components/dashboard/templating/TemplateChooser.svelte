@@ -154,7 +154,6 @@
 			minlength={0}
 		/>
 		<ButtonReact
-			color={Color.Themable}
 			icon="fa6-solid:plus"
 			text="Create Template And Select"
 			onClick={createTemplateAndChooseTemplate}

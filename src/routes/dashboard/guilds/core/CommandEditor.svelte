@@ -340,7 +340,6 @@
 
 {#if Object.keys(changes).length}
 	<ButtonReact
-		color={Color.Themable}
 		icon="mdi:edit"
 		text="Save"
 		onClick={updateCommandConfiguration}
