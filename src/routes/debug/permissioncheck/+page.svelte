@@ -6,7 +6,6 @@
 	let permissionCheck: PermissionCheckType = {
 		kittycat_perms: [],
 		native_perms: [],
-		outer_and: false,
 		inner_and: false
 	};
 </script>

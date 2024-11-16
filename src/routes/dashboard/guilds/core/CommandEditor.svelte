@@ -4,8 +4,8 @@
 		FullGuildCommandConfiguration,
 		GuildCommandConfiguration
 	} from '$lib/generated/silverpelt';
-	import PermissionChecks from '@components/dashboard/permissions/PermissionChecks.svelte';
-	import { PermissionChecks as PCT } from '$lib/generated/silverpelt';
+	import PermissionCheck from '@components/dashboard/permissions/PermissionCheck.svelte';
+	import { PermissionCheck as PCT } from '$lib/generated/silverpelt';
 	import BoolInput from '@components/inputs/BoolInput.svelte';
 	import ListItem from '@components/ListItem.svelte';
 	import UnorderedList from '@components/UnorderedList.svelte';
@@ -18,11 +18,7 @@
 	import logger from '$lib/ui/logger';
 	import { Clearable } from '$lib/generated/types';
 	import BoxButton from '@components/inputs/button/BoxButton.svelte';
-	import {
-		getCommandExtendedData,
-		isPermissionCheckEmpty,
-		ParsedCanonicalCommandData
-	} from '$lib/ui/commands';
+	import { getCommandExtendedData, ParsedCanonicalCommandData } from '$lib/ui/commands';
 	import { NoticeProps } from '@components/common/noticearea/noticearea';
 	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
 	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
@@ -160,16 +156,6 @@
 						};
 					}
 
-					// Check and restore backup
-					if (
-						value.value &&
-						isPermissionCheckEmpty(value.value) &&
-						permCheck_backupTab !== '' &&
-						permCheck_backupPermissionChecks
-					) {
-						value.value = structuredClone(permCheck_backupPermissionChecks);
-					}
-
 					return {
 						key: 'perms',
 						value
@@ -215,13 +201,6 @@
 		(currentFullCommandConfiguration = getCurrentFullCommandConfiguration(
 			currentCommandConfiguration
 		));
-
-	// Backup fields
-	let permCheck_backupPermissionChecks: PCT | undefined = undefined;
-	let permCheck_backupTab: string = '';
-	$: commandFullName,
-		(permCheck_backupPermissionChecks = structuredClone(getCommandDefaultPerms()));
-	$: commandFullName, (permCheck_backupTab = '');
 
 	const updateCommandConfiguration = async () => {
 		let authCreds = getAuthCreds();
@@ -281,8 +260,6 @@
 		}
 
 		state = getState(); // Rederive state
-		permCheck_backupTab = '';
-		permCheck_backupPermissionChecks = undefined;
 	};
 
 	let updateNoticeArea: NoticeProps | null;
@@ -314,11 +291,9 @@
 
 <Label id="perms" label="Command Permissions" />
 
-<PermissionChecks
+<PermissionCheck
 	id={`pc-${currentCommandConfiguration.command}`}
-	bind:permissionChecks={state.perms.current}
-	bind:backupPermissionChecks={permCheck_backupPermissionChecks}
-	bind:backupTab={permCheck_backupTab}
+	bind:permissionCheck={state.perms.current}
 	ctx={commonPermissionContext}
 />
 

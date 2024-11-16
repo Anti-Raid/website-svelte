@@ -4,14 +4,11 @@
 		FullGuildCommandConfiguration,
 		GuildModuleConfiguration
 	} from '$lib/generated/silverpelt';
-	import PermissionChecks from '@components/dashboard/permissions/PermissionChecks.svelte';
-	import { PermissionChecks as PCT } from '$lib/generated/silverpelt';
 	import BoolInput from '@components/inputs/BoolInput.svelte';
 	import ListItem from '@components/ListItem.svelte';
 	import UnorderedList from '@components/UnorderedList.svelte';
 	import { PartialPatchRecord, createPartialPatch } from '$lib/partialPatch';
 	import ButtonReact from '@components/inputs/button/ButtonReact.svelte';
-	import { Color } from '@components/inputs/button/colors';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
@@ -22,7 +19,6 @@
 	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
 	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
 	import Label from '@components/inputs/Label.svelte';
-	import { isPermissionCheckEmpty } from '$lib/ui/commands';
 	import Setting from '@components/settings/Setting.svelte';
 	import Developer from '@components/common/Developer.svelte';
 	import CommandList from './CommandList.svelte';
@@ -66,32 +62,9 @@
 		return cmc.disabled !== undefined;
 	};
 
-	const isModuleDefaultPermsOverriden = (
-		currentModuleConfiguration: GuildModuleConfiguration[]
-	): boolean => {
-		let cmc = currentModuleConfiguration.find((m) => m.module === module.id);
-
-		if (!cmc) {
-			return false;
-		}
-
-		return !!cmc.default_perms;
-	};
-
-	const getModuleDefaultPerms = (): PCT => {
-		return (
-			currentModuleConfiguration.find((m) => m.module === module.id)?.default_perms || {
-				Simple: {
-					checks: []
-				}
-			}
-		);
-	};
-
 	interface PartialPatchType {
 		enabled: boolean;
-		default_perms: PCT;
-		__resetFields: ('enabled' | 'default_perms')[];
+		__resetFields: 'enabled'[];
 	}
 
 	const getState = (): PartialPatchRecord<PartialPatchType> => {
@@ -114,38 +87,6 @@
 
 					return {
 						key: 'disabled',
-						value
-					};
-				}
-			},
-			default_perms: {
-				initial: structuredClone(getModuleDefaultPerms()),
-				current: structuredClone(getModuleDefaultPerms()),
-				parse: (_state, snapshot, v) => {
-					let value: Clearable<PCT> = {
-						clear: false,
-						value: v
-					};
-
-					// Clear the value if the field is in the reset list
-					if (snapshot?.__resetFields?.includes('default_perms')) {
-						value = {
-							clear: true
-						};
-					}
-
-					// Check and restore backup
-					if (
-						value.value &&
-						isPermissionCheckEmpty(value.value) &&
-						permCheck_backupTab !== '' &&
-						permCheck_backupPermissionChecks
-					) {
-						value.value = structuredClone(permCheck_backupPermissionChecks);
-					}
-
-					return {
-						key: 'default_perms',
 						value
 					};
 				}
@@ -179,16 +120,7 @@
 
 	// Ensure manuallyOverriden is updated whenever moduleId changes
 	let toggleManuallyOverriden: boolean;
-	let defaultPermsManuallyOverriden: boolean;
 	$: moduleId, (toggleManuallyOverriden = isModuleDisabledOverriden(currentModuleConfiguration));
-	$: moduleId,
-		(defaultPermsManuallyOverriden = isModuleDefaultPermsOverriden(currentModuleConfiguration));
-
-	// Backup fields
-	let permCheck_backupPermissionChecks: PCT | undefined = undefined;
-	let permCheck_backupTab: string = '';
-	$: moduleId, (permCheck_backupPermissionChecks = structuredClone(getModuleDefaultPerms()));
-	$: moduleId, (permCheck_backupTab = '');
 
 	const updateModuleConfiguration = async () => {
 		let authCreds = getAuthCreds();
@@ -238,8 +170,6 @@
 		currentModuleConfiguration = currentModuleConfiguration;
 
 		state = getState(); // Rederive state
-		permCheck_backupTab = '';
-		permCheck_backupPermissionChecks = undefined;
 	};
 
 	let updateNoticeArea: NoticeProps | null;
@@ -270,34 +200,6 @@
 {/if}
 
 <div class="mt-2 mb-2" />
-
-<Label id="default_perms" label="Default Module Permissions" />
-
-<PermissionChecks
-	id={`pc-${module.id}`}
-	bind:permissionChecks={state.default_perms.current}
-	bind:backupPermissionChecks={permCheck_backupPermissionChecks}
-	bind:backupTab={permCheck_backupTab}
-	ctx={commonPermissionContext}
-/>
-
-{#if defaultPermsManuallyOverriden}
-	<BoxButton
-		onClick={() => {
-			if (state.__resetFields.current.includes('default_perms')) {
-				state.__resetFields.current = state.__resetFields.current.filter(
-					(f) => f !== 'default_perms'
-				);
-			} else {
-				state.__resetFields.current.push('default_perms');
-			}
-
-			state = state; // Force re-render
-		}}
-	>
-		{state.__resetFields.current.includes('default_perms') ? "Don't Reset" : 'Reset'}
-	</BoxButton>
-{/if}
 
 {#if Object.keys(changes).length}
 	<ButtonReact
@@ -405,21 +307,6 @@
 				</small>
 			{/if}
 		</ListItem>
-
-		<ListItem>
-			{#if defaultPermsManuallyOverriden}
-				<small class="text-green-500 mt-2">
-					<strong>The default permissions of this module have been manually modified.</strong>
-				</small>
-			{:else}
-				<small class="text-green-500 mt-2">
-					<strong
-						>This module will use the default permissions defined for it unless manually modified.</strong
-					>
-				</small>
-			{/if}
-		</ListItem>
-
 		<ListItem>
 			{#if module.virtual_module}
 				<small class="text-green-500 mt-2">
