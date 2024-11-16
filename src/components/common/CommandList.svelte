@@ -21,6 +21,7 @@
 	} from '$lib/ui/commands';
 	import NoticeArea from './noticearea/NoticeArea.svelte';
 	import Debug from './Debug.svelte';
+	import { PermissionCheckFormatter } from '@lib/fetch/fetch';
 
 	interface State {
 		openModule: string;
@@ -246,11 +247,11 @@
 												</td>
 												<td>
 													<ul class="list-disc list-outside text-white">
-														{#each row.extended_data?.default_perms?.Simple?.checks || [] as check}
-															<li class="mr-2">
-																<pre class="command-parameter">{check.kittycat_perms}</pre>
-															</li>
-														{/each}
+														{#if row.extended_data?.default_perms}
+															{new PermissionCheckFormatter(
+																row.extended_data.default_perms
+															).toString()}
+														{/if}
 													</ul>
 												</td>
 											</tr>
