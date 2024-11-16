@@ -3,7 +3,6 @@ import logger from '../ui/logger';
 import {
 	CanonicalSettingsError,
 	PermissionCheck,
-	PermissionChecks,
 	PermissionResult
 } from '$lib/generated/silverpelt';
 import dompurify from 'dompurify';
@@ -20,7 +19,7 @@ interface FetchClientOptions extends RequestInit {
 	onRatelimit?: (n: number, err: ApiError) => void;
 }
 
-class PermissionCheckFormatter {
+export class PermissionCheckFormatter {
 	public permCheck: PermissionCheck;
 	constructor(permCheck: PermissionCheck) {
 		this.permCheck = permCheck;
@@ -36,10 +35,6 @@ class PermissionCheckFormatter {
 
 	get innerAnd() {
 		return this.permCheck.inner_and;
-	}
-
-	get outerAnd() {
-		return this.permCheck.outer_and;
 	}
 
 	toString() {
@@ -106,10 +101,6 @@ export class PermissionResultFormatter {
 				return `The module corresponding to this command could not be determined!`;
 			case 'ModuleDisabled':
 				return `The module \`\`${this.result.module_config?.module}\`\` is disabled on this server`;
-			case 'NoChecksSucceeded':
-				if (!this.result.check) throw new Error('Missing checks for permission result');
-				let checksFmt2 = new PermissionCheckFormatter(this.result.check);
-				return `You do not have the required permissions to perform this action. You need at least one of the following permissions to execute this command:\n\n**Required Permissions**:\n\n${checksFmt2.toString()}`;
 			case 'DiscordError':
 				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
 			case 'SudoNotGranted':

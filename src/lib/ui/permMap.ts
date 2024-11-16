@@ -1,4 +1,4 @@
-import { CanonicalModule, PermissionChecks } from '$lib/generated/silverpelt';
+import { CanonicalModule, PermissionCheck } from '$lib/generated/silverpelt';
 import { title } from '$lib/strings';
 import logger from './logger';
 
@@ -10,27 +10,6 @@ export interface KittycatPermissionMapper {
 		label: string; // The permission label (Create, Delete etc.)
 	}[];
 }
-
-/**
- * Helper function to extract permissions from permission checks
- * @param permissionChecks The permission checks to extract permissions from
- * @returns The permissions extracted from the permission checks
- */
-const extractPermissionsFromPermissionChecks = (permissionChecks: PermissionChecks) => {
-	if (!permissionChecks?.Simple) {
-		return [];
-	}
-
-	let permissions: string[] = [];
-
-	for (let check of permissionChecks?.Simple?.checks) {
-		for (let permission of check?.kittycat_perms) {
-			permissions.push(permission);
-		}
-	}
-
-	return permissions;
-};
 
 /**
  * Extract known permissions from modules for further processing
@@ -51,7 +30,7 @@ export const extractKnownPermissionsFromModules = (modules: CanonicalModule[]) =
 					value
 				);
 				permissions = permissions.concat(
-					extractPermissionsFromPermissionChecks(value?.default_perms)
+					value?.default_perms?.kittycat_perms || []
 				);
 			}
 		}
