@@ -88,38 +88,7 @@ export interface CanonicalSettingsError {
   };
 }
 export interface CanonicalColumnType {
-  Scalar?: {
-    column_type: CanonicalInnerColumnType;
-  };
-  Array?: {
-    inner: CanonicalInnerColumnType;
-  };
-}
-export interface CanonicalInnerColumnTypeStringKind {
-  Normal?: {
-  };
-  Token?: {
-    default_length: number /* uint64 */;
-  };
-  Textarea?: {
-    ctx: string;
-  };
-  TemplateRef?: {
-    kind: string;
-    ctx: string;
-  };
-  User?: {
-  };
-  Role?: {
-  };
-  Emoji?: {
-  };
-  Message?: {
-  };
-  Modifier?: {
-  };
-}
-export interface CanonicalInnerColumnType {
+  type: string; // Either Scalar or Array
   Uuid?: {
   };
   String?: {
@@ -144,6 +113,30 @@ export interface CanonicalInnerColumnType {
   Boolean?: {
   };
   Json?: {
+  };
+}
+export interface CanonicalInnerColumnTypeStringKind {
+  Normal?: {
+  };
+  Token?: {
+    default_length: number /* uint64 */;
+  };
+  Textarea?: {
+    ctx: string;
+  };
+  TemplateRef?: {
+    kind: string;
+    ctx: string;
+  };
+  User?: {
+  };
+  Role?: {
+  };
+  Emoji?: {
+  };
+  Message?: {
+  };
+  Modifier?: {
   };
 }
 export interface CanonicalColumnSuggestion {
