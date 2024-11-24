@@ -6,16 +6,14 @@
 	} from '$lib/generated/silverpelt';
 	import { deriveColumnState, ColumnState, DispatchType } from '$lib/ui/settings';
 	import InputDispatcher from '../inputs/generic/InputDispatcher.svelte';
-	import SettingsSuggestionBox from './SettingsSuggestionBox.svelte';
 	import { DerivedData, OperationTypes } from '$lib/ui/settings';
 	import BoxButton from '../inputs/button/BoxButton.svelte';
 	import Spacer from '../inputs/Spacer.svelte';
 	import { UserGuildBaseData } from '$lib/generated/types';
 	import Debug from '../common/Debug.svelte';
+	import SettingsSuggestionInput from './SettingsSuggestionInput.svelte';
 
-	export let modules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
-	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
 	export let guildId: string;
 	export let value: any;
@@ -40,7 +38,7 @@
 		required={column.ignored_for.includes(currentOperationType) ? false : !column.nullable}
 		disabled={columnState == ColumnState.Disabled ||
 			derivedData.isCleared ||
-			!configOpt.operations[currentOperationType]}
+			!configOpt.operations.includes(currentOperationType)}
 		bind:value
 		showErrors={true}
 		choices={columnDispatchType?.allowed_values}
@@ -52,15 +50,21 @@
 {/if}
 
 {#if columnState == ColumnState.Enabled && !!column.suggestions.None}
-	<SettingsSuggestionBox
-		{guildId}
-		{module}
-		{configOpt}
-		{column}
-		operationType={currentOperationType}
-		{modules}
-		bind:value
-	/>
+	{#if column.suggestions.Static}
+		<div class="configopts-suggestions--static">
+			<SettingsSuggestionInput
+				{column}
+				bind:value
+				suggestions={column.suggestions.Static.suggestions.map((suggestion) => {
+					return {
+						id: suggestion,
+						label: suggestion,
+						value: suggestion
+					};
+				})}
+			/>
+		</div>
+	{/if}
 {/if}
 
 {#if columnState == ColumnState.Enabled}

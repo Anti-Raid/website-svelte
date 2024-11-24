@@ -83,6 +83,9 @@ export interface CanonicalSettingsError {
     max: number /* uint64 */;
     current: number /* uint64 */;
   };
+  PermissionError?: {
+    result: PermissionResult;
+  };
 }
 export interface CanonicalColumnType {
   Scalar?: {
@@ -106,10 +109,6 @@ export interface CanonicalInnerColumnTypeStringKind {
     ctx: string;
   };
   User?: {
-  };
-  Channel?: {
-    allowed_types: discordgo.ChannelType[];
-    needed_bot_permissions: ext.Permissions;
   };
   Role?: {
   };
@@ -151,20 +150,6 @@ export interface CanonicalColumnSuggestion {
   Static?: {
     suggestions: string[];
   };
-  /**
-   * A reference to another setting
-   * The primary key of the referred setting is used as the value
-   */
-  SettingsReference?: {
-    /**
-     * The module of the referenced setting
-     */
-    module: string;
-    /**
-     * The setting of the referenced setting
-     */
-    setting: string;
-  };
   None?: {
   };
 }
@@ -175,14 +160,8 @@ export interface CanonicalColumn {
   column_type: CanonicalColumnType;
   nullable: boolean;
   suggestions: CanonicalColumnSuggestion;
-  unique: boolean;
   secret: boolean;
   ignored_for: CanonicalOperationType[];
-}
-export interface CanonicalOperationSpecific {
-  corresponding_command: string;
-  column_ids: string[];
-  columns_to_set: Record<string, string>;
 }
 export type CanonicalOperationType = string;
 export const View: CanonicalOperationType = "View";
@@ -193,15 +172,10 @@ export interface CanonicalConfigOption {
   id: string;
   name: string;
   description: string;
-  table: string;
-  common_filters: Record<CanonicalOperationType, Record<string, string>>;
-  default_common_filters: Record<string, string>;
   primary_key: string;
   title_template: string;
   columns: CanonicalColumn[];
-  max_return: number /* int */;
-  max_entries: number /* uint64 */;
-  operations: Record<CanonicalOperationType, CanonicalOperationSpecific>;
+  operations: CanonicalOperationType[];
 }
 
 //////////

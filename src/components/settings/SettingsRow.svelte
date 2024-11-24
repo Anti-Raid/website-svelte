@@ -36,7 +36,6 @@
 
 	const { sanitize } = dompurify;
 
-	export let modules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
@@ -105,7 +104,6 @@
 
 		let payload: SettingsExecute = {
 			operation: 'Delete',
-			module: module.id,
 			setting: configOpt.id,
 			fields: {
 				[configOpt.primary_key]: settings.fields[index][configOpt.primary_key]
@@ -172,7 +170,6 @@
 			{#if data.columnState != ColumnState.Hidden}
 				<SettingsColumn
 					{configOpt}
-					{module}
 					{guildData}
 					{guildId}
 					bind:value={columnField[column.id]}
@@ -180,7 +177,6 @@
 					{column}
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
-					{modules}
 					bind:derivedData={allDerivedData[column.id]}
 				/>
 				<Spacer typ="extSpacing" />
@@ -192,7 +188,7 @@
 		<NoticeArea props={getNoticePropsOfField('__message')} />
 	{/if}
 
-	{#if configOpt?.operations['Update'] && !isEqual(columnField, settings.fields[index])}
+	{#if configOpt?.operations.includes('Update')}
 		<!--TODO: Only show the buttonreact when theres an actual change-->
 		<ButtonReact
 			icon="mdi:edit"
@@ -209,7 +205,7 @@
 
 	<Spacer typ="extSpacing" />
 
-	{#if configOpt?.operations['Delete']}
+	{#if configOpt?.operations.includes('Delete')}
 		<ButtonReact
 			icon="mdi:delete"
 			text="Delete"

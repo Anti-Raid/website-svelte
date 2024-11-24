@@ -201,7 +201,6 @@ export interface PatchGuildModuleConfiguration {
  */
 export interface SettingsExecute {
   operation: any /* silverpelt.CanonicalOperationType */;
-  module: string;
   setting: string;
   fields: Record<string, any>;
 }
