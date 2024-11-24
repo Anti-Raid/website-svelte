@@ -2,6 +2,7 @@ import {
 	CanonicalColumn,
 	CanonicalColumnType,
 	CanonicalConfigOption,
+	CanonicalInnerColumnType
 } from '$lib/generated/silverpelt';
 import { ChannelConstraints } from '$lib/inputconstraints';
 import logger from './logger';
@@ -57,77 +58,88 @@ export const getDispatchType = (
 		resolved_column_type: column.column_type
 	};
 
-	let inner = column.column_type;
+	const handleInner = (
+		dispatchType: DispatchType,
+		inner: CanonicalInnerColumnType
+	): DispatchType => {
+		let key = Object.keys(inner)[0];
 
-	let key = Object.keys(inner).filter((k) => k !== 'type')[0];
+		switch (key) {
+			case 'String':
+				if (!inner.String) throw new Error('String inner column type is undefined');
+				_setOnDispatchType(dispatchType, 'minlength', inner.String.min_length);
+				_setOnDispatchType(dispatchType, 'maxlength', inner.String.max_length);
 
-	switch (key) {
-		case 'String':
-			if (!inner.String) throw new Error('String inner column type is undefined');
-			_setOnDispatchType(dispatchType, 'minlength', inner.String.min_length);
-			_setOnDispatchType(dispatchType, 'maxlength', inner.String.max_length);
+				if (inner.String.allowed_values) {
+					// Set the allowed values
+					let allowedValues: { [label: string]: string } = {};
+					inner.String.allowed_values.forEach((value) => {
+						allowedValues[value] = value;
+					});
+					_setOnDispatchType(dispatchType, 'allowed_values', allowedValues);
+				}
 
-			if (inner.String.allowed_values) {
-				// Set the allowed values
-				let allowedValues: { [label: string]: string } = {};
-				inner.String.allowed_values.forEach((value) => {
-					allowedValues[value] = value;
+				if (!inner.String.kind) {
+					_setOnDispatchType(dispatchType, 'type', 'string');
+					break;
+				}
+
+				if (Object.keys(inner.String.kind).length < 1) {
+					_setOnDispatchType(dispatchType, 'type', 'string');
+					break;
+				}
+
+				// Handle the kind
+				if (inner.String.kind.Normal) _setOnDispatchType(dispatchType, 'type', 'string');
+				else if (inner.String.kind.Textarea)
+					_setOnDispatchType(
+						dispatchType,
+						'type',
+						`string:textarea:${inner.String.kind.Textarea.ctx}`
+					);
+				else if (inner.String.kind.TemplateRef)
+					_setOnDispatchType(
+						dispatchType,
+						'type',
+						`string:templateref:${inner.String.kind.TemplateRef.kind}#${inner.String.kind.TemplateRef.ctx}`
+					);
+				else
+					_setOnDispatchType(
+						dispatchType,
+						'type',
+						inner.String.kind
+							? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}`
+							: 'string'
+					);
+				break;
+			case 'BitFlag':
+				if (!inner.BitFlag) throw new Error('BitFlag inner column type is undefined');
+				_setOnDispatchType(dispatchType, 'type', 'bitflag');
+
+				// Until the rust server code can handle bigint correctly, convert them here ourselves
+				let values: { [label: string]: string } = {};
+
+				Object.keys(inner.BitFlag.values).forEach((value) => {
+					if (!inner.BitFlag) return; // TS can't infer that inner.BitFlag is still not null here
+					values[value] = inner.BitFlag.values[value].toString();
 				});
-				_setOnDispatchType(dispatchType, 'allowed_values', allowedValues);
-			}
 
-			if (!inner.String.kind) {
-				_setOnDispatchType(dispatchType, 'type', 'string');
+				_setOnDispatchType(dispatchType, 'bitflag_values', values);
+			default:
+				_setOnDispatchType(dispatchType, 'type', key.toLowerCase());
 				break;
-			}
+		}
 
-			if (Object.keys(inner.String.kind).length < 1) {
-				_setOnDispatchType(dispatchType, 'type', 'string');
-				break;
-			}
+		return dispatchType;
+	};
 
-			// Handle the kind
-			if (inner.String.kind.Normal) _setOnDispatchType(dispatchType, 'type', 'string');
-			else if (inner.String.kind.Textarea)
-				_setOnDispatchType(
-					dispatchType,
-					'type',
-					`string:textarea:${inner.String.kind.Textarea.ctx}`
-				);
-			else if (inner.String.kind.TemplateRef)
-				_setOnDispatchType(
-					dispatchType,
-					'type',
-					`string:templateref:${inner.String.kind.TemplateRef.kind}#${inner.String.kind.TemplateRef.ctx}`
-				);
-			else
-				_setOnDispatchType(
-					dispatchType,
-					'type',
-					inner.String.kind
-						? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}`
-						: 'string'
-				);
-			break;
-		case 'BitFlag':
-			if (!inner.BitFlag) throw new Error('BitFlag inner column type is undefined');
-			_setOnDispatchType(dispatchType, 'type', 'bitflag');
-
-			// Until the rust server code can handle bigint correctly, convert them here ourselves
-			let values: { [label: string]: string } = {};
-
-			Object.keys(inner.BitFlag.values).forEach((value) => {
-				if (!inner.BitFlag) return; // TS can't infer that inner.BitFlag is still not null here
-				values[value] = inner.BitFlag.values[value].toString();
-			});
-
-			_setOnDispatchType(dispatchType, 'bitflag_values', values);
-		default:
-			_setOnDispatchType(dispatchType, 'type', key.toLowerCase());
-			break;
+	if (dispatchType.resolved_column_type.Scalar) {
+		return handleInner(dispatchType, dispatchType.resolved_column_type.Scalar.inner);
+	} else if (dispatchType.resolved_column_type.Array) {
+		return handleInner(dispatchType, dispatchType.resolved_column_type.Array.inner);
+	} else {
+		return dispatchType;
 	}
-
-	return dispatchType;
 };
 
 export enum ColumnState {

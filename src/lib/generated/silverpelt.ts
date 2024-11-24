@@ -88,31 +88,11 @@ export interface CanonicalSettingsError {
   };
 }
 export interface CanonicalColumnType {
-  type: string; // Either Scalar or Array
-  Uuid?: {
+  Scalar?: {
+    inner: CanonicalInnerColumnType;
   };
-  String?: {
-    min_length?: number /* int */;
-    max_length?: number /* int */;
-    allowed_values?: string[];
-    kind?: CanonicalInnerColumnTypeStringKind;
-  };
-  Timestamp?: {
-  };
-  TimestampTz?: {
-  };
-  Interval?: {
-  };
-  Integer?: {
-  };
-  Float?: {
-  };
-  BitFlag?: {
-    values: Record<string, number /* int64 */>;
-  };
-  Boolean?: {
-  };
-  Json?: {
+  Array?: {
+    inner: CanonicalInnerColumnType;
   };
 }
 export interface CanonicalInnerColumnTypeStringKind {
@@ -137,6 +117,33 @@ export interface CanonicalInnerColumnTypeStringKind {
   Message?: {
   };
   Modifier?: {
+  };
+}
+export interface CanonicalInnerColumnType {
+  Uuid?: {
+  };
+  String?: {
+    min_length?: number /* int */;
+    max_length?: number /* int */;
+    allowed_values?: string[];
+    kind?: CanonicalInnerColumnTypeStringKind;
+  };
+  Timestamp?: {
+  };
+  TimestampTz?: {
+  };
+  Interval?: {
+  };
+  Integer?: {
+  };
+  Float?: {
+  };
+  BitFlag?: {
+    values: Record<string, number /* int64 */>;
+  };
+  Boolean?: {
+  };
+  Json?: {
   };
 }
 export interface CanonicalColumnSuggestion {

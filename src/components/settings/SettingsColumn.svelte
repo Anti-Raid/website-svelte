@@ -39,7 +39,7 @@
 	choices={columnDispatchType?.allowed_values}
 	channelConstraints={columnDispatchType?.channel_constraints}
 	bitflagValues={columnDispatchType?.bitflag_values}
-	multiple={columnDispatchType?.resolved_column_type?.type == 'Array'}
+	multiple={!!columnDispatchType?.resolved_column_type?.Array}
 	extClass={''}
 />
 
