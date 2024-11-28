@@ -116,7 +116,9 @@ export interface CanonicalInnerColumnTypeStringKind {
   };
   Message?: {
   };
-  Modifier?: {
+  Channel?: {
+    needed_bot_permissions: string;
+    allowed_channel_types: string[];
   };
 }
 export interface CanonicalInnerColumnType {
@@ -144,6 +146,7 @@ export interface CanonicalInnerColumnType {
   Boolean?: {
   };
   Json?: {
+    max_bytes?: number /* int */;
   };
 }
 export interface CanonicalColumnSuggestion {
