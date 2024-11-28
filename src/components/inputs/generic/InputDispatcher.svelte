@@ -17,7 +17,6 @@ Note: this may be less performant than using the concrete input components direc
 	import BitflagInput from '../BitflagInput.svelte';
 	import InputDescription from '../InputDescription.svelte';
 	import RoleInput from '../RoleInput.svelte';
-	import Modifier from '../Modifier.svelte';
 	import TemplateChooser from '../../dashboard/templating/TemplateChooser.svelte';
 	import TemplateBuilder from '../../dashboard/templating/TemplateBuilder.svelte';
 
@@ -207,10 +206,6 @@ Note: this may be less performant than using the concrete input components direc
 		{disabled}
 		{required}
 	/>
-{:else if type == 'string:modifier'}
-	<Label {id} {label} />
-	<InputDescription {description} />
-	<Modifier bind:value {guildData} {required} {disabled} />
 {:else if type.startsWith('string:templateref')}
 	<Label {id} {label} />
 	<TemplateChooser {guildId} bind:value />

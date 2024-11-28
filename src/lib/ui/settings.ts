@@ -10,7 +10,6 @@ import { getAuthCreds } from '$lib/auth/getAuthCreds';
 import { get } from '$lib/configs/functions/services';
 import { fetchClient } from '$lib/fetch/fetch';
 import { SettingsExecute, SettingsExecuteResponse } from '$lib/generated/types';
-import isEqual from 'lodash.isequal';
 
 export type OperationTypes = 'View' | 'Create' | 'Update' | 'Delete';
 
@@ -104,13 +103,7 @@ export const getDispatchType = (
 						'type',
 						`string:templateref:${inner.String.kind.TemplateRef.kind}#${inner.String.kind.TemplateRef.ctx}`
 					);
-				else if (inner.String.kind.Channel) {
-					_setOnDispatchType(dispatchType, 'type', 'string:channel');
-					_setOnDispatchType(dispatchType, 'channel_constraints', {
-						allowed_types: inner.String.kind.Channel.allowed_types,
-						needed_bot_permissions: inner.String.kind.Channel.needed_bot_permissions
-					});
-				} else
+				else
 					_setOnDispatchType(
 						dispatchType,
 						'type',
@@ -141,7 +134,7 @@ export const getDispatchType = (
 	};
 
 	if (dispatchType.resolved_column_type.Scalar) {
-		return handleInner(dispatchType, dispatchType.resolved_column_type.Scalar.column_type);
+		return handleInner(dispatchType, dispatchType.resolved_column_type.Scalar.inner);
 	} else if (dispatchType.resolved_column_type.Array) {
 		return handleInner(dispatchType, dispatchType.resolved_column_type.Array.inner);
 	} else {
@@ -230,7 +223,6 @@ export const createFieldsForCreate = (
 
 	let payload: SettingsExecute = {
 		operation: 'Create',
-		module: moduleId,
 		setting: configOpt.id,
 		fields
 	};
@@ -257,11 +249,6 @@ export const createFieldsForUpdate = (
 			return;
 		}
 
-		// Ignore unchanged fields that are not the primary key
-		if (isEqual(columnField[k], oldFields[k]) && k != configOpt.primary_key) {
-			return;
-		}
-
 		// Check if isCleared
 		if (allDerivedData[k]?.isCleared) {
 			fields[k] = null;
@@ -272,7 +259,6 @@ export const createFieldsForUpdate = (
 
 	let payload: SettingsExecute = {
 		operation: 'Update',
-		module: moduleId,
 		setting: configOpt.id,
 		fields
 	};
