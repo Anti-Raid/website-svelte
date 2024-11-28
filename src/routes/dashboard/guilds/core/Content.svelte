@@ -5,9 +5,7 @@
 		GuildModuleConfiguration
 	} from '$lib/generated/silverpelt';
 	import { UserGuildBaseData } from '$lib/generated/types';
-	import TabbedPane from '@components/inputs/button/tabs/TabbedPane.svelte';
 	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
-	import SettingsTab from '../tab:settings/SettingsTab.svelte';
 	import { State } from './types';
 	import InputText from '@components/inputs/InputText.svelte';
 	import { commandLookup } from '$lib/ui/commands';
@@ -125,7 +123,9 @@
 
 		<Module
 			{guildId}
-			module={modules[state.openedEntity.module.id]}
+			module={modules[state.openedEntity.module.id]
+				? modules[state.openedEntity.module.id]
+				: modules['core']}
 			{commonPermissionContext}
 			{modules}
 			{guildData}
