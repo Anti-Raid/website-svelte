@@ -10,7 +10,7 @@
 	import InputText from '@components/inputs/InputText.svelte';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import { ExecuteTemplateRequest, ExecuteTemplateResponse } from '$lib/generated/types';
-	import { fetchClient, PermissionResultFormatter } from '$lib/fetch/fetch';
+	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
 
 	let terminal: Terminal;
@@ -61,10 +61,6 @@
 
 			if (resp.Ok) {
 				str = `SUCCESS!\n\r\n${(resp.Ok.result?.toString() || 'nil').replaceAll('\n', '\r\n')}`;
-			} else if (resp.PermissionError) {
-				str = (
-					await new PermissionResultFormatter(resp.PermissionError.res).format('markdown')
-				).replaceAll('\n', '\r\n');
 			} else if (resp.ExecErr) {
 				str = `EXECUTION ERROR:\n\n${resp.ExecErr.error.replaceAll('\n', '\r\n')}`;
 			} else {

@@ -133,7 +133,7 @@ export class SettingsErrorFormatter {
 	async format(type: 'markdown' | 'html'): Promise<string> {
 		let md = `${this.toMarkdown()}\n\n\n\n**Code:** ${this.code}`;
 
-		logger.info('PermissionResultFormatter', 'Formatting', md);
+		logger.info('SettingsErrorFormatter', 'Formatting', md);
 
 		if (!md) {
 			throw new Error('Failed to format permission result, md is null/undefined');
