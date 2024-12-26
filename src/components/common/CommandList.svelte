@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { makeSharedRequest, opGetModules } from '$lib/fetch/ext';
-	import { CanonicalModule } from '$lib/generated/silverpelt';
+	import { makeSharedRequest, opGetBotState } from '$lib/fetch/ext';
 	import logger from '$lib/ui/logger';
 	import Message from '../Message.svelte';
 	import NavButton from '../inputs/button/NavButton.svelte';
@@ -13,50 +12,56 @@
 	import Search from './datatable/Search.svelte';
 	import ThFilter from './datatable/ThFilter.svelte';
 	import ThSort from './datatable/ThSort.svelte';
-	import {
-		LookedUpCommand,
-		ParsedCanonicalCommandData,
-		commandLookup,
-		extractCommandsFromModule
-	} from '$lib/ui/commands';
-	import NoticeArea from './noticearea/NoticeArea.svelte';
 	import Debug from './Debug.svelte';
-	import { PermissionCheckFormatter } from '@lib/fetch/fetch';
+	import { CanonicalCommand } from '@lib/generated/silverpelt';
+	import { BotState } from '@lib/generated/types';
 
 	interface State {
-		openModule: string;
 		commandSearch: string;
-		moduleData: Record<string, CanonicalModule>;
-		searchedCommands: LookedUpCommand[];
+		botState: BotState | null;
+		searchedCommands: CanonicalCommand[];
 	}
 
 	let state: State = {
-		openModule: 'core',
-		moduleData: {},
 		commandSearch: '',
+		botState: null,
 		searchedCommands: []
 	};
 
-	const fetchModules = async () => {
-		logger.info('FetchModules', 'Fetching modules');
-		state.moduleData = await makeSharedRequest(opGetModules());
-		return state.moduleData;
+	const fetchBotState = async () => {
+		logger.info('FetchBotState', 'Fetching bot state');
+		state.botState = await makeSharedRequest(opGetBotState());
+		state.botState.commands = parseCommands(state.botState.commands);
+		return state.botState;
 	};
 
-	$: if (state?.commandSearch) {
-		state.searchedCommands = commandLookup(state.moduleData, state.commandSearch);
-	} else {
-		state.searchedCommands = [];
+	const parseCommands = (commands: CanonicalCommand[], base?: string): CanonicalCommand[] => {
+		let parsedCommands: CanonicalCommand[] = [];
+
+		for (let command of commands) {
+			if (command.subcommands.length > 0) {
+				parsedCommands.push(...parseCommands(command.subcommands, command.name));
+			} else {
+				parsedCommands.push({
+					...command,
+					qualified_name: base ? `${base} ${command.name}` : command.name
+				});
+			}
+		}
+
+		return parsedCommands;
+	};
+
+	$: if (state?.commandSearch && state.botState) {
+		state.searchedCommands = state.botState.commands.filter((cmd) =>
+			cmd.qualified_name.toLowerCase().includes(state.commandSearch.toLowerCase())
+		);
 	}
 
-	let cmdDataTable: Readable<ParsedCanonicalCommandData[]>;
+	let cmdDataTable: Readable<CanonicalCommand[]>;
 
-	const createCmdDataTable = async (_: string) => {
-		let module = state.moduleData[state.openModule];
-
-		let commands: ParsedCanonicalCommandData[] = extractCommandsFromModule(module);
-
-		const handler = new DataHandler(commands, { rowsPerPage: 20 });
+	const createCmdDataTable = async () => {
+		const handler = new DataHandler(state.botState?.commands || [], { rowsPerPage: 20 });
 		cmdDataTable = handler.getRows();
 
 		return {
@@ -80,197 +85,136 @@
 <ul class="mt-4">
 	{#each state.searchedCommands as searchedCommand}
 		<li class="search-command mb-7">
-			<h3 class="text-xl font-bold">{searchedCommand?.command?.full_name}</h3>
+			<h3 class="text-xl font-bold">{searchedCommand?.qualified_name}</h3>
 
-			{#if searchedCommand?.command?.description}
-				<p class="text-slate-200">{searchedCommand?.command?.description}</p>
+			{#if searchedCommand?.description}
+				<p class="text-slate-200">{searchedCommand?.description}</p>
 			{/if}
-
-			<p class="text-slate-200"><strong>Module:</strong> {searchedCommand?.module?.name}</p>
 		</li>
 	{/each}
 </ul>
 
 <article class="command-list-article overflow-x-auto overflow-y-hidden h-full">
 	<section class="mt-5 command-list flex flex-grow">
-		{#await fetchModules()}
-			<Message type="loading">Loading modules...</Message>
-		{:then modules}
-			<!--Module list-->
-			<section class="module-list flex flex-grow">
-				<!--Bar-->
-				<nav class="module-map flex-none border-r border-slate-500 w-40">
-					{#each Object.entries(modules) as [_, module]}
-						{#if !module?.web_hidden}
-							<NavButton
-								current={state.openModule == module?.id}
-								title={module?.name}
-								onClick={() => {
-									state.openModule = module?.id || modules['core'].id;
-								}}
-								extClass="block mb-2 w-full rounded-l-full  font-semibold font-cabin text-sm"
-							/>
-						{/if}
-					{/each}
-				</nav>
+		{#await fetchBotState()}
+			<Message type="loading">Loading bot state...</Message>
+		{:then botState}
+			{#await createCmdDataTable()}
+				<Message type="loading">Loading commands...</Message>
+			{:then data}
+				<div class="overflow-x-auto space-y-4">
+					<!-- Header -->
+					<header class="flex justify-between gap-4">
+						<Search handler={data.handler} />
+						<RowsPerPage handler={data.handler} />
+					</header>
 
-				<!--Content-->
-				<div class="module-list-content flex-1 flex-grow px-2 mb-auto">
-					{#if state.openModule}
-						<h1 class="text-2xl font-semibold leading-6 text-white font-monster">
-							{modules[state?.openModule]?.name}
-						</h1>
-						<p class="text-slate-200 text-base font-semibold font-cabin">
-							{modules[state?.openModule]?.description}
-						</p>
+					<!-- Table -->
+					<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
+						<thead>
+							<tr class="bg-surface-800">
+								<ThSort handler={data.handler} orderBy={'qualified_name'}>Name</ThSort>
+								<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
+								<ThSort handler={data.handler} orderBy={'arguments'}>Arguments</ThSort>
+								<ThSort handler={data.handler} orderBy={'search_permissions'}>Permissions</ThSort>
+							</tr>
+							<tr class="bg-surface-800">
+								<ThFilter handler={data.handler} filterBy={'qualified_name'} what="Name" />
+								<ThFilter handler={data.handler} filterBy={'description'} what="Description" />
+								<ThFilter handler={data.handler} filterBy={'arguments'} what="Arguments" />
+								<ThFilter
+									handler={data.handler}
+									filterBy={'search_permissions'}
+									what="Permissions"
+								/>
+							</tr>
+						</thead>
 
-						<div class="pt-2" />
+						<tbody class="bg-surface-500 text-white">
+							{#each $cmdDataTable as row}
+								<tr>
+									<td>
+										{#if !row.qualified_name.includes(' ')}
+											<span class="font-semibold">
+												{row.name}
+											</span>
+										{:else}
+											<span class="whitespace-nowrap">
+												<span class="font-semibold">{row?.qualified_name?.split(' ')[0]}</span
+												>{' '}<em
+													>{row?.qualified_name?.replace(
+														row?.qualified_name?.split(' ')[0] + ' ',
+														''
+													)}</em
+												>
+											</span>
+										{/if}
 
-						{#if modules[state?.openModule].is_default_enabled}
-							<p class="text-green-500 font-semibold font-cabin">
-								This module is enabled by default!
-							</p>
-						{/if}
+										<!--NSFW command, TODO: Make tooltip-->
+										{#if row.nsfw}
+											<div class="command-note">
+												<span class="text-red-400 font-semibold">NSFW</span>
+											</div>
+										{/if}
 
-						<p
-							class="text-{modules[state?.openModule].toggleable
-								? 'green'
-								: 'red'}-500 font-semibold font-cabin"
-						>
-							{modules[state?.openModule].toggleable
-								? 'This module is toggleable.'
-								: 'This module is NOT toggleable.'}
-						</p>
+										<!--Base command of a slash command, TODO: Make tooltip-->
+										{#if row.subcommand_required || row.subcommands.length}
+											<div class="command-note">
+												<span class="text-blue-400 font-semibold">BASE</span>
+											</div>
+										{/if}
+									</td>
+									<td>
+										<span>
+											{#if row.description}
+												{row.description}
+											{:else}
+												Mystery Box?
+											{/if}
+										</span>
+									</td>
+									<td>
+										<span>
+											<ul class="list-disc list-outside text-white">
+												{#each row.arguments as arg, i}
+													<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
+														<span class="font-semibold">{arg.name}</span>
 
-						{#if modules[state?.openModule].web_hidden}
-							<p class="text-red-500 font-semibold font-cabin mt-2">
-								Sorry, this module is not supported with our website/dashboard yet!
-							</p>
-						{/if}
-
-						<div class="pt-2" />
-
-						{#await createCmdDataTable(state?.openModule)}
-							<Message type="loading">Loading commands...</Message>
-						{:then data}
-							<div class="overflow-x-auto space-y-4">
-								<!-- Header -->
-								<header class="flex justify-between gap-4">
-									<Search handler={data.handler} category={modules[state?.openModule]?.name} />
-									<RowsPerPage handler={data.handler} />
-								</header>
-
-								<!-- Table -->
-								<table class="table table-hover table-compact bg-surface-600 w-full table-auto">
-									<thead>
-										<tr class="bg-surface-800">
-											<ThSort handler={data.handler} orderBy={'full_name'}>Name</ThSort>
-											<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
-											<ThSort handler={data.handler} orderBy={'arguments'}>Arguments</ThSort>
-											<ThSort handler={data.handler} orderBy={'search_permissions'}
-												>Permissions</ThSort
-											>
-										</tr>
-										<tr class="bg-surface-800">
-											<ThFilter handler={data.handler} filterBy={'full_name'} what="Name" />
-											<ThFilter
-												handler={data.handler}
-												filterBy={'description'}
-												what="Description"
-											/>
-											<ThFilter handler={data.handler} filterBy={'arguments'} what="Arguments" />
-											<ThFilter
-												handler={data.handler}
-												filterBy={'search_permissions'}
-												what="Permissions"
-											/>
-										</tr>
-									</thead>
-
-									<tbody class="bg-surface-500 text-white">
-										{#each $cmdDataTable as row}
-											<tr>
-												<td>
-													{#if row.subcommand_depth == 0}
-														<span class="font-semibold">
-															{row.name}
-														</span>
-													{:else}
-														<span class="whitespace-nowrap">
-															<span class="font-semibold">{row?.parent_command?.name}</span>{' '}<em
-																>{row.name}</em
-															>
-														</span>
-													{/if}
-
-													<!--NSFW command, TODO: Make tooltip-->
-													{#if row.nsfw}
-														<div class="command-note">
-															<span class="text-red-400 font-semibold">NSFW</span>
-														</div>
-													{/if}
-
-													<!--Base command of a slash command, TODO: Make tooltip-->
-													{#if row.subcommand_required || row.subcommands.length}
-														<div class="command-note">
-															<span class="text-blue-400 font-semibold">BASE</span>
-														</div>
-													{/if}
-												</td>
-												<td>
-													<span>
-														{#if row.description}
-															{row.description}
-														{:else}
-															Mystery Box?
+														{#if arg.required}
+															<span class="text-red-400 font-semibold">*</span>
 														{/if}
-													</span>
-												</td>
-												<td>
-													<span>
-														<ul class="list-disc list-outside text-white">
-															{#each row.arguments as arg, i}
-																<li class={i + 1 < row.arguments.length ? 'mb-2' : ''}>
-																	<span class="font-semibold">{arg.name}</span>
 
-																	{#if arg.required}
-																		<span class="text-red-400 font-semibold">*</span>
-																	{/if}
-
-																	{#if arg.description}
-																		<span>: </span><em>{arg.description}</em>
-																	{/if}
-																</li>
-															{/each}
-														</ul>
-													</span>
-												</td>
-												<td>
-													<ul class="list-disc list-outside text-white">
-														{#if row.extended_data?.default_perms}
-															{new PermissionCheckFormatter(
-																row.extended_data.default_perms
-															).toString()}
+														{#if arg.description}
+															<span>: </span><em>{arg.description}</em>
 														{/if}
-													</ul>
-												</td>
-											</tr>
-										{/each}
-									</tbody>
-								</table>
+													</li>
+												{/each}
+											</ul>
+										</span>
+									</td>
+									<td>
+										<ul class="list-disc list-outside text-white">
+											{#each botState.command_permissions[row.qualified_name] as permDesc}
+												<li class="mb-2">
+													<span class="font-semibold">{permDesc}</span>
+												</li>
+											{/each}
+										</ul>
+									</td>
+								</tr>
+							{/each}
+						</tbody>
+					</table>
 
-								<!-- Footer -->
-								<footer class="flex justify-between">
-									<RowCount handler={data.handler} />
-									<Pagination handler={data.handler} />
-								</footer>
-							</div>
-						{:catch}
-							<Message type="error">Failed to load commands</Message>
-						{/await}
-					{/if}
+					<!-- Footer -->
+					<footer class="flex justify-between">
+						<RowCount handler={data.handler} />
+						<Pagination handler={data.handler} />
+					</footer>
 				</div>
-			</section>
+			{:catch}
+				<Message type="error">Failed to load commands</Message>
+			{/await}
 		{:catch}
 			<Message type="error">Failed to load modules</Message>
 		{/await}

@@ -7,16 +7,14 @@
 </script>
 
 <script lang="ts">
-	import { CanonicalConfigOption, CanonicalModule } from '$lib/generated/silverpelt';
+	import { CanonicalConfigOption } from '$lib/generated/silverpelt';
 	import { SettingsExecute, UserGuildBaseData } from '$lib/generated/types';
 	import Label from '../inputs/Label.svelte';
 	import Message from '../Message.svelte';
 	import SettingsView from './SettingsView.svelte';
 	import { settingsFetchQueue } from '$lib/ui/settings';
 
-	export let modules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
-	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
 	export let guildId: string;
 	export let filters: Record<string, any> = {}; // Any filters to apply
@@ -74,9 +72,7 @@
 	<p>Loading...</p>
 {:then settings}
 	<SettingsView
-		{modules}
 		{configOpt}
-		{module}
 		{guildData}
 		{guildId}
 		{settings}

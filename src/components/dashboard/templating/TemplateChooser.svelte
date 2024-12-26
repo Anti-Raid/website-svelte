@@ -5,12 +5,10 @@
 	import BoxButton from '../../inputs/button/BoxButton.svelte';
 	import Message from '../../Message.svelte';
 	import InputText from '../../inputs/InputText.svelte';
-	import InputTextArea from '../../inputs/InputTextArea.svelte';
 	import ButtonReact from '../../inputs/button/ButtonReact.svelte';
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
-	import { Color } from '../../inputs/button/colors';
 	import { NoticeProps } from '../../common/noticearea/noticearea';
 	import NoticeArea from '../../common/noticearea/NoticeArea.svelte';
 	import TemplateBuilder from './TemplateBuilder.svelte';
@@ -25,7 +23,6 @@
 	const templateList = async (limit: number, offset: number) => {
 		let payload: SettingsExecute = {
 			operation: 'View',
-			module: 'core',
 			setting: 'guild_templates',
 			fields: {
 				__limit: limit,
@@ -44,7 +41,6 @@
 	const createTemplateAndChooseTemplate = async () => {
 		let payload: SettingsExecute = {
 			operation: 'Create',
-			module: 'settings',
 			setting: 'guild_templates',
 			fields: {
 				name: newTemplateName,

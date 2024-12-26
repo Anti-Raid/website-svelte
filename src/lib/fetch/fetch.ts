@@ -2,8 +2,6 @@ import { ApiError } from '$lib/generated/types';
 import logger from '../ui/logger';
 import {
 	CanonicalSettingsError,
-	PermissionCheck,
-	PermissionResult
 } from '$lib/generated/silverpelt';
 import dompurify from 'dompurify';
 import * as marked from 'marked';
@@ -17,125 +15,6 @@ interface FetchClientOptions extends RequestInit {
 	noExtraHeaders?: boolean;
 	noWait?: boolean;
 	onRatelimit?: (n: number, err: ApiError) => void;
-}
-
-export class PermissionCheckFormatter {
-	public permCheck: PermissionCheck;
-	constructor(permCheck: PermissionCheck) {
-		this.permCheck = permCheck;
-	}
-
-	get nativePerms() {
-		return this.permCheck.native_perms;
-	}
-
-	get kittycatPerms() {
-		return this.permCheck.kittycat_perms;
-	}
-
-	get innerAnd() {
-		return this.permCheck.inner_and;
-	}
-
-	toString() {
-		let result = '';
-
-		if (this.nativePerms.length > 0) {
-			result += '\t- Discord: ';
-			this.nativePerms.forEach((perm, index) => {
-				if (index !== 0) {
-					result += ' ';
-				}
-				let permsBf = new BitFlag(serenityPermissions, perm);
-				result += `${Object.keys(permsBf.getSetFlags())} (${perm})`;
-				if (index < this.nativePerms.length - 1) {
-					result += this.innerAnd ? ' AND' : ' OR';
-				}
-			});
-		}
-
-		if (this.kittycatPerms.length > 0) {
-			result += '\n\t- Custom Permissions (kittycat): ';
-			this.kittycatPerms.forEach((perm, index) => {
-				if (index !== 0) {
-					result += ' ';
-				}
-				result += perm;
-				if (index < this.kittycatPerms.length - 1) {
-					result += this.innerAnd ? ' AND' : ' OR';
-				}
-			});
-		}
-
-		return result;
-	}
-}
-
-/**
- * A wrapper to help format a permission result
- */
-export class PermissionResultFormatter {
-	private result: PermissionResult;
-
-	constructor(result: PermissionResult) {
-		this.result = result;
-	}
-
-	toMarkdown() {
-		switch (this.result.var) {
-			case 'Ok':
-				return 'No message/context available';
-			case 'OkWithMessage':
-				return this.result.message;
-			case 'MissingKittycatPerms':
-			case 'MissingNativePerms':
-			case 'MissingAnyPerms':
-				if (!this.result.check) throw new Error('Missing checks for permission result');
-				let checksFmt1 = new PermissionCheckFormatter(this.result.check);
-				return `You do not have the required permissions to perform this action. Try checking that you have the below permissions: ${checksFmt1.toString()}`;
-			case 'CommandDisabled':
-				return `You cannot perform this action because the command \`\`${this.result.command_config?.command}\`\` is disabled on this server`;
-			case 'UnknownModule':
-				return `The module \`\`${this.result.module_config?.module}\`\` does not exist`;
-			case 'ModuleNotFound':
-				return `The module corresponding to this command could not be determined!`;
-			case 'ModuleDisabled':
-				return `The module \`\`${this.result.module_config?.module}\`\` is disabled on this server`;
-			case 'DiscordError':
-				return `A Discord-related error seems to have occurred: ${this.result.error}.\n\nPlease try again later, it might work!`;
-			case 'SudoNotGranted':
-				return 'This module is only available for root (staff) and/or developers of the bot';
-			case 'GenericError':
-				return this.result.error;
-		}
-	}
-
-	/**
-	 * Formats the permission result
-	 *
-	 * @param type The type of formatting to use, either markdown or html
-	 * @returns The formatted permission result
-	 */
-	async format(type: 'markdown' | 'html'): Promise<string> {
-		let md = `${this.toMarkdown()}\n\n\n\n**Code:** ${this.result.var}`;
-
-		logger.info('PermissionResultFormatter', 'Formatting', md);
-
-		if (!md) {
-			throw new Error('Failed to format permission result, md is null/undefined');
-		}
-
-		if (type === 'html') {
-			let outHtml = await marked.parse(md, {
-				async: true,
-				breaks: true
-			});
-
-			return outHtml;
-		}
-
-		return md;
-	}
 }
 
 export class SettingsErrorFormatter {
@@ -316,20 +195,6 @@ export class ClientResponse {
 
 		if (this.errorType) {
 			switch (this.errorType) {
-				case 'permission_check':
-					let json = await this.response.json();
-					logger.info('ClientResponse', 'Permission check error', json);
-					let fmt = new PermissionResultFormatter(json);
-					let formatted = await fmt.format(type);
-
-					let outHtml = sanitize(formatted);
-
-					// Add some formatting for ol/ul
-					outHtml = outHtml
-						.replaceAll('<ol', "<ol class='list-decimal pl-6 mb-2'")
-						.replaceAll('<ul', "<ul class='pl-1'");
-
-					return outHtml;
 				case 'settings_error':
 					let settingsErr: CanonicalSettingsError = await this.response.json();
 					let settingsFmt = new SettingsErrorFormatter(settingsErr);

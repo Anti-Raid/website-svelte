@@ -9,15 +9,12 @@
 		UserSessionList
 	} from '$lib/generated/types';
 	import Message from '@components/Message.svelte';
-	import { DataHandler, Datatable, Th } from '@vincjo/datatables';
+	import { DataHandler } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
 	import InputText from '@components/inputs/InputText.svelte';
 	import Select from '@components/inputs/select/Select.svelte';
 	import InputNumber from '@components/inputs/InputNumber.svelte';
-	import KittycatPermSelectArray from '@components/dashboard/permissions/KittycatPermSelectArray.svelte';
-	import Label from '@components/inputs/Label.svelte';
 	import ButtonReact from '@components/inputs/button/ButtonReact.svelte';
-	import { Color } from '@components/inputs/button/colors';
 	import Pagination from '@components/common/datatable/Pagination.svelte';
 	import RowCount from '@components/common/datatable/RowCount.svelte';
 	import RowsPerPage from '@components/common/datatable/RowsPerPage.svelte';
@@ -26,12 +23,6 @@
 	import ThSort from '@components/common/datatable/ThSort.svelte';
 	import { NoticeProps } from '@components/common/noticearea/noticearea';
 	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
-	import { makeSharedRequest, opGetModules } from '$lib/fetch/ext';
-	import { CommonPermissionContext } from '@components/dashboard/permissions/commonPermissionContext';
-	import {
-		extractKnownPermissionsFromModules,
-		makeKittycatPermissionMapperFromPermissions
-	} from '$lib/ui/permMap';
 	import BoolInput from '@components/inputs/BoolInput.svelte';
 
 	let sessionRows: Readable<UserSession[]>;
@@ -77,23 +68,12 @@
 		sessionRows = sessionHandler.getRows();
 		otherSessionRows = otherSessionHandler.getRows();
 
-		// Get list of modules
-		currentState = 'Fetching all available modules';
-		let modules = await makeSharedRequest(opGetModules());
-
-		let commonPermissionContext: CommonPermissionContext = {
-			kittycatPermissionMapper: makeKittycatPermissionMapperFromPermissions(
-				extractKnownPermissionsFromModules(Object.values(modules))
-			)
-		};
-
 		devMode = localStorage.getItem('devMode') == 'true';
 
 		return {
 			authCreds,
 			otherSessionHandler,
-			sessionHandler,
-			commonPermissionContext
+			sessionHandler
 		};
 	};
 
@@ -131,8 +111,7 @@
 	let createSession: CreateUserSession = {
 		name: '',
 		type: 'api',
-		expiry: 0,
-		perm_limits: []
+		expiry: 0
 	};
 
 	let createSessionResp: CreateUserSessionResponse;
@@ -310,8 +289,7 @@
 		A session is a structure that represents a view into the AntiRaid API. Sessions provide a
 		session token that can then be used to authorize reqiests to the API. Temporary sessions of type
 		"login" are automatically created when logging in via Discord Oauth2 however these expire 1 hour
-		after creation and may not support upcoming functionality such as naming sessions and
-		restricting the permissions of sessions
+		after creation and may not support upcoming functionality such as naming sessions.
 	</p>
 
 	<InputText
@@ -337,14 +315,6 @@
 		minlength={1}
 		showErrors={false}
 		bind:value={createSession.expiry}
-	/>
-
-	<Label id="session-perms" label="Permission Limits" />
-	<div class="mb-3" />
-	<KittycatPermSelectArray
-		id="session-perms"
-		bind:perms={createSession.perm_limits}
-		ctx={data.commonPermissionContext}
 	/>
 
 	<ButtonReact
