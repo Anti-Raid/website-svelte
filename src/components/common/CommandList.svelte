@@ -56,12 +56,18 @@
 		state.searchedCommands = state.botState.commands.filter((cmd) =>
 			cmd.qualified_name.toLowerCase().includes(state.commandSearch.toLowerCase())
 		);
+	} else {
+		state.searchedCommands = [];
 	}
 
 	let cmdDataTable: Readable<CanonicalCommand[]>;
 
 	const createCmdDataTable = async () => {
-		const handler = new DataHandler(state.botState?.commands || [], { rowsPerPage: 20 });
+		while (!state.botState) {
+			// Wait for 500ms using Promise
+			await new Promise((resolve) => setTimeout(resolve, 500));
+		}
+		const handler = new DataHandler(state.botState.commands, { rowsPerPage: 20 });
 		cmdDataTable = handler.getRows();
 
 		return {
@@ -190,7 +196,7 @@
 									</td>
 									<td>
 										<ul class="list-disc list-outside text-white">
-											{#each botState.command_permissions[row.qualified_name] as permDesc}
+											{#each botState.command_permissions[row.qualified_name] || [] as permDesc}
 												<li class="mb-2">
 													<span class="font-semibold">{permDesc}</span>
 												</li>
