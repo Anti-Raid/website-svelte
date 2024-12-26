@@ -116,17 +116,13 @@
 								<ThSort handler={data.handler} orderBy={'qualified_name'}>Name</ThSort>
 								<ThSort handler={data.handler} orderBy={'description'}>Description</ThSort>
 								<ThSort handler={data.handler} orderBy={'arguments'}>Arguments</ThSort>
-								<ThSort handler={data.handler} orderBy={'command_permissions'}>Permissions</ThSort>
+								<ThSort handler={data.handler} orderBy={'qualified_name'}>Permissions</ThSort>
 							</tr>
 							<tr class="bg-surface-800">
 								<ThFilter handler={data.handler} filterBy={'qualified_name'} what="Name" />
 								<ThFilter handler={data.handler} filterBy={'description'} what="Description" />
 								<ThFilter handler={data.handler} filterBy={'arguments'} what="Arguments" />
-								<ThFilter
-									handler={data.handler}
-									filterBy={'command_permissions'}
-									what="Permissions"
-								/>
+								<ThFilter handler={data.handler} filterBy={'qualified_name'} what="Permissions" />
 							</tr>
 						</thead>
 
