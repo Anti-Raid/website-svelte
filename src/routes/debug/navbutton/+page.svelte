@@ -4,7 +4,6 @@
 
 	let selected = 0;
 
-	$: logger.debug('NavButton', selected);
 </script>
 
 <SideButton current={selected == 0} title="Dashboard" onClick={() => (selected = 0)} />

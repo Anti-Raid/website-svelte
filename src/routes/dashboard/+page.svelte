@@ -2,13 +2,12 @@
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
 	import { get } from '$lib/configs/functions/services';
 	import { fetchClient } from '$lib/fetch/fetch';
-	import { ApiError, DashboardGuildData } from '$lib/generated/types';
+	import { DashboardGuildData } from '$lib/generated/types';
 	import Message from '@components/Message.svelte';
 	import ServerCard from '@components/dashboard/ServerCard.svelte';
 	import Column from '@components/Column.svelte';
 	import InputText from '@components/inputs/InputText.svelte';
 	import ButtonReact from '@components/inputs/button/ButtonReact.svelte';
-	import { Color } from '@components/inputs/button/colors';
 	import { NoticeProps } from '@components/common/noticearea/noticearea';
 	import NoticeArea from '@components/common/noticearea/NoticeArea.svelte';
 

@@ -1,9 +1,5 @@
 <script lang="ts">
-	import {
-		CanonicalColumn,
-		CanonicalConfigOption,
-		CanonicalModule
-	} from '$lib/generated/silverpelt';
+	import { CanonicalColumn, CanonicalConfigOption } from '$lib/generated/silverpelt';
 	import {
 		getDispatchType,
 		deriveColumnState,
@@ -18,11 +14,7 @@
 	import { fetchClient } from '$lib/fetch/fetch';
 	import { get } from '$lib/configs/functions/services';
 	import { getAuthCreds } from '$lib/auth/getAuthCreds';
-	import {
-		SettingsExecute,
-		SettingsExecuteResponse,
-		UserGuildBaseData
-	} from '$lib/generated/types';
+	import { SettingsExecuteResponse, UserGuildBaseData } from '$lib/generated/types';
 	import ButtonReact from '../inputs/button/ButtonReact.svelte';
 	import { Color } from '../inputs/button/colors';
 	import { NoticeProps } from '../common/noticearea/noticearea';
@@ -30,10 +22,8 @@
 	import Spacer from '../inputs/Spacer.svelte';
 	import Debug from '../common/Debug.svelte';
 
-	export let modules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
 	export let settings: SettingsExecuteResponse;
-	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
 	export let guildId: string;
 	export let columnField: Record<string, any> = {};
@@ -66,7 +56,7 @@
 		const creds = getAuthCreds();
 		if (!creds) throw new Error('No auth credentials found');
 
-		let payload = createFieldsForCreate(module.id, columnField, configOpt);
+		let payload = createFieldsForCreate(columnField, configOpt);
 
 		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
 			method: 'POST',
@@ -75,7 +65,7 @@
 		});
 
 		if (!res.ok) {
-			let err = await res.error('Failed to create new setting entry for this module');
+			let err = await res.error('Failed to create new setting entry!');
 			throw new Error(err);
 		}
 
@@ -148,7 +138,6 @@
 			{#if data.columnState != ColumnState.Hidden}
 				<SettingsColumn
 					{configOpt}
-					{module}
 					{guildData}
 					{guildId}
 					bind:value={columnField[column.id]}
@@ -156,7 +145,6 @@
 					{column}
 					columnState={data.columnState}
 					columnDispatchType={data.dispatchType}
-					{modules}
 					bind:derivedData={allDerivedData[column.id]}
 				/>
 				<Spacer typ="extSpacing" />

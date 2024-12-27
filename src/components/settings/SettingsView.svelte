@@ -1,13 +1,11 @@
 <script lang="ts">
-	import { CanonicalConfigOption, CanonicalModule } from '$lib/generated/silverpelt';
+	import { CanonicalConfigOption } from '$lib/generated/silverpelt';
 	import { Goto } from './Setting.svelte';
 	import { SettingsExecuteResponse, UserGuildBaseData } from '$lib/generated/types';
 	import SettingsCreateRow from './SettingsCreateRow.svelte';
 	import SettingsRow from './SettingsRow.svelte';
 
-	export let modules: Record<string, CanonicalModule>;
 	export let configOpt: CanonicalConfigOption;
-	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
 	export let guildId: string;
 	export let settings: SettingsExecuteResponse;
@@ -19,14 +17,13 @@
 
 <div class="setting" id={configOpt.id}>
 	{#if configOpt?.operations.includes('Create') && !atMaximum}
-		<SettingsCreateRow bind:settings {configOpt} {module} {guildData} {guildId} {modules} />
+		<SettingsCreateRow bind:settings {configOpt} {guildData} {guildId} />
 	{/if}
 
 	{#each settings?.fields || [] as columnField, i}
 		<SettingsRow
 			columnField={structuredClone(columnField)}
 			index={i}
-			{module}
 			{guildData}
 			{guildId}
 			{configOpt}

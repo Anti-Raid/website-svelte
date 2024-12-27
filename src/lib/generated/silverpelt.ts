@@ -8,36 +8,18 @@ import * as discordgo from "./discordgo"
 From silverpelt/canonical_module
 */
 
-export type CommandExtendedDataMap = Record<string, CommandExtendedData>;
-export interface CanonicalModule {
-  id: string;
-  name: string;
-  description: string;
-  toggleable: boolean;
-  commands_toggleable: boolean;
-  web_hidden: boolean;
-  virtual_module: boolean;
-  is_default_enabled: boolean;
-  commands: CanonicalCommand[];
-  s3_paths: string[];
-  config_options: CanonicalConfigOption[];
-}
-export interface CanonicalCommand {
-  command: CanonicalCommandData;
-  extended_data: CommandExtendedDataMap;
-}
 export interface CanonicalCommandArgument {
   name: string;
   description?: string;
   required: boolean;
   choices: string[];
 }
-export interface CanonicalCommandData {
+export interface CanonicalCommand {
   name: string;
   qualified_name: string;
   description?: string;
   nsfw: boolean;
-  subcommands: CanonicalCommandData[];
+  subcommands: CanonicalCommand[];
   subcommand_required: boolean;
   arguments: CanonicalCommandArgument[];
 }
@@ -82,9 +64,6 @@ export interface CanonicalSettingsError {
   MaximumCountReached?: {
     max: number /* uint64 */;
     current: number /* uint64 */;
-  };
-  PermissionError?: {
-    result: PermissionResult;
   };
 }
 export interface CanonicalColumnType {
@@ -185,75 +164,3 @@ export interface CanonicalConfigOption {
 // source: db__interface.go
 
 export type DbConn = any;
-
-//////////
-// source: mod.go
-/*
-From silverpelt/mod.rs
-*/
-
-/**
- * PermissionCheck represents the permissions needed to run a command.
- */
-export interface PermissionCheck {
-  kittycat_perms: string[]; // The kittycat permissions needed to run the command
-  native_perms: string /* bigint */[]; // The native permissions needed to run the command (converted from serenity::all::Permissions)
-  inner_and: boolean; // Whether or not the perms are ANDed (all needed) or OR'd (at least one)
-}
-/**
- * CommandExtendedData represents the default permissions needed to run a command.
- */
-export interface CommandExtendedData {
-  default_perms: PermissionCheck; // The default permissions needed to run this command
-  is_default_enabled: boolean; // Whether or not the command is enabled by default
-  web_hidden: boolean; // Whether or not the command is hidden from the web interface
-  virtual_command: boolean; // Whether or not the command is a virtual command or not
-}
-/**
- * GuildCommandConfiguration represents guild command configuration data.
- */
-export interface GuildCommandConfiguration {
-  id: string; // The ID
-  guild_id: string; // The guild id (from db)
-  command: string; // The command name
-  perms?: PermissionCheck; // The permission checks on the command, if unset, will revert to either the modules default_perms and if that is unset, the default perms set on the command itself
-  disabled?: boolean; // Whether or not the command is disabled
-}
-/**
- * FullGuildCommandConfiguration represents the full guild command configuration data including audit info etc.
- */
-export interface FullGuildCommandConfiguration {
-  id: string; // The ID
-  guild_id: string; // The guild id (from db)
-  command: string; // The command name
-  perms?: PermissionCheck; // The permission checks on the command, if unset, will revert to either the modules default_perms and if that is unset, the default perms set on the command itself
-  disabled?: boolean; // Whether or not the command is disabled
-  created_at: string /* RFC3339 */; // The time the command configuration was created
-  created_by: string; // The user who created the command configuration
-  last_updated_at: string /* RFC3339 */; // The time the command configuration was last updated
-  last_updated_by: string; // The user who last updated the command configuration
-}
-/**
- * GuildModuleConfiguration represents guild module configuration data.
- */
-export interface GuildModuleConfiguration {
-  id: string; // The ID
-  guild_id: string; // The guild id (from db)
-  module: string; // The module id
-  disabled?: boolean; // Whether or not the module is disabled or not. None means to use the default module configuration
-}
-
-//////////
-// source: permissions.go
-/*
-From botv2 silverpelt/permissions.rs
-*/
-
-export interface PermissionResult {
-  var: string;
-  message?: string;
-  check?: PermissionCheck;
-  command_config?: GuildCommandConfiguration;
-  module_config?: GuildModuleConfiguration;
-  error?: string;
-}

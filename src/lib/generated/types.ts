@@ -19,13 +19,11 @@ export interface UserSession {
   user_id: string;
   created_at: string /* RFC3339 */;
   type: string;
-  perm_limits: string[];
   expiry: string /* RFC3339 */;
 }
 export interface CreateUserSession {
   name: string;
   type: string;
-  perm_limits: string[];
   expiry: number /* int64 */;
 }
 export interface CreateUserSessionResponse {
@@ -44,15 +42,12 @@ export interface TestAuth {
 }
 
 //////////
-// source: commands.go
+// source: bot.go
 
-/**
- * PatchGuildModuleConfiguration allows updating the guild module configuration
- */
-export interface PatchGuildCommandConfiguration {
-  command: string;
-  disabled?: Clearable<boolean>; // Whether or not the module is disabled or not. None means to use the default module configuration
-  perms?: Clearable<any /* silverpelt.PermissionCheck */>; // The default permission check of the command, can be overrided by the command configuration
+export interface BotState {
+  commands: silverpelt.CanonicalCommand[];
+  settings: silverpelt.CanonicalConfigOption[];
+  command_permissions: { [key: string]: string[]};
 }
 
 //////////
@@ -156,9 +151,6 @@ export interface ExecuteTemplateResponse {
   ExecErr?: {
     error: string;
   };
-  PermissionError?: {
-    res: any /* silverpelt.PermissionResult */;
-  };
 }
 
 //////////
@@ -180,17 +172,6 @@ export interface IOAuthOutput {
 export interface IOAuthDiscordError {
   context: { [key: string]: any};
   message: string;
-}
-
-//////////
-// source: modules.go
-
-/**
- * PatchGuildModuleConfiguration allows updating the guild module configuration
- */
-export interface PatchGuildModuleConfiguration {
-  module: string;
-  disabled?: Clearable<boolean>; // Whether or not the module is disabled or not. None means to use the default module configuration
 }
 
 //////////

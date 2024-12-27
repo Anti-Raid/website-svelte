@@ -1,9 +1,5 @@
 <script lang="ts">
-	import {
-		CanonicalColumn,
-		CanonicalConfigOption,
-		CanonicalModule
-	} from '$lib/generated/silverpelt';
+	import { CanonicalColumn, CanonicalConfigOption } from '$lib/generated/silverpelt';
 	import {
 		getDispatchType,
 		deriveColumnState,
@@ -25,19 +21,15 @@
 		UserGuildBaseData
 	} from '$lib/generated/types';
 	import ButtonReact from '../inputs/button/ButtonReact.svelte';
-	import isEqual from 'lodash.isequal';
-	import { Color } from '../inputs/button/colors';
 	import { NoticeProps } from '../common/noticearea/noticearea';
 	import NoticeArea from '../common/noticearea/NoticeArea.svelte';
 	import Spacer from '../inputs/Spacer.svelte';
 	import { marked } from 'marked';
 	import dompurify from 'dompurify';
-	import logger from '$lib/ui/logger';
 
 	const { sanitize } = dompurify;
 
 	export let configOpt: CanonicalConfigOption;
-	export let module: CanonicalModule;
 	export let guildData: UserGuildBaseData;
 	export let guildId: string;
 	export let columnField: Record<string, any>;
@@ -69,13 +61,7 @@
 		const creds = getAuthCreds();
 		if (!creds) throw new Error('No auth credentials found');
 
-		let payload = createFieldsForUpdate(
-			module.id,
-			columnField,
-			configOpt,
-			settings.fields[index],
-			allDerivedData
-		);
+		let payload = createFieldsForUpdate(columnField, configOpt, allDerivedData);
 
 		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
 			method: 'POST',
@@ -84,7 +70,7 @@
 		});
 
 		if (!res.ok) {
-			let err = await res.error('Failed to update settings for this module');
+			let err = await res.error('Failed to update setting!');
 			throw new Error(err);
 		}
 
@@ -117,7 +103,7 @@
 		});
 
 		if (!res.ok) {
-			let err = await res.error('Failed to delete settings for this module');
+			let err = await res.error('Failed to delete setting!');
 			throw new Error(err);
 		}
 
