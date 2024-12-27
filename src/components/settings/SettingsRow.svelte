@@ -61,13 +61,7 @@
 		const creds = getAuthCreds();
 		if (!creds) throw new Error('No auth credentials found');
 
-		let payload = createFieldsForUpdate(
-			module.id,
-			columnField,
-			configOpt,
-			settings.fields[index],
-			allDerivedData
-		);
+		let payload = createFieldsForUpdate(columnField, configOpt, allDerivedData);
 
 		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
 			method: 'POST',
@@ -76,7 +70,7 @@
 		});
 
 		if (!res.ok) {
-			let err = await res.error('Failed to update settings for this module');
+			let err = await res.error('Failed to update setting!');
 			throw new Error(err);
 		}
 
@@ -109,7 +103,7 @@
 		});
 
 		if (!res.ok) {
-			let err = await res.error('Failed to delete settings for this module');
+			let err = await res.error('Failed to delete setting!');
 			throw new Error(err);
 		}
 

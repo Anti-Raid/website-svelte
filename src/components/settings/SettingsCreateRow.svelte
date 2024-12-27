@@ -56,7 +56,7 @@
 		const creds = getAuthCreds();
 		if (!creds) throw new Error('No auth credentials found');
 
-		let payload = createFieldsForCreate(module.id, columnField, configOpt);
+		let payload = createFieldsForCreate(columnField, configOpt);
 
 		let res = await fetchClient(`${get('splashtail')}/guilds/${guildId}/settings`, {
 			method: 'POST',
@@ -65,7 +65,7 @@
 		});
 
 		if (!res.ok) {
-			let err = await res.error('Failed to create new setting entry for this module');
+			let err = await res.error('Failed to create new setting entry!');
 			throw new Error(err);
 		}
 

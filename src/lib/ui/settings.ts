@@ -201,7 +201,6 @@ export interface DerivedData {
 }
 
 export const createFieldsForCreate = (
-	moduleId: string,
 	columnField: Record<string, any>,
 	configOpt: CanonicalConfigOption
 ): SettingsExecute => {
@@ -231,10 +230,8 @@ export const createFieldsForCreate = (
 };
 
 export const createFieldsForUpdate = (
-	moduleId: string,
 	columnField: Record<string, any>,
 	configOpt: CanonicalConfigOption,
-	oldFields: Record<string, any>,
 	allDerivedData: Record<string, DerivedData>
 ): SettingsExecute => {
 	let fields: Record<string, any> = {};
