@@ -2,7 +2,6 @@
 	import { makeSharedRequest, opGetBotState } from '$lib/fetch/ext';
 	import logger from '$lib/ui/logger';
 	import Message from '../Message.svelte';
-	import NavButton from '../inputs/button/NavButton.svelte';
 	import InputText from '../inputs/InputText.svelte';
 	import { DataHandler } from '@vincjo/datatables';
 	import { Readable } from 'svelte/store';
@@ -15,7 +14,6 @@
 	import Debug from './Debug.svelte';
 	import { CanonicalCommand } from '@lib/generated/silverpelt';
 	import { BotState } from '@lib/generated/types';
-	import { assert } from 'console';
 
 	interface State {
 		commandSearch: string;
