@@ -43,7 +43,7 @@
 	extClass={''}
 />
 
-{#if columnState == ColumnState.Enabled && !!column.suggestions.None}
+{#if columnState == ColumnState.Enabled}
 	{#if column.suggestions.Static}
 		<div class="configopts-suggestions--static">
 			<SettingsSuggestionInput
