@@ -79,6 +79,8 @@ export const getDispatchType = (
 					_setOnDispatchType(dispatchType, 'allowed_values', allowedValues);
 				}
 
+				logger.debug('Setting.getDispatchType', 'String.kind', inner.String.kind);
+
 				_setOnDispatchType(dispatchType, 'type', inner.String.kind?.toString() || 'string');
 
 				// Handle the kind
