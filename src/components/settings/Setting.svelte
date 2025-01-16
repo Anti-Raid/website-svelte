@@ -7,7 +7,7 @@
 </script>
 
 <script lang="ts">
-	import { CanonicalConfigOption } from '$lib/generated/silverpelt';
+	import { CanonicalConfigOption } from '$lib/generated/types';
 	import { SettingsExecute, UserGuildBaseData } from '$lib/generated/types';
 	import Label from '../inputs/Label.svelte';
 	import Message from '../Message.svelte';

@@ -109,32 +109,6 @@ export interface CanonicalColumnType {
     inner: CanonicalInnerColumnType;
   };
 }
-export interface CanonicalInnerColumnTypeStringKind {
-  Normal?: {
-  };
-  Token?: {
-    default_length: number /* uint64 */;
-  };
-  Textarea?: {
-    ctx: string;
-  };
-  TemplateRef?: {
-    kind: string;
-    ctx: string;
-  };
-  User?: {
-  };
-  Role?: {
-  };
-  Emoji?: {
-  };
-  Message?: {
-  };
-  Channel?: {
-    needed_bot_permissions: string;
-    allowed_channel_types: string[];
-  };
-}
 export interface CanonicalInnerColumnType {
   Uuid?: {
   };
@@ -142,7 +116,7 @@ export interface CanonicalInnerColumnType {
     min_length?: number /* int */;
     max_length?: number /* int */;
     allowed_values?: string[];
-    kind?: CanonicalInnerColumnTypeStringKind;
+    kind?: string;
   };
   Timestamp?: {
   };

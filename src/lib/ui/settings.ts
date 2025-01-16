@@ -3,7 +3,7 @@ import {
 	CanonicalColumnType,
 	CanonicalConfigOption,
 	CanonicalInnerColumnType
-} from '$lib/generated/silverpelt';
+} from '$lib/generated/types';
 import { ChannelConstraints } from '$lib/inputconstraints';
 import logger from './logger';
 import { getAuthCreds } from '$lib/auth/getAuthCreds';
@@ -79,37 +79,21 @@ export const getDispatchType = (
 					_setOnDispatchType(dispatchType, 'allowed_values', allowedValues);
 				}
 
-				if (!inner.String.kind) {
-					_setOnDispatchType(dispatchType, 'type', 'string');
-					break;
-				}
-
-				if (Object.keys(inner.String.kind).length < 1) {
-					_setOnDispatchType(dispatchType, 'type', 'string');
-					break;
-				}
+				_setOnDispatchType(dispatchType, 'type', inner.String.kind?.toString() || 'string');
 
 				// Handle the kind
-				if (inner.String.kind.Normal) _setOnDispatchType(dispatchType, 'type', 'string');
-				else if (inner.String.kind.Textarea)
+				if (inner.String.kind == "normal") _setOnDispatchType(dispatchType, 'type', 'string');
+				else if (inner.String.kind == "template")
 					_setOnDispatchType(
 						dispatchType,
 						'type',
-						`string:textarea:${inner.String.kind.Textarea.ctx}`
+						`string:textarea:template`
 					);
-				else if (inner.String.kind.TemplateRef)
+				else if (inner.String.kind == "templateRef")
 					_setOnDispatchType(
 						dispatchType,
 						'type',
-						`string:templateref:${inner.String.kind.TemplateRef.kind}#${inner.String.kind.TemplateRef.ctx}`
-					);
-				else
-					_setOnDispatchType(
-						dispatchType,
-						'type',
-						inner.String.kind
-							? `string:${Object.keys(inner.String.kind)[0]?.toLowerCase()}`
-							: 'string'
+						`string:templateref`
 					);
 				break;
 			case 'BitFlag':
