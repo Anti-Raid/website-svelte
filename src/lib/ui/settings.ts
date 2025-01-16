@@ -81,8 +81,6 @@ export const getDispatchType = (
 
 				logger.debug('Setting.getDispatchType', 'String.kind', inner.String.kind);
 
-				_setOnDispatchType(dispatchType, 'type', inner.String.kind?.toString() || 'string');
-
 				// Handle the kind
 				if (inner.String.kind == "normal") _setOnDispatchType(dispatchType, 'type', 'string');
 				else if (inner.String.kind == "template")
@@ -97,6 +95,7 @@ export const getDispatchType = (
 						'type',
 						`string:templateref`
 					);
+				else _setOnDispatchType(dispatchType, 'type', inner.String.kind?.toString() || 'string');
 				break;
 			case 'BitFlag':
 				if (!inner.BitFlag) throw new Error('BitFlag inner column type is undefined');
