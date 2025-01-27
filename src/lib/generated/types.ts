@@ -62,45 +62,6 @@ export interface CanonicalCommand {
   subcommand_required: boolean;
   arguments: CanonicalCommandArgument[];
 }
-export interface CanonicalSettingsError {
-  OperationNotSupported?: {
-    operation: CanonicalOperationType;
-  };
-  Generic?: {
-    message: string;
-    src: string;
-    typ: string;
-  };
-  SchemaTypeValidationError?: {
-    column: string;
-    expected_type: string;
-    got_type: string;
-  };
-  SchemaNullValueValidationError?: {
-    column: string;
-  };
-  SchemaCheckValidationError?: {
-    column: string;
-    check: string;
-    error: string;
-    accepted_range: string;
-  };
-  MissingOrInvalidField?: {
-    field: string;
-    src: string;
-  };
-  RowExists?: {
-    column_id: string;
-    count: number /* int64 */;
-  };
-  RowDoesNotExist?: {
-    column_id: string;
-  };
-  MaximumCountReached?: {
-    max: number /* uint64 */;
-    current: number /* uint64 */;
-  };
-}
 export interface CanonicalColumnType {
   Scalar?: {
     inner: CanonicalInnerColumnType;
