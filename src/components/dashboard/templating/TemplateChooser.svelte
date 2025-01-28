@@ -88,7 +88,7 @@
 		return;
 	};
 
-	let noticeProps: NoticeProps;
+	let noticeProps: NoticeProps | null = null;
 </script>
 
 {#await templateList(10, offset)}
